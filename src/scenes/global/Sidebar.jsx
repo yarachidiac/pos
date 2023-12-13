@@ -14,6 +14,11 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 // import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlinedIcon";
 // import PieChartOutlinedOutlinedIcon from "@mui/icons-material/PieChartOutlinedOutlinedIcon";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
+import StoreIcon from "@mui/icons-material/Store";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -152,7 +157,10 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
                 selected={selected}
                 setSelected={setSelected}
               />
-              <SubItem title="Inventory Management" icon={<MenuOutlinedIcon />}>
+              <SubItem
+                title="Inventory Management"
+                icon={<Inventory2OutlinedIcon />}
+              >
                 <Item
                   title="Items"
                   to="/team"
@@ -184,7 +192,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
                   setSelected={setSelected}
                 />
               </SubItem>
-              <SubItem title="Accounting" icon={<MenuOutlinedIcon />}>
+              <SubItem title="Accounting" icon={<AccountBalanceOutlinedIcon />}>
                 <Item
                   title="Chart of Account"
                   to="/team"
@@ -210,7 +218,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
                   setSelected={setSelected}
                 />
               </SubItem>
-              <SubItem title="Payment & Receivable" icon={<MenuOutlinedIcon />}>
+              <SubItem title="Payment & Receivable" icon={<PaidOutlinedIcon />}>
                 <Item
                   title="Payment Voucher"
                   to="/team"
@@ -224,7 +232,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
                   setSelected={setSelected}
                 />
               </SubItem>
-              <SubItem title="Reports" icon={<MenuOutlinedIcon />}>
+              <SubItem title="Reports" icon={<SummarizeOutlinedIcon />}>
                 <Item
                   title="Stocks Report"
                   to="/team"
@@ -238,7 +246,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
                   setSelected={setSelected}
                 />
               </SubItem>
-              <SubItem title="Company Settings" icon={<MenuOutlinedIcon />}>
+              <SubItem title="Company Settings" icon={<StoreIcon />}>
                 <Item
                   title="Company Management"
                   to="/Company Management"

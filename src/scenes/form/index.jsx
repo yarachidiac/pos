@@ -15,13 +15,13 @@ import { tokens } from "../../theme";
 const initialValues = {
   username: "",
   password: "",
-  company: "",
+  company_name: "",
 };
 
 const userSchema = yup.object().shape({
   username: yup.string().required("required"),
   password: yup.string().required("required"),
-  company: yup.string().required("required"),
+  company_name: yup.string().required("required"),
 });
 
 // ... (your existing code)
@@ -31,12 +31,34 @@ const Form = ({ setIsAuthenticated }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
-    // Perform authentication logic and set isAuthenticated state accordingly
-    setIsAuthenticated(true);
-  };
+  const handleFormSubmit = async (values) => {
+    try {
+      const response = await fetch("http://192.168.16.109:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+          company_name: values.company_name,
+        }),
+      });
+      console.log("here the valuessss:", values);
 
+      console.log("here the valuessss:", JSON.stringify(values));
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+        localStorage.setItem("company_name", values.company_name);
+      } else {
+        // Handle authentication error
+        console.error("Authentication failed");
+      }
+    } catch (error) {
+      console.error("Error during authentication", error);
+    }
+  };
   return (
     <Grid container justifyContent="center" alignItems="center" height="100vh">
       <Grid item xs={12} sm={8} md={6} lg={4}>
@@ -102,10 +124,10 @@ const Form = ({ setIsAuthenticated }) => {
                       label="Company"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.company}
-                      name="company"
-                      error={!!touched.company && !!errors.company}
-                      helperText={touched.company && errors.company}
+                      value={values.company_name}
+                      name="company_name"
+                      error={!!touched.company_name && !!errors.company_name}
+                      helperText={touched.company_name && errors.company_name}
                     />
                   </Grid>
                   <Grid item xs={12}>

@@ -23,6 +23,7 @@ import Team from "./scenes/team";
 import { useState, useEffect } from "react";
 
 
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -65,7 +66,10 @@ function App() {
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
-                  . <Route path="/team" element={<Team/>} />
+                  <Route path="/team" element={<Team />} />
+                  {/* <Route path="/general-accounting" element={<GenralAcc />} />
+                  <Route path="/stock-inventory" element={<StockInv />} /> */}
+
                   {/* <Route path="/items" element={<Items />} />
               <Route path="/purshase" element={<Purshase />} />
               <Route path="/salesinvoice" element={<SalesInvoice />} />
