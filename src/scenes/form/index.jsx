@@ -11,6 +11,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
+import { useCompany } from "../../context/CompanyContext";
 
 const initialValues = {
   username: "",
@@ -30,10 +31,13 @@ const Form = ({ setIsAuthenticated }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  //const { updateCompanyName, clearCompanyName } = useCompany();
 
   const handleFormSubmit = async (values) => {
     try {
-      const response = await fetch("http://192.168.16.109:8000/login", {
+      // Clear the company name from local storage
+      //clearCompanyName();
+      const response = await fetch("http://192.168.16.133:8000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,8 +53,11 @@ const Form = ({ setIsAuthenticated }) => {
       console.log("here the valuessss:", JSON.stringify(values));
 
       if (response.ok) {
+       localStorage.setItem("company_name", values.company_name);
+
         setIsAuthenticated(true);
-        localStorage.setItem("company_name", values.company_name);
+
+        //updateCompanyName(values.company_name);
       } else {
         // Handle authentication error
         console.error("Authentication failed");

@@ -8,49 +8,63 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
+import Button from "@mui/material/Button";
 
-
-const Team = () => {
+const Team = ({companyName}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(5);
 
-  const [companyName, setCompanyName] = useState("");
+  //const [companyName, setCompanyName] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-   const [selectedUserDetails, setSelectedUserDetails] = useState(null);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  //const [selectedUserDetails, setSelectedUserDetails] = useState(null);
+  // const [userDetailsCopy, setUserDetailsCopy] = useState({
+  //   ...selectedUserDetails,
+  // });
+
 
 
   useEffect(() => {
     // Read company_name from localStorage
-    const storedCompanyName = localStorage.getItem("company_name");
-    setCompanyName(storedCompanyName);
-    console.log("stored companyyyyyy", storedCompanyName);
+    // const storedCompanyName = localStorage.getItem("company_name");
+    // setCompanyName(storedCompanyName);
+
+    console.log("stored companyyyyyy", companyName);
 
     // Fetch users based on the company name
-    if (storedCompanyName) {
-      fetch(`http://192.168.16.109:8000/users/${storedCompanyName}`)
+    if (companyName) {
+      fetch(`http://192.168.16.133:8000/users/${companyName}`)
         .then((response) => response.json())
-        .then((data) => setUsers(data))
+        .then((data) => {
+          // Ensure that data is an object with the 'initialState' property
+
+          if (Array.isArray(data)) {
+            setUsers(data);
+          } else {
+            console.error("Invalid data format received:", data);
+          }
+        })
         .catch((error) => console.error("Error fetching users", error));
     }
   }, []);
 
   const handleRowClick = (params) => {
-     
-     // Open the details modal and set the selected user details
-     setIsDetailsModalOpen(true);
-     setSelectedUserDetails(params.row);
-   };
+    // Open the details modal and set the selected user details
+    setIsDetailsModalOpen(true);
+    setUserDetails(params.row);
+  };
 
-   const closeDetailsModal = () => {
-     // Close the details modal
-     setIsDetailsModalOpen(false);
-     setSelectedUserDetails(null);
-   };
-    
+  const closeDetailsModal = () => {
+    // Close the details modal
+    setIsDetailsModalOpen(false);
+    //setSelectedUserDetails(null);
+    setUserDetails(null);
+  };
+
   const renderAccessLevelCell = ({ value }) => {
     const iconMap = {
       admin: <AdminPanelSettingsOutlinedIcon />,
@@ -64,7 +78,6 @@ const Team = () => {
       user: colors.greenAccent[700],
     };
 
-   
     return (
       <Box
         width="100%"
@@ -82,14 +95,27 @@ const Team = () => {
       </Box>
     );
   };
+
+  const renderTextCell = ({ value }) => {
+    return <Typography variant="h4">{value}</Typography>;
+  };
+
   const columns = [
-    { field: "id", headerName: "ID", minWidth: 100 },
+    {
+      field: "id",
+      headerName: "ID",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
     {
       field: "username",
       headerName: "Username",
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
     },
     {
       field: "password",
@@ -97,6 +123,8 @@ const Team = () => {
       headerAlign: "left",
       align: "left",
       minWidth: 200,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
     },
     // {
     //   field: "phone",
@@ -130,14 +158,32 @@ const Team = () => {
         width: "100%",
       }}
     >
-      <Header title="Team" subtitle="Managing the Team Members" />
+      <Box justifyContent="space-between" display="flex" height="20%"  alignItems= 'center'>
+        <Box sx={{width:"50%", m: "2%"}}>
+          <Header title="Team" subtitle="Managing the Team Members" />
+        </Box>
+        <Box sx={{ width: "10%", marginLeft:"auto", justifyContent: "flex-end", alignContent:"center"}}>
+          <Button
+            variant="contained"
+            style={{ background: colors.greenAccent[500] ,}}
+            onClick={() => {}}
+          >
+            Add
+          </Button>
+        </Box>
+      </Box>
       <UserDetailsModal
         isOpen={isDetailsModalOpen}
-        onClose={closeDetailsModal}
-        userDetails={selectedUserDetails}
+        setIsDetailsModalOpen={setIsDetailsModalOpen}
+        //setSelectedUserDetails={setSelectedUserDetails}
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
+        users={users}
+        setUsers={setUsers}
+        companyName={companyName}
       />
       <Box
-        m="0px auto"
+        m="0 auto"
         height="75%"
         width="90%"
         sx={{
@@ -153,6 +199,7 @@ const Team = () => {
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.primary[400],
             borderBottom: "none",
+            fontSize: "900",
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: colors.primary[400],
@@ -160,6 +207,9 @@ const Team = () => {
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
             backgroundColor: colors.primary[400],
+          },
+          "& .MuiDataGrid-columnHeaderTitle": {
+            fontSize: "20px",
           },
           // "& .MuiCheckbox-root": {
           //   color: `${colors.greenAccent[200]} !important`,
@@ -170,7 +220,7 @@ const Team = () => {
           rows={users}
           columns={columns}
           autoHeight
-          {...users}
+          {...(users && users.initialState)}
           initialState={{
             ...users.initialState,
             pagination: { paginationModel: { pageSize: 5 } },

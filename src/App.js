@@ -21,39 +21,70 @@ import Team from "./scenes/team";
 // import UserSettings from "./scenes/UserSettings";
 // import GeneralInformation from "./scenes/GeneralInformation";
 import { useState, useEffect } from "react";
-
+import Company from './scenes/company';
 
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [companyName, setCompanyName] = useState(""); 
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) {
+        setIsCollapsed(false);
+      } else {
+        setIsCollapsed(true);
+      }
+    };
 
- useEffect(() => {
-   const handleResize = () => {
-     setIsMobile(window.innerWidth <= 768);
-     if (window.innerWidth > 768) {
-       setIsCollapsed(false);
-     } else {
-       setIsCollapsed(true);
-     }
-   };
+    window.addEventListener("resize", handleResize);
 
-   window.addEventListener("resize", handleResize);
+    const initializeAuthentication = async () => {
+      try {
+        const storedCompanyName = localStorage.getItem("company_name");
 
-   return () => {
-     window.removeEventListener("resize", handleResize);
-   };
- }, []);
+        if (storedCompanyName) {
+          setCompanyName(storedCompanyName);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error initializing authentication:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    initializeAuthentication();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (loading) {
+    return <div></div>;
+  }
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
           {!isAuthenticated ? (
-            <Form setIsAuthenticated={setIsAuthenticated} />
+            <Form
+              setIsAuthenticated={setIsAuthenticated}
+              // companyName={companyName}
+              // setCompanyName={setCompanyName}
+            />
           ) : (
             <>
               {!isMobile && <Sidebar />}
@@ -66,7 +97,24 @@ function App() {
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/team" element={<Team />} />
+                  <Route
+                    path="/team"
+                    element={
+                      <Team
+                        companyName={companyName}
+                        //setCompanyName={setCompanyName}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/Company Management"
+                    element={
+                      <Company
+                        companyName={companyName}
+                        setCompanyName={setCompanyName}
+                      />
+                    }
+                  />
                   {/* <Route path="/general-accounting" element={<GenralAcc />} />
                   <Route path="/stock-inventory" element={<StockInv />} /> */}
 

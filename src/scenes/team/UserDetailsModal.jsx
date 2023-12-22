@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -18,40 +18,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import GeneralAccountingTable from "./GeneralAccountingTable";
-
-// const GeneralAccountingTable = ({ userDetails }) => (
-//   <Box>
-//     <Table>
-//       <TableBody>
-//         <TableRow>
-//           <TableCell style={{ minWidth: "80px" }}>Name:</TableCell>
-//           <TableCell style={{ minWidth: "120px" }}>
-//             {userDetails.username}
-//           </TableCell>
-//         </TableRow>
-//         <TableRow>
-//           <TableCell style={{ minWidth: "80px" }}>Email:</TableCell>
-//           <TableCell style={{ minWidth: "120px" }}>
-//             {userDetails.email}
-//           </TableCell>
-//         </TableRow>
-//         <TableRow>
-//           <TableCell style={{ minWidth: "80px" }}>User Control:</TableCell>
-//           <TableCell style={{ minWidth: "120px" }}>
-//             {userDetails.user_control}
-//           </TableCell>
-//         </TableRow>
-//         <TableRow>
-//           <TableCell style={{ minWidth: "80px" }}>Sales:</TableCell>
-//           <TableCell style={{ minWidth: "120px" }}>
-//             {userDetails.sales}
-//           </TableCell>
-//         </TableRow>
-//         {/* Add more rows specific to General Accounting */}
-//       </TableBody>
-//     </Table>
-//   </Box>
-// );
+import ConfirmationDialog from "./ConfirmationDialog";
+import { handleSave } from "./SaveHandler";
 
 const StockInventoryTable = ({ userDetails }) => (
   <Box>
@@ -70,14 +38,38 @@ const StockInventoryTable = ({ userDetails }) => (
 );
 
 
-const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
+const UserDetailsModal = ({
+  isOpen,
+  setIsDetailsModalOpen,
+  //setSelectedUserDetails,
+  userDetails,
+  setUserDetails,
+  users,
+  setUsers,
+  companyName,
+  
+  //userDetailsCopy,
+  //setUserDetailsCopy,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [userDetailsCopyModel, setUserDetailsCopyModel] = useState({...userDetails});
+  console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetails);
+  console.log("ccccccccccccccccccccccccccccccccc", userDetailsCopyModel);
 
- 
   
+  // const handleUserDetailsCopyChange = (newUserDetailsCopy) => {
+  //   setUserDetailsCopyModel(newUserDetailsCopy);
+  // };
+
+  console.log("frommmm userdetailllllllllllllllll", userDetails);
+
+  console.log("bl modalllllllllllll detailllll", userDetails);
   if (!userDetails) {
     return null;
   }
@@ -86,7 +78,7 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
+    bgcolor: colors.primary["400"],
     boxShadow: 24,
     pt: 0, // Set top padding to 2
     pr: 2, // Set right padding to 3
@@ -116,7 +108,6 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
     maxHeight: "80%", // Adjust the maximum height as needed
   };
 
-
   const iconButtonStyle = {
     // Other styles...
     display: "flex",
@@ -135,23 +126,26 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
   };
 
   const appBarStyle = {
-    background: colors.primary[400],
-    borderRadius: "4px 4px 0 0",
+    bgcolor: colors.grey[600],
+    borderRadius: "4px 4px 4px 4px",
   };
 
   const toolbarStyle = {
     display: "flex",
     justifyContent: "space-between",
     //padding: theme.spacing(1),
+    "& .css-9ex7vj-MuiTypography-root": {
+      fontSize: "1.1rem",
+      fontWeight: "600",
+    },
   };
 
   const appbarContentStyle = {
     display: "flex",
-    gap: theme.spacing(1), // Adjust the gap between items
+    //gap: theme.spacing(1), // Adjust the gap between items
     //overflowX: "auto", // Enable horizontal scrolling
-  
-};
-  
+  };
+
   const drawerContainerStyle = {
     // Adjust the width as needed
     //background: colors.primary[400],
@@ -165,22 +159,62 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
       position: "relative",
     },
   };
-  
+
   const drawerListStyle = {
     background: colors.primary[400],
     "& .MuiListItem-root": {
       gap: theme.spacing(1), // Adjust the gap between items
       display: "flex",
+
       // justifyContent: "space-between",
       //position: "relative"
     },
   };
 
+  // const handleDrawerOpen = () => {
+  //   setIsDrawerOpen(true);
+  // };
 
-  const handleDrawerOpen = () => {
-    setIsDrawerOpen(true);
+  // Callback function to set unsaved changes status
+  const checkUnsavedChanges = (unsavedChanges) => {
+    setHasUnsavedChanges(unsavedChanges);
   };
-  
+
+  const onClose = () => {
+    setIsDetailsModalOpen(false);
+    //setSelectedUserDetails(null);
+  };
+
+  const handleClose = () => {
+    if (hasUnsavedChanges) {
+      setShowConfirmation(true);
+    } else {
+      setShowConfirmation(false);
+      onClose();
+    }
+  };
+
+  const handleConfirmClose = async () => {
+    handleSave(
+      companyName,
+      userDetails,
+      userDetailsCopyModel,
+      setUsers,
+      setSuccessMessage,
+      setUserDetails
+    );
+    // Handle the save operation here
+    // Once saved, set the state to indicate no unsaved changes
+    setHasUnsavedChanges(false);
+    setShowConfirmation(false); // Close the confirmation dialog
+    onClose(); // Close the modal
+  };
+
+  const handleCancelClose = () => {
+    setShowConfirmation(false); // Close the confirmation dialog
+    onClose();
+  };
+
   const handleOptionChange = (option) => {
     setSelectedOption(option);
   };
@@ -188,7 +222,20 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
   const renderSelectedTable = () => {
     switch (selectedOption) {
       case "general":
-        return <GeneralAccountingTable userDetails={userDetails} />;
+        return (
+          <GeneralAccountingTable
+            userDetails={userDetails}
+            setUserDetails={setUserDetails}
+            setUsers={setUsers}
+            companyName={companyName}
+            checkUnsavedChanges={checkUnsavedChanges}
+            successMessage={successMessage}
+            setSuccessMessage={setSuccessMessage}
+            userDetailsCopyModel={userDetailsCopyModel}
+            setUserDetailsCopyModel={setUserDetailsCopyModel}
+           // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
+          />
+        );
       case "stock-inventory":
         return <StockInventoryTable userDetails={userDetails} />;
       // Add more cases for each option
@@ -198,7 +245,7 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={handleClose}>
       <Box
         sx={{
           ...modalStyle,
@@ -207,16 +254,15 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
         }}
       >
         <Box>
-        <IconButton
-          edge="end"
-          color="inherit"
-          onClick={onClose}
-          sx={iconButtonStyle}
-       
-        >
-          <CloseIcon />
+          <IconButton
+            edge="end"
+            color="inherit"
+            onClick={handleClose}
+            sx={iconButtonStyle}
+          >
+            <CloseIcon />
           </IconButton>
-          </Box>
+        </Box>
         {/* Drawer Container */}
         {window.innerWidth <= 650 ? (
           <Box sx={drawerContainerStyle}>
@@ -341,7 +387,14 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
                         : colors.grey[100],
                   }}
                 >
-                  <ListItemText primary="Accounting" />
+                  <ListItemText
+                    primary="Accounting"
+                    sx={{
+                      "& .MuiTypography-root": {
+                        variant: "h2", // or "h6" or any other valid variant
+                      },
+                    }}
+                  />
                 </ListItem>
                 <ListItem
                   button
@@ -410,12 +463,16 @@ const UserDetailsModal = ({ isOpen, onClose, userDetails }) => {
         <Box
           sx={{
             flexGrow: 1, // Allow the table to grow and take available space
-            width: window.innerWidth < 650 ? "70%" : "100%",
+            width: window.innerWidth < 650 ? "60%" : "100%",
           }}
         >
           {renderSelectedTable()}
+          <ConfirmationDialog
+            open={showConfirmation} // Controls whether the dialog is open or not
+            onCancel={handleCancelClose} // Function to handle dialog closure (cancel)
+            onConfirm={handleConfirmClose} // Function to handle confirmation
+          />
         </Box>
-
         {/* Other modal content */}
       </Box>
     </Modal>
