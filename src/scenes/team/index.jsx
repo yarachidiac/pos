@@ -9,6 +9,7 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
+import AddUserDialog from "./AddUserDialog";
 
 const Team = ({companyName}) => {
   const theme = useTheme();
@@ -21,6 +22,9 @@ const Team = ({companyName}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [successMess, setSuccessMess] = useState();
+
   //const [selectedUserDetails, setSelectedUserDetails] = useState(null);
   // const [userDetailsCopy, setUserDetailsCopy] = useState({
   //   ...selectedUserDetails,
@@ -37,7 +41,7 @@ const Team = ({companyName}) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.133:8000/users/${companyName}`)
+      fetch(`http://192.168.16.128:8000/users/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -50,7 +54,14 @@ const Team = ({companyName}) => {
         })
         .catch((error) => console.error("Error fetching users", error));
     }
-  }, []);
+  }, [userDetails]);
+
+  // useEffect(() => {
+  //   // Check if userDetails is truthy and open the modal
+  //   if (userDetails) {
+  //     setIsDetailsModalOpen(true);
+  //   }
+  // }, [userDetails]);
 
   const handleRowClick = (params) => {
     // Open the details modal and set the selected user details
@@ -151,6 +162,61 @@ const Team = ({companyName}) => {
     // },
   ];
 
+  const handleAddUser = () => {
+    // Open the modal when "Add" button is clicked
+    setIsDialogOpen(true);
+  };
+
+  const handleUserDetailsChange = async (newUserDetails) => {
+    try {
+      console.log("newUserDetailssssssssss", newUserDetails.name);
+      const apiUrl = `http://192.168.16.128:8000/addusers/${companyName}/${newUserDetails.name}`;
+
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUserDetails),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      setSuccessMess(responseData.message);
+      setTimeout(() => {
+        setSuccessMess("");
+      }, 2000);
+      console.log("Response from the server:", responseData);
+
+      // Fetch the details of the newly added user
+      const userDetailsResponse = await fetch(
+        `http://192.168.16.128:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+      );
+
+      if (!userDetailsResponse.ok) {
+        throw new Error(`HTTP error! Status: ${userDetailsResponse.status}`);
+      }
+
+      const userDetailsData = await userDetailsResponse.json();
+
+      // Set the userDetails state with the details of the newly added user
+      setUserDetails(userDetailsData);
+      // Open the details modal
+      setIsDetailsModalOpen(true);
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  } ;
+
+   const handleCloseDialog = () => {
+     // Close the dialog when needed
+     setIsDialogOpen(false);
+   };
+
+
   return (
     <Box
       sx={{
@@ -158,15 +224,27 @@ const Team = ({companyName}) => {
         width: "100%",
       }}
     >
-      <Box justifyContent="space-between" display="flex" height="20%"  alignItems= 'center'>
-        <Box sx={{width:"50%", m: "2%"}}>
+      <Box
+        justifyContent="space-between"
+        display="flex"
+        height="20%"
+        alignItems="center"
+      >
+        <Box sx={{ width: "50%", m: "2%" }}>
           <Header title="Team" subtitle="Managing the Team Members" />
         </Box>
-        <Box sx={{ width: "10%", marginLeft:"auto", justifyContent: "flex-end", alignContent:"center"}}>
+        <Box
+          sx={{
+            width: "10%",
+            marginLeft: "auto",
+            justifyContent: "flex-end",
+            alignContent: "center",
+          }}
+        >
           <Button
             variant="contained"
-            style={{ background: colors.greenAccent[500] ,}}
-            onClick={() => {}}
+            style={{ background: colors.greenAccent[500] }}
+            onClick={handleAddUser}
           >
             Add
           </Button>
@@ -240,6 +318,12 @@ const Team = ({companyName}) => {
           pagination // Add this line to enable pagination
         />
       </Box>
+      <AddUserDialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        onAddUser={handleUserDetailsChange}
+        successMess={successMess}
+      />
     </Box>
   );
 };

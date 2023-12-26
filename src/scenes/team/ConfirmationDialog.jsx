@@ -11,11 +11,11 @@ const ConfirmationDialog = ({ open, onCancel, onConfirm }) => {
       <DialogTitle>Confirmation</DialogTitle>
       <DialogContent>Do you want to save changes before closing?</DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} color="primary">
-          No
-        </Button>
         <Button onClick={onConfirm} color="primary" autoFocus>
           Yes
+        </Button>
+        <Button onClick={onCancel} color="primary">
+          No
         </Button>
       </DialogActions>
     </Dialog>

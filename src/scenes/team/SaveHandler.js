@@ -12,7 +12,7 @@ const handleSave = async (
 
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
-      `http://192.168.16.133:8000/users/${companyName}/${userDetails.id}`,
+      `http://192.168.16.128:8000/users/${companyName}/${userDetails.id}`,
       {
         method: "POST",
         headers: {
@@ -25,24 +25,28 @@ const handleSave = async (
 
     if (saveResponse.ok) {
       console.log("Save response:", responseData);
-      setSuccessMessage(responseData.message);
-
+      
       // If save is successful, update userDetails to match userDetailsCopy
       setUserDetails(userDetailsCopy);
+      setSuccessMessage(responseData.message);
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 2000);
 
-      // If save is successful, fetch the updated users
-      const fetchResponse = await fetch(
-        `http://192.168.16.133:8000/users/${companyName}`
-      );
-      const updatedUsers = await fetchResponse.json();
 
-      console.log("Updated users:", updatedUsers);
+      // // If save is successful, fetch the updated users
+      // const fetchResponse = await fetch(
+      //   `http://192.168.16.128:8000/users/${companyName}`
+      // );
+      // const updatedUsers = await fetchResponse.json();
 
-      // Update the users state in the Team component
-      setUsers(updatedUsers);
-        console.log("bl saveeeeeeeeeeee userDetails", userDetails);
-        console.log("bl saveeeeeeeeeeeeeeeeeeee userDetailCopyyyyyyyyyyyyy", userDetailsCopy)
-      console.log("Save successful");
+      // console.log("Updated users:", updatedUsers);
+
+      // // Update the users state in the Team component
+      // setUsers(updatedUsers);
+      //   console.log("bl saveeeeeeeeeeee userDetails", userDetails);
+      //   console.log("bl saveeeeeeeeeeeeeeeeeeee userDetailCopyyyyyyyyyyyyy", userDetailsCopy)
+      // console.log("Save successful");
     } else {
       console.error("Save failed");
     }

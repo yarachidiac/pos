@@ -120,8 +120,8 @@ const Company = ({ companyName }) => {
               return (
                 <General
                   companyName={companyName}
-                  companyDetails={companyDetails}
-                  setCompanyDetails={setCompanyDetails}
+                  // companyDetails={companyDetails}
+                  // setCompanyDetails={setCompanyDetails}
                 />
               );
         case "Accounting-Options":
@@ -142,26 +142,26 @@ const Company = ({ companyName }) => {
     };
 
 
-    useEffect(() => {
-      const fetchCompanyDetails = async () => {
-        try {
-          const response = await fetch(
-            `http://192.168.16.133:8000/company/${companyName}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setCompanyDetails(data);
-          } else {
-            console.error("Failed to fetch company details");
-          }
-        } catch (error) {
-          console.error("Error during fetch:", error);
-        }
-      };
+    // useEffect(() => {
+    //   const fetchCompanyDetails = async () => {
+    //     try {
+    //       const response = await fetch(
+    //         `http://192.168.16.133:8000/company/${companyName}`
+    //       );
+    //       if (response.ok) {
+    //         const data = await response.json();
+    //         setCompanyDetails(data);
+    //       } else {
+    //         console.error("Failed to fetch company details");
+    //       }
+    //     } catch (error) {
+    //       console.error("Error during fetch:", error);
+    //     }
+    //   };
 
-      // Fetch company details when the component mounts
-      fetchCompanyDetails();
-    }, [companyName]);
+    //   // Fetch company details when the component mounts
+    //   fetchCompanyDetails();
+    // }, [companyName]);
 
 
   return (

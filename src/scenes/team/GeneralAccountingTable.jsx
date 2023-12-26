@@ -122,37 +122,96 @@ console.log("fromm generallllllllllllllllllll", userDetails);
   // }, [userDetailsCopy]);
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
   const rows = Object.entries(userDetailsCopy).map(([key, value], index) => (
-    <TableRow key={key}>
-      <TableCell style={{ minWidth: "80px" }}>
+    <TableRow key={key} style={{ width: "100%" }} >
+      <TableCell
+        style={{
+          //minWidth: "80px",
+          width: "30%",
+          //borderColor: `${colors.greenAccent[400]}`,
+        }}
+      >
         <Typography variant="h4">{key}:</Typography>
       </TableCell>
       <TableCell
-        style={{ minWidth: "80px" }}
-        onClick={() => handleCellClick(index)}
+        style={{
+          //minWidth: "80px",
+          width: "70%",
+          //borderColor: `${colors.greenAccent[400]}`, // Set border color to red
+        }}
       >
-        {editableCells.includes(index) ? (
-          <TextField
-            value={value}
-            onChange={(e) => handleValueUpdate(key, e.target.value)}
-            autoFocus
-            onBlur={() =>
-              setEditableCells((prev) => prev.filter((i) => i !== index))
-            } // Exit edit mode when focus is lost
-          />
-        ) : (
-          <Typography variant="h4">{value}</Typography>
-        )}
+        <div
+          style={{
+            position: "relative",
+            height: "40px", // Adjust the height as needed
+            width: "70%", // Ensure the frame takes the full width of the TableCell
+          }}
+        >
+          {editableCells.includes(index) ? (
+            <>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  right: "0",
+                  bottom: "0",
+                  border: `2px solid ${colors.greenAccent[400]}`, // Set border color to transparent
+                  borderRadius: "4px",
+                  pointerEvents: "none", // Allow click-through to the TextField
+                }}
+              />
+              <TextField
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                autoFocus
+                onBlur={() =>
+                  setEditableCells((prev) => prev.filter((i) => i !== index))
+                }
+                fullWidth
+                variant="standard"
+                InputProps={{
+                  style: {
+                    height: "100%",
+                    boxSizing: "border-box",
+                    border: "1px solid #ccc", // Add border style to the TextField
+                    borderRadius: "4px", // Add border radius to the TextField
+                    padding: "4px", // Add padding to the TextField
+                  },
+                }}
+              />
+            </>
+          ) : (
+            <Typography
+              variant="h4"
+              style={{
+                cursor: "pointer",
+                padding: "8px",
+                borderRadius: "4px",
+                border: `1px solid ${colors.greenAccent[400]}`,
+                display: "inline-block",
+                height: "100%",
+                boxSizing: "border-box",
+                width: "100%"
+              }}
+              onClick={() => handleCellClick(index)}
+            >
+              {value}
+            </Typography>
+          )}
+        </div>
       </TableCell>
     </TableRow>
   ));
 
+
   return (
-    <Box>
-      <TableContainer style={{ maxHeight: 400, overflowY: "auto" }}>
+    <Box style={{ height: "100%" }}>
+      <TableContainer style={{height:"90%", overflowY: "auto" }}>
         <Table>
           <TableBody>{rows}</TableBody>
         </Table>
       </TableContainer>
+
       {successMessage ? (
         <Box
           sx={{

@@ -20,6 +20,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import GeneralAccountingTable from "./GeneralAccountingTable";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { handleSave } from "./SaveHandler";
+import { margin } from "@mui/system";
 
 const StockInventoryTable = ({ userDetails }) => (
   <Box>
@@ -84,10 +85,10 @@ const UserDetailsModal = ({
     pr: 2, // Set right padding to 3
     pb: 2, // Set bottom padding to 3
     pl: 2, // Set left padding to 3
-    width: "90%",
-    maxWidth: 600,
-    minHeight: 300, // Set a minimum height for smaller screens
-    maxHeight: "90%", // Set a maximum height for smaller screens
+    //width: "100%",
+    minWidth: "90%",
+    minHeight: "90%", // Set a minimum height for smaller screens
+    //maxHeight: "90%", // Set a maximum height for smaller screens
     display: "flex",
     flexDirection: window.innerWidth < 650 ? "row" : "column",
   };
@@ -99,12 +100,12 @@ const UserDetailsModal = ({
 
   const largerModalStyle = {
     width: "90%",
-    maxWidth: 800,
+    //maxWidth: 800,
   };
 
   const heightModalStyle = {
     width: "100%",
-    minHeight: 500, // Set the fixed height for smaller screens
+    minHeight: "60%", // Set the fixed height for smaller screens
     maxHeight: "80%", // Adjust the maximum height as needed
   };
 
@@ -128,6 +129,7 @@ const UserDetailsModal = ({
   const appBarStyle = {
     bgcolor: colors.grey[600],
     borderRadius: "4px 4px 4px 4px",
+    maxHeight: "30%"
   };
 
   const toolbarStyle = {
@@ -138,10 +140,15 @@ const UserDetailsModal = ({
       fontSize: "1.1rem",
       fontWeight: "600",
     },
+   
   };
 
   const appbarContentStyle = {
     display: "flex",
+    // pr: "0px",
+    // pl: "0px",
+    // marginLeft: "0px",
+    // marginRight: "0px",
     //gap: theme.spacing(1), // Adjust the gap between items
     //overflowX: "auto", // Enable horizontal scrolling
   };
@@ -182,6 +189,7 @@ const UserDetailsModal = ({
 
   const onClose = () => {
     setIsDetailsModalOpen(false);
+    setSelectedOption("general");
     //setSelectedUserDetails(null);
   };
 
@@ -253,15 +261,22 @@ const UserDetailsModal = ({
           ...modalContainerStyle,
         }}
       >
-        <Box>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleClose}
-            sx={iconButtonStyle}
-          >
-            <CloseIcon />
-          </IconButton>
+        <Box display="flex" justifyContent="space-between">
+          <Box sx={{ p: "2%" }}>
+            <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
+              {userDetails.username}
+            </Typography>
+          </Box>
+          <Box>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleClose}
+              sx={iconButtonStyle}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
         </Box>
         {/* Drawer Container */}
         {window.innerWidth <= 650 ? (
@@ -373,6 +388,7 @@ const UserDetailsModal = ({
                       selectedOption === "general"
                         ? colors.greenAccent[400]
                         : colors.grey[100],
+                    borderRight: `1px solid ${colors.greenAccent[400]}`,
                   }}
                 >
                   <ListItemText primary="General" />
@@ -385,6 +401,7 @@ const UserDetailsModal = ({
                       selectedOption === "accounting"
                         ? colors.greenAccent[400]
                         : colors.grey[100],
+                    borderRight: `1px solid ${colors.greenAccent[400]}`,
                   }}
                 >
                   <ListItemText
@@ -404,6 +421,7 @@ const UserDetailsModal = ({
                       selectedOption === "stock-inventory"
                         ? colors.greenAccent[400]
                         : colors.grey[100],
+                    borderRight: `1px solid ${colors.greenAccent[400]}`,
                   }}
                 >
                   <ListItemText primary="Stock Inventory" />
@@ -416,6 +434,7 @@ const UserDetailsModal = ({
                       selectedOption === "invoices"
                         ? colors.greenAccent[400]
                         : colors.grey[100],
+                    borderRight: `1px solid ${colors.greenAccent[400]}`,
                   }}
                 >
                   <ListItemText primary="Invoices & Types Conditions" />
@@ -428,6 +447,7 @@ const UserDetailsModal = ({
                       selectedOption === "sales"
                         ? colors.greenAccent[400]
                         : colors.grey[100],
+                    borderRight: `1px solid ${colors.greenAccent[400]}`,
                   }}
                 >
                   <ListItemText primary="Sales Invoices Conditions" />
@@ -440,6 +460,7 @@ const UserDetailsModal = ({
                       selectedOption === "tables"
                         ? colors.greenAccent[400]
                         : colors.grey[100],
+                    borderRight: `1px solid ${colors.greenAccent[400]}`,
                   }}
                 >
                   <ListItemText primary="Tables-Dine In & Beauty" />
@@ -464,6 +485,9 @@ const UserDetailsModal = ({
           sx={{
             flexGrow: 1, // Allow the table to grow and take available space
             width: window.innerWidth < 650 ? "60%" : "100%",
+            maxHeight: "60%",
+            height: "500px",
+            //overflowY: "auto",
           }}
         >
           {renderSelectedTable()}

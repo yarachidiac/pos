@@ -1,113 +1,172 @@
-import React, {useState, useEffect} from "react";
-import EditableTableCell from "../team/EditableTableCell";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import { Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import TableContainer from "@mui/material/TableContainer";
+import TextField from "@mui/material/TextField";
+import { useTheme } from "@mui/material/styles";
+import { tokens } from "../../theme";
 
-
-const General = ({companyName, companyDetails, setCompanyDetails}) => {
+const General = ({ companyName }) => {
   const [editableCells, setEditableCells] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
-  useEffect(() => {
-    if (isEditing) {
-      console.log("Updated companyDetails:", companyDetails);
-      handleSave();
-      setIsEditing(false); // Reset edit mode after save
-    } 
-  }, [companyDetails]);
+  const [companyDetails, setCompanyDetails] = useState(null);
+  const [companyDetailsCopy, setCompanyDetailsCopy] = useState(null);
 
   const handleEdit = (index) => {
     setEditableCells((prev) => [...prev, index]);
-    setIsEditing(true); // Set edit mode when editing starts
   };
 
-  const handleCancel = () => {
-    setEditableCells([]);
-    setIsEditing(false); // Reset edit mode when canceling
-  };
   const handleValueUpdate = (field, updatedValue) => {
-    console.log("updateddd valueeeeeeeeeeeeeee", updatedValue);
-
-    setCompanyDetails((prev) => ({
+    setCompanyDetailsCopy((prev) => ({
       ...prev,
       [field]: updatedValue,
     }));
   };
 
-  const handleSave = async () => {
-    // try {
-    //   // Prepare the data to be sent in the request
-    //   const data = userDetails;
-    //   console.log("updateddddddddddddddddddddddd", data);
-    //   // Send a POST request to the endpoint
-    //   const response = await fetch(
-    //     `http://192.168.16.109:8000/users/${companyName}/${userDetails.id}`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(data),
-    //     }
-    //   );
-    //   // Check if the request was successful (status code 2xx)
-    //   if (response.ok) {
-    //     // If save is successful, fetch the updated users
-    //     const response = await fetch(
-    //       `http://192.168.16.109:8000/users/${companyName}`
-    //     );
-    //     const updatedUsers = await response.json();
-    //     // Update the users state in the Team component
-    //     setUsers(updatedUsers);
-    //     // Update the userDetails state in the GeneralAccountingTable component
-    //     setUserDetails(data);
-    //     console.log("userrrrrrrrrrr detailssssssssssssssssssssss", userDetails);
-    //     // Handle success, e.g., update state or perform any additional actions
-    //     console.log("Save successful");
-    //   } else {
-    //     // Handle errors, e.g., display an error message
-    //     console.error("Save failed");
-    //   }
-    // } catch (error) {
-    //   console.error("Error during save:", error);
-    // } finally {
-    //   // Handle any cleanup or additional actions
-    //   setEditableCells([]);
-    // }
+  useEffect(() => {
+    const fetchCompanyDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://192.168.16.128:8000/company/${companyName}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setCompanyDetails(data);
+        } else {
+          console.error("Failed to fetch company details");
+        }
+      } catch (error) {
+        console.error("Error during fetch:", error);
+      }
+    };
+
+    // Fetch company details when the component mounts
+    fetchCompanyDetails();
+  }, []);
+
+
+  console.log("companyy detailssssssssss", companyDetails);
+  const handleCellClick = (index) => {
+    if (!editableCells.includes(index)) {
+      // Enter edit mode when the cell is clicked
+      handleEdit(index);
+    }
   };
 
-   const rows = companyDetails
-     ? Object.entries(companyDetails).map(([key, value], index) => {
-         console.log("valueeeeeeeeeeeeeeeeee", value); // Log the value
+  // Callback function to check for unsaved changes
+  const checkUnsavedChangesCallback = () => {
+    // Compare userDetailsCopy and userDetails for changes
+    return JSON.stringify(companyDetails) !== JSON.stringify(companyDetails);
+  };
 
-         return (
-           <TableRow key={key}>
-             <TableCell style={{ minWidth: "80px" }}>
-               <Typography variant="h4">{key}:</Typography>
-             </TableCell>
-             {/* <EditableTableCell
-               value={value}
-               isEditing={editableCells.includes(index)}
-               onEdit={() => handleEdit(index)}
-               onCancel={handleCancel}
-               onSave={handleSave}
-               onUpdate={(updatedValue) => handleValueUpdate(key, updatedValue)}
-             /> */}
-           </TableRow>
-         );
-       })
-     : null;
+  // useEffect(() => {
+  //   // Set the callback function in the parent component
+  //   checkUnsavedChanges(checkUnsavedChangesCallback);
+  //   setUserDetailsCopyModel(userDetailsCopy); // Corrected line
+  // }, [userDetailsCopy, userDetails, checkUnsavedChanges]);
 
-  
+  // Trigger handleSave when userDetailsCopy changes
+  // useEffect(() => {
+  //   handleSave();
+  // }, [userDetailsCopy]);
+  console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", companyDetails);
+  const rows =
+    companyDetails && companyDetails.length > 0
+      ? Object.entries(companyDetails[0]).map(([key, value], index) => (
+          <TableRow key={key}>
+            <TableCell style={{ minWidth: "80px" }}>
+              <Typography variant="h4">{key}:</Typography>
+            </TableCell>
+            <TableCell
+              style={{ minWidth: "80px" }}
+              onClick={() => handleCellClick(index)}
+            >
+              {editableCells.includes(index) ? (
+                <TextField
+                  value={value}
+                  onChange={(e) => handleValueUpdate(key, e.target.value)}
+                  autoFocus
+                  onBlur={() =>
+                    setEditableCells((prev) => prev.filter((i) => i !== index))
+                  } // Exit edit mode when focus is lost
+                />
+              ) : (
+                <Typography variant="h4">{value}</Typography>
+              )}
+            </TableCell>
+          </TableRow>
+        ))
+      : null;
+
   return (
     <Box>
-      <Table>
-        <TableBody>{rows}</TableBody>
-      </Table>
+      <TableContainer style={{ maxHeight: 400, overflowY: "auto" }}>
+        <Table>
+          <TableBody>{rows}</TableBody>
+        </Table>
+      </TableContainer>
+      {successMessage ? (
+        <Box
+          sx={{
+            minHeight: "10%",
+            width: "auto",
+            justifyContent: "space-between",
+            display: "flex",
+            alignItems: "center", // Add this line to center vertically
+          }}
+        >
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
+              {successMessage}
+            </Typography>
+          </Box>
+          <Box sx={{ minWidth: "5%" }}>
+            <Button
+              variant="contained"
+              style={{ background: colors.greenAccent[500] }}
+              // onClick={() =>
+              //   handleSave(
+              //     companyName,
+              //     userDetails,
+              //     userDetailsCopy,
+              //     setUsers,
+              //     setSuccessMessage,
+              //     setUserDetails
+              //   )
+              // }
+            >
+              Save
+            </Button>
+          </Box>
+        </Box>
+      ) : (
+        <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
+          <Button
+            variant="contained"
+            style={{ background: colors.greenAccent[500] }}
+            // onClick={() =>
+            //   handleSave(
+            //     companyName,
+            //     userDetails,
+            //     userDetailsCopy,
+            //     setUsers,
+            //     setSuccessMessage,
+            //     setUserDetails
+            //   )
+            // }
+          >
+            Save
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
