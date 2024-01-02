@@ -57,14 +57,16 @@ const AddUserDialog = ({
 
       <DialogActions>
         <Button
+          variant="h6"
           onClick={handleCancel}
-          style={{ color: colors.greenAccent[400] }}
+          style={{ background: colors.greenAccent[700], fontSize: "0.8rem" }}
         >
           Cancel
         </Button>
         <Button
+          variant="h6"
           onClick={handleAddUser}
-          style={{ color: colors.greenAccent[400] }}
+          style={{ background: colors.greenAccent[700], fontSize: "0.8rem" }}
         >
           Create
         </Button>

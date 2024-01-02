@@ -11,7 +11,10 @@ import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { handleSave } from "./SaveHandler";
-
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import { textAlign } from "@mui/system";
 
 const GeneralAccountingTable = ({
   userDetails,
@@ -28,13 +31,18 @@ const GeneralAccountingTable = ({
 }) => {
   const [editableCells, setEditableCells] = useState([]);
   //const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-console.log("fromm generallllllllllllllllllll", userDetails);
+  console.log("fromm generallllllllllllllllllll", userDetails);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const [userDetailsCopy, setUserDetailsCopy] = useState({ ...userDetails });
   //const [isEditing, setIsEditing] = useState(false);
+
+  
+  
+
+
 
   const handleEdit = (index) => {
     setEditableCells((prev) => [...prev, index]);
@@ -45,7 +53,6 @@ console.log("fromm generallllllllllllllllllll", userDetails);
       ...prev,
       [field]: updatedValue,
     }));
-    
   };
 
   //   const handleSave = async () => {
@@ -109,12 +116,7 @@ console.log("fromm generallllllllllllllllllll", userDetails);
     // Set the callback function in the parent component
     checkUnsavedChanges(checkUnsavedChangesCallback);
     setUserDetailsCopyModel(userDetailsCopy); // Corrected line
-  }, [
-    userDetailsCopy,
-    userDetails,
-    checkUnsavedChanges,
-    
-  ]);
+  }, [userDetailsCopy, userDetails, checkUnsavedChanges]);
 
   // Trigger handleSave when userDetailsCopy changes
   // useEffect(() => {
@@ -122,93 +124,177 @@ console.log("fromm generallllllllllllllllllll", userDetails);
   // }, [userDetailsCopy]);
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
   const rows = Object.entries(userDetailsCopy).map(([key, value], index) => (
-    <TableRow key={key} style={{ width: "100%" }} >
+    <TableRow
+      key={key}
+      style={{
+        width: window.innerWidth * 0.28,
+        display: "flex",
+        flexDirection: "row",
+        height: window.innerHeight * 0.1,
+        //padding: '8px',
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+        // justifyContent: "space-between",
+        // justifyItems: "space-between",
+        // alignItems: "space-between"
+      }}
+    >
       <TableCell
         style={{
           //minWidth: "80px",
           width: "30%",
-          //borderColor: `${colors.greenAccent[400]}`,
+          height: "100%",
+          whiteSpace: "pre-wrap", // Allow text wrapping
+          overflowWrap: "normal", // Do not break words
+          //overflowWrap: "break-word",
         }}
       >
-        <Typography variant="h4">{key}:</Typography>
+        <Box
+          sx={{
+            maxHeight: "100%",
+            width: "100%",
+            alignItems: "start", // Align text to the start (left)
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h4">{key}</Typography>
+        </Box>
       </TableCell>
       <TableCell
         style={{
           //minWidth: "80px",
           width: "70%",
+          height: "100%",
           //borderColor: `${colors.greenAccent[400]}`, // Set border color to red
         }}
       >
         <div
           style={{
             position: "relative",
-            height: "40px", // Adjust the height as needed
-            width: "70%", // Ensure the frame takes the full width of the TableCell
+            height: "100%", // Adjust the height as needed
+            width: "100%", // Ensure the frame takes the full width of the TableCell
           }}
         >
           {editableCells.includes(index) ? (
             <>
               <div
                 style={{
+                  width: "100%",
                   position: "absolute",
                   top: "0",
                   left: "0",
                   right: "0",
                   bottom: "0",
-                  border: `2px solid ${colors.greenAccent[400]}`, // Set border color to transparent
+                  border: `2px solid ${colors.greenAccent[400]}`,
                   borderRadius: "4px",
-                  pointerEvents: "none", // Allow click-through to the TextField
+                  pointerEvents: "none",
                 }}
               />
-              <TextField
-                value={value}
-                onChange={(e) => handleValueUpdate(key, e.target.value)}
-                autoFocus
-                onBlur={() =>
-                  setEditableCells((prev) => prev.filter((i) => i !== index))
-                }
-                fullWidth
-                variant="standard"
-                InputProps={{
-                  style: {
-                    height: "100%",
-                    boxSizing: "border-box",
-                    border: "1px solid #ccc", // Add border style to the TextField
-                    borderRadius: "4px", // Add border radius to the TextField
-                    padding: "4px", // Add padding to the TextField
-                  },
-                }}
-              />
+              {key === "username" ||
+              key === "password" ||
+              key === "email" ||
+              key === "id" ? (
+                <TextField
+                  value={value}
+                  onChange={(e) => handleValueUpdate(key, e.target.value)}
+                  autoFocus
+                  onBlur={() =>
+                    setEditableCells((prev) => prev.filter((i) => i !== index))
+                  }
+                  fullWidth
+                  variant="standard"
+                  InputProps={{
+                    style: {
+                      height: "100%",
+                      boxSizing: "border-box",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      padding: "4px",
+                    },
+                  }}
+                />
+              ) : (
+                <Select
+                  value={value}
+                  onChange={(e) => handleValueUpdate(key, e.target.value)}
+                  open={editableCells.includes(index)} // Set open to true when the cell is in edit mode
+                  onClose={() =>
+                    setEditableCells((prev) => prev.filter((i) => i !== index))
+                  }
+                  fullWidth
+                  style={{ textAlign: "center" }}
+                  variant="standard"
+                  // inputProps={{
+                  //   style: {
+                  //     height: "100%",
+                  //     boxSizing: "border-box",
+                  //     border: `1px solid ${colors.greenAccent[600]}`,
+                  //     borderRadius: "4px",
+                  //     textAlign: "center",
+                  //   },
+                  // }}
+                >
+                  {/* Add your options here */}
+                  <MenuItem value="Y" style={{ justifyContent: "center" }}>
+                    Y
+                  </MenuItem>
+                  <MenuItem value="N" style={{ justifyContent: "center" }}>
+                    N
+                  </MenuItem>
+                  {/* Add more options as needed */}
+                </Select>
+              )}
             </>
           ) : (
-            <Typography
-              variant="h4"
+            <div
               style={{
                 cursor: "pointer",
-                padding: "8px",
+                alignItems: "center",
                 borderRadius: "4px",
                 border: `1px solid ${colors.greenAccent[400]}`,
-                display: "inline-block",
+                display: ["username", "password", "email", "id"].includes(key)
+                  ? "inline-block"
+                  : "flex",
                 height: "100%",
                 boxSizing: "border-box",
-                width: "100%"
+                width: "100%",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                textAlign: ["username", "password", "email", "id"].includes(key)
+                  ? "left"
+                  : "center",
+                padding: ["username", "password", "email", "id"].includes(key)
+                  ? "8px" // Adjust the padding for specific keys
+                    : "0px",
+
+                justifyContent: "center",
               }}
               onClick={() => handleCellClick(index)}
             >
-              {value}
-            </Typography>
+              <Typography variant="h4">{value}</Typography>
+            </div>
           )}
         </div>
       </TableCell>
     </TableRow>
   ));
 
-
   return (
     <Box style={{ height: "100%" }}>
-      <TableContainer style={{height:"90%", overflowY: "auto" }}>
+      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
-          <TableBody>{rows}</TableBody>
+          <TableBody>
+            <Box
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
+                gap: "5px",
+              }}
+            >
+              {rows}
+            </Box>
+          </TableBody>
         </Table>
       </TableContainer>
 
@@ -227,10 +313,39 @@ console.log("fromm generallllllllllllllllllll", userDetails);
               {successMessage}
             </Typography>
           </Box>
-          <Box sx={{ minWidth: "5%" }}>
+          {checkUnsavedChangesCallback() && (
+            <Box sx={{ minWidth: "5%" }}>
+              <Button
+                variant="h6"
+                style={{
+                  background: colors.greenAccent[600],
+                  fontSize: "1.1rem",
+                }}
+                onClick={() =>
+                  handleSave(
+                    companyName,
+                    userDetails,
+                    userDetailsCopy,
+                    setUsers,
+                    setSuccessMessage,
+                    setUserDetails
+                  )
+                }
+              >
+                Save
+              </Button>
+            </Box>
+          )}
+        </Box>
+      ) : (
+        checkUnsavedChangesCallback() && (
+          <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
             <Button
-              variant="contained"
-              style={{ background: colors.greenAccent[500] }}
+              variant="h6"
+              style={{
+                background: colors.greenAccent[600],
+                fontSize: "1.1rem",
+              }}
               onClick={() =>
                 handleSave(
                   companyName,
@@ -245,26 +360,7 @@ console.log("fromm generallllllllllllllllllll", userDetails);
               Save
             </Button>
           </Box>
-        </Box>
-      ) : (
-        <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
-          <Button
-            variant="contained"
-            style={{ background: colors.greenAccent[500] }}
-            onClick={() =>
-              handleSave(
-                companyName,
-                userDetails,
-                userDetailsCopy,
-                setUsers,
-                setSuccessMessage,
-                setUserDetails
-              )
-            }
-          >
-            Save
-          </Button>
-        </Box>
+        )
       )}
     </Box>
   );
