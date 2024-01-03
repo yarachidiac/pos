@@ -19,6 +19,7 @@ import SummarizeOutlinedIcon from "@mui/icons-material/SummarizeOutlined";
 import StoreIcon from "@mui/icons-material/Store";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -40,32 +41,67 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const SubItem = ({ title, icon, children }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+const SubItem = ({
+  title,
+  icon,
+  children,
+  isCollapsed,
+  handleSubItemClick,
+}) => {
+  const handleItemClick = () => {
+    // Call the handler to open the sidebar and handle the SubItem click
+    handleSubItemClick(title);
+  };
+const theme = useTheme();
+const colors = tokens(theme.palette.mode);
   return (
     <SubMenu
+      onClick={handleItemClick}
       title={
-        <Box >
+        <Box>
           <Typography>{title}</Typography>
         </Box>
       }
       icon={icon}
       style={{
         color: colors.grey[100],
+        
       }}
+      isOpen ={false}
     >
       {children}
+      <style>
+        {`
+          .pro-arrow-wrapper {
+            ${isCollapsed ? 'display: none;' : ''}
+          }
+        `}
+      </style>
+
     </SubMenu>
   );
 };
+
+
 const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   //const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+ 
   console.log("isMobile from sidebar:", isMobile);
   console.log("isCollapsed from sidebar:", isCollapsed);
+  
+  const handleSubItemClick = (menuItem) => {
+    if (isCollapsed) {
+      setIsCollapsed(false); // Open the sidebar
+    }
+
+    // Handle the SubItem click as needed
+    setSelected(menuItem);
+    
+  };
+  
 
   // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -109,6 +145,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
         },
         "& .react-slidedown.pro-inner-list-item": {
           backgroundColor: "transparent !important",
+          display: isCollapsed ? "none" : "",
           // Add other styles as needed
         },
         "& .pro-inner-item:hover": {
@@ -124,168 +161,215 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="circle">
           <MenuItem
-          // onClick={handleMenuToggle}
-          // icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-          // style={{
-          //   margin: "10px 0 20px 0",
-          // }}
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            icon={
+              isCollapsed && (
+                <MenuOutlinedIcon style={{ color: colors.grey[100] }} />
+              )
+            }
           >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
-                <Typography variant="h3" color={colors.grey[100]}>
-                  ADMIN
-                </Typography>
-                {isMobile && (
-                  <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                    <MenuOutlinedIcon />
-                  </IconButton>
-                )}
-              </Box>
-            )}
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginLeft: "15px",
+              }}
+            >
+              {!isCollapsed && (
+                <>
+                  <Box>
+                    <Typography variant="h3" color={colors.grey[100]}>
+                      ADMIN
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      "& .react-slidedown.pro-inner-list-item": {
+                      },
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => {
+                        setIsCollapsed(!isCollapsed);
+                      }}
+                    >
+                      <MenuOutlinedIcon />
+                    </IconButton>
+                  </Box>
+                </>
+              )}
+            </Box>
           </MenuItem>
-          {!isCollapsed && (
-            <Box>
+
+          <Box>
+            <Item
+              icon={<HomeOutlinedIcon />}
+              title="Dahboard"
+              to="/"
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              icon={<PointOfSaleOutlinedIcon />}
+              title="PoS"
+              to="/PoS"
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <SubItem
+              title="Inventory Management"
+              icon={<Inventory2OutlinedIcon />}
+              isCollapsed={isCollapsed}
+              handleSubItemClick={handleSubItemClick}
+            >
               <Item
-                icon={<HomeOutlinedIcon />}
-                title="Dahboard"
-                to="/"
+                title="Items"
+                to="/team"
                 selected={selected}
                 setSelected={setSelected}
               />
+              <Item
+                title="Purshase"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Sales Invoice"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Sales Return"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Purshase Return"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubItem>
+            <SubItem
+              title="Accounting"
+              icon={<AccountBalanceOutlinedIcon />}
+              isCollapsed={isCollapsed}
+              handleSubItemClick={handleSubItemClick}
+            >
+              <Item
+                title="Chart of Account"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Journal Varchar"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Statement of Account"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Trial Balance"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubItem>
+            <SubItem
+              title="Payment & Receivable"
+              icon={<PaidOutlinedIcon />}
+              isCollapsed={isCollapsed}
+              handleSubItemClick={handleSubItemClick}
+            >
+              <Item
+                title="Payment Voucher"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Receipt Voucher"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubItem>
+            <SubItem
+              title="Reports"
+              icon={<SummarizeOutlinedIcon />}
+              isCollapsed={isCollapsed}
+              handleSubItemClick={handleSubItemClick}
+            >
+              <Item
+                title="Stocks Report"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Accounting Reports"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubItem>
+            <SubItem
+              title="Company Settings"
+              icon={<StoreIcon />}
+              isCollapsed={isCollapsed}
+              handleSubItemClick={handleSubItemClick}
+            >
+              <Item
+                title="Company Management"
+                to="/Company Management"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Station Settings"
+                to="/Company Management"
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="User Settings"
+                to="/team"
+                selected={selected}
+                setSelected={setSelected}
+              />
+
               <SubItem
-                title="Inventory Management"
-                icon={<Inventory2OutlinedIcon />}
+                title="General Information"
+                icon={<MenuOutlinedIcon />}
+                isCollapsed={isCollapsed}
+                handleSubItemClick={handleSubItemClick}
               >
                 <Item
-                  title="Items"
-                  to="/team"
+                  title="Department Management"
+                  to="/Department Management"
                   selected={selected}
                   setSelected={setSelected}
                 />
                 <Item
-                  title="Purshase"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Sales Invoice"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Sales Return"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Purshase Return"
-                  to="/team"
+                  title="Currency"
+                  to="/Currency"
                   selected={selected}
                   setSelected={setSelected}
                 />
               </SubItem>
-              <SubItem title="Accounting" icon={<AccountBalanceOutlinedIcon />}>
-                <Item
-                  title="Chart of Account"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Journal Varchar"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Statement of Account"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Trial Balance"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </SubItem>
-              <SubItem title="Payment & Receivable" icon={<PaidOutlinedIcon />}>
-                <Item
-                  title="Payment Voucher"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Receipt Voucher"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </SubItem>
-              <SubItem title="Reports" icon={<SummarizeOutlinedIcon />}>
-                <Item
-                  title="Stocks Report"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Accounting Reports"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </SubItem>
-              <SubItem title="Company Settings" icon={<StoreIcon />}>
-                <Item
-                  title="Company Management"
-                  to="/Company Management"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="Station Settings"
-                  to="/Company Management"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                <Item
-                  title="User Settings"
-                  to="/team"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-
-                <SubItem
-                  title="General Information"
-                  icon={<MenuOutlinedIcon />}
-                >
-                  <Item
-                    title="Department Management"
-                    to="/Department Management"
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                  <Item
-                    title="Currency"
-                    to="/Currency"
-                    selected={selected}
-                    setSelected={setSelected}
-                  />
-                </SubItem>
-              </SubItem>
-            </Box>
-          )}
+            </SubItem>
+          </Box>
         </Menu>
       </ProSidebar>
     </Box>

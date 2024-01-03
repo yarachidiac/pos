@@ -100,8 +100,8 @@ const UserDetailsModal = ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    background: colors.primary[400],
-    background: "#F8FBF8",
+    background: colors.whiteblack[100],
+    //background: "#FFFEFC",
     //backgroundColor: "#fcfcfc",
 
     boxShadow: 24,
@@ -186,9 +186,9 @@ const UserDetailsModal = ({
  };
 
   const appBarStyle = {
-    background: colors.primary[400],
+    background: colors.whiteblack[100],
     //background: "#fcfcfc",
-    background: "#F8FBF8",
+    //background: "#F8FBF8",
     borderRadius: "0px",
     height: "30%",
     width: "100%",

@@ -15,6 +15,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
+import Checkbox from "@mui/material/Checkbox";
 
 const GeneralAccountingTable = ({
   userDetails,
@@ -147,6 +148,7 @@ const GeneralAccountingTable = ({
           whiteSpace: "pre-wrap", // Allow text wrapping
           overflowWrap: "normal", // Do not break words
           //overflowWrap: "break-word",
+          boxSizing: "border-box",
         }}
       >
         <Box
@@ -160,19 +162,18 @@ const GeneralAccountingTable = ({
           <Typography variant="h4">{key}</Typography>
         </Box>
       </TableCell>
+
       <TableCell
         style={{
-          //minWidth: "80px",
           width: "70%",
           height: "100%",
-          //borderColor: `${colors.greenAccent[400]}`, // Set border color to red
         }}
       >
         <div
           style={{
             position: "relative",
-            height: "100%", // Adjust the height as needed
-            width: "100%", // Ensure the frame takes the full width of the TableCell
+            height: "100%",
+            width: "100%",
           }}
         >
           {editableCells.includes(index) ? (
@@ -180,99 +181,88 @@ const GeneralAccountingTable = ({
               <div
                 style={{
                   width: "100%",
+                  height: "100%",
                   position: "absolute",
                   top: "0",
                   left: "0",
                   right: "0",
                   bottom: "0",
-                  border: `2px solid ${colors.greenAccent[400]}`,
+                  border: `1px solid ${colors.greenAccent[400]}`,
                   borderRadius: "4px",
                   pointerEvents: "none",
                 }}
               />
-              {key === "username" ||
-              key === "password" ||
-              key === "email" ||
-              key === "id" ? (
-                <TextField
-                  value={value}
-                  onChange={(e) => handleValueUpdate(key, e.target.value)}
-                  autoFocus
-                  onBlur={() =>
-                    setEditableCells((prev) => prev.filter((i) => i !== index))
-                  }
-                  fullWidth
-                  variant="standard"
-                  InputProps={{
-                    style: {
-                      height: "100%",
-                      boxSizing: "border-box",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      padding: "4px",
-                    },
-                  }}
-                />
-              ) : (
-                <Select
-                  value={value}
-                  onChange={(e) => handleValueUpdate(key, e.target.value)}
-                  open={editableCells.includes(index)} // Set open to true when the cell is in edit mode
-                  onClose={() =>
-                    setEditableCells((prev) => prev.filter((i) => i !== index))
-                  }
-                  fullWidth
-                  style={{ textAlign: "center" }}
-                  variant="standard"
-                  // inputProps={{
-                  //   style: {
-                  //     height: "100%",
-                  //     boxSizing: "border-box",
-                  //     border: `1px solid ${colors.greenAccent[600]}`,
-                  //     borderRadius: "4px",
-                  //     textAlign: "center",
-                  //   },
-                  // }}
-                >
-                  {/* Add your options here */}
-                  <MenuItem value="Y" style={{ justifyContent: "center" }}>
-                    Y
-                  </MenuItem>
-                  <MenuItem value="N" style={{ justifyContent: "center" }}>
-                    N
-                  </MenuItem>
-                  {/* Add more options as needed */}
-                </Select>
-              )}
+
+              <TextField
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                autoFocus
+                onBlur={() =>
+                  setEditableCells((prev) => prev.filter((i) => i !== index))
+                }
+                fullWidth
+                variant="standard"
+                InputProps={{
+                  style: {
+                    height: "100%",
+                    boxSizing: "border-box",
+                    border: "1px solid #ccc",
+                    borderRadius: "4px",
+                    padding: "4px",
+                  },
+                }}
+              />
             </>
-          ) : (
+          ) : key === "username" ||
+            key === "password" ||
+            key === "email" ||
+            key === "id" ? (
             <div
               style={{
                 cursor: "pointer",
                 alignItems: "center",
                 borderRadius: "4px",
                 border: `1px solid ${colors.greenAccent[400]}`,
-                display: ["username", "password", "email", "id"].includes(key)
-                  ? "inline-block"
-                  : "flex",
+                display: "flex",
                 height: "100%",
                 boxSizing: "border-box",
-                width: "100%",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                textAlign: ["username", "password", "email", "id"].includes(key)
-                  ? "left"
-                  : "center",
-                padding: ["username", "password", "email", "id"].includes(key)
-                  ? "8px" // Adjust the padding for specific keys
-                    : "0px",
-
+                width: "100%",
                 justifyContent: "center",
               }}
               onClick={() => handleCellClick(index)}
             >
               <Typography variant="h4">{value}</Typography>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={value === "Y"}
+                  onChange={() =>
+                    handleValueUpdate(key, value === "Y" ? "N" : "Y")
+                  }
+                />
+                <Typography variant="h4">Y</Typography>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={value === "N"}
+                  onChange={() =>
+                    handleValueUpdate(key, value === "N" ? "Y" : "N")
+                  }
+                />
+                <Typography variant="h4">N</Typography>
+              </div>
             </div>
           )}
         </div>

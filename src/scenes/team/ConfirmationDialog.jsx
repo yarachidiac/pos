@@ -20,14 +20,14 @@ const ConfirmationDialog = ({ open, onCancel, onConfirm }) => {
           variant="h6"
           onClick={onConfirm}
           autoFocus
-          style={{ background: colors.greenAccent[700], fontSize: "0.8rem" }}
+          style={{ background: colors.greenAccent[600], fontSize: "0.8rem" }}
         >
           Yes
         </Button>
         <Button
           variant="h6"
           onClick={onCancel}
-          style={{ background: colors.greenAccent[700], fontSize: "0.8rem" }}
+          style={{ background: colors.greenAccent[600], fontSize: "0.8rem" }}
         >
           No
         </Button>

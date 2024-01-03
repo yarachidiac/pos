@@ -22,27 +22,28 @@ import Team from "./scenes/team";
 // import GeneralInformation from "./scenes/GeneralInformation";
 import { useState, useEffect } from "react";
 import Company from './scenes/company';
+import PoS from './scenes/PoS';
 
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companyName, setCompanyName] = useState(""); 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      if (window.innerWidth > 768) {
-        setIsCollapsed(false);
-      } else {
-        setIsCollapsed(true);
-      }
-    };
+    // const handleResize = () => {
+    //   setIsMobile(window.innerWidth <= 768);
+    //   if (window.innerWidth > 768) {
+    //     setIsCollapsed(true);
+    //   } else {
+    //     setIsCollapsed(true);
+    //   }
+    // };
 
-    window.addEventListener("resize", handleResize);
+    // window.addEventListener("resize", handleResize);
 
     const initializeAuthentication = async () => {
       try {
@@ -61,13 +62,13 @@ function App() {
       }
     };
 
-    window.addEventListener("resize", handleResize);
+    // window.addEventListener("resize", handleResize);
 
     initializeAuthentication();
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    // return () => {
+    //   window.removeEventListener("resize", handleResize);
+    // };
   }, []);
 
   if (loading) {
@@ -87,7 +88,14 @@ function App() {
             />
           ) : (
             <>
-              {!isMobile && <Sidebar />}
+              {!isMobile && (
+                <Sidebar
+                  isCollapsed={isCollapsed}
+                  isMobile={isMobile}
+                  setIsCollapsed={setIsCollapsed}
+                  setIsMobile={setIsMobile}
+                />
+              )}
               <main className="content">
                 <Topbar
                   isCollapsed={isCollapsed}
@@ -115,30 +123,15 @@ function App() {
                       />
                     }
                   />
-                  {/* <Route path="/general-accounting" element={<GenralAcc />} />
-                  <Route path="/stock-inventory" element={<StockInv />} /> */}
-
-                  {/* <Route path="/items" element={<Items />} />
-              <Route path="/purshase" element={<Purshase />} />
-              <Route path="/salesinvoice" element={<SalesInvoice />} />
-              <Route path="/salesreturn" element={<SalesReturn />} />
-              <Route path="/purshasereturn" element={<PurshaseReturn />} />
-              <Route path="/ChartAccount" element={<ChartAccount />} />
-              <Route path="/JournalVoucher" element={<JournalVoucher />} />
-              <Route
-                path="/StatementOfAccount"
-                element={<StatementOfAccount />}
-              />
-              <Route path="/TrialBalance" element={<TrialBalance />} />
-              <Route path="/PaymentVoucher" element={<PaymentVoucher />} />
-              <Route path="/ReceiptVoucher" element={<ReceiptVoucher />} />
-              <Route path="/StockReports" element={<StockReports />} />
-              <Route
-                path="/AccountingReports"
-                element={<AccountingReports />}
-              />
-              <Route path="/UserSettings" element={<UserSettings />} />
-              <Route path="/GeneralInformation" element={<GeneralInformation />} /> */}
+                  <Route
+                    path="/PoS"
+                    element={
+                      <PoS
+                        companyName={companyName}
+                        setCompanyName={setCompanyName}
+                      />
+                    }
+                  />
                 </Routes>
               </main>
             </>
