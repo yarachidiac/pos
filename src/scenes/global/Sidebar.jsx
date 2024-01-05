@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -47,13 +48,15 @@ const SubItem = ({
   children,
   isCollapsed,
   handleSubItemClick,
+  selected,
+  setSelected,
 }) => {
   const handleItemClick = () => {
     // Call the handler to open the sidebar and handle the SubItem click
     handleSubItemClick(title);
   };
-const theme = useTheme();
-const colors = tokens(theme.palette.mode);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   return (
     <SubMenu
       onClick={handleItemClick}
@@ -65,19 +68,23 @@ const colors = tokens(theme.palette.mode);
       icon={icon}
       style={{
         color: colors.grey[100],
-        
       }}
-      isOpen ={false}
+      isOpen={false}
     >
-      {children}
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child, {
+          selected: child.props.title === selected,
+          setSelected: setSelected, // Pass setSelected to the Item components
+          onClick: () => handleSubItemClick(child.props.title),
+        })
+      )}
       <style>
         {`
           .pro-arrow-wrapper {
-            ${isCollapsed ? 'display: none;' : ''}
+            ${isCollapsed ? "display: none;" : ""}
           }
         `}
       </style>
-
     </SubMenu>
   );
 };
@@ -99,7 +106,6 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
 
     // Handle the SubItem click as needed
     setSelected(menuItem);
-    
   };
   
 
@@ -135,7 +141,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
         overflowY: isMobile && !isCollapsed ? "auto" : "visible", // Make it scrollable on mobile
 
         "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
+          background: `${colors.primary[500]} !important`,
         },
         "& .pro-menu-item": {
           padding: "5px 5px 10px 10px !important",
@@ -144,16 +150,21 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
           backgroundColor: "transparent !important",
         },
         "& .react-slidedown.pro-inner-list-item": {
-          backgroundColor: "transparent !important",
+          color: `${colors.greenAccent[500]} !important`,
           display: isCollapsed ? "none" : "",
           // Add other styles as needed
         },
+
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: `${colors.greenAccent[500]} !important`,
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: `${colors.greenAccent[500]} !important`,
         },
+        "& .pro-sub-menu .pro-inner-item.active": {
+          color: `${colors.greenAccent[500]} !important`,
+        },
+
         //position: (isMobile && !isCollapsed) ? "fixed" : "relative",
         //zIndex: 1000, // Adjust the z-index to make sure it appears above other content
       }}
@@ -186,8 +197,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
 
                   <Box
                     sx={{
-                      "& .react-slidedown.pro-inner-list-item": {
-                      },
+                      "& .react-slidedown.pro-inner-list-item": {},
                     }}
                   >
                     <IconButton
@@ -223,6 +233,8 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
               icon={<Inventory2OutlinedIcon />}
               isCollapsed={isCollapsed}
               handleSubItemClick={handleSubItemClick}
+              selected={selected} // Pass selected to SubItem
+              setSelected={setSelected}
             >
               <Item
                 title="Items"
@@ -260,6 +272,8 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
               icon={<AccountBalanceOutlinedIcon />}
               isCollapsed={isCollapsed}
               handleSubItemClick={handleSubItemClick}
+              selected={selected} // Pass selected to SubItem
+              setSelected={setSelected}
             >
               <Item
                 title="Chart of Account"
@@ -291,6 +305,8 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
               icon={<PaidOutlinedIcon />}
               isCollapsed={isCollapsed}
               handleSubItemClick={handleSubItemClick}
+              selected={selected} // Pass selected to SubItem
+              setSelected={setSelected}
             >
               <Item
                 title="Payment Voucher"
@@ -310,6 +326,8 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
               icon={<SummarizeOutlinedIcon />}
               isCollapsed={isCollapsed}
               handleSubItemClick={handleSubItemClick}
+              selected={selected} // Pass selected to SubItem
+              setSelected={setSelected}
             >
               <Item
                 title="Stocks Report"
@@ -329,6 +347,8 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
               icon={<StoreIcon />}
               isCollapsed={isCollapsed}
               handleSubItemClick={handleSubItemClick}
+              selected={selected} // Pass selected to SubItem
+              setSelected={setSelected}
             >
               <Item
                 title="Company Management"
@@ -354,6 +374,8 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
                 icon={<MenuOutlinedIcon />}
                 isCollapsed={isCollapsed}
                 handleSubItemClick={handleSubItemClick}
+                selected={selected} // Pass selected to SubItem
+                setSelected={setSelected}
               >
                 <Item
                   title="Department Management"

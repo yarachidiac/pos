@@ -306,9 +306,10 @@ const GeneralAccountingTable = ({
           {checkUnsavedChangesCallback() && (
             <Box sx={{ minWidth: "5%" }}>
               <Button
-                variant="h6"
+                variant="contained"
+                color="secondary"
                 style={{
-                  background: colors.greenAccent[600],
+                  //background: colors.greenAccent[600],
                   fontSize: "1.1rem",
                 }}
                 onClick={() =>
@@ -331,11 +332,11 @@ const GeneralAccountingTable = ({
         checkUnsavedChangesCallback() && (
           <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
             <Button
-              variant="h6"
               style={{
-                background: colors.greenAccent[600],
                 fontSize: "1.1rem",
               }}
+              variant="contained"
+              color= "secondary"
               onClick={() =>
                 handleSave(
                   companyName,

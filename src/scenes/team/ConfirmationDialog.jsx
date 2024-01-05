@@ -17,17 +17,19 @@ const ConfirmationDialog = ({ open, onCancel, onConfirm }) => {
       <DialogContent>Do you want to save changes before closing?</DialogContent>
       <DialogActions>
         <Button
-          variant="h6"
+          variant="contained"
+          color="secondary"
           onClick={onConfirm}
           autoFocus
-          style={{ background: colors.greenAccent[600], fontSize: "0.8rem" }}
+          style={{ fontSize: "0.9rem" }}
         >
           Yes
         </Button>
         <Button
-          variant="h6"
+          variant="contained"
+          color="secondary"
           onClick={onCancel}
-          style={{ background: colors.greenAccent[600], fontSize: "0.8rem" }}
+          style={{ fontSize: "0.9rem" }}
         >
           No
         </Button>

@@ -14,7 +14,7 @@ import AddUserDialog from "./AddUserDialog";
 const Team = ({companyName}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
 
   //const [companyName, setCompanyName] = useState("");
   const [users, setUsers] = useState([]);
@@ -41,7 +41,7 @@ const Team = ({companyName}) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.100:8000/users/${companyName}`)
+      fetch(`http://192.168.16.114:8000/users/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -170,7 +170,7 @@ const Team = ({companyName}) => {
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
       console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.100:8000/addusers/${companyName}/${newUserDetails.name}`;
+      const apiUrl = `http://192.168.16.114:8000/addusers/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -193,7 +193,7 @@ const Team = ({companyName}) => {
 
       // Fetch the details of the newly added user
       const userDetailsResponse = await fetch(
-        `http://192.168.16.100:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+        `http://192.168.16.114:8000/getUserDetail/${companyName}/${newUserDetails.name}`
       );
 
       if (!userDetailsResponse.ok) {
@@ -242,8 +242,9 @@ const Team = ({companyName}) => {
           }}
         >
           <Button
-            variant="h6"
-            style={{ background: colors.greenAccent[700], fontSize: "1.1rem" }}
+            variant="contained"
+            color="secondary"
+            style={{ fontSize: "1.1rem" }}
             onClick={handleAddUser}
           >
             Add
@@ -268,42 +269,49 @@ const Team = ({companyName}) => {
           // "& .MuiDataGrid-root": {
           //   border: "none",
           // },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
+          // "& .MuiDataGrid-cell": {
+          //   borderBottom: "none",
+          // },
           "& .name-column--cell": {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.primary[400],
+            backgroundColor: colors.greenAccent[500],
+            color: colors.primary[500],
             borderBottom: "none",
             fontSize: "900",
           },
           "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
+            backgroundColor: colors.primary[500],
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.primary[400],
+            backgroundColor: colors.greenAccent[500],
+            color: colors.primary[500],
           },
           "& .MuiDataGrid-columnHeaderTitle": {
             fontSize: "20px",
           },
+          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
+            color: colors.primary[500],
+          },
+
           // "& .MuiCheckbox-root": {
           //   color: `${colors.greenAccent[200]} !important`,
           // },
         }}
       >
         <DataGrid
+          style={{ height: "100%" }}
           rows={users}
           columns={columns}
-          autoHeight
+          //autoHeight
           {...(users && users.initialState)}
           initialState={{
             ...users.initialState,
-            pagination: { paginationModel: { pageSize: 5 } },
+            pagination: { paginationModel: { pageSize: 10 } },
           }}
-          pageSizeOptions={[5, 10, 25]}
+          pageSizeOptions={[10, 20, 30]}
           disableSelectionOnClick // Add this line to disable selection on click
           onSelectionModelChange={(newSelection) => {
             // Set the selected row when the selection changes

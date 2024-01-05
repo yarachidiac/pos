@@ -18,7 +18,7 @@ body,
 ::-webkit-scrollbar{
   width: 10px;
 }
-
+/* 
 ::webkit-scrollbar-track{
   background: #e0e0ee;
 }
@@ -29,4 +29,4 @@ body,
 
 ::-webkit-scrollbar-track:hover{
   background: #555;
-}
+} */

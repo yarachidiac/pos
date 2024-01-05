@@ -365,9 +365,10 @@ const UserDetailsModal = ({
                   sx={{
                     color:
                       selectedOption === "general"
-                        ? colors.greenAccent[400]
+                        ? "secondary"
                         : colors.grey[100],
                   }}
+                  variant="contained"
                 >
                   <ListItemText primary="General" />
                 </ListItem>
@@ -473,15 +474,17 @@ const UserDetailsModal = ({
                     }}
                   >
                     <Button
-                      variant="h4"
                       key={option}
                       onClick={() => handleOptionChange(option)}
-                      sx={{
+                      style={{
                         ...listItemStyle,
+                        //variant:"contained",
                         background:
                           selectedOption === option
                             ? colors.greenAccent[600]
                             : colors.grey[700],
+                        color: selectedOption === option ?
+                          colors.primary[500] : ""
                       }}
                     >
                       {getOptionLabel(option)}
