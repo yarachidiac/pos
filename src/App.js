@@ -128,7 +128,7 @@ function App() {
                     element={
                       <PoS
                         companyName={companyName}
-                        setCompanyName={setCompanyName}
+                        //setCompanyName={setCompanyName}
                       />
                     }
                   />

@@ -35,7 +35,7 @@ const General = ({ companyName }) => {
     const fetchCompanyDetails = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.114:8000/company/${companyName}`
+          `http://192.168.16.102:8000/company/${companyName}`
         );
         if (response.ok) {
           const data = await response.json();
