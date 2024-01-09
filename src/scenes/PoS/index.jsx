@@ -55,7 +55,7 @@ const PoS = ({ companyName }) => {
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.102:8000/categories/${companyName}`
+        `http://192.168.16.128:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -112,7 +112,7 @@ const PoS = ({ companyName }) => {
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.102:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.128:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -124,7 +124,7 @@ const PoS = ({ companyName }) => {
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.102:8000/allitems/${companyName}`
+        `http://192.168.16.128:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -132,6 +132,7 @@ const PoS = ({ companyName }) => {
       console.error("Error fetching categoriesitems:", error);
     }
   };
+  console.log("mealssssssssssss", meals);
 
   console.log("selected mealllllllll", selectedMeals)
 
@@ -158,7 +159,38 @@ const PoS = ({ companyName }) => {
     // Update the state with the filtered array
     setSelectedMeals(updatedSelectedMeals);
   };
-  
+
+  const handlePlace = async () => {
+    try {
+      // Make a POST request to the /invoiceitem endpoint
+      const response = await fetch(
+        `http://192.168.16.128:8000/invoiceitem/${companyName}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(selectedMeals),
+        }
+      );
+      console.log("selecteddddddddd bl place order",selectedMeals);
+
+      // Check if the request was successful (status code 2xx)
+      if (response.ok) {
+        // Reset selectedMeals to an empty array
+        setSelectedMeals([]);
+        setMealsCopy((prevMealsCopy) =>
+          prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
+        );
+        console.log("Order placed successfully!");
+      } else {
+        console.error("Failed to place order:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+    }
+  };
+
   return (
     <Box display="flex" height="90%">
       {/* First Box (70% width) */}
@@ -206,7 +238,7 @@ const PoS = ({ companyName }) => {
                 <CardMedia
                   component="img"
                   height="180"
-                  image={`${process.env.PUBLIC_URL}/${meal.image}`}
+                  src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.image}`}
                   alt={`Meal ${meal.code}`}
                 />
                 <CardContent>
@@ -284,7 +316,7 @@ const PoS = ({ companyName }) => {
         {/* ListCards */}
 
         <Box
-          sx={{
+          sx={{ 
             height: "70%",
             width: "100%",
             alignContent: "center",
@@ -304,7 +336,7 @@ const PoS = ({ companyName }) => {
                       component="img"
                       height="50"
                       width="100%"
-                      image={`${process.env.PUBLIC_URL}/${selectedMeal.image}`}
+                      image={`${process.env.PUBLIC_URL}/${companyName}/images/${selectedMeal.image}`}
                       alt={`Meal ${selectedMeal.code}`}
                     />
                   </Box>
@@ -345,13 +377,7 @@ const PoS = ({ companyName }) => {
                     >
                       <AddCircleOutlineOutlinedIcon />
                     </IconButton>
-                    <IconButton
-                      onClick={() =>
-                        handleDelete(
-                          selectedMeal.code,
-                        )
-                      }
-                    >
+                    <IconButton onClick={() => handleDelete(selectedMeal.code)}>
                       <DeleteOutlineOutlinedIcon />
                     </IconButton>
                   </Box>
@@ -386,6 +412,7 @@ const PoS = ({ companyName }) => {
                   variant="contained"
                   color="secondary"
                   sx={{ borderRadius: "20px", width: "100%" }}
+                  onClick={() => handlePlace()}
                 >
                   Place Order
                 </Button>
