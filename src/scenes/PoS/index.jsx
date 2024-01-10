@@ -55,7 +55,7 @@ const PoS = ({ companyName }) => {
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.128:8000/categories/${companyName}`
+        `http://192.168.16.110:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -70,19 +70,19 @@ const PoS = ({ companyName }) => {
       setSelectedCategory("All");
       setSelectedCategoryCode("");
     } else {
-      setSelectedCategory(category.title);
-      setSelectedCategoryCode(category.code);
+      setSelectedCategory(category.GroupName);
+      setSelectedCategoryCode(category.GroupNo);
     }
     console.log(selectedCategoryCode);   
   };
 
 
   const handleOrderClick = (mealId, newQuantity) => {
-    const isMealSelected = selectedMeals.some((meal) => meal.code === mealId);
+    const isMealSelected = selectedMeals.some((meal) => meal.ItemNo === mealId);
 
     if (!isMealSelected) {
       // Find the meal in mealsCopy
-      const selectedMeal = mealsCopy.find((meal) => meal.code === mealId);
+      const selectedMeal = mealsCopy.find((meal) => meal.ItemNo === mealId);
 
       setSelectedMeals((prevSelectedMeals) => [
         ...prevSelectedMeals,
@@ -96,13 +96,13 @@ const PoS = ({ companyName }) => {
   const handleQuantityChange = (mealId, newQuantity) => {
     setSelectedMeals((prevSelectedMeals) =>
       prevSelectedMeals.map((meal) =>
-        meal.code === mealId ? { ...meal, quantity: newQuantity } : meal
+        meal.ItemNo === mealId ? { ...meal, quantity: newQuantity } : meal
       )
     );
 
     setMealsCopy((prevMealsCopy) =>
       prevMealsCopy.map((meal) =>
-        meal.code === mealId ? { ...meal, quantity: newQuantity } : meal
+        meal.ItemNo === mealId ? { ...meal, quantity: newQuantity } : meal
       )
     );
   };
@@ -112,7 +112,7 @@ const PoS = ({ companyName }) => {
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.128:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.110:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -124,7 +124,7 @@ const PoS = ({ companyName }) => {
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.128:8000/allitems/${companyName}`
+        `http://192.168.16.110:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -142,7 +142,7 @@ const PoS = ({ companyName }) => {
     selectedMeals.forEach((selectedMeal) => {
       // Use the selectedMeal directly from selectedMeals array
       const meal = selectedMeal;
-      const price = meal.price || 0;
+      const price = meal.UPrice || 0;
       const quantity = meal.quantity || 0;
       totalPrice += price * quantity;
     });
@@ -153,7 +153,7 @@ const PoS = ({ companyName }) => {
   const handleDelete = (mealCode) => {
     // Filter out the selectedMeal with the given mealCode
     const updatedSelectedMeals = selectedMeals.filter(
-      (meal) => meal.code !== mealCode
+      (meal) => meal.ItemNo !== mealCode
     );
 
     // Update the state with the filtered array
@@ -164,7 +164,7 @@ const PoS = ({ companyName }) => {
     try {
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.128:8000/invoiceitem/${companyName}`,
+        `http://192.168.16.110:8000/invoiceitem/${companyName}`,
         {
           method: "POST",
           headers: {
@@ -196,7 +196,12 @@ const PoS = ({ companyName }) => {
       {/* First Box (70% width) */}
       <Box width="70%" padding={2}>
         {/* Filter Buttons with Icons */}
-        <Box display="flex" justifyContent="space-between" marginBottom={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          marginBottom={3}
+          height="7%"
+        >
           <Button
             style={{
               backgroundColor:
@@ -212,34 +217,34 @@ const PoS = ({ companyName }) => {
           </Button>
           {categories.map((category) => (
             <Button
-              key={category.code}
+              key={category.GroupNo}
               style={{
                 backgroundColor:
-                  selectedCategory === category.title
+                  selectedCategory === category.GroupName
                     ? colors.greenAccent[500]
                     : colors.primary[500],
                 color:
-                  selectedCategory === category.title
+                  selectedCategory === category.GroupName
                     ? colors.primary[500]
                     : "black",
               }}
               startIcon={<LocalCafeIcon />}
               onClick={() => handleCategoryClick(category)}
             >
-              {category.title}
+              {category.GroupName}
             </Button>
           ))}
         </Box>
         {/* Cards in Grid Layout */}
-        <Grid container spacing={2}>
+        <Grid container spacing={2} sx={{ overflow: "auto", height: "94%" }}>
           {mealsCopy.map((meal) => (
-            <Grid item xs={12} sm={6} md={4} key={meal.code}>
+            <Grid item xs={12} sm={6} md={4} key={meal.ItemNo}>
               <Card>
                 <CardMedia
                   component="img"
                   height="180"
-                  src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.image}`}
-                  alt={`Meal ${meal.code}`}
+                  src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
+                  alt={`Meal ${meal.ItemNo}`}
                 />
                 <CardContent>
                   <Box
@@ -251,7 +256,7 @@ const PoS = ({ companyName }) => {
                   >
                     <Typography variant="h4">{meal.title}</Typography>
 
-                    <Typography variant="body2">{`$${meal.price.toFixed(
+                    <Typography variant="body2">{`$${meal.UPrice.toFixed(
                       2
                     )}`}</Typography>
                   </Box>
@@ -261,7 +266,7 @@ const PoS = ({ companyName }) => {
                     <Box display="flex" alignItems="center">
                       <IconButton
                         onClick={() =>
-                          handleQuantityChange(meal.code, meal.quantity - 1)
+                          handleQuantityChange(meal.ItemNo, meal.quantity - 1)
                         }
                       >
                         <RemoveCircleOutlineOutlinedIcon />
@@ -269,7 +274,7 @@ const PoS = ({ companyName }) => {
                       <Typography variant="body1">{meal.quantity}</Typography>
                       <IconButton
                         onClick={() =>
-                          handleQuantityChange(meal.code, meal.quantity + 1)
+                          handleQuantityChange(meal.ItemNo, meal.quantity + 1)
                         }
                       >
                         <AddCircleOutlineOutlinedIcon />
@@ -289,7 +294,9 @@ const PoS = ({ companyName }) => {
                           color: colors.primary[500],
                         },
                       }}
-                      onClick={() => handleOrderClick(meal.code, meal.quantity)}
+                      onClick={() =>
+                        handleOrderClick(meal.ItemNo, meal.quantity)
+                      }
                     >
                       Choose
                     </Button>
@@ -316,7 +323,7 @@ const PoS = ({ companyName }) => {
         {/* ListCards */}
 
         <Box
-          sx={{ 
+          sx={{
             height: "70%",
             width: "100%",
             alignContent: "center",
@@ -327,63 +334,69 @@ const PoS = ({ companyName }) => {
           }}
         >
           {selectedMeals.map((selectedMeal) => (
-            <Card key={selectedMeal.code}>
-              <CardContent>
-                <Box sx={{ display: "flex", flexDirection: "row" }}>
-                  {/* Display the image here */}
-                  <Box sx={{ height: "20%", width: "20%" }}>
-                    <CardMedia
-                      component="img"
-                      height="50"
-                      width="100%"
-                      image={`${process.env.PUBLIC_URL}/${companyName}/images/${selectedMeal.image}`}
-                      alt={`Meal ${selectedMeal.code}`}
-                    />
-                  </Box>
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    flex="1" // Allow this box to take the available space
-                    padding="5px"
-                  >
-                    <Typography variant="h4">{selectedMeal.title}</Typography>
-                    <Typography variant="h4" color="text.secondary">
-                      {`$${selectedMeal.price}`}
-                    </Typography>
-                  </Box>
+            <Box sx={{ height: "20%" }}>
+              <Card key={selectedMeal.ItemNo}>
+                <CardContent>
+                  <Box sx={{ display: "flex", flexDirection: "row" }}>
+                    {/* Display the image here */}
+                    <Box sx={{ height: "20%", width: "20%" }}>
+                      <CardMedia
+                        component="img"
+                        height="50"
+                        width="100%"
+                        image={`${process.env.PUBLIC_URL}/${companyName}/images/${selectedMeal.Image}`}
+                        alt={`Meal ${selectedMeal.ItemNo}`}
+                      />
+                    </Box>
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      flex="1" // Allow this box to take the available space
+                      padding="5px"
+                    >
+                      <Typography variant="h4">
+                        {selectedMeal.ItemName}
+                      </Typography>
+                      <Typography variant="h4" color="text.secondary">
+                        {`$${selectedMeal.UPrice}`}
+                      </Typography>
+                    </Box>
 
-                  {/* Quantity and buttons */}
-                  <Box display="flex" alignItems="center">
-                    <IconButton
-                      onClick={() =>
-                        handleQuantityChange(
-                          selectedMeal.code,
-                          selectedMeal.quantity - 1
-                        )
-                      }
-                    >
-                      <RemoveCircleOutlineOutlinedIcon />
-                    </IconButton>
-                    <Typography variant="body1">
-                      {selectedMeal.quantity}
-                    </Typography>
-                    <IconButton
-                      onClick={() =>
-                        handleQuantityChange(
-                          selectedMeal.code,
-                          selectedMeal.quantity + 1
-                        )
-                      }
-                    >
-                      <AddCircleOutlineOutlinedIcon />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(selectedMeal.code)}>
-                      <DeleteOutlineOutlinedIcon />
-                    </IconButton>
+                    {/* Quantity and buttons */}
+                    <Box display="flex" alignItems="center">
+                      <IconButton
+                        onClick={() =>
+                          handleQuantityChange(
+                            selectedMeal.ItemNo,
+                            selectedMeal.quantity - 1
+                          )
+                        }
+                      >
+                        <RemoveCircleOutlineOutlinedIcon />
+                      </IconButton>
+                      <Typography variant="body1">
+                        {selectedMeal.quantity}
+                      </Typography>
+                      <IconButton
+                        onClick={() =>
+                          handleQuantityChange(
+                            selectedMeal.ItemNo,
+                            selectedMeal.quantity + 1
+                          )
+                        }
+                      >
+                        <AddCircleOutlineOutlinedIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(selectedMeal.ItemNo)}
+                      >
+                        <DeleteOutlineOutlinedIcon />
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Box>
           ))}
         </Box>
 

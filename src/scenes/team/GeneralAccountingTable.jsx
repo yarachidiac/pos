@@ -216,7 +216,9 @@ const GeneralAccountingTable = ({
           ) : key === "username" ||
             key === "password" ||
             key === "email" ||
-            key === "id" ? (
+            key === "id" ||
+            key === "SAType" ||
+            key === "Branch" ? (
             <div
               style={{
                 cursor: "pointer",
