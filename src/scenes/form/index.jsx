@@ -37,7 +37,7 @@ const Form = ({ setIsAuthenticated }) => {
     try {
       // Clear the company name from local storage
       //clearCompanyName();
-      const response = await fetch("http://192.168.16.110:8000/login", {
+      const response = await fetch("http://192.168.16.131:8000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,8 +53,11 @@ const Form = ({ setIsAuthenticated }) => {
       console.log("here the valuessss:", JSON.stringify(values));
 
       if (response.ok) {
-       localStorage.setItem("company_name", values.company_name);
-
+        const responseUser = await response.json();
+        localStorage.setItem("company_name", values.company_name);
+        console.log("logged innn userrrrrr", responseUser.user["Branch"]);
+        localStorage.setItem("user_branch", responseUser.user["Branch"]);
+        localStorage.setItem("user_invType", responseUser.user["SAType"]);
         setIsAuthenticated(true);
 
         //updateCompanyName(values.company_name);

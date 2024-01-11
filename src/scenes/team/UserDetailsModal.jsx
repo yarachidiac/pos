@@ -49,7 +49,6 @@ const UserDetailsModal = ({
   users,
   setUsers,
   companyName,
-  
   //userDetailsCopy,
   //setUserDetailsCopy,
 }) => {

@@ -17,7 +17,7 @@ import { tokens } from "../../theme";
 import ExportFiles from "./ExportFiles";
 
 
-const Company = ({ companyName }) => {
+const Company = ({ companyName,  }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");

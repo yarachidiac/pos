@@ -23,6 +23,7 @@ import Team from "./scenes/team";
 import { useState, useEffect } from "react";
 import Company from './scenes/company';
 import PoS from './scenes/PoS';
+import { setIn } from 'formik';
 
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companyName, setCompanyName] = useState(""); 
   const [loading, setLoading] = useState(true);
+  const [branch, setBranch] = useState("");
+  const [invType, setInvType] = useState("");
 
   useEffect(() => {
     // const handleResize = () => {
@@ -48,10 +51,14 @@ function App() {
     const initializeAuthentication = async () => {
       try {
         const storedCompanyName = localStorage.getItem("company_name");
+        const storedBranch = localStorage.getItem("user_branch");
+        const storedInvType = localStorage.getItem("user_invType");
 
         if (storedCompanyName) {
           setCompanyName(storedCompanyName);
           setIsAuthenticated(true);
+          setBranch(storedBranch);
+          setInvType(storedInvType);
         } else {
           setIsAuthenticated(false);
         }
@@ -110,6 +117,8 @@ function App() {
                     element={
                       <Team
                         companyName={companyName}
+                        setBranch={setBranch}
+                        setInvType={setInvType}
                         //setCompanyName={setCompanyName}
                       />
                     }
@@ -128,6 +137,8 @@ function App() {
                     element={
                       <PoS
                         companyName={companyName}
+                        branch={branch}
+                        invType={invType}
                         //setCompanyName={setCompanyName}
                       />
                     }

@@ -21,8 +21,9 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
 import { useEffect } from 'react';
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import NumericKeypad from './NumericKeybad';
 
-const PoS = ({ companyName }) => {
+const PoS = ({ companyName, branch, invType }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -32,6 +33,18 @@ const PoS = ({ companyName }) => {
   const [mealsCopy, setMealsCopy] = useState([]);
   const [meals, setMeals] = useState([]);
   const [selectedMeals, setSelectedMeals] = useState([]);
+  const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
+  const handleOpenNumericKeypad = () => {
+    setNumericKeypadOpen(true);
+  };
+
+  const handleCloseNumericKeypad = () => {
+    setNumericKeypadOpen(false);
+  };
+  const handleDiscountSubmit = (discountValue) => {
+     // Handle the submitted discount value
+     console.log("Discount submitted:", discountValue);
+   };
 
   useEffect(() => {
     const copy = meals.map((meal) => ({ ...meal, quantity: 1 }));
@@ -44,7 +57,8 @@ const PoS = ({ companyName }) => {
     fetchAllItems();
   }, []);
 
-
+  console.log("the branch and the SATYpe", branch, invType);
+console.log("company in pos ", companyName)
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
     if (selectedCategoryCode !== "") {
@@ -55,7 +69,7 @@ const PoS = ({ companyName }) => {
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.110:8000/categories/${companyName}`
+        `http://192.168.16.131:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -112,7 +126,7 @@ const PoS = ({ companyName }) => {
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.110:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.131:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -124,7 +138,7 @@ const PoS = ({ companyName }) => {
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.110:8000/allitems/${companyName}`
+        `http://192.168.16.131:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -164,7 +178,7 @@ const PoS = ({ companyName }) => {
     try {
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.110:8000/invoiceitem/${companyName}`,
+        `http://192.168.16.131:8000/invoiceitem/${companyName}/${branch}/${invType}`,
         {
           method: "POST",
           headers: {
@@ -239,13 +253,31 @@ const PoS = ({ companyName }) => {
         <Grid container spacing={2} sx={{ overflow: "auto", height: "94%" }}>
           {mealsCopy.map((meal) => (
             <Grid item xs={12} sm={6} md={4} key={meal.ItemNo}>
-              <Card>
+              <Card sx={{ position: "relative" }}>
                 <CardMedia
                   component="img"
                   height="180"
                   src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
                   alt={`Meal ${meal.ItemNo}`}
                 />
+                {meal.Disc && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      backgroundColor: "red", // Add your preferred styling
+                      padding: "0.2rem 0.5rem",
+                      color: "#fff",
+                      fontSize: "1.4rem",
+                    }}
+                  >
+                    <Typography>{`-${meal.Disc}%`}</Typography>
+                    <Typography>{`+${meal.Tax}%`}</Typography>
+                  </Box>
+                )}
                 <CardContent>
                   <Box
                     sx={{
@@ -254,11 +286,23 @@ const PoS = ({ companyName }) => {
                       //marginX: 1,
                     }}
                   >
-                    <Typography variant="h4">{meal.title}</Typography>
+                    <Typography variant="h4">{meal.ItemName}</Typography>
 
-                    <Typography variant="body2">{`$${meal.UPrice.toFixed(
-                      2
-                    )}`}</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        textDecoration: (meal.Disc || meal.Tax) ? "line-through" : "none",
+                      }}
+                    >
+                      {`$${meal.UPrice.toFixed(2)}`}
+                    </Typography>
+
+                    {(meal.Disc || meal.Tax )&& (
+                      <Typography variant="body2">{`$${(
+                        (meal.UPrice * (1 - meal.Disc / 100)) +
+                        ((meal.UPrice * (1 - meal.Disc / 100)) * (meal.Tax / 100))
+                      ).toFixed(2)}`}</Typography>
+                    ) }
                   </Box>
                   <Box
                     sx={{ display: "flex", justifyContent: "space-between" }}
@@ -415,11 +459,20 @@ const PoS = ({ companyName }) => {
                   <Typography variant="body2">
                     Price: {calculateTotalPrice()}
                   </Typography>
-                  <Typography variant="body2" color="error">
-                    Discount: -$2.00
-                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleOpenNumericKeypad}
+                  >
+                    Discount
+                  </Button>
                 </Box>
               </Box>
+              <NumericKeypad
+                open={isNumericKeypadOpen}
+                onClose={handleCloseNumericKeypad}
+                onSubmit={handleDiscountSubmit}
+              />
               <Box marginTop={2}>
                 <Button
                   variant="contained"

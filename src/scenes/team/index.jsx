@@ -11,7 +11,7 @@ import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 
-const Team = ({companyName}) => {
+const Team = ({ companyName}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -30,8 +30,6 @@ const Team = ({companyName}) => {
   //   ...selectedUserDetails,
   // });
 
-
-
   useEffect(() => {
     // Read company_name from localStorage
     // const storedCompanyName = localStorage.getItem("company_name");
@@ -41,7 +39,7 @@ const Team = ({companyName}) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.110:8000/users/${companyName}`)
+      fetch(`http://192.168.16.131:8000/users/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -170,7 +168,7 @@ const Team = ({companyName}) => {
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
       console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.110:8000/addusers/${companyName}/${newUserDetails.name}`;
+      const apiUrl = `http://192.168.16.131:8000/addusers/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -193,7 +191,7 @@ const Team = ({companyName}) => {
 
       // Fetch the details of the newly added user
       const userDetailsResponse = await fetch(
-        `http://192.168.16.110:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+        `http://192.168.16.131:8000/getUserDetail/${companyName}/${newUserDetails.name}`
       );
 
       if (!userDetailsResponse.ok) {
@@ -209,13 +207,12 @@ const Team = ({companyName}) => {
     } catch (error) {
       console.error("Error:", error.message);
     }
-  } ;
+  };
 
-   const handleCloseDialog = () => {
-     // Close the dialog when needed
-     setIsDialogOpen(false);
-   };
-
+  const handleCloseDialog = () => {
+    // Close the dialog when needed
+    setIsDialogOpen(false);
+  };
 
   return (
     <Box
