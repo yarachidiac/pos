@@ -22,6 +22,7 @@ import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOut
 import { useEffect } from 'react';
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NumericKeypad from './NumericKeybad';
+import { format } from "date-fns";
 
 const PoS = ({ companyName, branch, invType }) => {
   const theme = useTheme();
@@ -34,6 +35,8 @@ const PoS = ({ companyName, branch, invType }) => {
   const [meals, setMeals] = useState([]);
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
+  const [discValue, setDiscValue] = useState(0);
+
   const handleOpenNumericKeypad = () => {
     setNumericKeypadOpen(true);
   };
@@ -42,7 +45,8 @@ const PoS = ({ companyName, branch, invType }) => {
     setNumericKeypadOpen(false);
   };
   const handleDiscountSubmit = (discountValue) => {
-     // Handle the submitted discount value
+    // Handle the submitted discount value
+    setDiscValue(discountValue);
      console.log("Discount submitted:", discountValue);
    };
 
@@ -69,7 +73,7 @@ console.log("company in pos ", companyName)
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.131:8000/categories/${companyName}`
+        `http://192.168.16.143:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -126,7 +130,7 @@ console.log("company in pos ", companyName)
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.131:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.143:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -138,7 +142,7 @@ console.log("company in pos ", companyName)
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.131:8000/allitems/${companyName}`
+        `http://192.168.16.143:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -176,9 +180,15 @@ console.log("company in pos ", companyName)
 
   const handlePlace = async () => {
     try {
+      const currentDate = new Date();
+      const formattedDateTime = format(currentDate, "dd-MM-yyyy HHmmss");
+
+      console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", currentDate);
+      console.log("formatted dateeeeeeee", formattedDateTime)
+
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.131:8000/invoiceitem/${companyName}/${branch}/${invType}`,
+        `http://192.168.16.143:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}`,
         {
           method: "POST",
           headers: {
@@ -291,18 +301,19 @@ console.log("company in pos ", companyName)
                     <Typography
                       variant="body2"
                       sx={{
-                        textDecoration: (meal.Disc || meal.Tax) ? "line-through" : "none",
+                        textDecoration:
+                          meal.Disc || meal.Tax ? "line-through" : "none",
                       }}
                     >
                       {`$${meal.UPrice.toFixed(2)}`}
                     </Typography>
 
-                    {(meal.Disc || meal.Tax )&& (
+                    {(meal.Disc || meal.Tax) && (
                       <Typography variant="body2">{`$${(
-                        (meal.UPrice * (1 - meal.Disc / 100)) +
-                        ((meal.UPrice * (1 - meal.Disc / 100)) * (meal.Tax / 100))
+                        meal.UPrice * (1 - meal.Disc / 100) +
+                        meal.UPrice * (1 - meal.Disc / 100) * (meal.Tax / 100)
                       ).toFixed(2)}`}</Typography>
-                    ) }
+                    )}
                   </Box>
                   <Box
                     sx={{ display: "flex", justifyContent: "space-between" }}
@@ -445,29 +456,51 @@ console.log("company in pos ", companyName)
         </Box>
 
         {/* Final Box */}
-        <Box sx={{ height: "20%" }}>
-          <Card>
-            <CardContent>
-              <Box display="flex" flexDirection="column" marginBottom={2}>
-                <Typography variant="h6">Payment Summary</Typography>
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="flex-end"
-                  marginTop={1}
-                >
-                  <Typography variant="body2">
-                    Price: {calculateTotalPrice()}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleOpenNumericKeypad}
-                  >
-                    Discount
-                  </Button>
-                </Box>
+        <Box sx={{ height: "25%" }}>
+          <Card
+            style={{
+              height: "100%",
+            }}
+          >
+            <CardContent
+              style={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <Box>
+                <Typography variant="h4" fontWeight="bold">Payment Summary</Typography>
               </Box>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+              >
+                <Typography variant="h4">Price</Typography>
+                <Typography variant="h4">${calculateTotalPrice()}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  onClick={handleOpenNumericKeypad}
+                  sx={{
+                    borderRadius: "20px",
+                    border: `2px solid ${colors.greenAccent[500]}`,
+                    color: colors.greenAccent[500],
+                  }}
+                >
+                  Discount
+                </Button>
+                <Typography variant="h4">{ discValue}%</Typography>
+              </Box>
+
               <NumericKeypad
                 open={isNumericKeypadOpen}
                 onClose={handleCloseNumericKeypad}
