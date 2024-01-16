@@ -10,7 +10,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 
-const NumericKeypad = ({ open, onClose, onSubmit }) => {
+const NumericKeypad = ({ open, onClose, onSubmit, type }) => {
   const [inputValue, setInputValue] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -43,7 +43,7 @@ const NumericKeypad = ({ open, onClose, onSubmit }) => {
           justifyContent: "space-between",
         }}
       >
-        <span>Discount</span>
+        <span>{type}</span>
         <IconButton onClick={onClose}>
           <ClearIcon />
         </IconButton>
@@ -53,7 +53,7 @@ const NumericKeypad = ({ open, onClose, onSubmit }) => {
           label="Number"
           variant="outlined"
           fullWidth
-          value={inputValue} 
+          value={inputValue}
           sx={{ margin: "10px 0", borderRadius: "20px" }}
         />
         <Grid container spacing={2}>
@@ -119,38 +119,41 @@ const NumericKeypad = ({ open, onClose, onSubmit }) => {
               -
             </Button>
           </Grid>
-          <Grid container sx={{justifyContent: "space-evenly", marginTop: "10px"}}>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={handleClear}
-              color="secondary"
-              style={{
-                height: "60px",
-                fontSize: "1.2rem",
-                borderRadius: "20px",
-              }}
-            >
-              Clear
-            </Button>
+          <Grid
+            container
+            sx={{ justifyContent: "space-evenly", marginTop: "10px" }}
+          >
+            <Grid item xs={4}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleClear}
+                color="secondary"
+                style={{
+                  height: "60px",
+                  fontSize: "1.2rem",
+                  borderRadius: "20px",
+                }}
+              >
+                Clear
+              </Button>
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={handleSubmit}
+                color="secondary"
+                style={{
+                  height: "60px",
+                  fontSize: "1.2rem",
+                  borderRadius: "20px",
+                }}
+              >
+                Submit
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={handleSubmit}
-              color="secondary"
-              style={{
-                height: "60px",
-                fontSize: "1.2rem",
-                borderRadius: "20px",
-              }}
-            >
-              Submit
-            </Button>
-            </Grid>
-            </Grid>
         </Grid>
       </DialogContent>
     </Dialog>

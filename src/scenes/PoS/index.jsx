@@ -36,24 +36,38 @@ const PoS = ({ companyName, branch, invType }) => {
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
   const [discValue, setDiscValue] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
+  const [srv, setSrv] = useState(0);
+  const [numericKeypadType, setNumericKeypadType] = useState("Discount");
 
-  const handleOpenNumericKeypad = () => {
+
+
+
+  const handleOpenNumericKeypad = (type) => {
+    setNumericKeypadType(type);
     setNumericKeypadOpen(true);
   };
 
   const handleCloseNumericKeypad = () => {
     setNumericKeypadOpen(false);
   };
-  const handleDiscountSubmit = (discountValue) => {
+  const handleSubmit = (value) => {
     // Handle the submitted discount value
-    setDiscValue(discountValue);
-     console.log("Discount submitted:", discountValue);
+    if (numericKeypadType === "Discount") {
+      setDiscValue(value);
+      console.log("Discount submitted:", value);
+
+    } else if (numericKeypadType === "Service") {
+      setSrv(value);
+    }
    };
 
   useEffect(() => {
     const copy = meals.map((meal) => ({ ...meal, quantity: 1 }));
     setMealsCopy(copy);
+    console.log("haydeeeeeeeeeeee l copy kel ma tetghayar l meal", mealsCopy)
   }, [meals]);
+    console.log(" l copy kel ma tetghayar l meal", mealsCopy);
 
   useEffect(() => {
     fetchCategories();
@@ -134,6 +148,7 @@ console.log("company in pos ", companyName)
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
+      console.log("haydeeeeeeeeeeee l copy kel ma tetghayar l meal", meals);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
@@ -154,7 +169,7 @@ console.log("company in pos ", companyName)
 
   console.log("selected mealllllllll", selectedMeals)
 
-  const calculateTotalPrice = () => {
+  const calculateTotalDiscountedPrice = () => {
     let totalPrice = 0;
 
     selectedMeals.forEach((selectedMeal) => {
@@ -162,11 +177,28 @@ console.log("company in pos ", companyName)
       const meal = selectedMeal;
       const price = meal.UPrice || 0;
       const quantity = meal.quantity || 0;
-      totalPrice += price * quantity;
+      const Disc = meal.Disc || 0;
+      totalPrice += price * (1-Disc/100) * quantity;
     });
 
     return totalPrice.toFixed(2);
   };
+
+  const calculateTotalTax = () => {
+    let totalTax = 0;
+    selectedMeals.forEach((selectedMeal) => {
+      const meal = selectedMeal;
+      const tax = meal.Tax || 0;
+      totalTax += (meal.UPrice * (1 - meal.Disc / 100) * tax/100);
+    })
+    return totalTax.toFixed(2);
+  }
+
+   useEffect(() => {
+     const newFinalTotal = totalFinal;
+
+     setFinalTotal(newFinalTotal);
+   }, [calculateTotalDiscountedPrice, discValue, calculateTotalTax]);
 
   const handleDelete = (mealCode) => {
     // Filter out the selectedMeal with the given mealCode
@@ -188,7 +220,7 @@ console.log("company in pos ", companyName)
 
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.143:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}`,
+        `http://192.168.16.143:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
         {
           method: "POST",
           headers: {
@@ -206,6 +238,9 @@ console.log("company in pos ", companyName)
         setMealsCopy((prevMealsCopy) =>
           prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
         );
+        setFinalTotal(0);
+        setDiscValue(0);
+        setSrv(0);
         console.log("Order placed successfully!");
       } else {
         console.error("Failed to place order:", response.statusText);
@@ -214,6 +249,25 @@ console.log("company in pos ", companyName)
       console.error("Error placing order:", error);
     }
   };
+
+    const grossTotal = parseFloat(calculateTotalDiscountedPrice());
+    const serviceValue = (grossTotal * srv / 100);
+    const discountValue = ((grossTotal + serviceValue) * discValue/100);
+  const totalDiscount = (grossTotal + serviceValue) * (1 - discValue / 100);
+  console.log("dddddddddddddddddddddddddddd", totalDiscount);
+  let totalTax = 0;
+  if (
+    selectedMeals &&
+    selectedMeals.length > 0 &&
+    selectedMeals[0]["Tax"] !== undefined
+  ) {
+    totalTax =
+      (parseFloat(calculateTotalTax()) +
+      (serviceValue * selectedMeals[0]["Tax"]/100)) * (1 - discValue/100);
+  } 
+  console.log("total taxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", totalTax);
+  const totalFinal = totalDiscount + totalTax;
+  console.log("totalllll finalllllllll", totalFinal);
 
   return (
     <Box display="flex" height="90%">
@@ -270,7 +324,7 @@ console.log("company in pos ", companyName)
                   src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
                   alt={`Meal ${meal.ItemNo}`}
                 />
-                {meal.Disc && (
+                {meal.Disc !== null && meal.Disc !== 0 && (
                   <Box
                     sx={{
                       display: "flex",
@@ -284,8 +338,12 @@ console.log("company in pos ", companyName)
                       fontSize: "1.4rem",
                     }}
                   >
-                    <Typography>{`-${meal.Disc}%`}</Typography>
-                    <Typography>{`+${meal.Tax}%`}</Typography>
+                    {meal.Disc !== null && meal.Disc !== 0 && (
+                      <Typography>{`-${meal.Disc}%`}</Typography>
+                    )}
+                    {/* {meal.Tax !== null && meal.Tax !== 0 && (
+                      <Typography>{`+${meal.Tax}%`}</Typography>
+                    )} */}
                   </Box>
                 )}
                 <CardContent>
@@ -308,10 +366,10 @@ console.log("company in pos ", companyName)
                       {`$${meal.UPrice.toFixed(2)}`}
                     </Typography>
 
-                    {(meal.Disc || meal.Tax) && (
+                    {meal.Tax !== null && meal.Tax !== 0 && (
                       <Typography variant="body2">{`$${(
-                        meal.UPrice * (1 - meal.Disc / 100) +
-                        meal.UPrice * (1 - meal.Disc / 100) * (meal.Tax / 100)
+                        meal.UPrice +
+                        meal.UPrice * (meal.Tax / 100)
                       ).toFixed(2)}`}</Typography>
                     )}
                   </Box>
@@ -379,7 +437,7 @@ console.log("company in pos ", companyName)
 
         <Box
           sx={{
-            height: "70%",
+            height: "60%",
             width: "100%",
             alignContent: "center",
             overflowY: "auto",
@@ -409,11 +467,20 @@ console.log("company in pos ", companyName)
                       flex="1" // Allow this box to take the available space
                       padding="5px"
                     >
-                      <Typography variant="h4">
+                      <Typography variant="h4" style={{ display: "inline" }}>
                         {selectedMeal.ItemName}
+                        {selectedMeal.Tax !== null &&
+                          selectedMeal.Tax !== 0 && (
+                            <Typography style={{ display: "inline" }}>
+                              *
+                            </Typography>
+                          )}
                       </Typography>
                       <Typography variant="h4" color="text.secondary">
-                        {`$${selectedMeal.UPrice}`}
+                        {`$${
+                          selectedMeal.UPrice -
+                          (selectedMeal.UPrice * selectedMeal.Disc) / 100
+                        }`}
                       </Typography>
                     </Box>
 
@@ -456,7 +523,7 @@ console.log("company in pos ", companyName)
         </Box>
 
         {/* Final Box */}
-        <Box sx={{ height: "25%" }}>
+        <Box sx={{ height: "35%" }}>
           <Card
             style={{
               height: "100%",
@@ -470,26 +537,53 @@ console.log("company in pos ", companyName)
                 justifyContent: "space-between",
               }}
             >
-              <Box>
-                <Typography variant="h4" fontWeight="bold">Payment Summary</Typography>
-              </Box>
-              <Box
-                display="flex"
-                flexDirection="row"
-                justifyContent="space-between"
-              >
-                <Typography variant="h4">Price</Typography>
-                <Typography variant="h4">${calculateTotalPrice()}</Typography>
+              <Box sx={{ height: "10%" }}>
+                <Typography variant="h4" fontWeight="bold">
+                  Payment Summary
+                </Typography>
               </Box>
               <Box
                 sx={{
+                  height: "10%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h4">Gross Total</Typography>
+                <Typography variant="h4">${grossTotal}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: "12%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
                 }}
               >
                 <Button
-                  onClick={handleOpenNumericKeypad}
+                  onClick={() => handleOpenNumericKeypad("Service")}
+                  sx={{
+                    borderRadius: "20px",
+                    border: `2px solid ${colors.greenAccent[500]}`,
+                    color: colors.greenAccent[500],
+                  }}
+                >
+                  Service
+                </Button>
+                <Typography variant="h4">{srv}%</Typography>
+                <Typography variant="h4">${serviceValue.toFixed(2)}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: "12%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  onClick={() => handleOpenNumericKeypad("Discount")}
                   sx={{
                     borderRadius: "20px",
                     border: `2px solid ${colors.greenAccent[500]}`,
@@ -498,15 +592,60 @@ console.log("company in pos ", companyName)
                 >
                   Discount
                 </Button>
-                <Typography variant="h4">{ discValue}%</Typography>
+                <Typography variant="h4">{discValue}%</Typography>
+                <Typography variant="h4">
+                  ${discountValue.toFixed(2)}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: "10%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h4">Total</Typography>
+                <Typography variant="h4">
+                  ${totalDiscount.toFixed(2)}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: "10%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h4">Tax</Typography>
+                {selectedMeals && selectedMeals.length > 0 && (
+                  <Typography variant="h4">
+                    {selectedMeals[0]["Tax"]}%
+                  </Typography>
+                )}
+
+                <Typography variant="h4">${totalTax.toFixed(2)}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: "10%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="h4">Total</Typography>
+                <Typography variant="h4">${finalTotal.toFixed(2)}</Typography>
               </Box>
 
               <NumericKeypad
                 open={isNumericKeypadOpen}
                 onClose={handleCloseNumericKeypad}
-                onSubmit={handleDiscountSubmit}
+                onSubmit={handleSubmit}
+                type={numericKeypadType}
               />
-              <Box marginTop={2}>
+              <Box sx={{height: "10%"}}>
                 <Button
                   variant="contained"
                   color="secondary"

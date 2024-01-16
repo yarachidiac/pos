@@ -37,7 +37,7 @@ const Form = ({ setIsAuthenticated }) => {
     try {
       // Clear the company name from local storage
       //clearCompanyName();
-      const response = await fetch("http://192.168.16.131:8000/login", {
+      const response = await fetch("http://192.168.16.143:8000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
