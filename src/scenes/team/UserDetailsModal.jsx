@@ -316,12 +316,6 @@ const UserDetailsModal = ({
     }
   };
 
-  
-
-  
-
-  
-
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box

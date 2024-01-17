@@ -23,6 +23,8 @@ import { useEffect } from 'react';
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NumericKeypad from './NumericKeybad';
 import { format } from "date-fns";
+import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
+import ModifierDialog from './ModifierDialaog';
 
 const PoS = ({ companyName, branch, invType }) => {
   const theme = useTheme();
@@ -39,8 +41,39 @@ const PoS = ({ companyName, branch, invType }) => {
   const [finalTotal, setFinalTotal] = useState(0);
   const [srv, setSrv] = useState(0);
   const [numericKeypadType, setNumericKeypadType] = useState("Discount");
+  const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
+  const [selectedMealForModify, setSelectedMealForModify] = useState();
 
+  const handleModify = (itemNo) => {
+    setSelectedMealForModify(itemNo);
+    // Open the modifier dialog
+    setIsModifierDialogOpen(true);
+  };
+  const handleCloseModifierDialog = () => {
+    // Close the modifier dialog
+    setIsModifierDialogOpen(false);
+  };
+  const handleAddMod = (chosenModifiers, selectedMealForModify) => {
+    console.log("selectedd Modifierssssssssssssssss", chosenModifiers);
+    console.log("selected mealll for modifyyy", selectedMealForModify);
+    // Find the selected meal and update it with the chosen modifier information
+    const updatedSelectedMeals = selectedMeals.map((meal) => {
+      if (meal.ItemNo === selectedMealForModify) {
+        return {
+        ...meal,
+        chosenModifiers: chosenModifiers.map((modifier) => ({
+          ItemNo: modifier.ItemNo,
+          ItemName: modifier.ItemName,
+        })),
+      };
+      }
+      return meal;
+    });
 
+    // Update the state with the modified selectedMeals array
+    setSelectedMeals(updatedSelectedMeals);
+
+  };
 
 
   const handleOpenNumericKeypad = (type) => {
@@ -87,7 +120,7 @@ console.log("company in pos ", companyName)
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.143:8000/categories/${companyName}`
+        `http://192.168.16.108:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -144,7 +177,7 @@ console.log("company in pos ", companyName)
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.143:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.108:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -157,7 +190,7 @@ console.log("company in pos ", companyName)
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.143:8000/allitems/${companyName}`
+        `http://192.168.16.108:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -220,7 +253,7 @@ console.log("company in pos ", companyName)
 
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.143:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
+        `http://192.168.16.108:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
         {
           method: "POST",
           headers: {
@@ -261,16 +294,21 @@ console.log("company in pos ", companyName)
     selectedMeals.length > 0 &&
     selectedMeals[0]["Tax"] !== undefined
   ) {
-    totalTax =
-      (parseFloat(calculateTotalTax()) +
-      (serviceValue * selectedMeals[0]["Tax"]/100)) * (1 - discValue/100);
+    
+      const totalTaxSD = ((parseFloat(calculateTotalTax()) * (1 + srv/100))
+       * (1 - discValue / 100))
+    console.log(totalTaxSD);
+        const totall= ((serviceValue * selectedMeals[0]["Tax"] / 100) * (1 - discValue / 100))
+    console.log(totall);
+    totalTax = totalTaxSD + totall;
   } 
   console.log("total taxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", totalTax);
   const totalFinal = totalDiscount + totalTax;
   console.log("totalllll finalllllllll", totalFinal);
+  console.log("the finall meal with details", selectedMeals);
 
   return (
-    <Box display="flex" height="90%">
+    <Box sx={{ display: "flex", height: "90%", position: "relative" }}>
       {/* First Box (70% width) */}
       <Box width="70%" padding={2}>
         {/* Filter Buttons with Icons */}
@@ -482,6 +520,15 @@ console.log("company in pos ", companyName)
                           (selectedMeal.UPrice * selectedMeal.Disc) / 100
                         }`}
                       </Typography>
+                      {selectedMeal.chosenModifiers !== undefined && (
+                        <Typography>
+                          {selectedMeal.chosenModifiers.map((modifier) => (
+                            <span key={modifier.ItemNo}>
+                              {modifier.ItemName}
+                            </span>
+                          ))}
+                        </Typography>
+                      )}
                     </Box>
 
                     {/* Quantity and buttons */}
@@ -513,6 +560,11 @@ console.log("company in pos ", companyName)
                         onClick={() => handleDelete(selectedMeal.ItemNo)}
                       >
                         <DeleteOutlineOutlinedIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleModify(selectedMeal.ItemNo)}
+                      >
+                        <AutoFixHighOutlinedIcon />
                       </IconButton>
                     </Box>
                   </Box>
@@ -638,14 +690,13 @@ console.log("company in pos ", companyName)
                 <Typography variant="h4">Total</Typography>
                 <Typography variant="h4">${finalTotal.toFixed(2)}</Typography>
               </Box>
-
               <NumericKeypad
                 open={isNumericKeypadOpen}
                 onClose={handleCloseNumericKeypad}
                 onSubmit={handleSubmit}
                 type={numericKeypadType}
               />
-              <Box sx={{height: "10%"}}>
+              <Box sx={{ height: "10%" }}>
                 <Button
                   variant="contained"
                   color="secondary"
@@ -659,6 +710,13 @@ console.log("company in pos ", companyName)
           </Card>
         </Box>
       </Box>
+      <ModifierDialog
+        open={isModifierDialogOpen}
+        onClose={handleCloseModifierDialog}
+        companyName={companyName} // Pass the company name as a prop
+        handleAddMod={handleAddMod}
+        selectedMealForModify={selectedMealForModify}
+      />
     </Box>
   );
 };
