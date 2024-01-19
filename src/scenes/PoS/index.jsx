@@ -120,7 +120,7 @@ console.log("company in pos ", companyName)
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.108:8000/categories/${companyName}`
+        `http://192.168.16.147:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -177,7 +177,7 @@ console.log("company in pos ", companyName)
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.108:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.147:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -190,7 +190,7 @@ console.log("company in pos ", companyName)
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.108:8000/allitems/${companyName}`
+        `http://192.168.16.147:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -253,7 +253,7 @@ console.log("company in pos ", companyName)
 
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.108:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
+        `http://192.168.16.147:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
         {
           method: "POST",
           headers: {
@@ -485,12 +485,21 @@ console.log("company in pos ", companyName)
           }}
         >
           {selectedMeals.map((selectedMeal) => (
-            <Box sx={{ height: "20%" }}>
+            <Box sx={{ width: "100%" }}>
               <Card key={selectedMeal.ItemNo}>
-                <CardContent>
+                <CardContent //sx={{ width: "100%" }}
+                >
                   <Box sx={{ display: "flex", flexDirection: "row" }}>
                     {/* Display the image here */}
-                    <Box sx={{ height: "20%", width: "20%" }}>
+                    <Box
+                      sx={{
+                        height: "30%",
+                        width: "20%",
+                        alignItems: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
                       <CardMedia
                         component="img"
                         height="50"
@@ -500,12 +509,23 @@ console.log("company in pos ", companyName)
                       />
                     </Box>
                     <Box
-                      display="flex"
-                      flexDirection="column"
-                      flex="1" // Allow this box to take the available space
-                      padding="5px"
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        //flex: "1", // Allow this box to take the available space
+                        padding: "5px",
+                        height: "80%",
+                        width: "60%",
+                      }}
                     >
-                      <Typography variant="h4" style={{ display: "inline" }}>
+                      <Typography
+                        variant="h4"
+                        style={{
+                          display: "inline",
+                          height: "20%",
+                          width: "100%",
+                        }}
+                      >
                         {selectedMeal.ItemName}
                         {selectedMeal.Tax !== null &&
                           selectedMeal.Tax !== 0 && (
@@ -514,26 +534,41 @@ console.log("company in pos ", companyName)
                             </Typography>
                           )}
                       </Typography>
-                      <Typography variant="h4" color="text.secondary">
+                      <Typography
+                        variant="h4"
+                        color="text.secondary"
+                        style={{ height: "10%", width: "100%" }}
+                      >
                         {`$${
                           selectedMeal.UPrice -
                           (selectedMeal.UPrice * selectedMeal.Disc) / 100
                         }`}
                       </Typography>
                       {selectedMeal.chosenModifiers !== undefined && (
-                        <Typography>
-                          {selectedMeal.chosenModifiers.map((modifier) => (
-                            <span key={modifier.ItemNo}>
-                              {modifier.ItemName}
-                            </span>
-                          ))}
+                        <Typography style={{ height: "50%", width: "100%" }}>
+                          {selectedMeal.chosenModifiers.map(
+                            (modifier, index) => (
+                              <span key={index}>
+                                {index > 0 && ", "}{" "}
+                                {/* Add a comma if not the first modifier */}
+                                {modifier.ItemName}
+                              </span>
+                            )
+                          )}
                         </Typography>
                       )}
                     </Box>
 
                     {/* Quantity and buttons */}
-                    <Box display="flex" alignItems="center">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "40%",
+                      }}
+                    >
                       <IconButton
+                        //sx={{ width: "10%" }}
                         onClick={() =>
                           handleQuantityChange(
                             selectedMeal.ItemNo,
@@ -547,6 +582,7 @@ console.log("company in pos ", companyName)
                         {selectedMeal.quantity}
                       </Typography>
                       <IconButton
+                        //sx={{ width: "10%" }}
                         onClick={() =>
                           handleQuantityChange(
                             selectedMeal.ItemNo,
@@ -557,6 +593,7 @@ console.log("company in pos ", companyName)
                         <AddCircleOutlineOutlinedIcon />
                       </IconButton>
                       <IconButton
+                        // sx={{ width: "10%" }}
                         onClick={() => handleDelete(selectedMeal.ItemNo)}
                       >
                         <DeleteOutlineOutlinedIcon />

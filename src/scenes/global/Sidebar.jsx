@@ -228,6 +228,13 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              icon={<PointOfSaleOutlinedIcon />}
+              title="Manage PoS"
+              to="/ManagePoS"
+              selected={selected}
+              setSelected={setSelected}
+            />
             <SubItem
               title="Inventory Management"
               icon={<Inventory2OutlinedIcon />}

@@ -24,7 +24,7 @@ import { useState, useEffect } from "react";
 import Company from './scenes/company';
 import PoS from './scenes/PoS';
 import { setIn } from 'formik';
-
+import ManagePoS from './scenes/ManagePos';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -136,6 +136,17 @@ function App() {
                     path="/PoS"
                     element={
                       <PoS
+                        companyName={companyName}
+                        branch={branch}
+                        invType={invType}
+                        //setCompanyName={setCompanyName}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/ManagePoS"
+                    element={
+                      <ManagePoS
                         companyName={companyName}
                         branch={branch}
                         invType={invType}

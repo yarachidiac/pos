@@ -1,34 +1,28 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
-import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
-import AddUserDialog from "./AddUserDialog";
+//import AddUserDialog from "./AddUserDialog";
+import ItemDetailsModal from "./ItemDetailsModal";
 
-const Team = ({ companyName}) => {
+const ManagePoS = ({ companyName }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
 
   //const [companyName, setCompanyName] = useState("");
-  const [users, setUsers] = useState([]);
+  const [items, setItems] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
+  const [itemDetails, setItemDetails] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-
-  //const [selectedUserDetails, setSelectedUserDetails] = useState(null);
-  // const [userDetailsCopy, setUserDetailsCopy] = useState({
-  //   ...selectedUserDetails,
-  // });
 
   useEffect(() => {
     // Read company_name from localStorage
@@ -39,71 +33,27 @@ const Team = ({ companyName}) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.147:8000/users/${companyName}`)
+      fetch(`http://192.168.16.147:8000/allitemswithmod/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
 
           if (Array.isArray(data)) {
-            setUsers(data);
+            setItems(data);
           } else {
             console.error("Invalid data format received:", data);
           }
         })
         .catch((error) => console.error("Error fetching users", error));
     }
-  }, [userDetails]);
-
-  // useEffect(() => {
-  //   // Check if userDetails is truthy and open the modal
-  //   if (userDetails) {
-  //     setIsDetailsModalOpen(true);
-  //   }
-  // }, [userDetails]);
+  }, [itemDetails]);
 
   const handleRowClick = (params) => {
     // Open the details modal and set the selected user details
     setIsDetailsModalOpen(true);
-    setUserDetails(params.row);
+    setItemDetails(params.row);
   };
 
-  const closeDetailsModal = () => {
-    // Close the details modal
-    setIsDetailsModalOpen(false);
-    //setSelectedUserDetails(null);
-    setUserDetails(null);
-  };
-
-  const renderAccessLevelCell = ({ value }) => {
-    const iconMap = {
-      admin: <AdminPanelSettingsOutlinedIcon />,
-      manager: <SecurityOutlinedIcon />,
-      user: <LockOpenOutlinedIcon />,
-    };
-
-    const colorMap = {
-      admin: colors.greenAccent[600],
-      manager: colors.greenAccent[700],
-      user: colors.greenAccent[700],
-    };
-
-    return (
-      <Box
-        width="100%"
-        m="0 auto"
-        p="5px"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        backgroundColor={colorMap[value]}
-        borderRadius="4px"
-        color={colors.grey[100]}
-      >
-        {iconMap[value]}
-        <Typography sx={{ ml: "5px" }}>{value}</Typography>
-      </Box>
-    );
-  };
 
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
@@ -111,15 +61,8 @@ const Team = ({ companyName}) => {
 
   const columns = [
     {
-      field: "id",
-      headerName: "ID",
-      minWidth: 100,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-    },
-    {
-      field: "username",
-      headerName: "Username",
+      field: "GroupName",
+      headerName: "Group Name",
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -127,37 +70,23 @@ const Team = ({ companyName}) => {
       headerClassName: "header-cell", // Apply the custom style to the header
     },
     {
-      field: "password",
-      headerName: "Password",
+      field: "ItemNo",
+      headerName: "Item No",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
+    {
+      field: "ItemName",
+      headerName: "Item Name",
       headerAlign: "left",
       align: "left",
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
     },
-    // {
-    //   field: "phone",
-    //   headerName: "Phone",
-    //   flex: 1,
-    //   minWidth: 200,
-    // },
-    // {
-    //   field: "email",
-    //   headerName: "Email",
-    //   flex: 1,
-    //   minWidth: 250,
-    // },
-    // {
-    //   field: "accessLevel",
-    //   headerName: "Access Level",
-    //   flex: 1,
-    //   minWidth: 250,
-    //   type: "singleSelect",
-    //   valueOptions: ["manager", "user", "admin"],
-    //   editable: true,
-
-    //   renderCell: renderAccessLevelCell,
-    // },
   ];
 
   const handleAddUser = () => {
@@ -165,49 +94,49 @@ const Team = ({ companyName}) => {
     setIsDialogOpen(true);
   };
 
-  const handleUserDetailsChange = async (newUserDetails) => {
-    try {
-      console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.147:8000/addusers/${companyName}/${newUserDetails.name}`;
+//   const handleItemDetailsChange = async (newItemDetails) => {
+//     try {
+//       console.log("newUserDetailssssssssss", newItemDetails.name);
+//       const apiUrl = `http://192.168.16.147:8000/additems/${companyName}/${newItemDetails.name}`;
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUserDetails),
-      });
+//       const response = await fetch(apiUrl, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(newUserDetails),
+//       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+//       if (!response.ok) {
+//         throw new Error(`HTTP error! Status: ${response.status}`);
+//       }
 
-      const responseData = await response.json();
-      setSuccessMess(responseData.message);
-      setTimeout(() => {
-        setSuccessMess("");
-      }, 2000);
-      console.log("Response from the server:", responseData);
+//       const responseData = await response.json();
+//       setSuccessMess(responseData.message);
+//       setTimeout(() => {
+//         setSuccessMess("");
+//       }, 2000);
+//       console.log("Response from the server:", responseData);
 
-      // Fetch the details of the newly added user
-      const userDetailsResponse = await fetch(
-        `http://192.168.16.147:8000/getUserDetail/${companyName}/${newUserDetails.name}`
-      );
+//       // Fetch the details of the newly added user
+//       const userDetailsResponse = await fetch(
+//         `http://192.168.16.147:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+//       );
 
-      if (!userDetailsResponse.ok) {
-        throw new Error(`HTTP error! Status: ${userDetailsResponse.status}`);
-      }
+//       if (!userDetailsResponse.ok) {
+//         throw new Error(`HTTP error! Status: ${userDetailsResponse.status}`);
+//       }
 
-      const userDetailsData = await userDetailsResponse.json();
+//       const userDetailsData = await userDetailsResponse.json();
 
-      // Set the userDetails state with the details of the newly added user
-      setUserDetails(userDetailsData);
-      // Open the details modal
-      setIsDetailsModalOpen(true);
-    } catch (error) {
-      console.error("Error:", error.message);
-    }
-  };
+//       // Set the userDetails state with the details of the newly added user
+//       setUserDetails(userDetailsData);
+//       // Open the details modal
+//       setIsDetailsModalOpen(true);
+//     } catch (error) {
+//       console.error("Error:", error.message);
+//     }
+//   };
 
   const handleCloseDialog = () => {
     // Close the dialog when needed
@@ -228,7 +157,7 @@ const Team = ({ companyName}) => {
         alignItems="center"
       >
         <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Team" subtitle="Managing the Team Members" />
+          <Header title="Items" subtitle="Managing Items" />
         </Box>
         <Box
           sx={{
@@ -248,14 +177,13 @@ const Team = ({ companyName}) => {
           </Button>
         </Box>
       </Box>
-      <UserDetailsModal
+      <ItemDetailsModal
         isOpen={isDetailsModalOpen}
         setIsDetailsModalOpen={setIsDetailsModalOpen}
-        //setSelectedUserDetails={setSelectedUserDetails}
-        userDetails={userDetails}
-        setUserDetails={setUserDetails}
-        users={users}
-        setUsers={setUsers}
+        itemDetails={itemDetails}
+        setItemDetails={setItemDetails}
+        items={items}
+        setItems={setItems}
         companyName={companyName}
       />
       <Box
@@ -300,12 +228,13 @@ const Team = ({ companyName}) => {
       >
         <DataGrid
           style={{ height: "100%" }}
-          rows={users}
+          rows={items}
           columns={columns}
+          getRowId={(row) => row.ItemNo}
           //autoHeight
-          {...(users && users.initialState)}
+          {...(items && items.initialState)}
           initialState={{
-            ...users.initialState,
+            ...items.initialState,
             pagination: { paginationModel: { pageSize: 10 } },
           }}
           pageSizeOptions={[10, 20, 30]}
@@ -323,14 +252,14 @@ const Team = ({ companyName}) => {
           pagination // Add this line to enable pagination
         />
       </Box>
-      <AddUserDialog
+      {/* <AddUserDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         onAddUser={handleUserDetailsChange}
         successMess={successMess}
-      />
+      /> */}
     </Box>
   );
 };
 
-export default Team;
+export default ManagePoS;
