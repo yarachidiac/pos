@@ -223,14 +223,14 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
             />
             <Item
               icon={<PointOfSaleOutlinedIcon />}
-              title="PoS"
+              title="POS"
               to="/PoS"
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               icon={<PointOfSaleOutlinedIcon />}
-              title="Manage PoS"
+              title="Manage POS"
               to="/ManagePoS"
               selected={selected}
               setSelected={setSelected}

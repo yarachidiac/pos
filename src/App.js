@@ -35,7 +35,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
-
+  const [addTitle, setAddTitle] = useState("Add User");
+  
   useEffect(() => {
     // const handleResize = () => {
     //   setIsMobile(window.innerWidth <= 768);
@@ -120,6 +121,8 @@ function App() {
                         setBranch={setBranch}
                         setInvType={setInvType}
                         //setCompanyName={setCompanyName}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
                       />
                     }
                   />
@@ -150,6 +153,8 @@ function App() {
                         companyName={companyName}
                         branch={branch}
                         invType={invType}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
                         //setCompanyName={setCompanyName}
                       />
                     }

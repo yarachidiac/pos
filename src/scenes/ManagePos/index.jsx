@@ -7,10 +7,10 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-//import AddUserDialog from "./AddUserDialog";
+import AddUserDialog from "../team/AddUserDialog";
 import ItemDetailsModal from "./ItemDetailsModal";
 
-const ManagePoS = ({ companyName }) => {
+const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -33,7 +33,7 @@ const ManagePoS = ({ companyName }) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.147:8000/allitemswithmod/${companyName}`)
+      fetch(`http://192.168.16.115:8000/allitemswithmod/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -89,54 +89,55 @@ const ManagePoS = ({ companyName }) => {
     },
   ];
 
-  const handleAddUser = () => {
+  const handleAddItem = (title) => {
+    setAddTitle(title);
     // Open the modal when "Add" button is clicked
     setIsDialogOpen(true);
   };
 
-//   const handleItemDetailsChange = async (newItemDetails) => {
-//     try {
-//       console.log("newUserDetailssssssssss", newItemDetails.name);
-//       const apiUrl = `http://192.168.16.147:8000/additems/${companyName}/${newItemDetails.name}`;
+  const handleItemDetailsChange = async (newItemDetails) => {
+    try {
+      console.log("newUserDetailssssssssss", newItemDetails.name);
+      const apiUrl = `http://192.168.16.115:8000/additems/${companyName}/${newItemDetails.name}`;
 
-//       const response = await fetch(apiUrl, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(newUserDetails),
-//       });
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newItemDetails),
+      });
 
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! Status: ${response.status}`);
-//       }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
-//       const responseData = await response.json();
-//       setSuccessMess(responseData.message);
-//       setTimeout(() => {
-//         setSuccessMess("");
-//       }, 2000);
-//       console.log("Response from the server:", responseData);
+      const responseData = await response.json();
+      setSuccessMess(responseData.message);
+      setTimeout(() => {
+        setSuccessMess("");
+      }, 2000);
+      console.log("Response from the server:", responseData);
 
-//       // Fetch the details of the newly added user
-//       const userDetailsResponse = await fetch(
-//         `http://192.168.16.147:8000/getUserDetail/${companyName}/${newUserDetails.name}`
-//       );
+      // Fetch the details of the newly added user
+      const itemDetailsResponse = await fetch(
+        `http://192.168.16.115:8000/getItemDetail/${companyName}/${newItemDetails.name}`
+      );
 
-//       if (!userDetailsResponse.ok) {
-//         throw new Error(`HTTP error! Status: ${userDetailsResponse.status}`);
-//       }
+      if (!itemDetailsResponse.ok) {
+        throw new Error(`HTTP error! Status: ${itemDetailsResponse.status}`);
+      }
 
-//       const userDetailsData = await userDetailsResponse.json();
+      const itemDetailsData = await itemDetailsResponse.json();
 
-//       // Set the userDetails state with the details of the newly added user
-//       setUserDetails(userDetailsData);
-//       // Open the details modal
-//       setIsDetailsModalOpen(true);
-//     } catch (error) {
-//       console.error("Error:", error.message);
-//     }
-//   };
+      // Set the userDetails state with the details of the newly added user
+      setItemDetails(itemDetailsData);
+      // Open the details modal
+      setIsDetailsModalOpen(true);
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
 
   const handleCloseDialog = () => {
     // Close the dialog when needed
@@ -171,7 +172,7 @@ const ManagePoS = ({ companyName }) => {
             variant="contained"
             color="secondary"
             style={{ fontSize: "1.1rem" }}
-            onClick={handleAddUser}
+            onClick={() => handleAddItem("Add Item")}
           >
             Add
           </Button>
@@ -252,12 +253,13 @@ const ManagePoS = ({ companyName }) => {
           pagination // Add this line to enable pagination
         />
       </Box>
-      {/* <AddUserDialog
+      <AddUserDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
-        onAddUser={handleUserDetailsChange}
+        onAdd={handleItemDetailsChange}
         successMess={successMess}
-      /> */}
+        title={addTitle}
+      />
     </Box>
   );
 };

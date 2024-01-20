@@ -11,7 +11,7 @@ import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 
-const Team = ({ companyName}) => {
+const Team = ({ companyName, addTitle, setAddTitle}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -24,6 +24,7 @@ const Team = ({ companyName}) => {
   const [userDetails, setUserDetails] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
+
 
   //const [selectedUserDetails, setSelectedUserDetails] = useState(null);
   // const [userDetailsCopy, setUserDetailsCopy] = useState({
@@ -39,7 +40,7 @@ const Team = ({ companyName}) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.147:8000/users/${companyName}`)
+      fetch(`http://192.168.16.115:8000/users/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -160,7 +161,8 @@ const Team = ({ companyName}) => {
     // },
   ];
 
-  const handleAddUser = () => {
+  const handleAddUser = (title) => {
+    setAddTitle(title);
     // Open the modal when "Add" button is clicked
     setIsDialogOpen(true);
   };
@@ -168,7 +170,7 @@ const Team = ({ companyName}) => {
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
       console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.147:8000/addusers/${companyName}/${newUserDetails.name}`;
+      const apiUrl = `http://192.168.16.115:8000/addusers/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -191,7 +193,7 @@ const Team = ({ companyName}) => {
 
       // Fetch the details of the newly added user
       const userDetailsResponse = await fetch(
-        `http://192.168.16.147:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+        `http://192.168.16.115:8000/getUserDetail/${companyName}/${newUserDetails.name}`
       );
 
       if (!userDetailsResponse.ok) {
@@ -242,7 +244,7 @@ const Team = ({ companyName}) => {
             variant="contained"
             color="secondary"
             style={{ fontSize: "1.1rem" }}
-            onClick={handleAddUser}
+            onClick={() => handleAddUser("Add User")}
           >
             Add
           </Button>
@@ -326,8 +328,9 @@ const Team = ({ companyName}) => {
       <AddUserDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
-        onAddUser={handleUserDetailsChange}
+        onAdd={handleUserDetailsChange}
         successMess={successMess}
+        title={addTitle}
       />
     </Box>
   );

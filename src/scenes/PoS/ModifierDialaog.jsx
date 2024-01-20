@@ -32,7 +32,7 @@ const ModifierDialog = ({
   const fetchModifiers = async (companyName) => {
     try {
       const response = await fetch(
-        `http://192.168.16.147:8000/getModifiers/${companyName}`
+        `http://192.168.16.115:8000/getModifiers/${companyName}`
       );
       const data = await response.json();
       setModifiers(data);

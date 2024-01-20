@@ -13,8 +13,9 @@ import { useTheme } from "@mui/material/styles";
 const AddUserDialog = ({
   isOpen,
   onClose,
-  onAddUser,
+  onAdd,
   successMess,
+  title
 }) => {
   const [userName, setUserName] = useState("");
   const theme = useTheme();
@@ -23,7 +24,7 @@ const AddUserDialog = ({
   const handleAddUser = () => {
     // Perform any validation if needed
     // Call the onAddUser function with the new user details
-    onAddUser({ name: userName });
+    onAdd({ name: userName });
     setUserName("");
     // Close the dialog
     onClose();
@@ -41,11 +42,11 @@ const AddUserDialog = ({
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>
-        <Typography variant="h1">Add User</Typography>
+        <Typography variant="h1">{title}</Typography>
       </DialogTitle>
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <Typography variant="h4">Enter user details:</Typography>
+          {/* <Typography variant="h4">Enter user details:</Typography> */}
           <TextField
             label="Name"
             value={userName}

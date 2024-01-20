@@ -46,8 +46,10 @@ const ItemDetails = ({
   };
 
     const handleValueUpdate = (field, updatedValue) => {
-        console.log("fielddddd", field);
+      console.log("fielddddd", field);
+
       if (field === "GroupName") {
+        // For Select component
         setItemDetailsCopy((prev) => ({
           ...prev,
           GroupName: updatedValue.GroupName,
@@ -56,12 +58,15 @@ const ItemDetails = ({
         setSelectedGroupName(updatedValue.GroupName);
         setSelectedGroup(updatedValue); // Also update the selected group object
       } else {
+        // For TextField and other fields
         setItemDetailsCopy((prev) => ({
           ...prev,
           [field]: updatedValue,
+          GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
         }));
       }
     };
+
 
   const handleCellClick = (index) => {
     if (!editableCells.includes(index)) {
@@ -87,7 +92,7 @@ const ItemDetails = ({
       const fetchGroupItems = async () => {
         try {
           const response = await fetch(
-            `http://192.168.16.147:8000/groupitems/${companyName}`
+            `http://192.168.16.115:8000/groupitems/${companyName}`
           );
           if (!response.ok) {
             throw new Error("Error fetching groupItems");
