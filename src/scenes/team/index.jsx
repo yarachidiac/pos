@@ -40,7 +40,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.115:8000/users/${companyName}`)
+      fetch(`http://192.168.16.103:8000/users/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -170,7 +170,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
       console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.115:8000/addusers/${companyName}/${newUserDetails.name}`;
+      const apiUrl = `http://192.168.16.103:8000/addusers/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -193,7 +193,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
 
       // Fetch the details of the newly added user
       const userDetailsResponse = await fetch(
-        `http://192.168.16.115:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+        `http://192.168.16.103:8000/getUserDetail/${companyName}/${newUserDetails.name}`
       );
 
       if (!userDetailsResponse.ok) {

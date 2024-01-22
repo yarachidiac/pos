@@ -32,7 +32,7 @@ const ModifierDialog = ({
   const fetchModifiers = async (companyName) => {
     try {
       const response = await fetch(
-        `http://192.168.16.115:8000/getModifiers/${companyName}`
+        `http://192.168.16.103:8000/getModifiers/${companyName}`
       );
       const data = await response.json();
       setModifiers(data);
@@ -119,10 +119,15 @@ const ModifierDialog = ({
                         borderRadius: "20px",
                         border: `2px solid ${colors.greenAccent[500]}`,
                         color: colors.greenAccent[500],
-                        "&:hover": {
-                          backgroundColor: colors.greenAccent[500],
-                          color: colors.primary[500],
-                        },
+                        backgroundColor: selectedModifiers.includes(modifier)
+                          ? colors.greenAccent[500] // Set background color to green for selected modifiers
+                          : "inherit", // Set to default background color
+                        color: selectedModifiers.includes(modifier)
+                          ? colors.primary[500] : colors.greenAccent[500]
+                        // "&:hover": {
+                        //   backgroundColor: colors.greenAccent[500],
+                        //   color: colors.primary[500],
+                        // },
                       }}
                       onClick={() => handleChooseModifier(modifier)}
                     >

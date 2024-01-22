@@ -120,7 +120,7 @@ console.log("company in pos ", companyName)
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.115:8000/categories/${companyName}`
+        `http://192.168.16.103:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -177,7 +177,7 @@ console.log("company in pos ", companyName)
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.115:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.103:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -190,7 +190,7 @@ console.log("company in pos ", companyName)
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.115:8000/allitems/${companyName}`
+        `http://192.168.16.103:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -253,7 +253,7 @@ console.log("company in pos ", companyName)
 
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.115:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
+        `http://192.168.16.103:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
         {
           method: "POST",
           headers: {

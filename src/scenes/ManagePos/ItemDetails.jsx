@@ -46,8 +46,6 @@ const ItemDetails = ({
   };
 
     const handleValueUpdate = (field, updatedValue) => {
-      console.log("fielddddd", field);
-
       if (field === "GroupName") {
         // For Select component
         setItemDetailsCopy((prev) => ({
@@ -57,6 +55,15 @@ const ItemDetails = ({
         }));
         setSelectedGroupName(updatedValue.GroupName);
         setSelectedGroup(updatedValue); // Also update the selected group object
+      } else if (field === "Image") {
+        // For file input
+        const file = updatedValue.target.files[0];
+        console.log("in handlee file ", file);
+        setItemDetailsCopy((prev) => ({
+          ...prev,
+          [field]: file.name,
+          GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
+        }));
       } else {
         // For TextField and other fields
         setItemDetailsCopy((prev) => ({
@@ -66,6 +73,7 @@ const ItemDetails = ({
         }));
       }
     };
+
 
 
   const handleCellClick = (index) => {
@@ -92,7 +100,7 @@ const ItemDetails = ({
       const fetchGroupItems = async () => {
         try {
           const response = await fetch(
-            `http://192.168.16.115:8000/groupitems/${companyName}`
+            `http://192.168.16.103:8000/groupitems/${companyName}`
           );
           if (!response.ok) {
             throw new Error("Error fetching groupItems");
@@ -207,7 +215,6 @@ const ItemDetails = ({
               </>
             ) : key === "ItemNo" ||
               key === "ItemName" ||
-              key === "Image" ||
               key === "UPrice" ||
               key === "Disc" ||
               key === "Tax" ||
@@ -233,6 +240,52 @@ const ItemDetails = ({
                 onClick={() => handleCellClick(index)}
               >
                 <Typography variant="h4">{value}</Typography>
+              </div>
+            ) : key === "Active" ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Checkbox
+                    checked={value === "Y"}
+                    onChange={() =>
+                      handleValueUpdate(key, value === "Y" ? "N" : "Y")
+                    }
+                  />
+                  <Typography variant="h4">Y</Typography>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Checkbox
+                    checked={value === "N"}
+                    onChange={() =>
+                      handleValueUpdate(key, value === "N" ? "Y" : "N")
+                    }
+                  />
+                  <Typography variant="h4">N</Typography>
+                </div>
+              </div>
+            ) : key === "Image" ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                }}
+              >
+                <input
+                  type="file"
+                  accept=".jpg, .jpeg, .png"
+                  onChange={(e) => handleValueUpdate(key, e)}
+                  id="inputFile"                  
+                />
+                {value && typeof value === "string" && (
+                  <Typography variant="h4">{value}</Typography>
+                )}
               </div>
             ) : (
               <div
@@ -271,6 +324,13 @@ const ItemDetails = ({
 
   return (
     <Box style={{ height: "100%" }}>
+      <style>
+        {`
+          #file-input {
+            display: none;
+          }
+        `}
+      </style>
       <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
           <TableBody>
