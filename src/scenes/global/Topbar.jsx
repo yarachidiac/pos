@@ -39,8 +39,8 @@ const Topbar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
   // }, []);
 
   return (
-    <Box>
-      <Box display="flex">
+    <Box sx={{width:"70%"}}>
+      <Box display="flex" >
         {isMobile && isCollapsed && (
           <IconButton onClick={handleMenuToggle}>
             <MenuOutlinedIcon />

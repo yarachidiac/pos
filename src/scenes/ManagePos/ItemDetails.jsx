@@ -281,7 +281,7 @@ const ItemDetails = ({
                   type="file"
                   accept=".jpg, .jpeg, .png"
                   onChange={(e) => handleValueUpdate(key, e)}
-                  id="inputFile"                  
+                  id="inputFile"
                 />
                 {value && typeof value === "string" && (
                   <Typography variant="h4">{value}</Typography>
@@ -296,6 +296,7 @@ const ItemDetails = ({
                 }}
               >
                 <Select
+                  sx={{ width: "100%", height: "100%", textAlign: "center" }}
                   value={selectedGroupName}
                   onChange={(e) => {
                     const selectedValue = e.target.value;
@@ -306,11 +307,14 @@ const ItemDetails = ({
                     setSelectedGroup(selectedGroupObject);
                     handleValueUpdate(key, selectedGroupObject);
                   }}
-                  style={{ marginRight: "10px" }}
                 >
                   {groupNames !== undefined &&
                     groupNames.map((item) => (
-                      <MenuItem key={item.GroupNo} value={item.GroupName}>
+                      <MenuItem
+                        key={item.GroupNo}
+                        value={item.GroupName}
+                       
+                      >
                         {item.GroupName}
                       </MenuItem>
                     ))}

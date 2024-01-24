@@ -142,6 +142,7 @@ function App() {
                         companyName={companyName}
                         branch={branch}
                         invType={invType}
+                        isCollapsed={isCollapsed}
                         //setCompanyName={setCompanyName}
                       />
                     }

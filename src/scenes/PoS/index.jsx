@@ -26,7 +26,7 @@ import { format } from "date-fns";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
 import ModifierDialog from './ModifierDialaog';
 
-const PoS = ({ companyName, branch, invType }) => {
+const PoS = ({ companyName, branch, invType, isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -308,15 +308,18 @@ console.log("company in pos ", companyName)
   console.log("the finall meal with details", selectedMeals);
 
   return (
-    <Box sx={{ display: "flex", height: "90%", position: "relative" }}>
+    <>
       {/* First Box (70% width) */}
-      <Box width="70%" padding={2}>
+      <Box width="70%" padding={2} height="90%">
         {/* Filter Buttons with Icons */}
         <Box
-          display="flex"
-          justifyContent="space-between"
-          marginBottom={3}
-          height="7%"
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "3%",
+            height: "7%",
+            width: "98%",
+          }}
         >
           <Button
             style={{
@@ -325,6 +328,7 @@ console.log("company in pos ", companyName)
                   ? colors.greenAccent[500]
                   : colors.primary[500],
               color: selectedCategory === "All" ? colors.primary[500] : "black",
+              //borderRadius: "20px",
             }}
             startIcon={<LocalCafeIcon />}
             onClick={() => handleCategoryClick("All")}
@@ -352,270 +356,301 @@ console.log("company in pos ", companyName)
           ))}
         </Box>
         {/* Cards in Grid Layout */}
-        <Grid container spacing={2} sx={{ overflow: "auto", height: "94%" }}>
-          {mealsCopy.map((meal) => (
-            <Grid item xs={12} sm={6} md={4} key={meal.ItemNo}>
-              <Card sx={{ position: "relative" }}>
-                <CardMedia
-                  component="img"
-                  height="180"
-                  src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
-                  alt={`Meal ${meal.ItemNo}`}
-                />
-                {meal.Disc !== null && meal.Disc !== 0 && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      position: "absolute",
-                      top: 0,
-                      right: 0,
-                      backgroundColor: "red", // Add your preferred styling
-                      padding: "0.2rem 0.5rem",
-                      color: "#fff",
-                      fontSize: "1.4rem",
-                    }}
-                  >
-                    {meal.Disc !== null && meal.Disc !== 0 && (
-                      <Typography>{`-${meal.Disc}%`}</Typography>
-                    )}
-                    {/* {meal.Tax !== null && meal.Tax !== 0 && (
-                      <Typography>{`+${meal.Tax}%`}</Typography>
-                    )} */}
-                  </Box>
-                )}
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      //marginX: 1,
-                    }}
-                  >
-                    <Typography variant="h4">{meal.ItemName}</Typography>
-
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        textDecoration:
-                          meal.Disc || meal.Tax ? "line-through" : "none",
-                      }}
-                    >
-                      {`$${meal.UPrice.toFixed(2)}`}
-                    </Typography>
-
-                    {meal.Tax !== null && meal.Tax !== 0 && (
-                      <Typography variant="body2">{`$${(
-                        meal.UPrice +
-                        meal.UPrice * (meal.Tax / 100)
-                      ).toFixed(2)}`}</Typography>
-                    )}
-                  </Box>
-                  <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <IconButton
-                        onClick={() =>
-                          handleQuantityChange(meal.ItemNo, meal.quantity - 1)
-                        }
-                      >
-                        <RemoveCircleOutlineOutlinedIcon />
-                      </IconButton>
-                      <Typography variant="body1">{meal.quantity}</Typography>
-                      <IconButton
-                        onClick={() =>
-                          handleQuantityChange(meal.ItemNo, meal.quantity + 1)
-                        }
-                      >
-                        <AddCircleOutlineOutlinedIcon />
-                      </IconButton>
-                    </Box>
-
-                    <Button
-                      //  variant="outlined"
-                      //  color="secondary"
-                      sx={{
-                        fontSize: "0.9rem",
-                        borderRadius: "20px",
-                        border: `2px solid ${colors.greenAccent[500]}`,
-                        color: colors.greenAccent[500],
-                        "&:hover": {
-                          backgroundColor: colors.greenAccent[500],
-                          color: colors.primary[500],
-                        },
-                      }}
-                      onClick={() =>
-                        handleOrderClick(meal.ItemNo, meal.quantity)
-                      }
-                    >
-                      Choose
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-      {/* Second Box (30% width) */}
-      <Box
-        width="30%"
-        padding={2}
-        height="100%"
-        style={{ backgroundColor: colors.primary[500] }}
-      >
-        {/* Order Summary Box */}
-        <Box sx={{ height: "5%" }}>
-          <Typography variant="h6">Order Summary</Typography>
-          <Box borderBottom="1px solid #ccc" my={1}></Box>
-        </Box>
-
-        {/* ListCards */}
-
-        <Box
-          sx={{
-            height: "60%",
-            width: "100%",
-            alignContent: "center",
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: theme.spacing(2), // Add some spacing between each ListCard
-          }}
-        >
-          {selectedMeals.map((selectedMeal) => (
-            <Box sx={{ width: "100%" }}>
-              <Card key={selectedMeal.ItemNo}>
-                <CardContent //sx={{ width: "100%" }}
-                >
-                  <Box sx={{ display: "flex", flexDirection: "row" }}>
-                    {/* Display the image here */}
-                    <Box
-                      sx={{
-                        height: "30%",
-                        width: "20%",
-                        alignItems: "center",
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        height="50"
-                        width="100%"
-                        image={`${process.env.PUBLIC_URL}/${companyName}/images/${selectedMeal.Image}`}
-                        alt={`Meal ${selectedMeal.ItemNo}`}
-                      />
-                    </Box>
+        <Box sx={{ overflowY: "auto", height: "90%" }}>
+          <Grid container spacing={2}>
+            {mealsCopy.map((meal) => (
+              <Grid item xs={12} sm={6} md={4} key={meal.ItemNo}>
+                <Card sx={{ position: "relative" }}>
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
+                    alt={`Meal ${meal.ItemNo}`}
+                  />
+                  {meal.Disc !== null && meal.Disc !== 0 && (
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "column",
-                        //flex: "1", // Allow this box to take the available space
-                        padding: "5px",
-                        height: "80%",
-                        width: "60%",
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        backgroundColor: "red", // Add your preferred styling
+                        padding: "0.2rem 0.5rem",
+                        color: "#fff",
+                        fontSize: "1.4rem",
                       }}
                     >
-                      <Typography
-                        variant="h4"
-                        style={{
-                          display: "inline",
-                          height: "20%",
-                          width: "100%",
-                        }}
-                      >
-                        {selectedMeal.ItemName}
-                        {selectedMeal.Tax !== null &&
-                          selectedMeal.Tax !== 0 && (
-                            <Typography style={{ display: "inline" }}>
-                              *
-                            </Typography>
-                          )}
-                      </Typography>
-                      <Typography
-                        variant="h4"
-                        color="text.secondary"
-                        style={{ height: "10%", width: "100%" }}
-                      >
-                        {`$${
-                          selectedMeal.UPrice -
-                          (selectedMeal.UPrice * selectedMeal.Disc) / 100
-                        }`}
-                      </Typography>
-                      {selectedMeal.chosenModifiers !== undefined && (
-                        <Typography style={{ height: "50%", width: "100%" }}>
-                          {selectedMeal.chosenModifiers.map(
-                            (modifier, index) => (
-                              <span key={index}>
-                                {index > 0 && ", "}{" "}
-                                {/* Add a comma if not the first modifier */}
-                                {modifier.ItemName}
-                              </span>
-                            )
-                          )}
-                        </Typography>
+                      {meal.Disc !== null && meal.Disc !== 0 && (
+                        <Typography>{`-${meal.Disc}%`}</Typography>
                       )}
+                      {/* {meal.Tax !== null && meal.Tax !== 0 && (
+                      <Typography>{`+${meal.Tax}%`}</Typography>
+                    )} */}
                     </Box>
-
-                    {/* Quantity and buttons */}
+                  )}
+                  <CardContent>
                     <Box
                       sx={{
                         display: "flex",
-                        alignItems: "center",
-                        width: "40%",
+                        flexDirection: "row",
+                        //marginX: 1,
                       }}
                     >
-                      <IconButton
-                        //sx={{ width: "10%" }}
-                        onClick={() =>
-                          handleQuantityChange(
-                            selectedMeal.ItemNo,
-                            selectedMeal.quantity - 1
-                          )
-                        }
+                      <Typography variant="h4">{meal.ItemName}</Typography>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          textDecoration:
+                            meal.Disc || meal.Tax ? "line-through" : "none",
+                        }}
                       >
-                        <RemoveCircleOutlineOutlinedIcon />
-                      </IconButton>
-                      <Typography variant="body1">
-                        {selectedMeal.quantity}
+                        {`$${meal.UPrice.toFixed(2)}`}
                       </Typography>
-                      <IconButton
-                        //sx={{ width: "10%" }}
+
+                      {meal.Tax !== null && meal.Tax !== 0 && (
+                        <Typography variant="body2">{`$${(
+                          meal.UPrice +
+                          meal.UPrice * (meal.Tax / 100)
+                        ).toFixed(2)}`}</Typography>
+                      )}
+                    </Box>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Box display="flex" alignItems="center">
+                        <IconButton
+                          onClick={() =>
+                            handleQuantityChange(meal.ItemNo, meal.quantity - 1)
+                          }
+                        >
+                          <RemoveCircleOutlineOutlinedIcon
+                            sx={{ fontSize: "35px" }}
+                          />
+                        </IconButton>
+                        <Typography variant="body1">{meal.quantity}</Typography>
+                        <IconButton
+                          onClick={() =>
+                            handleQuantityChange(meal.ItemNo, meal.quantity + 1)
+                          }
+                        >
+                          <AddCircleOutlineOutlinedIcon
+                            sx={{ fontSize: "35px" }}
+                          />
+                        </IconButton>
+                      </Box>
+
+                      <Button
+                        //  variant="outlined"
+                        //  color="secondary"
+                        sx={{
+                          fontSize: "0.9rem",
+                          borderRadius: "20px",
+                          border: `2px solid ${colors.greenAccent[500]}`,
+                          color: colors.greenAccent[500],
+                          "&:hover": {
+                            backgroundColor: colors.greenAccent[500],
+                            color: colors.primary[500],
+                          },
+                        }}
                         onClick={() =>
-                          handleQuantityChange(
-                            selectedMeal.ItemNo,
-                            selectedMeal.quantity + 1
-                          )
+                          handleOrderClick(meal.ItemNo, meal.quantity)
                         }
                       >
-                        <AddCircleOutlineOutlinedIcon />
-                      </IconButton>
+                        Choose
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Box>
+      {/* Second Box (30% width) */}
+
+      <Box
+        sx={{
+          height: "100%",
+          width: isCollapsed ? "30%" : "26%",
+          top: 0,
+          right: 0,
+          position: "absolute",
+          paddingLeft: "1%",
+          paddingTop: "1%",
+        }}
+      >
+        <Box sx={{ height: "60%", backgroundColor: colors.primary[500] }}>
+          {/* Order Summary Box */}
+          <Box sx={{ height: "10%" }}>
+            <Typography variant="h6">Order Summary</Typography>
+            <Box borderBottom="1px solid #ccc" my={1}></Box>
+          </Box>
+
+          {/* ListCards */}
+
+          <Box
+            sx={{
+              height: "90%",
+              width: "100%",
+              alignContent: "center",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: theme.spacing(2), // Add some spacing between each ListCard
+            }}
+          >
+            {selectedMeals.map((selectedMeal) => (
+              <Box sx={{ width: "100%" }}>
+                <Card key={selectedMeal.ItemNo}>
+                  <CardContent //sx={{ width: "100%" }}
+                  >
+                    <Box sx={{ display: "flex", flexDirection: "row" }}>
                       <IconButton
+                        sx={{ width: "7%" }}
                         // sx={{ width: "10%" }}
                         onClick={() => handleDelete(selectedMeal.ItemNo)}
                       >
-                        <DeleteOutlineOutlinedIcon />
+                        <DeleteOutlineOutlinedIcon sx={{ fontSize: "30px" }} />
                       </IconButton>
-                      <IconButton
-                        onClick={() => handleModify(selectedMeal.ItemNo)}
+                      {/* Display the image here */}
+                      {/* <Box
+                        sx={{
+                          height: "30%",
+                          width: "20%",
+                          alignItems: "center",
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
                       >
-                        <AutoFixHighOutlinedIcon />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
-          ))}
-        </Box>
+                        <CardMedia
+                          component="img"
+                          height="50"
+                          width="100%"
+                          image={`${process.env.PUBLIC_URL}/${companyName}/images/${selectedMeal.Image}`}
+                          alt={`Meal ${selectedMeal.ItemNo}`}
+                        />
+                      </Box> */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          //flex: "1", // Allow this box to take the available space
+                          padding: "5px",
+                          height: "100%",
+                          width: "43%",
+                        }}
+                      >
+                        <Typography
+                          variant="h4"
+                          style={{
+                            display: "inline",
+                            height: "20%",
+                            width: "100%",
+                          }}
+                        >
+                          {selectedMeal.ItemName}
+                          {selectedMeal.Tax !== null &&
+                            selectedMeal.Tax !== 0 && (
+                              <Typography style={{ display: "inline" }}>
+                                *
+                              </Typography>
+                            )}
+                        </Typography>
+                        <Typography
+                          variant="h4"
+                          color="text.secondary"
+                          style={{ height: "10%", width: "100%" }}
+                        >
+                          {`$${
+                            selectedMeal.UPrice -
+                            (selectedMeal.UPrice * selectedMeal.Disc) / 100
+                          }`}
+                        </Typography>
+                        {selectedMeal.chosenModifiers !== undefined && (
+                          <Typography style={{ height: "50%", width: "100%" }}>
+                            {selectedMeal.chosenModifiers.map(
+                              (modifier, index) => (
+                                <span key={index}>
+                                  {index > 0 && ", "}{" "}
+                                  {/* Add a comma if not the first modifier */}
+                                  {modifier.ItemName}
+                                </span>
+                              )
+                            )}
+                          </Typography>
+                        )}
+                      </Box>
 
+                      {/* Quantity and buttons */}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          width: "50%",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            width: "30%",
+                          }}
+                        >
+                          <IconButton
+                            onClick={() =>
+                              handleQuantityChange(
+                                selectedMeal.ItemNo,
+                                selectedMeal.quantity - 1
+                              )
+                            }
+                          >
+                            <RemoveCircleOutlineOutlinedIcon
+                              sx={{ fontSize: "35px" }}
+                            />
+                          </IconButton>
+                          <Typography variant="body1" sx={{ width: "25%" }}>
+                            {selectedMeal.quantity}
+                          </Typography>
+                          <IconButton
+                            //sx={{ width: "10%" }}
+                            onClick={() =>
+                              handleQuantityChange(
+                                selectedMeal.ItemNo,
+                                selectedMeal.quantity + 1
+                              )
+                            }
+                          >
+                            <AddCircleOutlineOutlinedIcon
+                              sx={{ fontSize: "35px" }}
+                            />
+                          </IconButton>
+                        </Box>
+
+                        <IconButton
+                          sx={{ width: "20%" }}
+                          onClick={() => handleModify(selectedMeal.ItemNo)}
+                        >
+                          <AutoFixHighOutlinedIcon sx={{ fontSize: "35px" }} />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Box>
+            ))}
+          </Box>
+        </Box>
         {/* Final Box */}
-        <Box sx={{ height: "35%" }}>
+        <Box sx={{ height: "40%" }}>
           <Card
             style={{
               height: "100%",
+              backgroundColor: colors.primary[400],
             }}
           >
             <CardContent
@@ -754,7 +789,7 @@ console.log("company in pos ", companyName)
         handleAddMod={handleAddMod}
         selectedMealForModify={selectedMealForModify}
       />
-    </Box>
+    </>
   );
 };
 
