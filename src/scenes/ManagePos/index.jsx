@@ -33,7 +33,7 @@ const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.103:8000/allitemswithmod/${companyName}`)
+      fetch(`http://192.168.16.113:8000/allitemswithmod/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -98,7 +98,7 @@ const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
   const handleItemDetailsChange = async (newItemDetails) => {
     try {
       console.log("newUserDetailssssssssss", newItemDetails.name);
-      const apiUrl = `http://192.168.16.103:8000/additems/${companyName}/${newItemDetails.name}`;
+      const apiUrl = `http://192.168.16.113:8000/additems/${companyName}/${newItemDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -121,7 +121,7 @@ const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
 
       // Fetch the details of the newly added user
       const itemDetailsResponse = await fetch(
-        `http://192.168.16.103:8000/getItemDetail/${companyName}/${newItemDetails.name}`
+        `http://192.168.16.113:8000/getItemDetail/${companyName}/${newItemDetails.name}`
       );
 
       if (!itemDetailsResponse.ok) {

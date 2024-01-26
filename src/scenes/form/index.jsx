@@ -27,7 +27,12 @@ const userSchema = yup.object().shape({
 
 // ... (your existing code)
 
-const Form = ({ setIsAuthenticated }) => {
+const Form = ({
+  setIsAuthenticated,
+  setCompanyName,
+  setInvType,
+  setBranch,
+}) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -37,7 +42,7 @@ const Form = ({ setIsAuthenticated }) => {
     try {
       // Clear the company name from local storage
       //clearCompanyName();
-      const response = await fetch("http://192.168.16.103:8000/login", {
+      const response = await fetch("http://192.168.16.113:8000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,12 +59,15 @@ const Form = ({ setIsAuthenticated }) => {
 
       if (response.ok) {
         const responseUser = await response.json();
-        localStorage.setItem("company_name", values.company_name);
+         localStorage.setItem("company_name", values.company_name);
+        await setCompanyName(localStorage.getItem("company_name"));
         console.log("logged innn userrrrrr", responseUser.user["Branch"]);
-        localStorage.setItem("user_branch", responseUser.user["Branch"]);
-        localStorage.setItem("user_invType", responseUser.user["SAType"]);
-        setIsAuthenticated(true);
-
+         localStorage.setItem("user_branch", responseUser.user["Branch"]);
+        await setBranch(localStorage.getItem("user_branch"));
+          localStorage.setItem("user_invType", responseUser.user["SAType"]);
+         await setInvType(localStorage.getItem("user_invType"));
+        sessionStorage.setItem("isAuthenticated", "true");
+        await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"))
         //updateCompanyName(values.company_name);
       } else {
         // Handle authentication error
@@ -77,7 +85,7 @@ const Form = ({ setIsAuthenticated }) => {
           sx={{
             padding: 3,
             textAlign: "center",
-            background: colors.grey[600],
+            background: colors.primary[500],
           }}
         >
           <Typography variant="h5" mb={3}>
@@ -146,6 +154,7 @@ const Form = ({ setIsAuthenticated }) => {
                       variant="contained"
                       color="primary"
                       fullWidth
+                      style={{ backgroundColor: colors.greenAccent[500] }}
                     >
                       Login
                     </Button>

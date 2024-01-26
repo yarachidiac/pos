@@ -32,52 +32,38 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companyName, setCompanyName] = useState(""); 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   
-  useEffect(() => {
-    // const handleResize = () => {
-    //   setIsMobile(window.innerWidth <= 768);
-    //   if (window.innerWidth > 768) {
-    //     setIsCollapsed(true);
-    //   } else {
-    //     setIsCollapsed(true);
-    //   }
-    // };
+ useEffect(() => {
+   const initializeAuthentication = async () => {
+     try {
+       const storedAuthStatus = sessionStorage.getItem("isAuthenticated");
 
-    // window.addEventListener("resize", handleResize);
+       if (storedAuthStatus === "true") {
+         const storedCompanyName = localStorage.getItem("company_name");
+         const storedBranch = localStorage.getItem("user_branch");
+         const storedInvType = localStorage.getItem("user_invType");
 
-    const initializeAuthentication = async () => {
-      try {
-        const storedCompanyName = localStorage.getItem("company_name");
-        const storedBranch = localStorage.getItem("user_branch");
-        const storedInvType = localStorage.getItem("user_invType");
+         setCompanyName(storedCompanyName);
+         setBranch(storedBranch);
+         setInvType(storedInvType);
+         setIsAuthenticated(true);
+       } else {
+         setIsAuthenticated(false);
+       }
+     } catch (error) {
+       console.error("Error initializing authentication:", error);
+     } finally {
+       setLoading(false);
+     }
+   };
 
-        if (storedCompanyName) {
-          setCompanyName(storedCompanyName);
-          setIsAuthenticated(true);
-          setBranch(storedBranch);
-          setInvType(storedInvType);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Error initializing authentication:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+   initializeAuthentication();
+ }, [setCompanyName, setBranch, setInvType]);
 
-    // window.addEventListener("resize", handleResize);
-
-    initializeAuthentication();
-
-    // return () => {
-    //   window.removeEventListener("resize", handleResize);
-    // };
-  }, []);
 
   if (loading) {
     return <div></div>;
@@ -91,6 +77,9 @@ function App() {
           {!isAuthenticated ? (
             <Form
               setIsAuthenticated={setIsAuthenticated}
+              setCompanyName={setCompanyName}
+              setInvType={setInvType}
+              setBranch={setBranch}
               // companyName={companyName}
               // setCompanyName={setCompanyName}
             />

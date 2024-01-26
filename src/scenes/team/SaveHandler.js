@@ -12,7 +12,7 @@ const handleSave = async (
 
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
-      `http://192.168.16.103:8000/users/${companyName}/${userDetails.id}`,
+      `http://192.168.16.113:8000/users/${companyName}/${userDetails.id}`,
       {
         method: "POST",
         headers: {

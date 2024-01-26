@@ -26,7 +26,7 @@ import { format } from "date-fns";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
 import ModifierDialog from './ModifierDialaog';
 
-const PoS = ({ companyName, branch, invType, isCollapsed }) => {
+const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -44,6 +44,8 @@ const PoS = ({ companyName, branch, invType, isCollapsed }) => {
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
 
+ 
+
   const handleModify = (itemNo) => {
     setSelectedMealForModify(itemNo);
     // Open the modifier dialog
@@ -53,28 +55,37 @@ const PoS = ({ companyName, branch, invType, isCollapsed }) => {
     // Close the modifier dialog
     setIsModifierDialogOpen(false);
   };
-  const handleAddMod = (chosenModifiers, selectedMealForModify) => {
-    console.log("selectedd Modifierssssssssssssssss", chosenModifiers);
-    console.log("selected mealll for modifyyy", selectedMealForModify);
-    // Find the selected meal and update it with the chosen modifier information
-    const updatedSelectedMeals = selectedMeals.map((meal) => {
-      if (meal.ItemNo === selectedMealForModify) {
-        return {
-        ...meal,
-        chosenModifiers: chosenModifiers.map((modifier) => ({
-          ItemNo: modifier.ItemNo,
-          ItemName: modifier.ItemName,
-        })),
-      };
-      }
-      return meal;
-    });
+
+
+  const handleAddMod = (chosenModifiers) => {
+    console.log("selected Modifierssssssssssssssss", chosenModifiers);
 
     // Update the state with the modified selectedMeals array
-    setSelectedMeals(updatedSelectedMeals);
+    setSelectedMeals((prevSelectedMeals) =>
+      prevSelectedMeals.map((meal) => {
+        // Check if the meal has any chosenModifiers to update
+        const correspondingChosenModifier = chosenModifiers.find(
+          (item) => item.ItemNo === meal.ItemNo
+        );
 
+        // If corresponding chosenModifier is found, update the chosenModifiers for the meal
+        if (correspondingChosenModifier) {
+          const updatedModifiers = correspondingChosenModifier.modifiers.map(
+            (modifier) => ({
+              ItemNo: modifier.ItemNo,
+              ItemName: modifier.ItemName,
+            })
+          );
+
+          return {
+            ...meal,
+            chosenModifiers: updatedModifiers,
+          };
+        }
+        return meal;
+      })
+    );
   };
-
 
   const handleOpenNumericKeypad = (type) => {
     setNumericKeypadType(type);
@@ -109,7 +120,10 @@ const PoS = ({ companyName, branch, invType, isCollapsed }) => {
   }, []);
 
   console.log("the branch and the SATYpe", branch, invType);
-console.log("company in pos ", companyName)
+  console.log("company in pos ", companyName)
+  
+
+  
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
     if (selectedCategoryCode !== "") {
@@ -120,7 +134,7 @@ console.log("company in pos ", companyName)
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.103:8000/categories/${companyName}`
+        `http://192.168.16.113:8000/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -143,9 +157,9 @@ console.log("company in pos ", companyName)
 
 
   const handleOrderClick = (mealId, newQuantity) => {
-    const isMealSelected = selectedMeals.some((meal) => meal.ItemNo === mealId);
+    // const isMealSelected = selectedMeals.some((meal) => meal.ItemNo === mealId);
 
-    if (!isMealSelected) {
+    // if (!isMealSelected) {
       // Find the meal in mealsCopy
       const selectedMeal = mealsCopy.find((meal) => meal.ItemNo === mealId);
 
@@ -153,7 +167,7 @@ console.log("company in pos ", companyName)
         ...prevSelectedMeals,
         { ...selectedMeal, quantity: newQuantity },
       ]);
-    }
+    // }
 
     console.log("ana b aleb l click choose", selectedMeals);
   };
@@ -165,11 +179,11 @@ console.log("company in pos ", companyName)
       )
     );
 
-    setMealsCopy((prevMealsCopy) =>
-      prevMealsCopy.map((meal) =>
-        meal.ItemNo === mealId ? { ...meal, quantity: newQuantity } : meal
-      )
-    );
+    // setMealsCopy((prevMealsCopy) =>
+    //   prevMealsCopy.map((meal) =>
+    //     meal.ItemNo === mealId ? { ...meal, quantity: newQuantity } : meal
+    //   )
+    // );
   };
 
  
@@ -177,7 +191,7 @@ console.log("company in pos ", companyName)
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.103:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `http://192.168.16.113:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -190,7 +204,7 @@ console.log("company in pos ", companyName)
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.103:8000/allitems/${companyName}`
+        `http://192.168.16.113:8000/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -253,7 +267,7 @@ console.log("company in pos ", companyName)
 
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.103:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
+        `http://192.168.16.113:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
         {
           method: "POST",
           headers: {

@@ -100,7 +100,7 @@ const ItemDetails = ({
       const fetchGroupItems = async () => {
         try {
           const response = await fetch(
-            `http://192.168.16.103:8000/groupitems/${companyName}`
+            `http://192.168.16.113:8000/groupitems/${companyName}`
           );
           if (!response.ok) {
             throw new Error("Error fetching groupItems");

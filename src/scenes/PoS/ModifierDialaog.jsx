@@ -26,13 +26,13 @@ const ModifierDialog = ({
 
   useEffect(() => {
     // Fetch modifiers based on the company name
-    fetchModifiers(companyName);
-  }, [companyName]);
+    fetchModifiers();
+  }, []);
 
-  const fetchModifiers = async (companyName) => {
+  const fetchModifiers = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.103:8000/getModifiers/${companyName}`
+        `http://192.168.16.113:8000/getModifiers/${companyName}`
       );
       const data = await response.json();
       setModifiers(data);
@@ -41,20 +41,62 @@ const ModifierDialog = ({
     }
   };
 
-  const handleChooseModifier = (modifier) => {
-    // Add the selected modifier to the array
-    setSelectedModifiers([...selectedModifiers, modifier]);
-  };
+const handleChooseModifier = (modifier) => {
+  setSelectedModifiers((prevSelectedModifiers) => {
+    const isItemAlreadySelected = prevSelectedModifiers.some(
+      (item) => item.ItemNo === selectedMealForModify
+    );
 
-    const handleConfirmSelection = () => {
-        console.log("selectedd Modifierssssssssssssssss",selectedModifiers);
-        console.log("selected mealll for modifyyy",selectedMealForModify)
-    // Pass the array of selected modifiers to the parent component
-    handleAddMod(selectedModifiers, selectedMealForModify);
-        // Close the dialog
-    setSelectedModifiers([]);
-    onClose();
-  };
+    if (!isItemAlreadySelected) {
+      // If the item is not already selected, add a new object to the array
+      const newModifiersArray = [
+        ...prevSelectedModifiers,
+        {
+          ItemNo: selectedMealForModify,
+          modifiers: [modifier],
+        },
+      ];
+
+      console.log("After adding new item:", newModifiersArray);
+
+      return newModifiersArray;
+    }
+
+    // If the item is already selected, check if the modifier is already present
+    const updatedModifiersArray = prevSelectedModifiers.map((item) =>
+      item.ItemNo === selectedMealForModify
+        ? {
+            ...item,
+            modifiers: item.modifiers.some(
+              (existingModifier) => existingModifier.ItemNo === modifier.ItemNo
+            )
+              ? item.modifiers.filter(
+                  (existingModifier) =>
+                    existingModifier.ItemNo !== modifier.ItemNo
+                ) // If already present, remove the modifier
+              : [...item.modifiers, modifier], // Otherwise, add the modifier
+          }
+        : item
+    );
+
+    console.log("After updating existing item:", updatedModifiersArray);
+
+    return updatedModifiersArray;
+  });
+};
+
+
+const handleConfirmSelection = () => {
+  // console.log("selectedd Modifierssssssssssssssss", selectedModifiers);
+  console.log("selected mealll for modifyyy", selectedMealForModify);
+
+  // Pass the flattened array of selected modifiers to the parent component
+  handleAddMod(selectedModifiers);
+
+  // Close the dialog
+  onClose();
+};
+
 
   return (
     <Modal open={open} onClose={onClose} companyName={companyName}>
@@ -72,16 +114,17 @@ const ModifierDialog = ({
         }}
       >
         <Grid container spacing={2} sx={{ overflow: "auto", height: "100%" }}>
-          {modifiers.map((modifier) => (
-            <Grid item xs={12} sm={6} md={3} key={modifier.id}>
-              <Card sx={{ position: "relative" }}>
-                <CardMedia
-                  component="img"
-                  height="180"
-                  src={`${process.env.PUBLIC_URL}/${companyName}/images/${modifier.Image}`}
-                  alt={`Modifier ${modifier.ItemNo}`}
-                />
-                {/* <Box
+          {Array.isArray(modifiers) &&
+            modifiers.map((modifier) => (
+              <Grid item xs={12} sm={6} md={3} key={modifier.id}>
+                <Card sx={{ position: "relative" }}>
+                  <CardMedia
+                    component="img"
+                    height="180"
+                    src={`${process.env.PUBLIC_URL}/${companyName}/images/${modifier.Image}`}
+                    alt={`Modifier ${modifier.ItemNo}`}
+                  />
+                  {/* <Box
                   sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -96,48 +139,68 @@ const ModifierDialog = ({
                 >
                   <Typography></Typography>
                 </Box> */}
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Typography variant="h4">{modifier.ItemName}</Typography>
-                    <Typography variant="body2"></Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Button
+                  <CardContent>
+                    <Box
                       sx={{
-                        fontSize: "0.9rem",
-                        borderRadius: "20px",
-                        border: `2px solid ${colors.greenAccent[500]}`,
-                        color: colors.greenAccent[500],
-                        backgroundColor: selectedModifiers.includes(modifier)
-                          ? colors.greenAccent[500] // Set background color to green for selected modifiers
-                          : "inherit", // Set to default background color
-                        color: selectedModifiers.includes(modifier)
-                          ? colors.primary[500] : colors.greenAccent[500]
-                        // "&:hover": {
-                        //   backgroundColor: colors.greenAccent[500],
-                        //   color: colors.primary[500],
-                        // },
+                        display: "flex",
+                        flexDirection: "row",
                       }}
-                      onClick={() => handleChooseModifier(modifier)}
                     >
-                      Choose
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                      <Typography variant="h4">{modifier.ItemName}</Typography>
+                      <Typography variant="body2"></Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        flexDirection: "row",
+                      }}
+                    >
+                      <Button
+                        sx={{
+                          fontSize: "0.9rem",
+                          borderRadius: "20px",
+                          border: `2px solid ${colors.greenAccent[500]}`,
+                          color: colors.greenAccent[500],
+                          backgroundColor: selectedModifiers.some(
+                            (meal) =>
+                              meal.ItemNo === selectedMealForModify &&
+                              meal.modifiers.some(
+                                (selectedModifier) =>
+                                  selectedModifier.ItemNo === modifier.ItemNo
+                              )
+                          )
+                            ? colors.greenAccent[500] // Set background color to green for selected modifiers
+                            : "inherit", // Set to default background color
+                          color: selectedModifiers.some(
+                            (meal) =>
+                              meal.ItemNo === selectedMealForModify &&
+                              meal.modifiers.some(
+                                (selectedModifier) =>
+                                  selectedModifier.ItemNo === modifier.ItemNo
+                              )
+                          )
+                            ? colors.primary[500] // Set background color to green for selected modifiers
+                            : colors.greenAccent[500],
+                        }}
+                        onClick={() => handleChooseModifier(modifier)}
+                      >
+                        {selectedModifiers.some(
+                          (meal) =>
+                            meal.ItemNo === selectedMealForModify &&
+                            meal.modifiers.some(
+                              (selectedModifier) =>
+                                selectedModifier.ItemNo === modifier.ItemNo
+                            )
+                        )
+                          ? "Unchoose" // If the modifier is selected, show "Unchoose"
+                          : "Choose"}
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
         </Grid>
         <Button onClick={handleConfirmSelection}>Close</Button>
       </Box>
