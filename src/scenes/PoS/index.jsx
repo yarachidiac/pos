@@ -46,8 +46,8 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
 
  
 
-  const handleModify = (itemNo) => {
-    setSelectedMealForModify(itemNo);
+  const handleModify = (index) => {
+    setSelectedMealForModify(index);
     // Open the modifier dialog
     setIsModifierDialogOpen(true);
   };
@@ -65,7 +65,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       prevSelectedMeals.map((meal) => {
         // Check if the meal has any chosenModifiers to update
         const correspondingChosenModifier = chosenModifiers.find(
-          (item) => item.ItemNo === meal.ItemNo
+          (item) => item.index === meal.index
         );
 
         // If corresponding chosenModifier is found, update the chosenModifiers for the meal
@@ -157,25 +157,24 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
 
 
   const handleOrderClick = (mealId, newQuantity) => {
-    // const isMealSelected = selectedMeals.some((meal) => meal.ItemNo === mealId);
+    // Find the meal in mealsCopy
+    const selectedMeal = mealsCopy.find((meal) => meal.ItemNo === mealId);
 
-    // if (!isMealSelected) {
-      // Find the meal in mealsCopy
-      const selectedMeal = mealsCopy.find((meal) => meal.ItemNo === mealId);
-
-      setSelectedMeals((prevSelectedMeals) => [
-        ...prevSelectedMeals,
-        { ...selectedMeal, quantity: newQuantity },
-      ]);
-    // }
-
-    console.log("ana b aleb l click choose", selectedMeals);
+    // Add the meal to selectedMeals with a new index
+    setSelectedMeals((prevSelectedMeals) => [
+      ...prevSelectedMeals,
+      {
+        ...selectedMeal,
+        quantity: newQuantity,
+        index: prevSelectedMeals.length,
+      },
+    ]);
   };
 
-  const handleQuantityChange = (mealId, newQuantity) => {
+  const handleQuantityChange = (index, newQuantity) => {
     setSelectedMeals((prevSelectedMeals) =>
       prevSelectedMeals.map((meal) =>
-        meal.ItemNo === mealId ? { ...meal, quantity: newQuantity } : meal
+        meal.index === index ? { ...meal, quantity: newQuantity } : meal
       )
     );
 
@@ -517,7 +516,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
           >
             {selectedMeals.map((selectedMeal) => (
               <Box sx={{ width: "100%" }}>
-                <Card key={selectedMeal.ItemNo}>
+                <Card key={selectedMeal.index}>
                   <CardContent //sx={{ width: "100%" }}
                   >
                     <Box sx={{ display: "flex", flexDirection: "row" }}>
@@ -618,7 +617,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
                           <IconButton
                             onClick={() =>
                               handleQuantityChange(
-                                selectedMeal.ItemNo,
+                                selectedMeal.index,
                                 selectedMeal.quantity - 1
                               )
                             }
@@ -634,7 +633,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
                             //sx={{ width: "10%" }}
                             onClick={() =>
                               handleQuantityChange(
-                                selectedMeal.ItemNo,
+                                selectedMeal.index,
                                 selectedMeal.quantity + 1
                               )
                             }
@@ -647,7 +646,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
 
                         <IconButton
                           sx={{ width: "20%" }}
-                          onClick={() => handleModify(selectedMeal.ItemNo)}
+                          onClick={() => handleModify(selectedMeal.index)}
                         >
                           <AutoFixHighOutlinedIcon sx={{ fontSize: "35px" }} />
                         </IconButton>

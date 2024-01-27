@@ -44,7 +44,7 @@ const ModifierDialog = ({
 const handleChooseModifier = (modifier) => {
   setSelectedModifiers((prevSelectedModifiers) => {
     const isItemAlreadySelected = prevSelectedModifiers.some(
-      (item) => item.ItemNo === selectedMealForModify
+      (item) => item.index === selectedMealForModify
     );
 
     if (!isItemAlreadySelected) {
@@ -52,7 +52,7 @@ const handleChooseModifier = (modifier) => {
       const newModifiersArray = [
         ...prevSelectedModifiers,
         {
-          ItemNo: selectedMealForModify,
+          index: selectedMealForModify,
           modifiers: [modifier],
         },
       ];
@@ -64,7 +64,7 @@ const handleChooseModifier = (modifier) => {
 
     // If the item is already selected, check if the modifier is already present
     const updatedModifiersArray = prevSelectedModifiers.map((item) =>
-      item.ItemNo === selectedMealForModify
+      item.index === selectedMealForModify
         ? {
             ...item,
             modifiers: item.modifiers.some(
@@ -164,7 +164,7 @@ const handleConfirmSelection = () => {
                           color: colors.greenAccent[500],
                           backgroundColor: selectedModifiers.some(
                             (meal) =>
-                              meal.ItemNo === selectedMealForModify &&
+                              meal.index === selectedMealForModify &&
                               meal.modifiers.some(
                                 (selectedModifier) =>
                                   selectedModifier.ItemNo === modifier.ItemNo
@@ -174,7 +174,7 @@ const handleConfirmSelection = () => {
                             : "inherit", // Set to default background color
                           color: selectedModifiers.some(
                             (meal) =>
-                              meal.ItemNo === selectedMealForModify &&
+                              meal.index === selectedMealForModify &&
                               meal.modifiers.some(
                                 (selectedModifier) =>
                                   selectedModifier.ItemNo === modifier.ItemNo
@@ -187,7 +187,7 @@ const handleConfirmSelection = () => {
                       >
                         {selectedModifiers.some(
                           (meal) =>
-                            meal.ItemNo === selectedMealForModify &&
+                            meal.index === selectedMealForModify &&
                             meal.modifiers.some(
                               (selectedModifier) =>
                                 selectedModifier.ItemNo === modifier.ItemNo
