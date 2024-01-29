@@ -43,8 +43,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const [numericKeypadType, setNumericKeypadType] = useState("Discount");
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
-
- 
+  const [selectedModifiers, setSelectedModifiers] = useState([]);
 
   const handleModify = (index) => {
     setSelectedMealForModify(index);
@@ -57,14 +56,14 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   };
 
 
-  const handleAddMod = (chosenModifiers) => {
-    console.log("selected Modifierssssssssssssssss", chosenModifiers);
+  const handleAddMod = () => {
+    console.log("selected Modifierssssssssssssssss", selectedModifiers);
 
     // Update the state with the modified selectedMeals array
     setSelectedMeals((prevSelectedMeals) =>
       prevSelectedMeals.map((meal) => {
         // Check if the meal has any chosenModifiers to update
-        const correspondingChosenModifier = chosenModifiers.find(
+        const correspondingChosenModifier = selectedModifiers.find(
           (item) => item.index === meal.index
         );
 
@@ -157,6 +156,11 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
 
 
   const handleOrderClick = (mealId, newQuantity) => {
+    setMealsCopy((prevMealsCopy) =>
+      prevMealsCopy.map((meal) =>
+        meal.ItemNo === mealId ? { ...meal, quantity: 1 } : meal
+      )
+    );
     // Find the meal in mealsCopy
     const selectedMeal = mealsCopy.find((meal) => meal.ItemNo === mealId);
 
@@ -185,6 +189,14 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     // );
   };
 
+
+  const handleQuantityChangeGrid = (mealId, newQuantity) => {
+    setMealsCopy((prevMealsCopy) =>
+      prevMealsCopy.map((meal) =>
+        meal.ItemNo === mealId ? { ...meal, quantity: newQuantity } : meal
+      )
+    );
+  };
  
 
   const fetchItemsCategory = async () => {
@@ -249,11 +261,12 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const handleDelete = (mealCode) => {
     // Filter out the selectedMeal with the given mealCode
     const updatedSelectedMeals = selectedMeals.filter(
-      (meal) => meal.ItemNo !== mealCode
+      (meal) => meal.index !== mealCode
     );
 
     // Update the state with the filtered array
     setSelectedMeals(updatedSelectedMeals);
+    setSelectedModifiers([]);
   };
 
   const handlePlace = async () => {
@@ -280,6 +293,8 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       // Check if the request was successful (status code 2xx)
       if (response.ok) {
         // Reset selectedMeals to an empty array
+        setSelectedModifiers([]);
+        console.log("emptyyy chosenModifier", selectedMeals);
         setSelectedMeals([]);
         setMealsCopy((prevMealsCopy) =>
           prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
@@ -435,7 +450,10 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
                       <Box display="flex" alignItems="center">
                         <IconButton
                           onClick={() =>
-                            handleQuantityChange(meal.ItemNo, meal.quantity - 1)
+                            handleQuantityChangeGrid(
+                              meal.ItemNo,
+                              meal.quantity - 1
+                            )
                           }
                         >
                           <RemoveCircleOutlineOutlinedIcon
@@ -445,7 +463,10 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
                         <Typography variant="body1">{meal.quantity}</Typography>
                         <IconButton
                           onClick={() =>
-                            handleQuantityChange(meal.ItemNo, meal.quantity + 1)
+                            handleQuantityChangeGrid(
+                              meal.ItemNo,
+                              meal.quantity + 1
+                            )
                           }
                         >
                           <AddCircleOutlineOutlinedIcon
@@ -497,7 +518,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
         <Box sx={{ height: "60%", backgroundColor: colors.primary[500] }}>
           {/* Order Summary Box */}
           <Box sx={{ height: "10%" }}>
-            <Typography variant="h6">Order Summary</Typography>
+            <Typography variant="h4" sx={{ fontWeight: "bold", paddingLeft: "10 px"}}>Order Summary</Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
 
@@ -523,7 +544,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
                       <IconButton
                         sx={{ width: "7%" }}
                         // sx={{ width: "10%" }}
-                        onClick={() => handleDelete(selectedMeal.ItemNo)}
+                        onClick={() => handleDelete(selectedMeal.index)}
                       >
                         <DeleteOutlineOutlinedIcon sx={{ fontSize: "30px" }} />
                       </IconButton>
@@ -801,6 +822,8 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
         companyName={companyName} // Pass the company name as a prop
         handleAddMod={handleAddMod}
         selectedMealForModify={selectedMealForModify}
+        selectedModifiers={selectedModifiers}
+        setSelectedModifiers={setSelectedModifiers}
       />
     </>
   );

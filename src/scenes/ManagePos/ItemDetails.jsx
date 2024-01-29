@@ -40,7 +40,7 @@ const ItemDetails = ({
   const [groupNames, setGroupNames] = useState([]);
   const [selectedGroupName, setSelectedGroupName] = useState(itemDetails.GroupName);
   const [selectedGroup, setSelectedGroup] = useState({ GroupNo: itemDetails.GroupNo, GroupName: itemDetails.GroupName, });
-    
+   
   const handleEdit = (index) => {
     setEditableCells((prev) => [...prev, index]);
   };
@@ -204,11 +204,11 @@ const ItemDetails = ({
                   variant="standard"
                   InputProps={{
                     style: {
-                      height: "100%",
-                      boxSizing: "border-box",
-                      border: "1px solid #ccc",
+                      //height: "100%",
+                      //boxSizing: "border-box",
+                      //border: "1px solid #ccc",
                       borderRadius: "4px",
-                      padding: "4px",
+                      paddingLeft: "4px",
                     },
                   }}
                 />
@@ -236,6 +236,7 @@ const ItemDetails = ({
                   textOverflow: "ellipsis",
                   width: "100%",
                   justifyContent: "center",
+                  height: "100%"
                 }}
                 onClick={() => handleCellClick(index)}
               >
@@ -293,6 +294,7 @@ const ItemDetails = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-around",
+                  height: "100%"
                 }}
               >
                 <Select

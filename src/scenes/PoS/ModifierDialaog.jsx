@@ -18,11 +18,13 @@ const ModifierDialog = ({
   companyName,
   handleAddMod,
   selectedMealForModify,
+  selectedModifiers,
+  setSelectedModifiers,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [modifiers, setModifiers] = useState([]);
-  const [selectedModifiers, setSelectedModifiers] = useState([]);
+  //const [selectedModifiers, setSelectedModifiers] = useState([]);
 
   useEffect(() => {
     // Fetch modifiers based on the company name
@@ -91,7 +93,7 @@ const handleConfirmSelection = () => {
   console.log("selected mealll for modifyyy", selectedMealForModify);
 
   // Pass the flattened array of selected modifiers to the parent component
-  handleAddMod(selectedModifiers);
+  handleAddMod();
 
   // Close the dialog
   onClose();
@@ -99,18 +101,25 @@ const handleConfirmSelection = () => {
 
 
   return (
-    <Modal open={open} onClose={onClose} companyName={companyName}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      companyName={companyName}
+      BackdropProps={{ onClick: () => {} }}
+      disableEscapeKeyDown
+    >
       <Box
         sx={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "90%",
+          width: "95%",
           height: "90%",
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,
+          backgroundColor: colors.primary[400],
         }}
       >
         <Grid container spacing={2} sx={{ overflow: "auto", height: "100%" }}>
@@ -162,6 +171,28 @@ const handleConfirmSelection = () => {
                           borderRadius: "20px",
                           border: `2px solid ${colors.greenAccent[500]}`,
                           color: colors.greenAccent[500],
+                          "&:hover": {
+                            backgroundColor: selectedModifiers.some(
+                              (meal) =>
+                                meal.index === selectedMealForModify &&
+                                meal.modifiers.some(
+                                  (selectedModifier) =>
+                                    selectedModifier.ItemNo === modifier.ItemNo
+                                )
+                            )
+                              ? colors.greenAccent[500]
+                              : "inherit",
+                            color: selectedModifiers.some(
+                              (meal) =>
+                                meal.index === selectedMealForModify &&
+                                meal.modifiers.some(
+                                  (selectedModifier) =>
+                                    selectedModifier.ItemNo === modifier.ItemNo
+                                )
+                            )
+                              ? colors.primary[500]
+                              : colors.greenAccent[500],
+                          },
                           backgroundColor: selectedModifiers.some(
                             (meal) =>
                               meal.index === selectedMealForModify &&
@@ -202,7 +233,18 @@ const handleConfirmSelection = () => {
               </Grid>
             ))}
         </Grid>
-        <Button onClick={handleConfirmSelection}>Close</Button>
+        <Button
+          marginLeft="auto"
+          variant="h4"
+          sx={{
+            backgroundColor: colors.greenAccent[500],
+            color: colors.primary[500],
+            fontSize: "1rem",
+          }}
+          onClick={handleConfirmSelection}
+        >
+          Close
+        </Button>
       </Box>
     </Modal>
   );
