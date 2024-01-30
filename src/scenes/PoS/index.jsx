@@ -25,7 +25,8 @@ import NumericKeypad from './NumericKeybad';
 import { format } from "date-fns";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
 import ModifierDialog from './ModifierDialaog';
-
+import printJS from "print-js";
+  
 const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -44,6 +45,35 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
   const [selectedModifiers, setSelectedModifiers] = useState([]);
+
+  const handlePrint = () => {
+    printJS({
+      printable: "myPrintableContent",
+      type: "html",
+      targetStyles: ["*"],
+      documentTitle: "Receipt",
+      honorColor: true,
+      scanStyles: false,
+      style: `
+        @media print {
+          @page {
+            marginLeft: 2mm;
+          }
+        }
+      `,
+      header: null,
+      footer: null,
+      showModal: true,
+      onError: (error) => {
+        console.error("Printing error:", error);
+      },
+      onPrintDialogClose: () => {
+        console.log("Print dialog closed");
+      },
+      printerName: "ELITE",
+    });
+  };
+
 
   const handleModify = (index) => {
     setSelectedMealForModify(index);
@@ -335,6 +365,28 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   console.log("totalllll finalllllllll", totalFinal);
   console.log("the finall meal with details", selectedMeals);
 
+  const getItemListHTML = () => {
+    return selectedMeals
+      .map(
+        (selectedMeal) => `
+      <div>
+        <p>${selectedMeal.ItemName} x${selectedMeal.quantity} - Price: $${(
+          selectedMeal.UPrice -
+          (selectedMeal.UPrice * selectedMeal.Disc) / 100
+        ).toFixed(2)}</p>
+        ${
+          selectedMeal.chosenModifiers
+            ? `<p>Modifiers: ${selectedMeal.chosenModifiers
+                .map((modifier) => modifier.ItemName)
+                .join(", ")}</p>`
+            : ""
+        }
+      </div>
+    `
+      )
+      .join("");
+  };
+
   return (
     <>
       {/* First Box (70% width) */}
@@ -518,7 +570,12 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
         <Box sx={{ height: "60%", backgroundColor: colors.primary[500] }}>
           {/* Order Summary Box */}
           <Box sx={{ height: "10%" }}>
-            <Typography variant="h4" sx={{ fontWeight: "bold", paddingLeft: "10 px"}}>Order Summary</Typography>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: "bold", paddingLeft: "10 px" }}
+            >
+              Order Summary
+            </Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
 
@@ -700,6 +757,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
                   Payment Summary
                 </Typography>
               </Box>
+              <Button onClick={handlePrint}>Print</Button>
               <Box
                 sx={{
                   height: "10%",
@@ -815,6 +873,33 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
             </CardContent>
           </Card>
         </Box>
+      </Box>
+      <Box
+        id="myPrintableContent"
+        sx={{
+          display: "none", // Set the initial display style
+        }}
+      >
+        <div>
+          <h1>Your Order</h1>
+          <div dangerouslySetInnerHTML={{ __html: getItemListHTML() }} />
+          <div>
+            <h2>Payment Summary</h2>
+            <p>Gross Total: ${grossTotal}</p>
+            <p>
+              Service: ${srv}% (${serviceValue.toFixed(2)})
+            </p>
+            <p>
+              Discount: ${discValue}% (${discountValue.toFixed(2)})
+            </p>
+            <p>Total Discount: ${totalDiscount.toFixed(2)}</p>
+            <p>
+              Tax: ${selectedMeals.length > 0 ? selectedMeals[0].Tax : 0}% ($
+              {totalTax.toFixed(2)})
+            </p>
+            <p>Total: ${finalTotal.toFixed(2)}</p>
+          </div>
+        </div>
       </Box>
       <ModifierDialog
         open={isModifierDialogOpen}
