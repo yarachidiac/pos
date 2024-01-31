@@ -54,13 +54,13 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       documentTitle: "Receipt",
       honorColor: true,
       scanStyles: false,
-      style: `
-        @media print {
-          @page {
-            marginLeft: 2mm;
-          }
-        }
-      `,
+      // style: `
+      //   @media print {
+      //     @page {
+      //       marginLeft: 1mm;
+      //     }
+      //   }
+      // `,
       header: null,
       footer: null,
       showModal: true,
@@ -370,13 +370,13 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       .map(
         (selectedMeal) => `
       <div>
-        <p>${selectedMeal.ItemName} x${selectedMeal.quantity} - Price: $${(
+        <p>${selectedMeal.ItemName} x${selectedMeal.quantity} - $${(
           selectedMeal.UPrice -
           (selectedMeal.UPrice * selectedMeal.Disc) / 100
         ).toFixed(2)}</p>
         ${
           selectedMeal.chosenModifiers
-            ? `<p>Modifiers: ${selectedMeal.chosenModifiers
+            ? `<p>${selectedMeal.chosenModifiers
                 .map((modifier) => modifier.ItemName)
                 .join(", ")}</p>`
             : ""
