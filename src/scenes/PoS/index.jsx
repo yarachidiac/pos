@@ -26,7 +26,9 @@ import { format } from "date-fns";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
 import ModifierDialog from './ModifierDialaog';
 import printJS from "print-js";
-  
+import FileSaver from "file-saver";
+import { resolveBreakpointValues } from '@mui/system/breakpoints';
+
 const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -45,6 +47,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
   const [selectedModifiers, setSelectedModifiers] = useState([]);
+  const [finalSelected, setFinalSelected] = useState([]);
 
   const handlePrint = () => {
     printJS({
@@ -70,7 +73,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       onPrintDialogClose: () => {
         console.log("Print dialog closed");
       },
-      printerName: "ELITE",
+      printerName: "OP",
     });
   };
 
@@ -322,6 +325,15 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
 
       // Check if the request was successful (status code 2xx)
       if (response.ok) {
+        const responseData = await response.json();
+        console.log("mmmmmmmmmmmmmmmmmmmmmmm", responseData);
+        // Convert the JSON data to a string
+        const jsonString = JSON.stringify(responseData, null, 2);  
+      // Use FileSaver to save the JSON data as a TXT file
+        const blob = new Blob([jsonString], { type: "text/plain" });
+        FileSaver.saveAs(blob, "response-data.txt");
+     
+
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);
         console.log("emptyyy chosenModifier", selectedMeals);
