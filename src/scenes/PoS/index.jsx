@@ -297,42 +297,62 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       (meal) => meal.index !== mealCode
     );
 
+    // Find the meal with the given mealCode
+    const deletedMeal = selectedMeals.find((meal) => meal.index === mealCode);
+
+    // If the meal is found, set selectedModifiers to an empty array for that meal
+    if (deletedMeal) {
+      setSelectedModifiers((prevModifiers) => {
+        const updatedModifiers = prevModifiers.filter(
+          (modifier) => modifier.index !== mealCode
+        );
+        return updatedModifiers;
+      });
+    }
+
     // Update the state with the filtered array
     setSelectedMeals(updatedSelectedMeals);
-    setSelectedModifiers([]);
   };
 
   const handlePlace = async () => {
     try {
       const currentDate = new Date();
-      const formattedDateTime = format(currentDate, "dd-MM-yyyy HHmmss");
-
+      const formattedDateTime = format(currentDate, "dd/MM/yyyy HH:mm:ss");
+      // Encode the formatted date
       console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", currentDate);
-      console.log("formatted dateeeeeeee", formattedDateTime)
+      console.log("formatted dateeeeeeee", formattedDateTime);
+      const requestBody = {
+        date: formattedDateTime,
+        discValue: discValue,
+        srv: srv,
+        meals: selectedMeals,
+        branch: branch,
+        invType: invType
+      };
+      console.log("bodyyyyyyyyyyyyyyy", requestBody);
 
       // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
-        `http://192.168.16.113:8000/invoiceitem/${companyName}/${branch}/${invType}/${formattedDateTime}/${discValue}/${srv}`,
+        `http://192.168.16.113:8000/invoiceitem/${companyName}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(selectedMeals),
+          body: JSON.stringify(requestBody),
         }
       );
-      console.log("selecteddddddddd bl place order",selectedMeals);
+      console.log("selecteddddddddd bl place order", requestBody);
 
       // Check if the request was successful (status code 2xx)
       if (response.ok) {
         const responseData = await response.json();
         console.log("mmmmmmmmmmmmmmmmmmmmmmm", responseData);
         // Convert the JSON data to a string
-        const jsonString = JSON.stringify(responseData, null, 2);  
-      // Use FileSaver to save the JSON data as a TXT file
-        const blob = new Blob([jsonString], { type: "text/plain" });
-        FileSaver.saveAs(blob, "response-data.txt");
-     
+        const jsonString = JSON.stringify(responseData, null, 2);
+        // Use FileSaver to save the JSON data as a TXT file
+        const blob = new Blob([jsonString], { type: "application/json" });
+        FileSaver.saveAs(blob, "response-data.json");
 
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);
