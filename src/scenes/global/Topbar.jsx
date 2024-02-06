@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme, Button } from "@mui/material";
 import { useContext, useState, useEffect } from "react";
 import { ColorModeContext, tokens } from "../../theme"
 import InputBase from "@mui/material/InputBase";
@@ -9,13 +9,20 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Sidebar from "./Sidebar";
+import { Link } from "react-router-dom";
 
-const Topbar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
+const Topbar = ({
+  isCollapsed,
+  isMobile,
+  setIsCollapsed,
+  setIsMobile,
+  currentRoute,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
- console.log("isMobile from topbarr:", isMobile);
- console.log("isCollapsed from topbarr:", isCollapsed);
+  console.log("isMobile from topbarr:", isMobile);
+  console.log("isCollapsed from topbarr:", isCollapsed);
   // const handleResize = () => {
   //   setIsMobile(window.innerWidth <= 768);
   //   if (window.innerWidth > 768) {
@@ -27,8 +34,8 @@ const Topbar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
 
   const handleMenuToggle = () => {
     setIsCollapsed(!isCollapsed);
-  console.log("isMobile from topbarr:", isMobile);
-  console.log("isCollapsed from topbarr:", isCollapsed);
+    console.log("isMobile from topbarr:", isMobile);
+    console.log("isCollapsed from topbarr:", isCollapsed);
   };
 
   // useEffect(() => {
@@ -39,8 +46,8 @@ const Topbar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
   // }, []);
 
   return (
-    <Box sx={{width:"70%"}}>
-      <Box display="flex" >
+    <Box sx={{ width: "70%" }}>
+      <Box display="flex">
         {isMobile && isCollapsed && (
           <IconButton onClick={handleMenuToggle}>
             <MenuOutlinedIcon />
@@ -83,7 +90,24 @@ const Topbar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
         </IconButton>
         <IconButton>
           <PersonOutlinedIcon />
-        </IconButton> */}
+              </IconButton> */}
+            {(currentRoute === "/PoS" || currentRoute === "/Delivery") && (
+              <Button
+                component={Link}
+                to="/PoS"
+              >
+                Takeaway
+              </Button>
+            )}
+            {/* Delivery button */}
+            {(currentRoute === "/PoS" || currentRoute === "/Delivery") && (
+              <Button
+                component={Link}
+                to="/Delivery"
+              >
+                Delivery
+              </Button>
+            )}
           </Box>
         </Box>
       </Box>

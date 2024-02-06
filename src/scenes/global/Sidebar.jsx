@@ -284,7 +284,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
             >
               <Item
                 title="Chart of Account"
-                to="/team"
+                to="/Chart"
                 selected={selected}
                 setSelected={setSelected}
               />

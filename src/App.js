@@ -23,8 +23,10 @@ import Team from "./scenes/team";
 import { useState, useEffect } from "react";
 import Company from './scenes/company';
 import PoS from './scenes/PoS';
-import { setIn } from 'formik';
 import ManagePoS from './scenes/ManagePos';
+import { useNavigate, useLocation } from "react-router-dom";
+import Delivery from './scenes/PoS/Delivery';
+import ChartAcc from './scenes/ChartAcc';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -36,7 +38,9 @@ function App() {
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
-  
+  const navigate = useNavigate();
+  const location = useLocation();
+
  useEffect(() => {
    const initializeAuthentication = async () => {
      try {
@@ -99,6 +103,7 @@ function App() {
                   isMobile={isMobile}
                   setIsCollapsed={setIsCollapsed}
                   setIsMobile={setIsMobile}
+                  currentRoute={location.pathname}
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
@@ -140,6 +145,32 @@ function App() {
                     path="/ManagePoS"
                     element={
                       <ManagePoS
+                        companyName={companyName}
+                        branch={branch}
+                        invType={invType}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
+                        //setCompanyName={setCompanyName}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/Delivery"
+                    element={
+                      <Delivery
+                        companyName={companyName}
+                        branch={branch}
+                        invType={invType}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
+                        //setCompanyName={setCompanyName}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/Chart"
+                    element={
+                      <ChartAcc
                         companyName={companyName}
                         branch={branch}
                         invType={invType}
