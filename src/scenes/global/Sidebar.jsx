@@ -69,7 +69,7 @@ const SubItem = ({
       style={{
         color: colors.grey[100],
       }}
-      isOpen={false}
+      // isopen={false}
     >
       {React.Children.map(children, (child) =>
         React.cloneElement(child, {

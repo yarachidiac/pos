@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import ClientDetailsModal from "./ClientDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
+import { Checkbox } from "@mui/material";
 
 const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
   const theme = useTheme();
@@ -62,9 +63,11 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
   // }, [userDetails]);
 
   const handleRowClick = (params) => {
-    // Open the details modal and set the selected user details
-    setIsDetailsModalOpen(true);
-    setClientDetails(params.row);
+    // Check if the clicked column is not the checkbox column
+    if (params.field !== "checkbox") {
+      setIsDetailsModalOpen(true);
+      setClientDetails(params.row);
+    }
   };
 
   const closeDetailsModal = () => {
@@ -74,49 +77,44 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
     setClientDetails(null);
   };
 
-  const renderAccessLevelCell = ({ value }) => {
-    const iconMap = {
-      admin: <AdminPanelSettingsOutlinedIcon />,
-      manager: <SecurityOutlinedIcon />,
-      user: <LockOpenOutlinedIcon />,
-    };
-
-    const colorMap = {
-      admin: colors.greenAccent[600],
-      manager: colors.greenAccent[700],
-      user: colors.greenAccent[700],
-    };
-
-    return (
-      <Box
-        width="100%"
-        m="0 auto"
-        p="5px"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        backgroundColor={colorMap[value]}
-        borderRadius="4px"
-        color={colors.grey[100]}
-      >
-        {iconMap[value]}
-        <Typography sx={{ ml: "5px" }}>{value}</Typography>
-      </Box>
-    );
-  };
 
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
   };
 
+  const renderCheckboxCell = ({ row }) => (
+    <Checkbox
+      checked={selectedRow === row}
+      onChange={() => {
+        if (selectedRow === row) {
+          console.log("checkboxxxxxxxxxxxxxxxxxx", row);
+          // If the row is already selected, unselect it
+          setSelectedRow(null);
+        } else {
+          // Otherwise, select the row
+          console.log("checkboxxxxxxxxxxxxxxxxxx", row);
+
+          setSelectedRow(row);
+        }
+      }}
+      onClick={(event) => {
+        // Prevent modal opening when clicking on the checkbox
+        event.stopPropagation();
+      }}
+    />
+  );
+
+
   const columns = [
     {
       field: "AccName",
-      headerName: "AccNount Name",
+      headerName: "Account Name",
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: 1,
+      onClick: handleRowClick
+
     },
     {
       field: "Address",
@@ -135,6 +133,13 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
+    },
+    {
+      field: "checkbox",
+      headerName: "",
+      renderCell: renderCheckboxCell,
+      minWidth: 50,
+      headerClassName: "header-cell",
     },
     // {
     //   field: "password",
@@ -321,16 +326,16 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
           }}
           pageSizeOptions={[10, 20, 30]}
           disableSelectionOnClick // Add this line to disable selection on click
-          onSelectionModelChange={(newSelection) => {
-            // Set the selected row when the selection changes
-            setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
-          }}
+          // onSelectionModelChange={(newSelection) => {
+          //   // Set the selected row when the selection changes
+          //   setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
+          // }}
           onRowClick={(params) => {
             console.log("Params:", params);
 
             handleRowClick(params);
           }}
-          selectionModel={[selectedRow]}
+          // selectionModel={[selectedRow]}
           pagination // Add this line to enable pagination
         />
       </Box>

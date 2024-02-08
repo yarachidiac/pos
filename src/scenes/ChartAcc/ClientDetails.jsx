@@ -231,25 +231,16 @@ const ClientDetails = ({
 
   return (
     <Box style={{ height: "100%" }}>
-      <style>
-        {`
-          #file-input {
-            display: none;
-          }
-        `}
-      </style>
       <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
-          <TableBody>
-            <Box
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
-                gap: "5px",
-              }}
-            >
-              {rows}
-            </Box>
+          <TableBody
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
+              gap: "5px",
+            }}
+          >
+          {rows}
           </TableBody>
         </Table>
       </TableContainer>

@@ -339,8 +339,7 @@ const ItemDetails = ({
       </style>
       <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
-          <TableBody>
-            <Box
+          <TableBody
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
@@ -348,7 +347,6 @@ const ItemDetails = ({
               }}
             >
               {rows}
-            </Box>
           </TableBody>
         </Table>
       </TableContainer>

@@ -38,16 +38,27 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const [categories, setCategories] = useState([]);
   const [mealsCopy, setMealsCopy] = useState([]);
   const [meals, setMeals] = useState([]);
-  const [selectedMeals, setSelectedMeals] = useState([]);
+  const [selectedMeals, setSelectedMeals] = useState(() => {
+    const storedMeals = localStorage.getItem("selectedMeals");
+    return storedMeals ? JSON.parse(storedMeals) : [];
+  });
   const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
-  const [discValue, setDiscValue] = useState(0);
+   const [discValue, setDiscValue] = useState(() => {
+     const storedDiscValue = localStorage.getItem("discValue");
+     return storedDiscValue ? JSON.parse(storedDiscValue) : 0;
+   });
   const [finalTotal, setFinalTotal] = useState(0);
-  const [srv, setSrv] = useState(0);
+  const [srv, setSrv] = useState(() => {
+    const storedSrv = localStorage.getItem("srv");
+    return storedSrv ? JSON.parse(storedSrv) : 0;
+  });
   const [numericKeypadType, setNumericKeypadType] = useState("Discount");
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
-  const [selectedModifiers, setSelectedModifiers] = useState([]);
-  const [finalSelected, setFinalSelected] = useState([]);
+  const [selectedModifiers, setSelectedModifiers] = useState(() => {
+      const storedModifiers = localStorage.getItem("selectedModifiers");
+      return storedModifiers ? JSON.parse(storedModifiers) : [];
+});
 
   const handlePrint = () => {
     printJS({
@@ -77,6 +88,20 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     });
   };
 
+  useEffect(() => {
+    localStorage.setItem(
+      "selectedModifiers",
+      JSON.stringify(selectedModifiers)
+    );
+  }, [selectedModifiers]);
+  
+    useEffect(() => {
+      localStorage.setItem("srv", JSON.stringify(srv));
+    }, [srv]);
+
+    useEffect(() => {
+      localStorage.setItem("discValue", JSON.stringify(discValue));
+    }, [discValue]);
 
   const handleModify = (index) => {
     setSelectedMealForModify(index);
@@ -87,7 +112,6 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     // Close the modifier dialog
     setIsModifierDialogOpen(false);
   };
-
 
   const handleAddMod = () => {
     console.log("selected Modifierssssssssssssssss", selectedModifiers);
@@ -132,18 +156,17 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     if (numericKeypadType === "Discount") {
       setDiscValue(value);
       console.log("Discount submitted:", value);
-
     } else if (numericKeypadType === "Service") {
       setSrv(value);
     }
-   };
+  };
 
   useEffect(() => {
     const copy = meals.map((meal) => ({ ...meal, quantity: 1 }));
     setMealsCopy(copy);
-    console.log("haydeeeeeeeeeeee l copy kel ma tetghayar l meal", mealsCopy)
+    console.log("haydeeeeeeeeeeee l copy kel ma tetghayar l meal", mealsCopy);
   }, [meals]);
-    console.log(" l copy kel ma tetghayar l meal", mealsCopy);
+  console.log(" l copy kel ma tetghayar l meal", mealsCopy);
 
   useEffect(() => {
     fetchCategories();
@@ -152,10 +175,17 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   }, []);
 
   console.log("the branch and the SATYpe", branch, invType);
-  console.log("company in pos ", companyName)
-  
+  console.log("company in pos ", companyName);
+  // Retrieve selectedMeals from Local Storage on component mount
+  useEffect(() => {
+    localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
+  }, [selectedMeals]);
+console.log("storedddddddddddddd storageeeeee", localStorage.getItem("selectedMeals"))
+  // Save selectedMeals to Local Storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
+  }, [selectedMeals]);
 
-  
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
     if (selectedCategoryCode !== "") {
@@ -184,9 +214,8 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       setSelectedCategory(category.GroupName);
       setSelectedCategoryCode(category.GroupNo);
     }
-    console.log(selectedCategoryCode);   
+    console.log(selectedCategoryCode);
   };
-
 
   const handleOrderClick = (mealId, newQuantity) => {
     setMealsCopy((prevMealsCopy) =>
@@ -222,7 +251,6 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     // );
   };
 
-
   const handleQuantityChangeGrid = (mealId, newQuantity) => {
     setMealsCopy((prevMealsCopy) =>
       prevMealsCopy.map((meal) =>
@@ -230,7 +258,6 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       )
     );
   };
- 
 
   const fetchItemsCategory = async () => {
     try {
@@ -258,7 +285,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   };
   console.log("mealssssssssssss", meals);
 
-  console.log("selected mealllllllll", selectedMeals)
+  console.log("selected mealllllllll", selectedMeals);
 
   const calculateTotalDiscountedPrice = () => {
     let totalPrice = 0;
@@ -269,7 +296,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       const price = meal.UPrice || 0;
       const quantity = meal.quantity || 0;
       const Disc = meal.Disc || 0;
-      totalPrice += price * (1-Disc/100) * quantity;
+      totalPrice += price * (1 - Disc / 100) * quantity;
     });
 
     return totalPrice.toFixed(2);
@@ -280,16 +307,16 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     selectedMeals.forEach((selectedMeal) => {
       const meal = selectedMeal;
       const tax = meal.Tax || 0;
-      totalTax += (meal.UPrice * (1 - meal.Disc / 100) * tax/100);
-    })
+      totalTax += (meal.UPrice * (1 - meal.Disc / 100) * tax) / 100;
+    });
     return totalTax.toFixed(2);
-  }
+  };
 
-   useEffect(() => {
-     const newFinalTotal = totalFinal;
+  useEffect(() => {
+    const newFinalTotal = totalFinal;
 
-     setFinalTotal(newFinalTotal);
-   }, [calculateTotalDiscountedPrice, discValue, calculateTotalTax]);
+    setFinalTotal(newFinalTotal);
+  }, [calculateTotalDiscountedPrice, discValue, calculateTotalTax]);
 
   const handleDelete = (mealCode) => {
     // Filter out the selectedMeal with the given mealCode
@@ -327,7 +354,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
         srv: srv,
         meals: selectedMeals,
         branch: branch,
-        invType: invType
+        invType: invType,
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
 
@@ -348,12 +375,13 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       if (response.ok) {
         const responseData = await response.json();
         console.log("mmmmmmmmmmmmmmmmmmmmmmm", responseData);
-        // Convert the JSON data to a string
-        const jsonString = JSON.stringify(responseData, null, 2);
-        // Use FileSaver to save the JSON data as a TXT file
-        const blob = new Blob([jsonString], { type: "application/json" });
-        FileSaver.saveAs(blob, "response-data.json");
-
+        if (responseData["message"] === "Invoice items added successfully") {
+          // Convert the JSON data to a string
+          const jsonString = JSON.stringify(responseData, null, 2);
+          // Use FileSaver to save the JSON data as a TXT file
+          const blob = new Blob([jsonString], { type: "application/json" });
+          FileSaver.saveAs(blob, "response-data.json");
+        }
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);
         console.log("emptyyy chosenModifier", selectedMeals);
@@ -373,9 +401,9 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     }
   };
 
-    const grossTotal = parseFloat(calculateTotalDiscountedPrice());
-    const serviceValue = (grossTotal * srv / 100);
-    const discountValue = ((grossTotal + serviceValue) * discValue/100);
+  const grossTotal = parseFloat(calculateTotalDiscountedPrice());
+  const serviceValue = (grossTotal * srv) / 100;
+  const discountValue = ((grossTotal + serviceValue) * discValue) / 100;
   const totalDiscount = (grossTotal + serviceValue) * (1 - discValue / 100);
   console.log("dddddddddddddddddddddddddddd", totalDiscount);
   let totalTax = 0;
@@ -384,14 +412,14 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     selectedMeals.length > 0 &&
     selectedMeals[0]["Tax"] !== undefined
   ) {
-    
-      const totalTaxSD = ((parseFloat(calculateTotalTax()) * (1 + srv/100))
-       * (1 - discValue / 100))
+    const totalTaxSD =
+      parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100);
     console.log(totalTaxSD);
-        const totall= ((serviceValue * selectedMeals[0]["Tax"] / 100) * (1 - discValue / 100))
+    const totall =
+      ((serviceValue * selectedMeals[0]["Tax"]) / 100) * (1 - discValue / 100);
     console.log(totall);
     totalTax = totalTaxSD + totall;
-  } 
+  }
   console.log("total taxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", totalTax);
   const totalFinal = totalDiscount + totalTax;
   console.log("totalllll finalllllllll", totalFinal);
@@ -604,7 +632,7 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
           <Box sx={{ height: "10%" }}>
             <Typography
               variant="h4"
-              sx={{ fontWeight: "bold", paddingLeft: "10 px" }}
+              sx={{ fontWeight: "bold", paddingLeft: "15px", paddingTop: "10px" }}
             >
               Order Summary
             </Typography>
