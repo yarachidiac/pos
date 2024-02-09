@@ -91,20 +91,14 @@ const Topbar = ({
         <IconButton>
           <PersonOutlinedIcon />
               </IconButton> */}
-            {(currentRoute === "/PoS" || currentRoute === "/Delivery") && (
-              <Button
-                component={Link}
-                to="/PoS"
-              >
+            {(currentRoute === "/PoS" || currentRoute === "/Chart") && (
+              <Button component={Link} to="/PoS">
                 Takeaway
               </Button>
             )}
             {/* Delivery button */}
-            {(currentRoute === "/PoS" || currentRoute === "/Delivery") && (
-              <Button
-                component={Link}
-                to="/Delivery"
-              >
+            {(currentRoute === "/PoS" || currentRoute === "/Chart") && (
+              <Button component={Link} to="/Chart">
                 Delivery
               </Button>
             )}

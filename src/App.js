@@ -38,6 +38,10 @@ function App() {
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
+  const [selectedRow, setSelectedRow] = useState(() => {
+    const storedSelectedRow = localStorage.getItem("selectedRow");
+    return storedSelectedRow!== "undefined" ? JSON.parse(storedSelectedRow) : {};
+  });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -138,6 +142,7 @@ function App() {
                         invType={invType}
                         isCollapsed={isCollapsed}
                         //setCompanyName={setCompanyName}
+                        selectedRow={selectedRow}
                       />
                     }
                   />
@@ -145,19 +150,6 @@ function App() {
                     path="/ManagePoS"
                     element={
                       <ManagePoS
-                        companyName={companyName}
-                        branch={branch}
-                        invType={invType}
-                        addTitle={addTitle}
-                        setAddTitle={setAddTitle}
-                        //setCompanyName={setCompanyName}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/Delivery"
-                    element={
-                      <Delivery
                         companyName={companyName}
                         branch={branch}
                         invType={invType}
@@ -177,6 +169,8 @@ function App() {
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
                         //setCompanyName={setCompanyName}
+                        selectedRow={selectedRow}
+                        setSelectedRow={setSelectedRow}
                       />
                     }
                   />

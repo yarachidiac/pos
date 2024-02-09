@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
@@ -12,14 +12,23 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import { Checkbox } from "@mui/material";
 
-const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
+const ChartAcc = ({
+  companyName,
+  addTitle,
+  setAddTitle,
+  selectedRow,
+  setSelectedRow,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
 
   //const [companyName, setCompanyName] = useState("");
   const [clients, setClients] = useState([]);
-  const [selectedRow, setSelectedRow] = useState(null);
+  // const [selectedRow, setSelectedRow] = useState(() => {
+  //   const storedSelectedRow = localStorage.getItem("selectedRow");
+  //   return storedSelectedRow ? JSON.parse(storedSelectedRow) : null;
+  // });
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [clientDetails, setClientDetails] = useState(null);
@@ -55,6 +64,10 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
     }
   }, [clientDetails]);
 
+  useEffect(() => {
+    localStorage.setItem("selectedRow", JSON.stringify( ));
+  }, [selectedRow]);
+
   // useEffect(() => {
   //   // Check if userDetails is truthy and open the modal
   //   if (userDetails) {
@@ -77,7 +90,6 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
     setClientDetails(null);
   };
 
-
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
   };
@@ -89,7 +101,7 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
         if (selectedRow === row) {
           console.log("checkboxxxxxxxxxxxxxxxxxx", row);
           // If the row is already selected, unselect it
-          setSelectedRow(null);
+          setSelectedRow({});
         } else {
           // Otherwise, select the row
           console.log("checkboxxxxxxxxxxxxxxxxxx", row);
@@ -104,7 +116,6 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
     />
   );
 
-
   const columns = [
     {
       field: "AccName",
@@ -113,8 +124,7 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: 1,
-      onClick: handleRowClick
-
+      onClick: handleRowClick,
     },
     {
       field: "Address",
@@ -307,7 +317,19 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
           "& .MuiToolbar-root.MuiTablePagination-toolbar": {
             color: colors.primary[500],
           },
-
+          "& .MuiDataGrid-toolbarContainer": {
+            height: "10%",
+            // backgroundColor: colors.grey[800],
+          },
+          "& .css-3be3ve-MuiFormControl-root-MuiTextField-root-MuiDataGrid-toolbarQuickFilter input":
+            {
+              color: colors.greenAccent[600],
+              height: "100%",
+              fontSize: "1.5rem"
+          },
+          "& .css-ptiqhd-MuiSvgIcon-root":{
+            fontSize:"2rem"
+          }
           // "& .MuiCheckbox-root": {
           //   color: `${colors.greenAccent[200]} !important`,
           // },
@@ -337,6 +359,16 @@ const ChartAcc = ({ companyName, addTitle, setAddTitle }) => {
           }}
           // selectionModel={[selectedRow]}
           pagination // Add this line to enable pagination
+          disableColumnFilter
+          disableColumnSelector
+          disableDensitySelector
+          components={{ Toolbar: GridToolbar }}
+          componentsProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
         />
       </Box>
       <AddUserDialog

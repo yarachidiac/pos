@@ -8,6 +8,12 @@ import {
   Grid,
   Typography,
   IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 
 import FastfoodIcon from "@mui/icons-material/Fastfood";
@@ -29,7 +35,7 @@ import printJS from "print-js";
 import FileSaver from "file-saver";
 import { resolveBreakpointValues } from '@mui/system/breakpoints';
 
-const PoS = ({companyName, branch, invType,  isCollapsed }) => {
+const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -43,10 +49,10 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
     return storedMeals ? JSON.parse(storedMeals) : [];
   });
   const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
-   const [discValue, setDiscValue] = useState(() => {
-     const storedDiscValue = localStorage.getItem("discValue");
-     return storedDiscValue ? JSON.parse(storedDiscValue) : 0;
-   });
+  const [discValue, setDiscValue] = useState(() => {
+    const storedDiscValue = localStorage.getItem("discValue");
+    return storedDiscValue ? JSON.parse(storedDiscValue) : 0;
+  });
   const [finalTotal, setFinalTotal] = useState(0);
   const [srv, setSrv] = useState(() => {
     const storedSrv = localStorage.getItem("srv");
@@ -56,9 +62,11 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
   const [selectedModifiers, setSelectedModifiers] = useState(() => {
-      const storedModifiers = localStorage.getItem("selectedModifiers");
-      return storedModifiers ? JSON.parse(storedModifiers) : [];
-});
+    const storedModifiers = localStorage.getItem("selectedModifiers");
+    return storedModifiers ? JSON.parse(storedModifiers) : [];
+  });
+
+  console.log("Storeddddd clienttttttt", localStorage.getItem("selectedRow"));
 
   const handlePrint = () => {
     printJS({
@@ -94,14 +102,14 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
       JSON.stringify(selectedModifiers)
     );
   }, [selectedModifiers]);
-  
-    useEffect(() => {
-      localStorage.setItem("srv", JSON.stringify(srv));
-    }, [srv]);
 
-    useEffect(() => {
-      localStorage.setItem("discValue", JSON.stringify(discValue));
-    }, [discValue]);
+  useEffect(() => {
+    localStorage.setItem("srv", JSON.stringify(srv));
+  }, [srv]);
+
+  useEffect(() => {
+    localStorage.setItem("discValue", JSON.stringify(discValue));
+  }, [discValue]);
 
   const handleModify = (index) => {
     setSelectedMealForModify(index);
@@ -180,7 +188,10 @@ const PoS = ({companyName, branch, invType,  isCollapsed }) => {
   useEffect(() => {
     localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
   }, [selectedMeals]);
-console.log("storedddddddddddddd storageeeeee", localStorage.getItem("selectedMeals"))
+  console.log(
+    "storedddddddddddddd storageeeeee",
+    localStorage.getItem("selectedMeals")
+  );
   // Save selectedMeals to Local Storage whenever it changes
   useEffect(() => {
     localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
@@ -425,27 +436,53 @@ console.log("storedddddddddddddd storageeeeee", localStorage.getItem("selectedMe
   console.log("totalllll finalllllllll", totalFinal);
   console.log("the finall meal with details", selectedMeals);
 
-  const getItemListHTML = () => {
-    return selectedMeals
-      .map(
-        (selectedMeal) => `
-      <div>
-        <p>${selectedMeal.ItemName} x${selectedMeal.quantity} - $${(
-          selectedMeal.UPrice -
-          (selectedMeal.UPrice * selectedMeal.Disc) / 100
-        ).toFixed(2)}</p>
-        ${
-          selectedMeal.chosenModifiers
-            ? `<p>${selectedMeal.chosenModifiers
-                .map((modifier) => modifier.ItemName)
-                .join(", ")}</p>`
-            : ""
-        }
-      </div>
-    `
-      )
-      .join("");
+  const getItemListTable = () => {
+    return (
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Qty</TableCell>
+              <TableCell>Barcode</TableCell>
+              <TableCell>Unit Price</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {selectedMeals.map((selectedMeal, index) => (
+              <React.Fragment key={index}>
+                {/* Meal row */}
+                <TableRow>
+                  <TableCell>{selectedMeal.quantity}</TableCell>
+                  <TableCell>{selectedMeal.ItemName}</TableCell>
+                  <TableCell>
+                    $
+                    {(
+                      selectedMeal.UPrice -
+                      (selectedMeal.UPrice * selectedMeal.Disc) / 100
+                    ).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+                {/* Modifier rows */}
+                {selectedMeal.chosenModifiers &&
+                  selectedMeal.chosenModifiers.map(
+                    (modifier, modifierIndex) => (
+                      <TableRow key={`${index}-${modifierIndex}`}>
+                        <TableCell></TableCell> {/* Empty cell for spacing */}
+                        <TableCell colSpan={2}>
+                          {modifier.ItemName}
+                        </TableCell>{" "}
+                        {/* Span the next two cells for modifier name */}
+                      </TableRow>
+                    )
+                  )}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
   };
+
 
   return (
     <>
@@ -632,9 +669,13 @@ console.log("storedddddddddddddd storageeeeee", localStorage.getItem("selectedMe
           <Box sx={{ height: "10%" }}>
             <Typography
               variant="h4"
-              sx={{ fontWeight: "bold", paddingLeft: "15px", paddingTop: "10px" }}
+              sx={{
+                fontWeight: "bold",
+                paddingLeft: "15px",
+                paddingTop: "10px",
+              }}
             >
-              Order Summary
+              Order Summary {selectedRow["AccName"]}
             </Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
@@ -934,31 +975,42 @@ console.log("storedddddddddddddd storageeeeee", localStorage.getItem("selectedMe
           </Card>
         </Box>
       </Box>
-      <Box
-        id="myPrintableContent"
-        sx={{
-          display: "none", // Set the initial display style
-        }}
-      >
+      <Box id="myPrintableContent" sx={{ display: "none" }}>
         <div>
-          <h1>Your Order</h1>
-          <div dangerouslySetInnerHTML={{ __html: getItemListHTML() }} />
+          <Typography variant="h1">Your Order</Typography>
+          {getItemListTable()}
           <div>
-            <h2>Payment Summary</h2>
-            <p>Gross Total: ${grossTotal}</p>
-            <p>
-              Service: ${srv}% (${serviceValue.toFixed(2)})
-            </p>
-            <p>
-              Discount: ${discValue}% (${discountValue.toFixed(2)})
-            </p>
-            <p>Total Discount: ${totalDiscount.toFixed(2)}</p>
-            <p>
-              Tax: ${selectedMeals.length > 0 ? selectedMeals[0].Tax : 0}% ($
+            <Typography variant="h2">Payment Summary</Typography>
+            <Typography variant="body1">Gross Total: ${grossTotal}</Typography>
+            <Typography variant="body1">
+              Service: {srv}% (${serviceValue.toFixed(2)})
+            </Typography>
+            <Typography variant="body1">
+              Discount: {discValue}% (${discountValue.toFixed(2)})
+            </Typography>
+            <Typography variant="body1">
+              Total Discount: ${totalDiscount.toFixed(2)}
+            </Typography>
+            <Typography variant="body1">
+              Tax: {selectedMeals.length > 0 ? selectedMeals[0].Tax : 0}% ($
               {totalTax.toFixed(2)})
-            </p>
-            <p>Total: ${finalTotal.toFixed(2)}</p>
+            </Typography>
+            <Typography variant="body1">
+              Total: ${finalTotal.toFixed(2)}
+            </Typography>
           </div>
+          {Object.keys(selectedRow).length !== 0 && (
+            <div>
+              <Typography variant="h2">Client Address</Typography>
+              <Typography variant="body1">Tel: {selectedRow["Tel"]}</Typography>
+              <Typography variant="body1">
+                Building: {selectedRow["Building"]}
+              </Typography>
+              <Typography variant="body1">
+                Address: {selectedRow["Address"]}
+              </Typography>
+            </div>
+          )}
         </div>
       </Box>
       <ModifierDialog

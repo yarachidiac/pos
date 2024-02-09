@@ -165,37 +165,7 @@ const ClientDetails = ({
                   }}
                 />
               </>
-            ) : key === "AccName" ||
-              key === "Address" ||
-              key === "Address2" ||
-              key === "Building" ||
-              key === "Floor" ||
-              key === "Email" ||
-              key === "Tel" ||
-              key === "Region" ||
-              key === "VAT" ||
-              key === "AccPrice" || 
-              key === "AccGroup" ? (
-              <div
-                style={{
-                  cursor: "pointer",
-                  alignItems: "center",
-                  borderRadius: "4px",
-                  border: `1px solid ${colors.greenAccent[400]}`,
-                  display: "flex",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  width: "100%",
-                  justifyContent: "center",
-                }}
-                onClick={() => handleCellClick(index)}
-              >
-                <Typography variant="h4">{value}</Typography>
-              </div>
-            ) : (
+            ) : key === "Active" ? (
               <div
                 style={{
                   display: "flex",
@@ -222,6 +192,26 @@ const ClientDetails = ({
                   />
                   <Typography variant="h4">N</Typography>
                 </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  borderRadius: "4px",
+                  border: `1px solid ${colors.greenAccent[400]}`,
+                  display: "flex",
+                  height: "100%",
+                  boxSizing: "border-box",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  width: "100%",
+                  justifyContent: "center",
+                }}
+                onClick={() => handleCellClick(index)}
+              >
+                <Typography variant="h4">{value}</Typography>
               </div>
             )}
           </div>
