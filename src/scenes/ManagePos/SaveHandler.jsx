@@ -8,7 +8,7 @@ const handleSave = async (
 ) => {
   try {
     const data = itemDetailsCopy;
-    console.log("iddddddddddddddd", itemDetails);
+    console.log("iddddddddddddddd", itemDetails.ItemNo);
 
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(

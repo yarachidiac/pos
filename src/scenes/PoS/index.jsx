@@ -35,7 +35,7 @@ import printJS from "print-js";
 import FileSaver from "file-saver";
 import { resolveBreakpointValues } from '@mui/system/breakpoints';
 
-const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
+const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -66,7 +66,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
     return storedModifiers ? JSON.parse(storedModifiers) : [];
   });
 
-  console.log("Storeddddd clienttttttt", localStorage.getItem("selectedRow"));
+  console.log("Storeddddd clienttttttt", selectedRow);
 
   const handlePrint = () => {
     printJS({
@@ -203,6 +203,20 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
       fetchItemsCategory();
     }
   }, [selectedCategoryCode]);
+
+ useEffect(() => {
+   // Update the selected meals when mealsCopy changes
+   const updatedSelectedMeals = selectedMeals.map((meal) => {
+     const correspondingMeal = mealsCopy.find(
+       (copyMeal) => copyMeal.ItemNo === meal.ItemNo
+     );
+     return correspondingMeal
+       ? { ...meal, ...correspondingMeal, quantity: meal.quantity }
+       : meal;
+   });
+   setSelectedMeals(updatedSelectedMeals);
+ }, [mealsCopy]);
+
 
   const fetchCategories = async () => {
     try {
@@ -403,6 +417,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
         setFinalTotal(0);
         setDiscValue(0);
         setSrv(0);
+        setSelectedRow({});
         console.log("Order placed successfully!");
       } else {
         console.error("Failed to place order:", response.statusText);
@@ -445,6 +460,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
               <TableCell>Qty</TableCell>
               <TableCell>Barcode</TableCell>
               <TableCell>Unit Price</TableCell>
+              <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -459,6 +475,14 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
                     {(
                       selectedMeal.UPrice -
                       (selectedMeal.UPrice * selectedMeal.Disc) / 100
+                    ).toFixed(2)}
+                  </TableCell>
+                  <TableCell>
+                    $
+                    {(
+                      (selectedMeal.UPrice -
+                        (selectedMeal.UPrice * selectedMeal.Disc) / 100) *
+                      selectedMeal.quantity
                     ).toFixed(2)}
                   </TableCell>
                 </TableRow>
@@ -977,42 +1001,97 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow }) => {
       </Box>
       <Box id="myPrintableContent" sx={{ display: "none" }}>
         <div>
-          <Typography variant="h1">Your Order</Typography>
+          <Typography variant="h3">Your Order</Typography>
           {getItemListTable()}
-          <div>
-            <Typography variant="h2">Payment Summary</Typography>
-            <Typography variant="body1">Gross Total: ${grossTotal}</Typography>
-            <Typography variant="body1">
-              Service: {srv}% (${serviceValue.toFixed(2)})
-            </Typography>
-            <Typography variant="body1">
-              Discount: {discValue}% (${discountValue.toFixed(2)})
-            </Typography>
-            <Typography variant="body1">
-              Total Discount: ${totalDiscount.toFixed(2)}
-            </Typography>
-            <Typography variant="body1">
-              Tax: {selectedMeals.length > 0 ? selectedMeals[0].Tax : 0}% ($
-              {totalTax.toFixed(2)})
-            </Typography>
-            <Typography variant="body1">
-              Total: ${finalTotal.toFixed(2)}
-            </Typography>
-          </div>
-          {Object.keys(selectedRow).length !== 0 && (
-            <div>
-              <Typography variant="h2">Client Address</Typography>
-              <Typography variant="body1">Tel: {selectedRow["Tel"]}</Typography>
-              <Typography variant="body1">
-                Building: {selectedRow["Building"]}
-              </Typography>
-              <Typography variant="body1">
-                Address: {selectedRow["Address"]}
-              </Typography>
-            </div>
-          )}
         </div>
+        <div>
+          <Typography variant="h3">Payment Summary</Typography>
+          <TableContainer>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Gross Total:</TableCell>
+                  <TableCell>${grossTotal}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Service:</TableCell>
+                  <TableCell>
+                    {srv}% (${serviceValue.toFixed(2)})
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Discount:</TableCell>
+                  <TableCell>
+                    {discValue}% (${discountValue.toFixed(2)})
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Total Discount:</TableCell>
+                  <TableCell>${totalDiscount.toFixed(2)}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Tax:</TableCell>
+                  <TableCell>
+                    {selectedMeals.length > 0 ? selectedMeals[0].Tax : 0}% ($
+                    {totalTax.toFixed(2)})
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Total:</TableCell>
+                  <TableCell>${finalTotal.toFixed(2)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+        {Object.keys(selectedRow).length !== 0 && (
+          <TableContainer>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <Typography variant="h3">Client Address</Typography>
+                  </TableCell>
+                </TableRow>
+                {selectedRow["AccName"] !== "" && (
+                  <TableRow>
+                    <TableCell>Name:</TableCell>
+                    <TableCell>{selectedRow["AccName"]}</TableCell>
+                  </TableRow>
+                )}
+                {selectedRow["Tel"] !== "" && selectedRow["Tel"] !== null && (
+                  <TableRow>
+                    <TableCell>Tel:</TableCell>
+                    <TableCell>{selectedRow["Tel"]}</TableCell>
+                  </TableRow>
+                )}
+                {selectedRow["Address"] !== "" &&
+                  selectedRow["Address"] !== null && (
+                    <TableRow>
+                      <TableCell>Address:</TableCell>
+                      <TableCell>{selectedRow["Address"]}</TableCell>
+                    </TableRow>
+                  )}
+                {selectedRow["Building"] !== "" &&
+                  selectedRow["Building"] !== null && (
+                    <TableRow>
+                      <TableCell>Building:</TableCell>
+                      <TableCell>{selectedRow["Building"]}</TableCell>
+                    </TableRow>
+                  )}
+                {selectedRow["Street"] !== "" &&
+                  selectedRow["Street"] !== null && (
+                    <TableRow>
+                      <TableCell>Street:</TableCell>
+                      <TableCell>{selectedRow["Street"]}</TableCell>
+                    </TableRow>
+                  )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Box>
+
       <ModifierDialog
         open={isModifierDialogOpen}
         onClose={handleCloseModifierDialog}

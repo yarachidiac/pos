@@ -143,6 +143,7 @@ function App() {
                         isCollapsed={isCollapsed}
                         //setCompanyName={setCompanyName}
                         selectedRow={selectedRow}
+                        setSelectedRow={setSelectedRow}
                       />
                     }
                   />
