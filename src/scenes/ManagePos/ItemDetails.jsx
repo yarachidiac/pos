@@ -28,6 +28,8 @@ const ItemDetails = ({
   setSuccessMessage,
   itemDetailsCopyModel,
   setItemDetailsCopyModel,
+  setOldItemNo,
+  setNewItemNo,
 }) => {
   const [editableCells, setEditableCells] = useState([]);
   //const [successMessage, setSuccessMessage] = useState(""); // New state for success message
@@ -36,45 +38,48 @@ const ItemDetails = ({
   const colors = tokens(theme.palette.mode);
 
   const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });
-    //const [isEditing, setIsEditing] = useState(false);
+  //const [isEditing, setIsEditing] = useState(false);
   const [groupNames, setGroupNames] = useState([]);
-  const [selectedGroupName, setSelectedGroupName] = useState(itemDetails.GroupName);
-  const [selectedGroup, setSelectedGroup] = useState({ GroupNo: itemDetails.GroupNo, GroupName: itemDetails.GroupName, });
-   
+  const [selectedGroupName, setSelectedGroupName] = useState(
+    itemDetails.GroupName
+  );
+  const [selectedGroup, setSelectedGroup] = useState({
+    GroupNo: itemDetails.GroupNo,
+    GroupName: itemDetails.GroupName,
+  });
+
   const handleEdit = (index) => {
     setEditableCells((prev) => [...prev, index]);
   };
 
-    const handleValueUpdate = (field, updatedValue) => {
-      if (field === "GroupName") {
-        // For Select component
-        setItemDetailsCopy((prev) => ({
-          ...prev,
-          GroupName: updatedValue.GroupName,
-          GroupNo: updatedValue.GroupNo,
-        }));
-        setSelectedGroupName(updatedValue.GroupName);
-        setSelectedGroup(updatedValue); // Also update the selected group object
-      } else if (field === "Image") {
-        // For file input
-        const file = updatedValue.target.files[0];
-        console.log("in handlee file ", file);
-        setItemDetailsCopy((prev) => ({
-          ...prev,
-          [field]: file.name,
-          GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
-        }));
-      } else {
-        // For TextField and other fields
-        setItemDetailsCopy((prev) => ({
-          ...prev,
-          [field]: updatedValue,
-          GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
-        }));
-      }
-    };
-
-
+  const handleValueUpdate = (field, updatedValue) => {
+    if (field === "GroupName") {
+      // For Select component
+      setItemDetailsCopy((prev) => ({
+        ...prev,
+        GroupName: updatedValue.GroupName,
+        GroupNo: updatedValue.GroupNo,
+      }));
+      setSelectedGroupName(updatedValue.GroupName);
+      setSelectedGroup(updatedValue); // Also update the selected group object
+    } else if (field === "Image") {
+      // For file input
+      const file = updatedValue.target.files[0];
+      console.log("in handlee file ", file);
+      setItemDetailsCopy((prev) => ({
+        ...prev,
+        [field]: file.name,
+        GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
+      }));
+    } else {
+      // For TextField and other fields
+      setItemDetailsCopy((prev) => ({
+        ...prev,
+        [field]: updatedValue,
+        GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
+      }));
+    }
+  };
 
   const handleCellClick = (index) => {
     if (!editableCells.includes(index)) {
@@ -94,33 +99,33 @@ const ItemDetails = ({
     checkUnsavedChanges(checkUnsavedChangesCallback);
     setItemDetailsCopyModel(itemDetailsCopy); // Corrected line
   }, [itemDetailsCopy, itemDetails, checkUnsavedChanges]);
-    
-    useEffect(() => {
-      // Fetch groupItems when the component mounts
-      const fetchGroupItems = async () => {
-        try {
-          const response = await fetch(
-            `http://192.168.16.113:8000/groupitems/${companyName}`
-          );
-          if (!response.ok) {
-            throw new Error("Error fetching groupItems");
-          }
-            const data = await response.json();
-            console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data);
-          setGroupNames([...data]); // Assuming data is an array of objects with groupName and groupNo
-        } catch (error) {
-          console.error(error);
-        }
-      };
 
-      fetchGroupItems();
-    }, []);
+  useEffect(() => {
+    // Fetch groupItems when the component mounts
+    const fetchGroupItems = async () => {
+      try {
+        const response = await fetch(
+          `http://192.168.16.113:8000/groupitems/${companyName}`
+        );
+        if (!response.ok) {
+          throw new Error("Error fetching groupItems");
+        }
+        const data = await response.json();
+        console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data);
+        setGroupNames([...data]); // Assuming data is an array of objects with groupName and groupNo
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchGroupItems();
+  }, []);
 
   // Trigger handleSave when userDetailsCopy changes
   // useEffect(() => {
   //   handleSave();
-    // }, [userDetailsCopy]);
-    console.log("groupppppppppppppppppp", itemDetailsCopy);
+  // }, [userDetailsCopy]);
+  console.log("groupppppppppppppppppp", itemDetailsCopy);
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", itemDetailsCopy);
   const rows = Object.entries(itemDetailsCopy)
     .filter(([key]) => key !== "GroupNo")
@@ -236,7 +241,7 @@ const ItemDetails = ({
                   textOverflow: "ellipsis",
                   width: "100%",
                   justifyContent: "center",
-                  height: "100%"
+                  height: "100%",
                 }}
                 onClick={() => handleCellClick(index)}
               >
@@ -294,7 +299,7 @@ const ItemDetails = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-around",
-                  height: "100%"
+                  height: "100%",
                 }}
               >
                 <Select
@@ -312,11 +317,7 @@ const ItemDetails = ({
                 >
                   {groupNames !== undefined &&
                     groupNames.map((item) => (
-                      <MenuItem
-                        key={item.GroupNo}
-                        value={item.GroupName}
-                       
-                      >
+                      <MenuItem key={item.GroupNo} value={item.GroupName}>
                         {item.GroupName}
                       </MenuItem>
                     ))}
@@ -340,13 +341,13 @@ const ItemDetails = ({
       <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
           <TableBody
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
-                gap: "5px",
-              }}
-            >
-              {rows}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
+              gap: "5px",
+            }}
+          >
+            {rows}
           </TableBody>
         </Table>
       </TableContainer>
@@ -382,7 +383,9 @@ const ItemDetails = ({
                     itemDetailsCopy,
                     setItems,
                     setSuccessMessage,
-                    setItemDetails
+                    setItemDetails,
+                    setOldItemNo,
+                    setNewItemNo
                   )
                 }
               >
@@ -407,7 +410,9 @@ const ItemDetails = ({
                   itemDetailsCopy,
                   setItems,
                   setSuccessMessage,
-                  setItemDetails
+                  setItemDetails,
+                  setOldItemNo,
+                  setNewItemNo
                 )
               }
             >

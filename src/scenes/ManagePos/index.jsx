@@ -10,7 +10,13 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import ItemDetailsModal from "./ItemDetailsModal";
 
-const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
+const ManagePoS = ({
+  companyName,
+  addTitle,
+  setAddTitle,
+  setOldItemNo,
+  setNewItemNo,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -53,7 +59,6 @@ const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
     setIsDetailsModalOpen(true);
     setItemDetails(params.row);
   };
-
 
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
@@ -186,6 +191,8 @@ const ManagePoS = ({ companyName, addTitle, setAddTitle }) => {
         items={items}
         setItems={setItems}
         companyName={companyName}
+        setOldItemNo={setOldItemNo}
+        setNewItemNo={setNewItemNo}
       />
       <Box
         m="0 auto"

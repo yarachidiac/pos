@@ -42,6 +42,8 @@ function App() {
     const storedSelectedRow = localStorage.getItem("selectedRow");
     return storedSelectedRow!== "undefined" ? JSON.parse(storedSelectedRow) : {};
   });
+  const [oldItemNo, setOldItemNo] = useState("");
+  const [newItemNo, setNewItemNo] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -144,6 +146,8 @@ function App() {
                         //setCompanyName={setCompanyName}
                         selectedRow={selectedRow}
                         setSelectedRow={setSelectedRow}
+                        oldItemNo={oldItemNo}
+                        newItemNo={newItemNo}
                       />
                     }
                   />
@@ -157,6 +161,8 @@ function App() {
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
                         //setCompanyName={setCompanyName}
+                        setOldItemNo={setOldItemNo}
+                        setNewItemNo={setNewItemNo}
                       />
                     }
                   />

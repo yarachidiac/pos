@@ -4,7 +4,9 @@ const handleSave = async (
   itemDetailsCopy,
   setUsers,
   setSuccessMessage,
-  setItemDetails
+  setItemDetails,
+  setOldItemNo,
+  setNewItemNo
 ) => {
   try {
     const data = itemDetailsCopy;
@@ -25,6 +27,8 @@ const handleSave = async (
 
     if (saveResponse.ok) {
       console.log("Save response:", responseData);
+      setOldItemNo(responseData.oldItemNo);
+      setNewItemNo(responseData.newItemNo);
 
       // If save is successful, update userDetails to match userDetailsCopy
       setItemDetails(itemDetailsCopy);

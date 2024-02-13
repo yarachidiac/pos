@@ -24,163 +24,166 @@ const ItemDetailsModal = ({
   items,
   setItems,
   companyName,
+  setOldItemNo,
+  setNewItemNo,
 }) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [showConfirmation, setShowConfirmation] = useState(false);
-    const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-    const [itemDetailsCopyModel, setItemDetailsCopyModel] = useState({
-      ...itemDetails,
-    });
-    
-    if (!itemDetails) {
-      return null;
-    }
-    const modalStyle = {
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      background: colors.whiteblack[100],
-      //background: "#FFFEFC",
-      //backgroundColor: "#fcfcfc",
-      boxShadow: 24,
-      pt: 0, // Set top padding to 2
-      pr: 2, // Set right padding to 3
-      pb: 2, // Set bottom padding to 3
-      pl: 2, // Set left padding to 3
-      //width: "100%",
-      minWidth: "90%",
-      minHeight: "90%", // Set a minimum height for smaller screens
-      //maxHeight: "90%", // Set a maximum height for smaller screens
-      display: "flex",
-      flexDirection: window.innerWidth < 650 ? "row" : "column",
-    };
-    const modalContainerStyle = {
-      position: "relative",
-      overflow: "hidden", // Hide overflow from the Drawer
-      //backgroundColor: "rgba(252, 252, 252, 0.92)",
-    };
-    const largerModalStyle = {
-      width: "90%",
-      //maxWidth: 800,
-    };
-    const heightModalStyle = {
-      width: "100%",
-      minHeight: "60%", // Set the fixed height for smaller screens
-      maxHeight: "80%", // Adjust the maximum height as needed
-    };
-    const iconButtonStyle = {
-      // Other styles...
-      display: "flex",
-      color: colors.greenAccent[500],
-      ...(window.innerWidth < 650
-        ? {
-            position: "absolute",
-            top: "8px",
-            right: "8px",
-          }
-        : {
-            position: "relative",
-          }),
-      marginLeft: "auto", // Push the button to the right
-      // Other styles...
-    };
-    
-    // Callback function to set unsaved changes status
-    const checkUnsavedChanges = (unsavedChanges) => {
-      setHasUnsavedChanges(unsavedChanges);
-    };
-    const onClose = () => {
-      setIsDetailsModalOpen(false);
-    };
-    const handleClose = () => {
-      if (hasUnsavedChanges) {
-        setShowConfirmation(true);
-      } else {
-        setShowConfirmation(false);
-        onClose();
-      }
-    };
-    const handleConfirmClose = async () => {
-      handleSave(
-        companyName,
-        itemDetails,
-        itemDetailsCopyModel,
-        setItems,
-        setSuccessMessage,
-        setItemDetails
-      );
-      // Handle the save operation here
-      // Once saved, set the state to indicate no unsaved changes
-      setHasUnsavedChanges(false);
-      setShowConfirmation(false); // Close the confirmation dialog
-      onClose(); // Close the modal
-    };
-    const handleCancelClose = () => {
-      setShowConfirmation(false); // Close the confirmation dialog
-      onClose();
-    };
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [itemDetailsCopyModel, setItemDetailsCopyModel] = useState({
+    ...itemDetails,
+  });
 
-    
-    return (
-      <Modal open={isOpen} onClose={handleClose}>
+  if (!itemDetails) {
+    return null;
+  }
+  const modalStyle = {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    background: colors.whiteblack[100],
+    //background: "#FFFEFC",
+    //backgroundColor: "#fcfcfc",
+    boxShadow: 24,
+    pt: 0, // Set top padding to 2
+    pr: 2, // Set right padding to 3
+    pb: 2, // Set bottom padding to 3
+    pl: 2, // Set left padding to 3
+    //width: "100%",
+    minWidth: "90%",
+    minHeight: "90%", // Set a minimum height for smaller screens
+    //maxHeight: "90%", // Set a maximum height for smaller screens
+    display: "flex",
+    flexDirection: window.innerWidth < 650 ? "row" : "column",
+  };
+  const modalContainerStyle = {
+    position: "relative",
+    overflow: "hidden", // Hide overflow from the Drawer
+    //backgroundColor: "rgba(252, 252, 252, 0.92)",
+  };
+  const largerModalStyle = {
+    width: "90%",
+    //maxWidth: 800,
+  };
+  const heightModalStyle = {
+    width: "100%",
+    minHeight: "60%", // Set the fixed height for smaller screens
+    maxHeight: "80%", // Adjust the maximum height as needed
+  };
+  const iconButtonStyle = {
+    // Other styles...
+    display: "flex",
+    color: colors.greenAccent[500],
+    ...(window.innerWidth < 650
+      ? {
+          position: "absolute",
+          top: "8px",
+          right: "8px",
+        }
+      : {
+          position: "relative",
+        }),
+    marginLeft: "auto", // Push the button to the right
+    // Other styles...
+  };
+
+  // Callback function to set unsaved changes status
+  const checkUnsavedChanges = (unsavedChanges) => {
+    setHasUnsavedChanges(unsavedChanges);
+  };
+  const onClose = () => {
+    setIsDetailsModalOpen(false);
+  };
+  const handleClose = () => {
+    if (hasUnsavedChanges) {
+      setShowConfirmation(true);
+    } else {
+      setShowConfirmation(false);
+      onClose();
+    }
+  };
+  const handleConfirmClose = async () => {
+    handleSave(
+      companyName,
+      itemDetails,
+      itemDetailsCopyModel,
+      setItems,
+      setSuccessMessage,
+      setItemDetails
+    );
+    // Handle the save operation here
+    // Once saved, set the state to indicate no unsaved changes
+    setHasUnsavedChanges(false);
+    setShowConfirmation(false); // Close the confirmation dialog
+    onClose(); // Close the modal
+  };
+  const handleCancelClose = () => {
+    setShowConfirmation(false); // Close the confirmation dialog
+    onClose();
+  };
+
+  return (
+    <Modal open={isOpen} onClose={handleClose}>
+      <Box
+        sx={{
+          ...modalStyle,
+          ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
+          ...modalContainerStyle,
+        }}
+      >
+        <Box display="flex" justifyContent="space-between">
+          <Box sx={{ p: "2%" }}>
+            <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
+              {itemDetails.ItemName}
+            </Typography>
+          </Box>
+          <Box>
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleClose}
+              sx={iconButtonStyle}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Box>
+
         <Box
           sx={{
-            ...modalStyle,
-            ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
-            ...modalContainerStyle,
+            flexGrow: 1, // Allow the table to grow and take available space
+            width: window.innerWidth < 650 ? "60%" : "100%",
+            //maxHeight: "60%",
+            height: "500px",
+            //overflowY: "auto",
           }}
         >
-          <Box display="flex" justifyContent="space-between">
-            <Box sx={{ p: "2%" }}>
-              <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
-                {itemDetails.ItemName}
-              </Typography>
-            </Box>
-            <Box>
-              <IconButton
-                edge="end"
-                color="inherit"
-                onClick={handleClose}
-                sx={iconButtonStyle}
-              >
-                <CloseIcon />
-              </IconButton>
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              flexGrow: 1, // Allow the table to grow and take available space
-              width: window.innerWidth < 650 ? "60%" : "100%",
-              //maxHeight: "60%",
-              height: "500px",
-              //overflowY: "auto",
-            }}
-          >
-            <ItemDetails
-              itemDetails={itemDetails}
-              setItemDetails={setItemDetails}
-              setItems={setItems}
-              companyName={companyName}
-              checkUnsavedChanges={checkUnsavedChanges}
-              successMessage={successMessage}
-              setSuccessMessage={setSuccessMessage}
-              itemDetailsCopyModel={itemDetailsCopyModel}
-              setItemDetailsCopyModel={setItemDetailsCopyModel}
-              // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
-            />
-            <ConfirmationDialog
-              open={showConfirmation} // Controls whether the dialog is open or not
-              onCancel={handleCancelClose} // Function to handle dialog closure (cancel)
-              onConfirm={handleConfirmClose} // Function to handle confirmation
-            />
-          </Box>
-          {/* Other modal content */}
+          <ItemDetails
+            itemDetails={itemDetails}
+            setItemDetails={setItemDetails}
+            setItems={setItems}
+            companyName={companyName}
+            checkUnsavedChanges={checkUnsavedChanges}
+            successMessage={successMessage}
+            setSuccessMessage={setSuccessMessage}
+            itemDetailsCopyModel={itemDetailsCopyModel}
+            setItemDetailsCopyModel={setItemDetailsCopyModel}
+            setOldItemNo={setOldItemNo}
+            setNewItemNo={setNewItemNo}
+            // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
+          />
+          <ConfirmationDialog
+            open={showConfirmation} // Controls whether the dialog is open or not
+            onCancel={handleCancelClose} // Function to handle dialog closure (cancel)
+            onConfirm={handleConfirmClose} // Function to handle confirmation
+          />
         </Box>
-      </Modal>
-    );
+        {/* Other modal content */}
+      </Box>
+    </Modal>
+  );
 };
 
 export default ItemDetailsModal;

@@ -35,7 +35,7 @@ import printJS from "print-js";
 import FileSaver from "file-saver";
 import { resolveBreakpointValues } from '@mui/system/breakpoints';
 
-const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow }) => {
+const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -170,10 +170,16 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   };
 
   useEffect(() => {
-    const copy = meals.map((meal) => ({ ...meal, quantity: 1 }));
+    // Create a copy of meals with a unique identifier
+    const copy = meals.map((meal, index) => ({
+      ...meal,
+      quantity: 1,
+    }));
     setMealsCopy(copy);
-    console.log("haydeeeeeeeeeeee l copy kel ma tetghayar l meal", mealsCopy);
+    console.log("Copy with unique identifiers:", copy);
   }, [meals]);
+
+
   console.log(" l copy kel ma tetghayar l meal", mealsCopy);
 
   useEffect(() => {
@@ -185,9 +191,9 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   console.log("the branch and the SATYpe", branch, invType);
   console.log("company in pos ", companyName);
   // Retrieve selectedMeals from Local Storage on component mount
-  useEffect(() => {
-    localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
-  }, [selectedMeals]);
+  // useEffect(() => {
+  //   localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
+  // }, [selectedMeals]);
   console.log(
     "storedddddddddddddd storageeeeee",
     localStorage.getItem("selectedMeals")
@@ -203,19 +209,28 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       fetchItemsCategory();
     }
   }, [selectedCategoryCode]);
-
+  console.log("olddd itemm noooooooooo", oldItemNo);
+  console.log("newwwww itemm noooo", newItemNo);
  useEffect(() => {
-   // Update the selected meals when mealsCopy changes
+   // Update the selected meals to match the ItemNo in mealsCopy
    const updatedSelectedMeals = selectedMeals.map((meal) => {
+     // Find the corresponding meal in mealsCopy based on a unique identifier
      const correspondingMeal = mealsCopy.find(
-       (copyMeal) => copyMeal.ItemNo === meal.ItemNo
+       (copyMeal) => copyMeal.ItemNo === newItemNo
      );
-     return correspondingMeal
-       ? { ...meal, ...correspondingMeal, quantity: meal.quantity }
-       : meal;
+     if (correspondingMeal && meal.ItemNo === oldItemNo) {
+       // If there is a corresponding meal and the meal's ItemNo matches the oldItemNo, update only the ItemNo
+       return { ...meal, ItemNo: correspondingMeal.ItemNo };
+     } else {
+       // If no corresponding meal is found or the meal's ItemNo doesn't match the oldItemNo, return the original meal
+       return meal;
+     }
    });
+
+   // Update the state with the updated selected meals
    setSelectedMeals(updatedSelectedMeals);
  }, [mealsCopy]);
+
 
 
   const fetchCategories = async () => {
@@ -699,7 +714,8 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
                 paddingTop: "10px",
               }}
             >
-              Order Summary {selectedRow["AccName"]}
+              Order Summary
+              {selectedRow && selectedRow["AccName"]}
             </Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
@@ -1044,7 +1060,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
             </Table>
           </TableContainer>
         </div>
-        {Object.keys(selectedRow).length !== 0 && (
+        {selectedRow && Object.keys(selectedRow).length > 0 && (
           <TableContainer>
             <Table>
               <TableBody>
