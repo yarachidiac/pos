@@ -385,7 +385,8 @@ const ItemDetails = ({
                     setSuccessMessage,
                     setItemDetails,
                     setOldItemNo,
-                    setNewItemNo
+                    setNewItemNo,
+                    setItemDetailsCopy
                   )
                 }
               >
@@ -412,7 +413,8 @@ const ItemDetails = ({
                   setSuccessMessage,
                   setItemDetails,
                   setOldItemNo,
-                  setNewItemNo
+                  setNewItemNo,
+                  setItemDetailsCopy
                 )
               }
             >

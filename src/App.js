@@ -163,6 +163,7 @@ function App() {
                         //setCompanyName={setCompanyName}
                         setOldItemNo={setOldItemNo}
                         setNewItemNo={setNewItemNo}
+                        oldItemNo={oldItemNo}
                       />
                     }
                   />

@@ -34,6 +34,7 @@ import ModifierDialog from './ModifierDialaog';
 import printJS from "print-js";
 import FileSaver from "file-saver";
 import { resolveBreakpointValues } from '@mui/system/breakpoints';
+import { useRefresh } from '../RefreshContex';
 
 const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo }) => {
   const theme = useTheme();
@@ -94,6 +95,38 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       },
       printerName: "OP",
     });
+  };
+
+  const { refreshNeeded, resetRefresh } = useRefresh();
+
+  // Use the refreshNeeded state to trigger a refresh
+  useEffect(() => {
+    if (refreshNeeded) {
+      // Perform actions to refresh data or components
+      // For example, refetch data from the server
+      loadItems();
+
+      // Reset the refresh flag
+      resetRefresh();
+    }
+  }, [refreshNeeded]);
+
+  const loadItems = async () => {
+    try {
+      let url;
+      if (selectedCategoryCode) {
+        // If a category is selected, fetch items for the selected category
+        url = `http://192.168.16.113:8000/categoriesitems/${companyName}/${selectedCategoryCode}`;
+      } else {
+        // Otherwise, fetch all items
+        url = `http://192.168.16.113:8000/allitems/${companyName}`;
+      }
+      const response = await fetch(url);
+      const data = await response.json();
+      setMeals(data);
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
   };
 
   useEffect(() => {
@@ -381,6 +414,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
     setSelectedMeals(updatedSelectedMeals);
   };
 
+  let placeOrderCount = 0;
   const handlePlace = async () => {
     try {
       const currentDate = new Date();
@@ -421,6 +455,17 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
           // Use FileSaver to save the JSON data as a TXT file
           const blob = new Blob([jsonString], { type: "application/json" });
           FileSaver.saveAs(blob, "response-data.json");
+
+          // Increment the placeOrderCount
+          placeOrderCount++;
+
+          // Check if the placeOrderCount reaches 3
+          if (placeOrderCount === 3) {
+            // Reload the page after 3 placing orders
+            setTimeout(() => {
+              window.location.reload();
+            }, 3000);
+          }
         }
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);

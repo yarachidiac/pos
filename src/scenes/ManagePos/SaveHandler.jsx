@@ -6,12 +6,13 @@ const handleSave = async (
   setSuccessMessage,
   setItemDetails,
   setOldItemNo,
-  setNewItemNo
+  setNewItemNo,
+  
 ) => {
   try {
     const data = itemDetailsCopy;
     console.log("iddddddddddddddd", itemDetails.ItemNo);
-
+    console.log("itemmmmmmmmmmmmmmmmmmmmNOOOOO", itemDetails);
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
       `http://192.168.16.113:8000/updateItems/${companyName}/${itemDetails.ItemNo}`,
@@ -29,9 +30,14 @@ const handleSave = async (
       console.log("Save response:", responseData);
       setOldItemNo(responseData.oldItemNo);
       setNewItemNo(responseData.newItemNo);
-
-      // If save is successful, update userDetails to match userDetailsCopy
-      setItemDetails(itemDetailsCopy);
+      if (
+        responseData.message !==
+        "ItemNo already exists. Please choose another ItemNo."
+      ) {
+        // If save is successful, update userDetails to match userDetailsCopy
+        setItemDetails(itemDetailsCopy);
+      }
+        
       setSuccessMessage(responseData.message);
       setTimeout(() => {
         setSuccessMessage("");

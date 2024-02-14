@@ -10,7 +10,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Sidebar from "./Sidebar";
 import { Link } from "react-router-dom";
-
+import { useRefresh } from "../RefreshContex";
 const Topbar = ({
   isCollapsed,
   isMobile,
@@ -31,6 +31,11 @@ const Topbar = ({
   //     setIsCollapsed(true);
   //   }
   // };
+  const { triggerRefresh } = useRefresh();
+
+  const handleRefreshClick = () => {
+    triggerRefresh();
+  };
 
   const handleMenuToggle = () => {
     setIsCollapsed(!isCollapsed);
@@ -102,6 +107,7 @@ const Topbar = ({
                 Delivery
               </Button>
             )}
+            <Button onClick={handleRefreshClick}>Refresh</Button>
           </Box>
         </Box>
       </Box>
