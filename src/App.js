@@ -27,6 +27,7 @@ import ManagePoS from './scenes/ManagePos';
 import { useNavigate, useLocation } from "react-router-dom";
 import Delivery from './scenes/PoS/Delivery';
 import ChartAcc from './scenes/ChartAcc';
+import Section from './scenes/Section';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -171,6 +172,21 @@ function App() {
                     path="/Chart"
                     element={
                       <ChartAcc
+                        companyName={companyName}
+                        branch={branch}
+                        invType={invType}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
+                        //setCompanyName={setCompanyName}
+                        selectedRow={selectedRow}
+                        setSelectedRow={setSelectedRow}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/Sections"
+                    element={
+                      <Section
                         companyName={companyName}
                         branch={branch}
                         invType={invType}
