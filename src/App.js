@@ -192,9 +192,7 @@ function App() {
                         invType={invType}
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
-                        //setCompanyName={setCompanyName}
-                        selectedRow={selectedRow}
-                        setSelectedRow={setSelectedRow}
+                        addTtile={addTitle}
                       />
                     }
                   />

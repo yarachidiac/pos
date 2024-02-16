@@ -48,6 +48,7 @@ const AddUserDialog = ({
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {/* <Typography variant="h4">Enter user details:</Typography> */}
           <TextField
+            margin="dense"
             label="Name"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
