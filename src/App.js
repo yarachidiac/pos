@@ -28,6 +28,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Delivery from './scenes/PoS/Delivery';
 import ChartAcc from './scenes/ChartAcc';
 import Section from './scenes/Section';
+import Tables from './scenes/Section/Tables';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -187,6 +188,19 @@ function App() {
                     path="/Sections"
                     element={
                       <Section
+                        companyName={companyName}
+                        branch={branch}
+                        invType={invType}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
+                        addTtile={addTitle}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/Tables"
+                    element={
+                      <Tables
                         companyName={companyName}
                         branch={branch}
                         invType={invType}

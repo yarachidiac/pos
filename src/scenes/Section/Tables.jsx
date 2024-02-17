@@ -9,35 +9,37 @@ import {
   Grid,
   Typography,
   useTheme,
-  Stack
 } from "@mui/material";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
-import SectionDialog from "./SectionDialog";
+import TableDialog from "./TableDialog";
 import { Link } from "react-router-dom";
-import Tables from "./Tables";
+import { useLocation } from "react-router-dom";
 
-const Section = ({addTitle, setAddTitle, companyName }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [successMess, setSuccessMess] = useState();
-  const [sections, setSections] = useState([]);
-  const [sectionName, setSectionName] = useState("");
-  const [sectionNo, setSectionNo] = useState("");
+const Tables = ({ addTitle, setAddTitle, companyName }) => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [successMess, setSuccessMess] = useState();
+    const [tables, setTables] = useState([]);
+    const location = useLocation();
+    const sectionNo = location.state.sectionNo;
+    const [tableNo, setTableNo] = useState("");
+    const [tableWaiter, setTableWaiter] = useState("");
+    const [active, setActive] = useState("");
+    const [description, setDescription] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.113:8000/allsections/${companyName}`
+          `http://192.168.16.113:8000/alltables/${companyName}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setSections(data); // Update sections state with fetched data
-
+        setTables(data); // Update sections state with fetched data
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -58,38 +60,39 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
   };
 
   const handleEditClick = (title) => {
-    setAddTitle(title)
+    setAddTitle(title);
+    console.log("Edit clicked for:", tableNo);
     setIsDialogOpen(true);
 
     // Handle edit action here
-  }; 
+  };
 
   const onAdd = async (sectionInfo) => {
     try {
-      if (addTitle === "Add Section") {
-         console.log("newwwwwwwww sectionnnnnn", sectionInfo);
-         const apiUrl = `http://192.168.16.113:8000/addsections/${companyName}`;
+      if (addTitle === "Add Table") {
+        console.log("newwwwwwwww sectionnnnnn", sectionInfo);
+        const apiUrl = `http://192.168.16.113:8000/addtables/${companyName}/${sectionNo}`;
 
-         const response = await fetch(apiUrl, {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/json",
-           },
-           body: JSON.stringify(sectionInfo),
-         });
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sectionInfo),
+        });
 
-         if (!response.ok) {
-           throw new Error(`HTTP error! Status: ${response.status}`);
-         }
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-         const responseData = await response.json();
-         setSuccessMess(responseData.message);
-         setTimeout(() => {
-           setSuccessMess("");
-         }, 2000);
-         console.log("Response from the server:", responseData);
+        const responseData = await response.json();
+        setSuccessMess(responseData.message);
+        setTimeout(() => {
+          setSuccessMess("");
+        }, 2000);
+        console.log("Response from the server:", responseData);
       } else {
-        const apiUrl = `http://192.168.16.113:8000/updateSections/${companyName}/${sectionNo}`;
+        const apiUrl = `http://192.168.16.113:8000/updateTables/${companyName}/${tableNo}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -111,18 +114,18 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
         console.log("Response from the server:", responseData);
       }
       // Fetch the details of the newly added user
-      const sectionsResponse = await fetch(
-        `http://192.168.16.113:8000/allsections/${companyName}`
+      const tablesResponse = await fetch(
+        `http://192.168.16.113:8000/alltables/${companyName}`
       );
 
-      if (!sectionsResponse.ok) {
-        throw new Error(`HTTP error! Status: ${sectionsResponse.status}`);
+      if (!tablesResponse.ok) {
+        throw new Error(`HTTP error! Status: ${tablesResponse.status}`);
       }
 
-      const allsection = await sectionsResponse.json();
+        const alltable = await tablesResponse.json();
 
       // Set the userDetails state with the details of the newly added user
-      setSections(allsection);
+      setTables(alltable);
       // Open the details modal
     } catch (error) {
       console.error("Error:", error.message);
@@ -163,7 +166,7 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
             variant="contained"
             color="secondary"
             style={{ fontSize: "1.1rem" }}
-            onClick={() => handleAddSection("Add Section")}
+            onClick={() => handleAddSection("Add Table")}
           >
             Add
           </Button>
@@ -180,8 +183,8 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
             overflow: "auto",
           }}
         >
-          {sections.map((section, index) => (
-            <Grid key={section.SectionNo} item xs={12} sm={6} md={4} lg={3}>
+          {tables.map((table) => (
+            <Grid key={table.TableNo} item xs={12} sm={6} md={4} lg={3}>
               <Box
                 position="relative"
                 width="100%"
@@ -197,13 +200,11 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
                     transform: "translate(-50%, -50%)",
                   }}
                 >
-                  {section.Name}
+                  {table.TableNo}
                 </Typography>
                 <ButtonBase
                   component={Link}
-                  to={{
-                    pathname: "/Tables",
-                  }}
+                  to="/Tables"
                   sx={{
                     position: "absolute",
                     top: 0,
@@ -222,11 +223,10 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
                     color: colors.primary[500],
                     zIndex: 1, // Ensure the Edit button is above the ButtonBase
                   }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setSectionNo(section.SectionNo)
-                    setSectionName(section.Name);
-                    handleEditClick("Update Section");
+                  onClick={() => {
+                      setTableNo(table.TableNo);
+                      
+                    handleEditClick("Update Table");
                   }}
                 >
                   Edit
@@ -236,19 +236,23 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
           ))}
         </Grid>
       </Container>
-      <SectionDialog
+      <TableDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
         onAdd={onAdd}
         successMess={successMess}
         title={addTitle}
-        sectionName={sectionName}
-        sectionNo={sectionNo}
-        setSectionName={setSectionName}
-        setSectionNo={setSectionNo}
+        tableNo={tableNo}
+        setTableNo={setTableNo}
+        tableWaiter={tableWaiter}
+        setTableWaiter={setTableWaiter}
+        active={active}
+        setActive={setActive}
+        description={description}
+        setDescription={setDescription}
       />
     </Box>
   );
 };
 
-export default Section;
+export default Tables;

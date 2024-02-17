@@ -10,16 +10,20 @@ import DialogActions from "@mui/material/DialogActions";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 
-const SectionDialog = ({
+const TableDialog = ({
   isOpen,
   onClose,
   onAdd,
   successMess,
   title,
-  sectionName,
-  sectionNo,
-  setSectionName, 
-  setSectionNo
+  tableNo,
+  tableWaiter,
+  active,
+    description,
+    setTableNo,
+    setTableWaiter,
+    setActive,
+  setDescription
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -27,9 +31,16 @@ const SectionDialog = ({
   const handleAdd = () => {
     // Perform any validation if needed
     // Call the onAddUser function with the new user details
-    onAdd({ SectionNo: sectionNo, Name: sectionName });
-    setSectionNo("");
-    setSectionName("");
+    onAdd({
+      TableNo: tableNo,
+      TableWaiter: tableWaiter,
+      Active: active,
+      Description: description,
+    });
+    setTableNo("");
+    setTableWaiter("");
+    setActive("");
+    setDescription("");
     // Close the dialog
     setTimeout(() => {
       // Close the dialog
@@ -38,10 +49,10 @@ const SectionDialog = ({
   };
 
   const handleCancel = () => {
-    // Reset userName to an empty string
-    setSectionNo("");
-    setSectionName("");
-    // Close the dialog
+    setTableNo("");
+    setTableWaiter("");
+    setActive("");
+    setDescription("");
     // Close the dialog
     onClose();
   };
@@ -63,14 +74,14 @@ const SectionDialog = ({
           autoFocus
           required
           margin="dense"
-          label="Section No"
-          value={sectionNo}
-          onChange={(e) => setSectionNo(e.target.value)}
+          label="Table No"
+          value={tableNo}
+          onChange={(e) => setTableNo(e.target.value)}
         />
         <TextField
-          label="Section Name"
-          value={sectionName}
-          onChange={(e) => setSectionName(e.target.value)}
+          label="Table Waiter"
+          value={tableWaiter}
+          onChange={(e) => setTableWaiter(e.target.value)}
         />
         <Typography variant="body1">{successMess}</Typography>
       </DialogContent>
@@ -90,11 +101,11 @@ const SectionDialog = ({
           onClick={handleAdd}
           style={{ fontSize: "0.9rem" }}
         >
-          {title === "Add Section" ? "Create" : "Update"}
+          {title === "Add Table" ? "Create" : "Update"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default SectionDialog;
+export default TableDialog;
