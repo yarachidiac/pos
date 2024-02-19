@@ -14,7 +14,8 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import TableDialog from "./TableDialog";
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Tables = ({ addTitle, setAddTitle, companyName }) => {
     const theme = useTheme();
@@ -22,18 +23,20 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [successMess, setSuccessMess] = useState();
     const [tables, setTables] = useState([]);
-    const location = useLocation();
-    const sectionNo = location.state.sectionNo;
     const [tableNo, setTableNo] = useState("");
     const [tableWaiter, setTableWaiter] = useState("");
     const [active, setActive] = useState("");
     const [description, setDescription] = useState("");
+    const { sectionNo } = useParams();
+    const [selectedTableId, setSelectedTableId] = useState("");  
+    const navigate = useNavigate();
 
+  console.log("section no in tablesssss", sectionNo)
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.113:8000/alltables/${companyName}`
+          `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -59,13 +62,13 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
     setIsDialogOpen(false);
   };
 
-  const handleEditClick = (title) => {
+  const handleEditClick = (title, tableNo) => {
+    setSelectedTableId(tableNo);
     setAddTitle(title);
-    console.log("Edit clicked for:", tableNo);
     setIsDialogOpen(true);
-
     // Handle edit action here
   };
+    console.log("Edit clicked for:", tableNo);
 
   const onAdd = async (sectionInfo) => {
     try {
@@ -92,7 +95,7 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
         }, 2000);
         console.log("Response from the server:", responseData);
       } else {
-        const apiUrl = `http://192.168.16.113:8000/updateTables/${companyName}/${tableNo}`;
+        const apiUrl = `http://192.168.16.113:8000/updateTables/${companyName}/${sectionNo}/${selectedTableId}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -115,7 +118,7 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
       }
       // Fetch the details of the newly added user
       const tablesResponse = await fetch(
-        `http://192.168.16.113:8000/alltables/${companyName}`
+        `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
       );
 
       if (!tablesResponse.ok) {
@@ -132,6 +135,10 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
     }
   };
 
+  const handleOpenPOS = (tableNo) => {
+    window.location.href = `/PoS?selectedTableId=${tableNo}`;
+  };
+
   return (
     <Box
       sx={{
@@ -142,18 +149,19 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
     >
       <Box
         sx={{
-          height: "10%",
+          height: "20%",
           width: "90%",
           justifyContent: "space-around",
           display: "flex",
           flexDirection: "row",
         }}
       >
-        <Box sx={{ ml: "10%", mt: "2%" }}>
-          <Header title="Section" subtitle="Choose Title" />
+        <Box sx={{ ml: "10%", mt: "2%"}}>
+          <Header title="Table" subtitle="Choose Table" />
         </Box>
         <Box
           sx={{
+            height: "100%",
             width: "10%",
             marginLeft: "auto",
             justifyContent: "flex-end",
@@ -172,7 +180,7 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
           </Button>
         </Box>
       </Box>
-      <Container sx={{ height: "90%" }}>
+      <Container sx={{ height: "80%" }}>
         <Grid
           container
           spacing={2}
@@ -204,7 +212,6 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
                 </Typography>
                 <ButtonBase
                   component={Link}
-                  to="/Tables"
                   sx={{
                     position: "absolute",
                     top: 0,
@@ -212,6 +219,7 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
                     width: "100%",
                     height: "100%",
                   }}
+                  onClick={() => handleOpenPOS(table.TableNo)}
                 />
                 <Button
                   size="large"
@@ -224,9 +232,12 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
                     zIndex: 1, // Ensure the Edit button is above the ButtonBase
                   }}
                   onClick={() => {
-                      setTableNo(table.TableNo);
-                      
-                    handleEditClick("Update Table");
+                    console.log("honnnnnnnnnnnnnn", table.TableNo);
+                    setTableNo(table.TableNo);
+                    setTableWaiter(table.TableWaiter);
+                    setActive(table.Active);
+                    setDescription(table.Description)
+                    handleEditClick("Update Table", table.TableNo);
                   }}
                 >
                   Edit

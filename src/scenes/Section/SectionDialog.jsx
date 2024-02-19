@@ -28,8 +28,10 @@ const SectionDialog = ({
     // Perform any validation if needed
     // Call the onAddUser function with the new user details
     onAdd({ SectionNo: sectionNo, Name: sectionName });
-    setSectionNo("");
-    setSectionName("");
+    if(title === "Add Section"){
+      setSectionNo("");
+      setSectionName("");
+    }
     // Close the dialog
     setTimeout(() => {
       // Close the dialog

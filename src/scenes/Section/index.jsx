@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 import SectionDialog from "./SectionDialog";
 import { Link } from "react-router-dom";
 import Tables from "./Tables";
+import { useNavigate } from "react-router-dom";
 
 const Section = ({addTitle, setAddTitle, companyName }) => {
   const theme = useTheme();
@@ -26,6 +27,10 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
   const [sectionName, setSectionName] = useState("");
   const [sectionNo, setSectionNo] = useState("");
 
+  const navigate = useNavigate();
+  const handleOpenTables = (sectionNo) => {
+    navigate(`/tables/${sectionNo}`);
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,7 +42,6 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
         }
         const data = await response.json();
         setSections(data); // Update sections state with fetched data
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -58,36 +62,36 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
   };
 
   const handleEditClick = (title) => {
-    setAddTitle(title)
+    setAddTitle(title);
     setIsDialogOpen(true);
 
     // Handle edit action here
-  }; 
+  };
 
   const onAdd = async (sectionInfo) => {
     try {
       if (addTitle === "Add Section") {
-         console.log("newwwwwwwww sectionnnnnn", sectionInfo);
-         const apiUrl = `http://192.168.16.113:8000/addsections/${companyName}`;
+        console.log("newwwwwwwww sectionnnnnn", sectionInfo);
+        const apiUrl = `http://192.168.16.113:8000/addsections/${companyName}`;
 
-         const response = await fetch(apiUrl, {
-           method: "POST",
-           headers: {
-             "Content-Type": "application/json",
-           },
-           body: JSON.stringify(sectionInfo),
-         });
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sectionInfo),
+        });
 
-         if (!response.ok) {
-           throw new Error(`HTTP error! Status: ${response.status}`);
-         }
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-         const responseData = await response.json();
-         setSuccessMess(responseData.message);
-         setTimeout(() => {
-           setSuccessMess("");
-         }, 2000);
-         console.log("Response from the server:", responseData);
+        const responseData = await response.json();
+        setSuccessMess(responseData.message);
+        setTimeout(() => {
+          setSuccessMess("");
+        }, 2000);
+        console.log("Response from the server:", responseData);
       } else {
         const apiUrl = `http://192.168.16.113:8000/updateSections/${companyName}/${sectionNo}`;
 
@@ -200,10 +204,6 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
                   {section.Name}
                 </Typography>
                 <ButtonBase
-                  component={Link}
-                  to={{
-                    pathname: "/Tables",
-                  }}
                   sx={{
                     position: "absolute",
                     top: 0,
@@ -211,6 +211,7 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
                     width: "100%",
                     height: "100%",
                   }}
+                  onClick={() => handleOpenTables(section.SectionNo)}
                 />
                 <Button
                   size="large"
@@ -224,7 +225,7 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
                   }}
                   onClick={(event) => {
                     event.stopPropagation();
-                    setSectionNo(section.SectionNo)
+                    setSectionNo(section.SectionNo);
                     setSectionName(section.Name);
                     handleEditClick("Update Section");
                   }}

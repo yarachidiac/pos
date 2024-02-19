@@ -198,7 +198,7 @@ function App() {
                     }
                   />
                   <Route
-                    path="/Tables"
+                    path="/Tables/:sectionNo"
                     element={
                       <Tables
                         companyName={companyName}

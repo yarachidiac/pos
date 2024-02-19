@@ -35,6 +35,7 @@ import printJS from "print-js";
 import FileSaver from "file-saver";
 import { resolveBreakpointValues } from '@mui/system/breakpoints';
 import { useRefresh } from '../RefreshContex';
+import { useLocation } from "react-router-dom";
 
 const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo }) => {
   const theme = useTheme();
@@ -66,8 +67,15 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
     const storedModifiers = localStorage.getItem("selectedModifiers");
     return storedModifiers ? JSON.parse(storedModifiers) : [];
   });
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const selectedTableId = searchParams.get("selectedTableId");
 
+  console.log("tablee iddddddd", selectedTableId);
   console.log("Storeddddd clienttttttt", selectedRow);
+  const handleKitchen = () => {
+    
+  }
 
   const handlePrint = () => {
     printJS({
@@ -938,10 +946,25 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
                 justifyContent: "space-between",
               }}
             >
-              <Box sx={{ height: "10%" }}>
+              <Box
+                sx={{
+                  height: "10%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Typography variant="h4" fontWeight="bold">
                   Payment Summary
                 </Typography>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: "20px", width: "50%" }}
+                  onClick={handleKitchen}
+                >
+                  Send to Kitchen
+                </Button>
               </Box>
               <Button onClick={handlePrint}>Print</Button>
               <Box

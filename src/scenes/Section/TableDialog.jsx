@@ -9,6 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { FormControl, FormControlLabel, Checkbox } from "@mui/material";
 
 const TableDialog = ({
   isOpen,
@@ -19,10 +20,10 @@ const TableDialog = ({
   tableNo,
   tableWaiter,
   active,
-    description,
-    setTableNo,
-    setTableWaiter,
-    setActive,
+  description,
+  setTableNo,
+  setTableWaiter,
+  setActive,
   setDescription
 }) => {
   const theme = useTheme();
@@ -37,10 +38,12 @@ const TableDialog = ({
       Active: active,
       Description: description,
     });
-    setTableNo("");
-    setTableWaiter("");
-    setActive("");
-    setDescription("");
+    if(title === "Add Table"){
+      setTableNo("");
+      setTableWaiter("");
+      setActive("");
+      setDescription("");
+    }
     // Close the dialog
     setTimeout(() => {
       // Close the dialog
@@ -82,6 +85,25 @@ const TableDialog = ({
           label="Table Waiter"
           value={tableWaiter}
           onChange={(e) => setTableWaiter(e.target.value)}
+        />
+        <FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={active === "Y"} // Assuming active is your state variable for the Active field
+                onChange={(e) => setActive(e.target.checked ? "Y" : "N")} // Update the active state accordingly
+                color="primary"
+              />
+            }
+            label="Active"
+          />
+        </FormControl>
+        <TextField
+          label="Description"
+          multiline
+          rows={4}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
         <Typography variant="body1">{successMess}</Typography>
       </DialogContent>
