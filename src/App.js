@@ -29,6 +29,7 @@ import Delivery from './scenes/PoS/Delivery';
 import ChartAcc from './scenes/ChartAcc';
 import Section from './scenes/Section';
 import Tables from './scenes/Section/Tables';
+import CircularProgress from "@mui/material/CircularProgress";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -36,9 +37,10 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companyName, setCompanyName] = useState(""); 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
+  const [username, setUsername] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
     const storedSelectedRow = localStorage.getItem("selectedRow");
@@ -58,10 +60,12 @@ function App() {
          const storedCompanyName = localStorage.getItem("company_name");
          const storedBranch = localStorage.getItem("user_branch");
          const storedInvType = localStorage.getItem("user_invType");
-
+         const storedUsername = localStorage.getItem("username");
+         console.log("ana bl Appp", storedCompanyName);
          setCompanyName(storedCompanyName);
          setBranch(storedBranch);
          setInvType(storedInvType);
+         setUsername(storedUsername);
          setIsAuthenticated(true);
        } else {
          setIsAuthenticated(false);
@@ -78,7 +82,7 @@ function App() {
 
 
   if (loading) {
-    return <div></div>;
+    return <CircularProgress color="success" />;;
   }
 
   return (
@@ -92,6 +96,7 @@ function App() {
               setCompanyName={setCompanyName}
               setInvType={setInvType}
               setBranch={setBranch}
+              setUsername={setUsername}
               // companyName={companyName}
               // setCompanyName={setCompanyName}
             />
@@ -150,6 +155,7 @@ function App() {
                         setSelectedRow={setSelectedRow}
                         oldItemNo={oldItemNo}
                         newItemNo={newItemNo}
+                        username={username}
                       />
                     }
                   />

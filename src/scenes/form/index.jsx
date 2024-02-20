@@ -32,6 +32,7 @@ const Form = ({
   setCompanyName,
   setInvType,
   setBranch,
+  setUsername,
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -59,16 +60,19 @@ const Form = ({
 
       if (response.ok) {
         const responseUser = await response.json();
-         localStorage.setItem("company_name", values.company_name);
+        console.log("heyyyyyyyyyy", responseUser.user);
+        localStorage.setItem("company_name", values.company_name);
         await setCompanyName(localStorage.getItem("company_name"));
         console.log("logged innn userrrrrr", responseUser.user["Branch"]);
-         localStorage.setItem("user_branch", responseUser.user["Branch"]);
+        localStorage.setItem("user_branch", responseUser.user["Branch"]);
         await setBranch(localStorage.getItem("user_branch"));
-          localStorage.setItem("user_invType", responseUser.user["SAType"]);
-         await setInvType(localStorage.getItem("user_invType"));
+        localStorage.setItem("user_invType", responseUser.user["SAType"]);
+        await setInvType(localStorage.getItem("user_invType"));
         sessionStorage.setItem("isAuthenticated", "true");
-        await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"))
+        await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"));
         //updateCompanyName(values.company_name);
+        localStorage.setItem("username", responseUser.user["username"]);
+        await setUsername(localStorage.getItem("username"));
       } else {
         // Handle authentication error
         console.error("Authentication failed");

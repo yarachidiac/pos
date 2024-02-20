@@ -37,7 +37,7 @@ import { resolveBreakpointValues } from '@mui/system/breakpoints';
 import { useRefresh } from '../RefreshContex';
 import { useLocation } from "react-router-dom";
 
-const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo }) => {
+const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo, username }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -70,11 +70,45 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedTableId = searchParams.get("selectedTableId");
+  
 
   console.log("tablee iddddddd", selectedTableId);
   console.log("Storeddddd clienttttttt", selectedRow);
-  const handleKitchen = () => {
-    
+  const handleKitchen = async () => {
+    try {
+      const currentDate = new Date();
+      const formattedDateTime = format(currentDate, "dd/MM/yyyy HH:mm:ss");
+      const requestBody = {
+        date: formattedDateTime,
+        discValue: discValue,
+        srv: srv,
+        meals: selectedMeals,
+        branch: branch,
+        invType: invType,
+      };
+
+      const response = await fetch(
+        `http://192.168.16.113:8000/insertInv/${companyName}/${selectedTableId}/${username}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
+
+      if (response.ok) {
+        // Request successful
+        console.log("Insertion to kitchen successful");
+      } else {
+        // Handle error response
+        console.error("Error inserting into kitchen:", response.statusText);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error("Error inserting into kitchen:", error);
+    }
   }
 
   const handlePrint = () => {
@@ -240,16 +274,19 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
     localStorage.getItem("selectedMeals")
   );
   // Save selectedMeals to Local Storage whenever it changes
+  
   useEffect(() => {
     localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
   }, [selectedMeals]);
 
+  
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
     if (selectedCategoryCode !== "") {
       fetchItemsCategory();
     }
   }, [selectedCategoryCode]);
+  
   console.log("olddd itemm noooooooooo", oldItemNo);
   console.log("newwwww itemm noooo", newItemNo);
  useEffect(() => {
@@ -519,6 +556,32 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   console.log("totalllll finalllllllll", totalFinal);
   console.log("the finall meal with details", selectedMeals);
 
+   useEffect(() => {
+     const fetchData = async () => {
+       try {
+         if (selectedTableId !== null) {
+           // Reset selectedMeals, selectedModifiers, srv, discValue, and remove from localStorage
+           setSelectedMeals([]);
+           setSelectedModifiers([]);
+           setSrv(0);
+           setDiscValue(0);
+           localStorage.removeItem("selectedMeals");
+           const response = await fetch(
+             `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
+           );
+           const data = await response.json();
+           if (data.inv_list) {
+             setSelectedMeals(data.inv_list);
+           }
+         }
+       } catch (error) {
+         console.error("Error fetching data:", error);
+       }
+     };
+
+     fetchData();
+   }, [selectedTableId]);
+  
   const getItemListTable = () => {
     return (
       <TableContainer>
@@ -574,8 +637,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       </TableContainer>
     );
   };
-
-
+  
   return (
     <>
       {/* First Box (70% width) */}
