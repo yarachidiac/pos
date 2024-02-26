@@ -15,6 +15,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
@@ -70,7 +71,8 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedTableId = searchParams.get("selectedTableId");
-  
+  const [message, setMessage] = useState("");
+  const [dispTable, setDisTable] = useState("");
 
   console.log("tablee iddddddd", selectedTableId);
   console.log("Storeddddd clienttttttt", selectedRow);
@@ -97,8 +99,12 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
           body: JSON.stringify(requestBody),
         }
       );
-
+      let mess;
       if (response.ok) {
+        mess = await response.json()
+        setMessage(mess["invNo"]);
+        setSelectedMeals([]);
+        window.location.href = `/PoS `;
         // Request successful
         console.log("Insertion to kitchen successful");
       } else {
@@ -276,7 +282,9 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   // Save selectedMeals to Local Storage whenever it changes
   
   useEffect(() => {
-    localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
+    if (window.location.pathname === "/PoS"){
+      localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
+      }
   }, [selectedMeals]);
 
   
@@ -570,9 +578,16 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
              `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
            );
            const data = await response.json();
+           console.log("getttttttttt invvvvv", data)
            if (data.inv_list) {
              setSelectedMeals(data.inv_list);
+             setMessage(data.invNo);
+             setDisTable(data.tableNo)
            }
+         } else{
+           setSelectedMeals([]);
+           setMessage("");
+           setDisTable("");
          }
        } catch (error) {
          console.error("Error fetching data:", error);
@@ -829,8 +844,8 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
                 paddingTop: "10px",
               }}
             >
-              Order Summary
-              {selectedRow && selectedRow["AccName"]}
+              Order Summary {selectedRow && selectedRow["AccName"]}{" "}
+              {message && message} {dispTable && `Table: ${dispTable}`}
             </Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
@@ -850,17 +865,40 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
           >
             {selectedMeals.map((selectedMeal) => (
               <Box sx={{ width: "100%" }}>
-                <Card key={selectedMeal.index}>
+                <Card
+                  key={selectedMeal.index}
+                  sx={{
+                    background: selectedMeal.Printed
+                      ? colors.redAccent[600]
+                      : "inherit",
+                    boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.5)",
+                  }}
+                >
                   <CardContent //sx={{ width: "100%" }}
                   >
                     <Box sx={{ display: "flex", flexDirection: "row" }}>
-                      <IconButton
-                        sx={{ width: "7%" }}
-                        // sx={{ width: "10%" }}
-                        onClick={() => handleDelete(selectedMeal.index)}
+                      <Tooltip
+                        title={
+                          <span style={{ fontSize: "16px" }}>
+                            You can't update this when printed
+                          </span>
+                        }
+                        disableHoverListener={!selectedMeal.Printed}
                       >
-                        <DeleteOutlineOutlinedIcon sx={{ fontSize: "30px" }} />
-                      </IconButton>
+                        <IconButton
+                          sx={{ width: "7%" }}
+                          // sx={{ width: "10%" }}
+                          onClick={
+                            !selectedMeal.Printed
+                              ? () => handleDelete(selectedMeal.index)
+                              : () => {}
+                          }
+                        >
+                          <DeleteOutlineOutlinedIcon
+                            sx={{ fontSize: "30px" }}
+                          />
+                        </IconButton>
+                      </Tooltip>
                       {/* Display the image here */}
                       {/* <Box
                         sx={{
@@ -948,42 +986,77 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
                             width: "30%",
                           }}
                         >
-                          <IconButton
-                            onClick={() =>
-                              handleQuantityChange(
-                                selectedMeal.index,
-                                selectedMeal.quantity - 1
-                              )
+                          <Tooltip
+                            title={
+                              <span style={{ fontSize: "16px" }}>
+                                You can't update this when printed
+                              </span>
                             }
+                            disableHoverListener={!selectedMeal.Printed}
                           >
-                            <RemoveCircleOutlineOutlinedIcon
-                              sx={{ fontSize: "35px" }}
-                            />
-                          </IconButton>
+                            <IconButton
+                              onClick={
+                                !selectedMeal.Printed
+                                  ? () =>
+                                      handleQuantityChange(
+                                        selectedMeal.index,
+                                        selectedMeal.quantity - 1
+                                      )
+                                  : () => {}
+                              }
+                            >
+                              <RemoveCircleOutlineOutlinedIcon
+                                sx={{ fontSize: "35px" }}
+                              />
+                            </IconButton>
+                          </Tooltip>
+
                           <Typography variant="body1" sx={{ width: "25%" }}>
                             {selectedMeal.quantity}
                           </Typography>
-                          <IconButton
-                            //sx={{ width: "10%" }}
-                            onClick={() =>
-                              handleQuantityChange(
-                                selectedMeal.index,
-                                selectedMeal.quantity + 1
-                              )
+                          <Tooltip
+                            title={
+                              <span style={{ fontSize: "16px" }}>
+                                You can't update this when printed
+                              </span>
                             }
+                            disableHoverListener={!selectedMeal.Printed}
                           >
-                            <AddCircleOutlineOutlinedIcon
+                            <IconButton
+                              //sx={{ width: "10%" }}
+                              onClick={
+                                !selectedMeal.Printed
+                                  ? () =>
+                                      handleQuantityChange(
+                                        selectedMeal.index,
+                                        selectedMeal.quantity + 1
+                                      )
+                                  : () => {}
+                              }
+                            >
+                              <AddCircleOutlineOutlinedIcon
+                                sx={{ fontSize: "35px" }}
+                              />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Tooltip
+                          title={
+                            <span style={{ fontSize: "16px" }}>
+                              You can't update this when printed
+                            </span>
+                          }
+                          disableHoverListener={!selectedMeal.Printed}
+                        >
+                          <IconButton
+                            sx={{ width: "20%" }}
+                            onClick={!selectedMeal.Printed ? () => handleModify(selectedMeal.index) : () => {}}
+                          >
+                            <AutoFixHighOutlinedIcon
                               sx={{ fontSize: "35px" }}
                             />
                           </IconButton>
-                        </Box>
-
-                        <IconButton
-                          sx={{ width: "20%" }}
-                          onClick={() => handleModify(selectedMeal.index)}
-                        >
-                          <AutoFixHighOutlinedIcon sx={{ fontSize: "35px" }} />
-                        </IconButton>
+                        </Tooltip>
                       </Box>
                     </Box>
                   </CardContent>
