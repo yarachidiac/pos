@@ -50,6 +50,7 @@ function App() {
   const [newItemNo, setNewItemNo] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [tables, setTables] = useState([]);
 
  useEffect(() => {
    const initializeAuthentication = async () => {
@@ -156,6 +157,8 @@ function App() {
                         oldItemNo={oldItemNo}
                         newItemNo={newItemNo}
                         username={username}
+                        tables={tables}
+                        setTables={setTables}
                       />
                     }
                   />
@@ -213,6 +216,9 @@ function App() {
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
                         addTtile={addTitle}
+                        username={username}
+                        tables={tables}
+                        setTables={setTables}
                       />
                     }
                   />

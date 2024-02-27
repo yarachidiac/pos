@@ -38,7 +38,7 @@ import { resolveBreakpointValues } from '@mui/system/breakpoints';
 import { useRefresh } from '../RefreshContex';
 import { useLocation } from "react-router-dom";
 
-const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo, username }) => {
+const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo, username, setTables }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -71,6 +71,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedTableId = searchParams.get("selectedTableId");
+  const sectionNo = searchParams.get("sectionNo");
   const [message, setMessage] = useState("");
   const [dispTable, setDisTable] = useState("");
 
@@ -105,8 +106,14 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
         setMessage(mess["invNo"]);
         setSelectedMeals([]);
         window.location.href = `/PoS `;
-        // Request successful
         console.log("Insertion to kitchen successful");
+        const response1 = await fetch(
+          `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+        );
+        if (response1.ok) {
+          const data1 = await response1.json();
+          setTables(data1); // Update sections state with fetched data
+        }
       } else {
         // Handle error response
         console.error("Error inserting into kitchen:", response.statusText);
@@ -316,8 +323,6 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
    // Update the state with the updated selected meals
    setSelectedMeals(updatedSelectedMeals);
  }, [mealsCopy]);
-
-
 
   const fetchCategories = async () => {
     try {
@@ -578,14 +583,22 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
              `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
            );
            const data = await response.json();
-           console.log("getttttttttt invvvvv", data)
+           console.log("getttttttttt invvvvv", data);
+           const response1 = await fetch(
+             `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+           );
+           if (response1.ok) {
+             const data1 = await response1.json();
+             setTables(data1); // Update sections state with fetched data
+           }  
            if (data.inv_list) {
              setSelectedMeals(data.inv_list);
              setMessage(data.invNo);
-             setDisTable(data.tableNo)
+             setDisTable(data.tableNo);
            }
-         } else{
-           setSelectedMeals([]);
+         } else {
+           setSelectedMeals([]);  
+           setSelectedModifiers([]);
            setMessage("");
            setDisTable("");
          }

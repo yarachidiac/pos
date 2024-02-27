@@ -17,12 +17,11 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const Tables = ({ addTitle, setAddTitle, companyName }) => {
+const Tables = ({ addTitle, setAddTitle, companyName, username, tables, setTables }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [successMess, setSuccessMess] = useState();
-    const [tables, setTables] = useState([]);
     const [tableNo, setTableNo] = useState("");
     const [tableWaiter, setTableWaiter] = useState("");
     const [active, setActive] = useState("");
@@ -135,9 +134,49 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
     }
   };
 
-  const handleOpenPOS = (tableNo) => {
-    window.location.href = `/PoS?selectedTableId=${tableNo}`;
+  const handleOpenPOS = async (tableNo) => {
+    try {
+      console.log("fetit tfatish");
+      const response = await fetch(
+        `http://192.168.16.113:8000/chooseAccess/${companyName}/${tableNo}/${username}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data.message === "you can access this table" && data.usedBy !== "") {
+          const response1 = await fetch(
+            `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+          );
+          if (response1.ok) {
+            const data1 = await response1.json();
+            setTables(data1);
+          }   
+          window.location.href = `/PoS?selectedTableId=${tableNo}&sectionNo=${sectionNo}`;
+        } else if (data.message === "you can access this table" && data.usedBy === "") {
+          await fetch(
+            `http://192.168.16.113:8000/openTable/${companyName}/${tableNo}/${username}`,
+            {
+              method: "POST",
+            }
+          );
+          window.location.href = `/PoS?selectedTableId=${tableNo}&sectionNo=${sectionNo}`;
+          const response1 = await fetch(
+            `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+          );
+          if (response1.ok) {
+            const data1 = await response1.json();
+            setTables(data1);
+         }   
+        } else if (data.message === "you can't access this table right now") {
+          window.location.href = `/Tables/${sectionNo}`;
+        }
+      } else {
+        console.error("Failed to choose access");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
 
   return (
     <Box
@@ -156,7 +195,7 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
           flexDirection: "row",
         }}
       >
-        <Box sx={{ ml: "10%", mt: "2%"}}>
+        <Box sx={{ ml: "10%", mt: "2%" }}>
           <Header title="Table" subtitle="Choose Table" />
         </Box>
         <Box
@@ -197,7 +236,22 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
                 position="relative"
                 width="100%"
                 paddingTop="100%"
-                bgcolor={colors.blueAccent[800]}
+                bgcolor={
+                  table.UsedBy ? colors.blinkColor : colors.blueAccent[800]
+                }
+                sx={{
+                  animation: table.UsedBy
+                    ? "blink 1s infinite alternate"
+                    : "none",
+                  "@keyframes blink": {
+                    from: {
+                      backgroundColor: colors.blueAccent[800],
+                    },
+                    to: {
+                      backgroundColor: colors.redAccent[700], // or any other color you want for blinking
+                    },
+                  },
+                }}
               >
                 <Typography
                   variant="h5"
@@ -209,6 +263,17 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
                   }}
                 >
                   {table.TableNo}
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    position: "absolute",
+                    top: "60%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {table.UsedBy}
                 </Typography>
                 <ButtonBase
                   component={Link}
@@ -236,7 +301,7 @@ const Tables = ({ addTitle, setAddTitle, companyName }) => {
                     setTableNo(table.TableNo);
                     setTableWaiter(table.TableWaiter);
                     setActive(table.Active);
-                    setDescription(table.Description)
+                    setDescription(table.Description);
                     handleEditClick("Update Table", table.TableNo);
                   }}
                 >
