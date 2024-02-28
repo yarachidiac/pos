@@ -30,7 +30,8 @@ import ChartAcc from './scenes/ChartAcc';
 import Section from './scenes/Section';
 import Tables from './scenes/Section/Tables';
 import CircularProgress from "@mui/material/CircularProgress";
-
+import KitchenDialog from './scenes/PoS/KitchenDialog'; 
+  
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -50,7 +51,16 @@ function App() {
   const [newItemNo, setNewItemNo] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [tables, setTables] = useState([]);
+  const [isConfOpenDialog, setIsConfOpenDialog] = useState(false);
+
+  const handleConfCancel = () => {
+    setIsConfOpenDialog(false);
+  };
+
+  const handleConfKitchen = () => {
+    console.log("send to kkk");
+  };
+
 
  useEffect(() => {
    const initializeAuthentication = async () => {
@@ -103,6 +113,11 @@ function App() {
             />
           ) : (
             <>
+              <KitchenDialog
+                open={isConfOpenDialog}
+                onCancel={handleConfCancel}
+                onConfirm={handleConfKitchen}
+              ></KitchenDialog>
               {!isMobile && (
                 <Sidebar
                   isCollapsed={isCollapsed}
@@ -157,8 +172,9 @@ function App() {
                         oldItemNo={oldItemNo}
                         newItemNo={newItemNo}
                         username={username}
-                        tables={tables}
-                        setTables={setTables}
+                        isConfOpenDialog={isConfOpenDialog}
+                        setIsConfOpenDialog={setIsConfOpenDialog}
+                        onConfirmKitchen={handleConfCancel}
                       />
                     }
                   />
@@ -217,8 +233,6 @@ function App() {
                         setAddTitle={setAddTitle}
                         addTtile={addTitle}
                         username={username}
-                        tables={tables}
-                        setTables={setTables}
                       />
                     }
                   />

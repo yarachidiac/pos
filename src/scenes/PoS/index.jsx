@@ -38,7 +38,20 @@ import { resolveBreakpointValues } from '@mui/system/breakpoints';
 import { useRefresh } from '../RefreshContex';
 import { useLocation } from "react-router-dom";
 
-const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelectedRow, oldItemNo, newItemNo, username, setTables }) => {
+const PoS = ({
+  companyName,
+  branch,
+  invType,
+  isCollapsed,
+  selectedRow,
+  setSelectedRow,
+  oldItemNo,
+  newItemNo,
+  username,
+  isConfOpenDialog,
+  setIsConfOpenDialog,
+  onConfirmKitchen,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -47,27 +60,15 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   const [categories, setCategories] = useState([]);
   const [mealsCopy, setMealsCopy] = useState([]);
   const [meals, setMeals] = useState([]);
-  const [selectedMeals, setSelectedMeals] = useState(() => {
-    const storedMeals = localStorage.getItem("selectedMeals");
-    return storedMeals ? JSON.parse(storedMeals) : [];
-  });
+  const [selectedMeals, setSelectedMeals] = useState([]);
   const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
-  const [discValue, setDiscValue] = useState(() => {
-    const storedDiscValue = localStorage.getItem("discValue");
-    return storedDiscValue ? JSON.parse(storedDiscValue) : 0;
-  });
+  const [discValue, setDiscValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
-  const [srv, setSrv] = useState(() => {
-    const storedSrv = localStorage.getItem("srv");
-    return storedSrv ? JSON.parse(storedSrv) : 0;
-  });
+  const [srv, setSrv] = useState(0);
   const [numericKeypadType, setNumericKeypadType] = useState("Discount");
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
-  const [selectedModifiers, setSelectedModifiers] = useState(() => {
-    const storedModifiers = localStorage.getItem("selectedModifiers");
-    return storedModifiers ? JSON.parse(storedModifiers) : [];
-  });
+  const [selectedModifiers, setSelectedModifiers] = useState([]);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const selectedTableId = searchParams.get("selectedTableId");
@@ -102,18 +103,11 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       );
       let mess;
       if (response.ok) {
-        mess = await response.json()
+        mess = await response.json();
         setMessage(mess["invNo"]);
         setSelectedMeals([]);
         window.location.href = `/PoS `;
         console.log("Insertion to kitchen successful");
-        const response1 = await fetch(
-          `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
-        );
-        if (response1.ok) {
-          const data1 = await response1.json();
-          setTables(data1); // Update sections state with fetched data
-        }
       } else {
         // Handle error response
         console.error("Error inserting into kitchen:", response.statusText);
@@ -122,7 +116,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       // Handle network errors or other exceptions
       console.error("Error inserting into kitchen:", error);
     }
-  }
+  };
 
   const handlePrint = () => {
     printJS({
@@ -183,21 +177,6 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       console.error("Error fetching items:", error);
     }
   };
-
-  useEffect(() => {
-    localStorage.setItem(
-      "selectedModifiers",
-      JSON.stringify(selectedModifiers)
-    );
-  }, [selectedModifiers]);
-
-  useEffect(() => {
-    localStorage.setItem("srv", JSON.stringify(srv));
-  }, [srv]);
-
-  useEffect(() => {
-    localStorage.setItem("discValue", JSON.stringify(discValue));
-  }, [discValue]);
 
   const handleModify = (index) => {
     setSelectedMealForModify(index);
@@ -267,7 +246,6 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
     console.log("Copy with unique identifiers:", copy);
   }, [meals]);
 
-
   console.log(" l copy kel ma tetghayar l meal", mealsCopy);
 
   useEffect(() => {
@@ -278,51 +256,35 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
 
   console.log("the branch and the SATYpe", branch, invType);
   console.log("company in pos ", companyName);
-  // Retrieve selectedMeals from Local Storage on component mount
-  // useEffect(() => {
-  //   localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
-  // }, [selectedMeals]);
-  console.log(
-    "storedddddddddddddd storageeeeee",
-    localStorage.getItem("selectedMeals")
-  );
-  // Save selectedMeals to Local Storage whenever it changes
-  
-  useEffect(() => {
-    if (window.location.pathname === "/PoS"){
-      localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
-      }
-  }, [selectedMeals]);
 
-  
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
     if (selectedCategoryCode !== "") {
       fetchItemsCategory();
     }
   }, [selectedCategoryCode]);
-  
+
   console.log("olddd itemm noooooooooo", oldItemNo);
   console.log("newwwww itemm noooo", newItemNo);
- useEffect(() => {
-   // Update the selected meals to match the ItemNo in mealsCopy
-   const updatedSelectedMeals = selectedMeals.map((meal) => {
-     // Find the corresponding meal in mealsCopy based on a unique identifier
-     const correspondingMeal = mealsCopy.find(
-       (copyMeal) => copyMeal.ItemNo === newItemNo
-     );
-     if (correspondingMeal && meal.ItemNo === oldItemNo) {
-       // If there is a corresponding meal and the meal's ItemNo matches the oldItemNo, update only the ItemNo
-       return { ...meal, ItemNo: correspondingMeal.ItemNo };
-     } else {
-       // If no corresponding meal is found or the meal's ItemNo doesn't match the oldItemNo, return the original meal
-       return meal;
-     }
-   });
+  useEffect(() => {
+    // Update the selected meals to match the ItemNo in mealsCopy
+    const updatedSelectedMeals = selectedMeals.map((meal) => {
+      // Find the corresponding meal in mealsCopy based on a unique identifier
+      const correspondingMeal = mealsCopy.find(
+        (copyMeal) => copyMeal.ItemNo === newItemNo
+      );
+      if (correspondingMeal && meal.ItemNo === oldItemNo) {
+        // If there is a corresponding meal and the meal's ItemNo matches the oldItemNo, update only the ItemNo
+        return { ...meal, ItemNo: correspondingMeal.ItemNo };
+      } else {
+        // If no corresponding meal is found or the meal's ItemNo doesn't match the oldItemNo, return the original meal
+        return meal;
+      }
+    });
 
-   // Update the state with the updated selected meals
-   setSelectedMeals(updatedSelectedMeals);
- }, [mealsCopy]);
+    // Update the state with the updated selected meals
+    setSelectedMeals(updatedSelectedMeals);
+  }, [mealsCopy]);
 
   const fetchCategories = async () => {
     try {
@@ -569,47 +531,41 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
   console.log("totalllll finalllllllll", totalFinal);
   console.log("the finall meal with details", selectedMeals);
 
-   useEffect(() => {
-     const fetchData = async () => {
-       try {
-         if (selectedTableId !== null) {
-           // Reset selectedMeals, selectedModifiers, srv, discValue, and remove from localStorage
-           setSelectedMeals([]);
-           setSelectedModifiers([]);
-           setSrv(0);
-           setDiscValue(0);
-           localStorage.removeItem("selectedMeals");
-           const response = await fetch(
-             `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
-           );
-           const data = await response.json();
-           console.log("getttttttttt invvvvv", data);
-           const response1 = await fetch(
-             `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
-           );
-           if (response1.ok) {
-             const data1 = await response1.json();
-             setTables(data1); // Update sections state with fetched data
-           }  
-           if (data.inv_list) {
-             setSelectedMeals(data.inv_list);
-             setMessage(data.invNo);
-             setDisTable(data.tableNo);
-           }
-         } else {
-           setSelectedMeals([]);  
-           setSelectedModifiers([]);
-           setMessage("");
-           setDisTable("");
-         }
-       } catch (error) {
-         console.error("Error fetching data:", error);
-       }
-     };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (selectedTableId !== null) {
+          localStorage.removeItem("selectedMeals");
+          const response = await fetch(
+            `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
+          );
+          const data = await response.json();
+          console.log("getttttttttt invvvvv", data);
+          if (data.inv_list) {
+            setSelectedMeals(data.inv_list);
+            setMessage(data.invNo);
+            setDisTable(data.tableNo);
+          }
+        } else {
+          const unsentMeals = selectedMeals.filter(
+            (meal) => meal.printed !== "p"
+          );
+          if (unsentMeals.length > 0) {
+            setIsConfOpenDialog(true);
+          }
+          setSelectedMeals([]);
+          setSelectedModifiers([]);
+          setMessage("");
+          setDisTable("");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-     fetchData();
-   }, [selectedTableId]);
-  
+    fetchData();
+  }, [selectedTableId]);
+
   const getItemListTable = () => {
     return (
       <TableContainer>
@@ -665,7 +621,7 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
       </TableContainer>
     );
   };
-  
+
   return (
     <>
       {/* First Box (70% width) */}
@@ -1063,7 +1019,11 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
                         >
                           <IconButton
                             sx={{ width: "20%" }}
-                            onClick={!selectedMeal.Printed ? () => handleModify(selectedMeal.index) : () => {}}
+                            onClick={
+                              !selectedMeal.Printed
+                                ? () => handleModify(selectedMeal.index)
+                                : () => {}
+                            }
                           >
                             <AutoFixHighOutlinedIcon
                               sx={{ fontSize: "35px" }}
@@ -1323,7 +1283,6 @@ const PoS = ({ companyName, branch, invType, isCollapsed, selectedRow, setSelect
           </TableContainer>
         )}
       </Box>
-
       <ModifierDialog
         open={isModifierDialogOpen}
         onClose={handleCloseModifierDialog}

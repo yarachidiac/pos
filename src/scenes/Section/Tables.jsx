@@ -16,40 +16,46 @@ import TableDialog from "./TableDialog";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { TableChart } from "@mui/icons-material";
 
-const Tables = ({ addTitle, setAddTitle, companyName, username, tables, setTables }) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [successMess, setSuccessMess] = useState();
-    const [tableNo, setTableNo] = useState("");
-    const [tableWaiter, setTableWaiter] = useState("");
-    const [active, setActive] = useState("");
-    const [description, setDescription] = useState("");
-    const { sectionNo } = useParams();
-    const [selectedTableId, setSelectedTableId] = useState("");  
-    const navigate = useNavigate();
+const Tables = ({ addTitle, setAddTitle, companyName, username }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [successMess, setSuccessMess] = useState();
+  const [tableNo, setTableNo] = useState("");
+  const [tableWaiter, setTableWaiter] = useState("");
+  const [active, setActive] = useState("");
+  const [description, setDescription] = useState("");
+  const { sectionNo } = useParams();
+  const [selectedTableId, setSelectedTableId] = useState("");
+  const navigate = useNavigate();
+  const [tables, setTables] = useState([]);
+  const [tablesChanged, setTablesChanged] = useState(false);
 
-  console.log("section no in tablesssss", sectionNo)
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setTables(data); // Update sections state with fetched data
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  console.log("section no in tablesssss", sectionNo);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
+      const data = await response.json();
+      setTables(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchData(); // Check for changes whenever tables changes
+  }, []);
 
-    fetchData(); // Call fetchData function when component mounts or companyName changes
-  }, [companyName]); // Run useEffect whenever companyName changes
-
+  console.log("tableee flagggggggggg", tablesChanged);
+  console.log("tablesssssssss", tables);
+  
   const handleAddSection = (title) => {
     setAddTitle(title);
     // Open the modal when "Add" button is clicked
@@ -67,7 +73,7 @@ const Tables = ({ addTitle, setAddTitle, companyName, username, tables, setTable
     setIsDialogOpen(true);
     // Handle edit action here
   };
-    console.log("Edit clicked for:", tableNo);
+  console.log("Edit clicked for:", tableNo);
 
   const onAdd = async (sectionInfo) => {
     try {
@@ -124,7 +130,7 @@ const Tables = ({ addTitle, setAddTitle, companyName, username, tables, setTable
         throw new Error(`HTTP error! Status: ${tablesResponse.status}`);
       }
 
-        const alltable = await tablesResponse.json();
+      const alltable = await tablesResponse.json();
 
       // Set the userDetails state with the details of the newly added user
       setTables(alltable);
@@ -142,30 +148,22 @@ const Tables = ({ addTitle, setAddTitle, companyName, username, tables, setTable
       );
       if (response.ok) {
         const data = await response.json();
-        if (data.message === "you can access this table" && data.usedBy !== "") {
-          const response1 = await fetch(
-            `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
-          );
-          if (response1.ok) {
-            const data1 = await response1.json();
-            setTables(data1);
-          }   
-          window.location.href = `/PoS?selectedTableId=${tableNo}&sectionNo=${sectionNo}`;
-        } else if (data.message === "you can access this table" && data.usedBy === "") {
+        if (
+          data.message === "you can access this table" &&
+          data.usedBy !== ""
+        ) {
+          window.location.href = `/PoS?selectedTableId=${tableNo}`;
+        } else if (
+          data.message === "you can access this table" &&
+          data.usedBy === ""
+        ) {
           await fetch(
             `http://192.168.16.113:8000/openTable/${companyName}/${tableNo}/${username}`,
             {
               method: "POST",
             }
           );
-          window.location.href = `/PoS?selectedTableId=${tableNo}&sectionNo=${sectionNo}`;
-          const response1 = await fetch(
-            `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
-          );
-          if (response1.ok) {
-            const data1 = await response1.json();
-            setTables(data1);
-         }   
+          window.location.href = `/PoS?selectedTableId=${tableNo}`;
         } else if (data.message === "you can't access this table right now") {
           window.location.href = `/Tables/${sectionNo}`;
         }
@@ -176,7 +174,6 @@ const Tables = ({ addTitle, setAddTitle, companyName, username, tables, setTable
       console.error("Error:", error);
     }
   };
-
 
   return (
     <Box
