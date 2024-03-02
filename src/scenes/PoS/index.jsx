@@ -39,6 +39,7 @@ import { useRefresh } from '../RefreshContex';
 import { useLocation, useNavigate } from "react-router-dom";
 import KitchenDialog from './KitchenDialog';
 import { preventDefault } from '@fullcalendar/core/internal';
+import DelModal from './DelModal';
 const PoS = ({
   companyName,
   branch,
@@ -54,6 +55,10 @@ const PoS = ({
   isNav,
   setIsNav,
   pageRed,
+  setSelectedTop,
+  isOpenDel,
+  setIsOpenDel,
+  addTitle, setAddTitle
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -80,23 +85,14 @@ const PoS = ({
   const sectionNo = searchParams.get("sectionNo");
 
   const handleConfCancel = async () => {
-    const response = await fetch(
-      `http://192.168.16.113:8000/resetUsedBy/${companyName}/${selectedTableId}`
-    );
-    if (response.ok) {
-      navigate(pageRed);
-      setSelectedMeals([]);
-      setSelectedModifiers([]);
-      setMessage("");
-      setIsConfOpenDialog(false);
-    }
+    setIsConfOpenDialog(false);
   };
 
   const handleConfKitchen = () => {
     handleKitchen();
     setIsConfOpenDialog(false);
   };
-  
+
   const handleKitchen = async () => {
     try {
       const currentDate = new Date();
@@ -127,6 +123,7 @@ const PoS = ({
         setMessage(mess["invNo"]);
         setSelectedMeals([]);
         navigate(`/PoS`);
+        setSelectedTop("Takeaway");
         console.log("Insertion to kitchen successful");
         setIsConfOpenDialog(false);
       } else {
@@ -583,7 +580,11 @@ const PoS = ({
         const unsentMeals = selectedMeals.filter(
           (meal) => meal.Printed !== "p"
         );
-        if (unsentMeals.length > 0) {
+        console.log("unsennnnnnnnnnnnt", unsentMeals);
+        if (
+          location.search.includes("selectedTableId") &&
+          unsentMeals.length > 0
+        ) {
           setIsNav(false);
         } else {
           const response = await fetch(
@@ -597,7 +598,7 @@ const PoS = ({
         console.error("Error fetching data:", error);
       }
     };
-    fetchData(); 
+    fetchData();
   }, [selectedMeals]);
 
   const getItemListTable = () => {
@@ -655,7 +656,7 @@ const PoS = ({
       </TableContainer>
     );
   };
-
+  console.log("anabl posssssssssss", isOpenDel);
   return (
     <>
       {/* First Box (70% width) */}
@@ -1332,6 +1333,7 @@ const PoS = ({
         onCancel={handleConfCancel}
         onConfirm={handleConfKitchen}
       ></KitchenDialog>
+      <DelModal isOpenDel={isOpenDel} companyName={companyName} setIsOpenDel={setIsOpenDel} selectedRow={selectedRow} setSelectedRow={setSelectedRow} addTitle={addTitle} setAddTitle={setAddTitle}></DelModal>
     </>
   );
 };

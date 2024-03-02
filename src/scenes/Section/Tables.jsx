@@ -152,7 +152,7 @@ const Tables = ({ addTitle, setAddTitle, companyName, username }) => {
           data.message === "you can access this table" &&
           data.usedBy !== ""
         ) {
-          window.location.href = `/PoS?selectedTableId=${tableNo}`;
+          navigate(`/PoS?selectedTableId=${tableNo}`);
         } else if (
           data.message === "you can access this table" &&
           data.usedBy === ""
@@ -163,9 +163,9 @@ const Tables = ({ addTitle, setAddTitle, companyName, username }) => {
               method: "POST",
             }
           );
-          window.location.href = `/PoS?selectedTableId=${tableNo}`;
+          navigate(`/PoS?selectedTableId=${tableNo}`);
         } else if (data.message === "you can't access this table right now") {
-          window.location.href = `/Tables/${sectionNo}`;
+          navigate(`/Tables/${sectionNo}`);
         }
       } else {
         console.error("Failed to choose access");

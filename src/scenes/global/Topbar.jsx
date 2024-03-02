@@ -10,8 +10,8 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Sidebar from "./Sidebar";
 import { useRefresh } from "../RefreshContex";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
 const Topbar = ({
   isCollapsed,
   isMobile,
@@ -22,14 +22,21 @@ const Topbar = ({
   setIsConfOpenDialog,
   setPageRed,
   companyName,
+  selectedTop,
+  setSelectedTop,
+  isOpenDel,
+  setIsOpenDel,
+  sectionNo,
+  setSectionNo,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [secOrTab, setSecOrTable] = useState(`/Sections`);
-  const [selectedTop, setSelectedTop] = useState("Takeaway");
+  const location = useLocation();
   console.log("isMobile from topbarr:", isMobile);
   console.log("isCollapsed from topbarr:", isCollapsed);
+
   // const handleResize = () => {
   //   setIsMobile(window.innerWidth <= 768);
   //   if (window.innerWidth > 768) {
@@ -68,15 +75,18 @@ const navigate = useNavigate();
     }
   }
 
+  // const handleChart = () => {
+  //   if (isNav) {
+  //     navigate(`/Chart`);
+  //     setSelectedTop("Delivery");
+  //   } else {
+  //     setIsConfOpenDialog(true);
+  //     setPageRed(`/Chart`);
+  //   }
+  // }
   const handleChart = () => {
-    if (isNav) {
-      navigate(`/Chart`);
-      setSelectedTop("Delivery");
-    } else {
-      setIsConfOpenDialog(true);
-      setPageRed(`/Chart`);
-    }
-  }
+    setIsOpenDel(true);
+  };
 
   const handleSections = () => {
     if (isNav) {
@@ -136,20 +146,22 @@ const navigate = useNavigate();
           )}
         </Box>
         <Box sx={{ display: "flex", p: "2", width: "100%", margin: "2px" }}>
-          <Box
-            sx={{
-              width: "30%",
-              display: "flex",
-              backgroundColor: colors.primary[500],
-              borderRadius: "3px",
-            }}
-          >
-            <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-            <IconButton type="button" sx={{ p: 1 }}>
-              <SearchIcon />
-            </IconButton>
-          </Box>
-          <Box sx={{ display:"flex", width: "70%" }}>
+          {currentRoute === "/PoS" && (
+            <Box
+              sx={{
+                width: "30%",
+                display: "flex",
+                backgroundColor: colors.primary[500],
+                borderRadius: "3px",
+              }}
+            >
+              <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
+              <IconButton type="button" sx={{ p: 1 }}>
+                <SearchIcon />
+              </IconButton>
+            </Box>
+          )}
+          <Box sx={{ display: "flex", width: "70%" }}>
             <IconButton onClick={colorMode.toggleColorMode}>
               {theme.palette.mode === "dark" ? (
                 <DarkModeOutlinedIcon />
@@ -168,7 +180,8 @@ const navigate = useNavigate();
               </IconButton> */}
             {(currentRoute === "/PoS" ||
               currentRoute === "/Chart" ||
-              currentRoute === "/Sections") && (
+              currentRoute === "/Sections" ||
+              location.pathname.includes("/Tables")) && (
               <Button
                 onClick={handleClick}
                 sx={{
@@ -188,30 +201,32 @@ const navigate = useNavigate();
               </Button>
             )}
             {/* Delivery button */}
+            {!location.search.includes("selectedTableId") &&
+              currentRoute === "/PoS" && (
+                <Button
+                  onClick={handleChart}
+                  sx={{
+                    width: "20%",
+                    display: "flex",
+                    fontSize: "1rem",
+                    fontWeight: "400",
+                    background:
+                      selectedTop === "Delivery"
+                        ? colors.greenAccent[600]
+                        : colors.grey[700],
+                    color:
+                      selectedTop === "Delivery"
+                        ? colors.primary[500]
+                        : "black",
+                  }}
+                >
+                  Delivery
+                </Button>
+              )}
             {(currentRoute === "/PoS" ||
               currentRoute === "/Chart" ||
-              currentRoute === "/Sections") && (
-              <Button
-                onClick={handleChart}
-                sx={{
-                  width: "20%",
-                  display: "flex",
-                  fontSize: "1rem",
-                  fontWeight: "400",
-                  background:
-                    selectedTop === "Delivery"
-                      ? colors.greenAccent[600]
-                      : colors.grey[700],
-                  color:
-                    selectedTop === "Delivery" ? colors.primary[500] : "black",
-                }}
-              >
-                Delivery
-              </Button>
-            )}
-            {(currentRoute === "/PoS" ||
-              currentRoute === "/Chart" ||
-              currentRoute === "/Sections") && (
+              currentRoute === "/Sections" ||
+              location.pathname.includes("/Tables")) && (
               <Button
                 onClick={handleSections}
                 sx={{
@@ -230,7 +245,11 @@ const navigate = useNavigate();
                 Tables
               </Button>
             )}
-            <Button onClick={handleRefreshClick}>Refresh</Button>
+            {currentRoute === "/PoS" && (
+              <IconButton onClick={handleRefreshClick}>
+                <RestoreOutlinedIcon />
+              </IconButton>
+            )}
           </Box>
         </Box>
       </Box>

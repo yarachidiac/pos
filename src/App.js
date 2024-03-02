@@ -25,7 +25,6 @@ import Company from './scenes/company';
 import PoS from './scenes/PoS';
 import ManagePoS from './scenes/ManagePos';
 import { useNavigate, useLocation } from "react-router-dom";
-import Delivery from './scenes/PoS/Delivery';
 import ChartAcc from './scenes/ChartAcc';
 import Section from './scenes/Section';
 import Tables from './scenes/Section/Tables';
@@ -55,7 +54,8 @@ function App() {
   const [isConfOpenDialog, setIsConfOpenDialog] = useState(false);  
   const [isNav, setIsNav] = useState(true);
   const [pageRed, setPageRed] = useState("");
-
+  const [selectedTop, setSelectedTop] = useState("Takeaway");
+  const [isOpenDel, setIsOpenDel] = useState(false);
 
  useEffect(() => {
    const initializeAuthentication = async () => {
@@ -127,6 +127,10 @@ function App() {
                   setIsConfOpenDialog={setIsConfOpenDialog}
                   setPageRed={setPageRed}
                   companyName={companyName}
+                  selectedTop={selectedTop}
+                  setSelectedTop={setSelectedTop}
+                  isOpenDel={isOpenDel}
+                  setIsOpenDel={setIsOpenDel}
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
@@ -171,6 +175,11 @@ function App() {
                         isNav={isNav}
                         setIsNav={setIsNav}
                         pageRed={pageRed}
+                        setSelectedTop={setSelectedTop}
+                        isOpenDel={isOpenDel}
+                        setIsOpenDel={setIsOpenDel}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
                       />
                     }
                   />
@@ -195,11 +204,8 @@ function App() {
                     element={
                       <ChartAcc
                         companyName={companyName}
-                        branch={branch}
-                        invType={invType}
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
-                        //setCompanyName={setCompanyName}
                         selectedRow={selectedRow}
                         setSelectedRow={setSelectedRow}
                       />
@@ -234,11 +240,6 @@ function App() {
                   />
                 </Routes>
               </main>
-              {/* <KitchenDialog
-                open={isConfOpenDialog}
-                onCancel={handleConfCancel}
-                onConfirm={handleConfKitchen}
-              ></KitchenDialog> */}
             </>
           )}
         </div>

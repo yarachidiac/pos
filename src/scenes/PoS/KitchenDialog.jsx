@@ -14,7 +14,7 @@ const KitchenDialog = ({ open, onCancel, onConfirm }) => {
   return (
     <Dialog open={open}>
       <DialogTitle>Confirmation</DialogTitle>
-      <DialogContent>Do you want to send changes to kitchen before closing?</DialogContent>
+      <DialogContent>Do you want to send changes to kitchen before exit or stay in the invoice table?</DialogContent>
       <DialogActions>
         <Button
           variant="contained"

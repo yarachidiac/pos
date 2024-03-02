@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
 
-const Section = ({addTitle, setAddTitle, companyName }) => {
+const Section = ({addTitle, setAddTitle, companyName, }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
