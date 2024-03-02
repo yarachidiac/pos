@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme, Button } from "@mui/material";
+import { Box, IconButton, useTheme, Button, ListItem, ListItemText } from "@mui/material";
 import { useContext, useState, useEffect } from "react";
 import { ColorModeContext, tokens } from "../../theme"
 import InputBase from "@mui/material/InputBase";
@@ -9,18 +9,25 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Sidebar from "./Sidebar";
-import { Link } from "react-router-dom";
 import { useRefresh } from "../RefreshContex";
+import { useNavigate } from "react-router-dom";
+
 const Topbar = ({
   isCollapsed,
   isMobile,
   setIsCollapsed,
   setIsMobile,
   currentRoute,
+  isNav,
+  setIsConfOpenDialog,
+  setPageRed,
+  companyName,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const [secOrTab, setSecOrTable] = useState(`/Sections`);
+  const [selectedTop, setSelectedTop] = useState("Takeaway");
   console.log("isMobile from topbarr:", isMobile);
   console.log("isCollapsed from topbarr:", isCollapsed);
   // const handleResize = () => {
@@ -49,7 +56,67 @@ const Topbar = ({
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
+  
+const navigate = useNavigate();
+  const handleClick = () => {
+    if (isNav) {
+      navigate(`/PoS`);
+      setSelectedTop("Takeaway");
+    } else {
+      setIsConfOpenDialog(true);
+      setPageRed(`/PoS`);
+    }
+  }
 
+  const handleChart = () => {
+    if (isNav) {
+      navigate(`/Chart`);
+      setSelectedTop("Delivery");
+    } else {
+      setIsConfOpenDialog(true);
+      setPageRed(`/Chart`);
+    }
+  }
+
+  const handleSections = () => {
+    if (isNav) {
+      navigate(secOrTab);
+      setSelectedTop("Tables");
+    } else {
+      setIsConfOpenDialog(true);
+      setPageRed(secOrTab);
+    }
+  }
+
+  console.log("selecteddd topp", selectedTop);
+  useEffect(() => {
+    const getLen = async () => {
+      try {
+        const response = await fetch(
+          `http://192.168.16.113:8000/allsections/${companyName}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.section_list && data.section_list.length > 1) {
+            setSecOrTable(`/Sections`);
+          } else {
+            const getsec = await fetch(`http://192.168.16.113:8000/getOneSection/${companyName}`);
+            if (getsec.ok) {
+              const sec = await getsec.json();
+              const sectionNo = sec.sectionNo;
+              setSecOrTable(`/Tables/${sectionNo}`);
+            }
+          }
+        } else {
+          console.error("Failed to fetch sections:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching sections:", error);
+      }
+    };
+    getLen();
+  }, []);
+  
   return (
     <Box sx={{ width: "70%" }}>
       <Box display="flex">
@@ -68,18 +135,21 @@ const Topbar = ({
             />
           )}
         </Box>
-        <Box display="flex" justifyContent="space-between" p={2}>
+        <Box sx={{ display: "flex", p: "2", width: "100%", margin: "2px" }}>
           <Box
-            display="flex"
-            backgroundColor={colors.primary[500]}
-            borderRadius="3px"
+            sx={{
+              width: "30%",
+              display: "flex",
+              backgroundColor: colors.primary[500],
+              borderRadius: "3px",
+            }}
           >
             <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
             <IconButton type="button" sx={{ p: 1 }}>
               <SearchIcon />
             </IconButton>
           </Box>
-          <Box display="flex">
+          <Box sx={{ display:"flex", width: "70%" }}>
             <IconButton onClick={colorMode.toggleColorMode}>
               {theme.palette.mode === "dark" ? (
                 <DarkModeOutlinedIcon />
@@ -99,22 +169,64 @@ const Topbar = ({
             {(currentRoute === "/PoS" ||
               currentRoute === "/Chart" ||
               currentRoute === "/Sections") && (
-              <Button component={Link} to="/PoS">
-                Takeaway
+              <Button
+                onClick={handleClick}
+                sx={{
+                  width: "20%",
+                  display: "flex",
+                  fontSize: "1rem",
+                  fontWeight: "400",
+                  backgroundColor:
+                    selectedTop === "Takeaway"
+                      ? colors.greenAccent[600]
+                      : colors.grey[700],
+                  color:
+                    selectedTop === "Takeaway" ? colors.primary[500] : "black",
+                }}
+              >
+                Take Away
               </Button>
             )}
             {/* Delivery button */}
             {(currentRoute === "/PoS" ||
               currentRoute === "/Chart" ||
               currentRoute === "/Sections") && (
-              <Button component={Link} to="/Chart">
+              <Button
+                onClick={handleChart}
+                sx={{
+                  width: "20%",
+                  display: "flex",
+                  fontSize: "1rem",
+                  fontWeight: "400",
+                  background:
+                    selectedTop === "Delivery"
+                      ? colors.greenAccent[600]
+                      : colors.grey[700],
+                  color:
+                    selectedTop === "Delivery" ? colors.primary[500] : "black",
+                }}
+              >
                 Delivery
               </Button>
             )}
             {(currentRoute === "/PoS" ||
               currentRoute === "/Chart" ||
               currentRoute === "/Sections") && (
-              <Button component={Link} to="/Sections">
+              <Button
+                onClick={handleSections}
+                sx={{
+                  width: "20%",
+                  display: "flex",
+                  fontSize: "1rem",
+                  fontWeight: "400",
+                  background:
+                    selectedTop === "Tables"
+                      ? colors.greenAccent[600]
+                      : colors.grey[700],
+                  color:
+                    selectedTop === "Tables" ? colors.primary[500] : "black",
+                }}
+              >
                 Tables
               </Button>
             )}

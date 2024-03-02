@@ -36,8 +36,9 @@ import printJS from "print-js";
 import FileSaver from "file-saver";
 import { resolveBreakpointValues } from '@mui/system/breakpoints';
 import { useRefresh } from '../RefreshContex';
-import { useLocation } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import KitchenDialog from './KitchenDialog';
+import { preventDefault } from '@fullcalendar/core/internal';
 const PoS = ({
   companyName,
   branch,
@@ -50,7 +51,9 @@ const PoS = ({
   username,
   isConfOpenDialog,
   setIsConfOpenDialog,
-  onConfirmKitchen,
+  isNav,
+  setIsNav,
+  pageRed,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -60,24 +63,40 @@ const PoS = ({
   const [categories, setCategories] = useState([]);
   const [mealsCopy, setMealsCopy] = useState([]);
   const [meals, setMeals] = useState([]);
-  const [selectedMeals, setSelectedMeals] = useState([]);
   const [isNumericKeypadOpen, setNumericKeypadOpen] = useState(false);
-  const [discValue, setDiscValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
-  const [srv, setSrv] = useState(0);
   const [numericKeypadType, setNumericKeypadType] = useState("Discount");
   const [isModifierDialogOpen, setIsModifierDialogOpen] = useState(false);
   const [selectedMealForModify, setSelectedMealForModify] = useState();
+  const [selectedMeals, setSelectedMeals] = useState([]);
   const [selectedModifiers, setSelectedModifiers] = useState([]);
+  const [message, setMessage] = useState("");
+  const [srv, setSrv] = useState(0);
+  const [discValue, setDiscValue] = useState(0);
   const location = useLocation();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const selectedTableId = searchParams.get("selectedTableId");
   const sectionNo = searchParams.get("sectionNo");
-  const [message, setMessage] = useState("");
-  const [dispTable, setDisTable] = useState("");
 
-  console.log("tablee iddddddd", selectedTableId);
-  console.log("Storeddddd clienttttttt", selectedRow);
+  const handleConfCancel = async () => {
+    const response = await fetch(
+      `http://192.168.16.113:8000/resetUsedBy/${companyName}/${selectedTableId}`
+    );
+    if (response.ok) {
+      navigate(pageRed);
+      setSelectedMeals([]);
+      setSelectedModifiers([]);
+      setMessage("");
+      setIsConfOpenDialog(false);
+    }
+  };
+
+  const handleConfKitchen = () => {
+    handleKitchen();
+    setIsConfOpenDialog(false);
+  };
+  
   const handleKitchen = async () => {
     try {
       const currentDate = new Date();
@@ -103,11 +122,13 @@ const PoS = ({
       );
       let mess;
       if (response.ok) {
+        setIsNav(true);
         mess = await response.json();
         setMessage(mess["invNo"]);
         setSelectedMeals([]);
-        window.location.href = `/PoS `;
+        navigate(`/PoS`);
         console.log("Insertion to kitchen successful");
+        setIsConfOpenDialog(false);
       } else {
         // Handle error response
         console.error("Error inserting into kitchen:", response.statusText);
@@ -530,12 +551,10 @@ const PoS = ({
   const totalFinal = totalDiscount + totalTax;
   console.log("totalllll finalllllllll", totalFinal);
   console.log("the finall meal with details", selectedMeals);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (selectedTableId !== null) {
-          localStorage.removeItem("selectedMeals");
+        if (location.search.includes("selectedTableId")) {
           const response = await fetch(
             `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
           );
@@ -544,27 +563,42 @@ const PoS = ({
           if (data.inv_list) {
             setSelectedMeals(data.inv_list);
             setMessage(data.invNo);
-            setDisTable(data.tableNo);
           }
         } else {
-          const unsentMeals = selectedMeals.filter(
-            (meal) => meal.printed !== "p"
-          );
-          if (unsentMeals.length > 0) {
-            setIsConfOpenDialog(true);
-          }
+          console.log("fetettt bl else");
           setSelectedMeals([]);
           setSelectedModifiers([]);
           setMessage("");
-          setDisTable("");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
-  }, [selectedTableId]);
+  }, [location.search]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const unsentMeals = selectedMeals.filter(
+          (meal) => meal.Printed !== "p"
+        );
+        if (unsentMeals.length > 0) {
+          setIsNav(false);
+        } else {
+          const response = await fetch(
+            `http://192.168.16.113:8000/resetUsedBy/${companyName}/${selectedTableId}`
+          );
+          if (response.ok) {
+            setIsNav(true);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData(); 
+  }, [selectedMeals]);
 
   const getItemListTable = () => {
     return (
@@ -814,7 +848,8 @@ const PoS = ({
               }}
             >
               Order Summary {selectedRow && selectedRow["AccName"]}{" "}
-              {message && message} {dispTable && `Table: ${dispTable}`}
+              {message && message}{" "}
+              {selectedTableId && `Table: ${selectedTableId}`}
             </Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
@@ -1292,6 +1327,11 @@ const PoS = ({
         selectedModifiers={selectedModifiers}
         setSelectedModifiers={setSelectedModifiers}
       />
+      <KitchenDialog
+        open={isConfOpenDialog}
+        onCancel={handleConfCancel}
+        onConfirm={handleConfKitchen}
+      ></KitchenDialog>
     </>
   );
 };

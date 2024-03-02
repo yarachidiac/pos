@@ -31,6 +31,7 @@ import Section from './scenes/Section';
 import Tables from './scenes/Section/Tables';
 import CircularProgress from "@mui/material/CircularProgress";
 import KitchenDialog from './scenes/PoS/KitchenDialog'; 
+import { format } from "date-fns";
   
 function App() {
   const [theme, colorMode] = useMode();
@@ -51,15 +52,9 @@ function App() {
   const [newItemNo, setNewItemNo] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [isConfOpenDialog, setIsConfOpenDialog] = useState(false);
-
-  const handleConfCancel = () => {
-    setIsConfOpenDialog(false);
-  };
-
-  const handleConfKitchen = () => {
-    console.log("send to kkk");
-  };
+  const [isConfOpenDialog, setIsConfOpenDialog] = useState(false);  
+  const [isNav, setIsNav] = useState(true);
+  const [pageRed, setPageRed] = useState("");
 
 
  useEffect(() => {
@@ -113,11 +108,6 @@ function App() {
             />
           ) : (
             <>
-              <KitchenDialog
-                open={isConfOpenDialog}
-                onCancel={handleConfCancel}
-                onConfirm={handleConfKitchen}
-              ></KitchenDialog>
               {!isMobile && (
                 <Sidebar
                   isCollapsed={isCollapsed}
@@ -133,6 +123,10 @@ function App() {
                   setIsCollapsed={setIsCollapsed}
                   setIsMobile={setIsMobile}
                   currentRoute={location.pathname}
+                  isNav={isNav}
+                  setIsConfOpenDialog={setIsConfOpenDialog}
+                  setPageRed={setPageRed}
+                  companyName={companyName}
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
@@ -174,7 +168,9 @@ function App() {
                         username={username}
                         isConfOpenDialog={isConfOpenDialog}
                         setIsConfOpenDialog={setIsConfOpenDialog}
-                        onConfirmKitchen={handleConfCancel}
+                        isNav={isNav}
+                        setIsNav={setIsNav}
+                        pageRed={pageRed}
                       />
                     }
                   />
@@ -238,6 +234,11 @@ function App() {
                   />
                 </Routes>
               </main>
+              {/* <KitchenDialog
+                open={isConfOpenDialog}
+                onCancel={handleConfCancel}
+                onConfirm={handleConfKitchen}
+              ></KitchenDialog> */}
             </>
           )}
         </div>

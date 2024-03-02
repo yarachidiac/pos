@@ -23,7 +23,7 @@ const KitchenDialog = ({ open, onCancel, onConfirm }) => {
           autoFocus
           style={{ fontSize: "0.9rem" }}
         >
-          Send to kitchen
+          Send
         </Button>
         <Button
           variant="contained"

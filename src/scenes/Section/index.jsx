@@ -29,7 +29,7 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
 
   const navigate = useNavigate();
   const handleOpenTables = (sectionNo) => {
-    navigate(`/tables/${sectionNo}`);
+    navigate(`/Tables/${sectionNo}`);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +41,7 @@ const Section = ({addTitle, setAddTitle, companyName }) => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        setSections(data); // Update sections state with fetched data
+        setSections(data.section_list); // Update sections state with fetched data
       } catch (error) {
         console.error("Error fetching data:", error);
       }
