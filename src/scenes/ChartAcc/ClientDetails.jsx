@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
 import Checkbox from "@mui/material/Checkbox";
+import MapDialog from "./MapDialog.jsx";
 
 const ClientDetails = ({
   clientDetails,
@@ -36,6 +37,10 @@ const ClientDetails = ({
   const colors = tokens(theme.palette.mode);
 
   const [clientDetailsCopy, setClientDetailsCopy] = useState({ ...clientDetails });
+
+  const openMap = () => {
+    
+  }
 
   const handleEdit = (index) => {
     setEditableCells((prev) => [...prev, index]);
@@ -130,21 +135,6 @@ const ClientDetails = ({
           >
             {editableCells.includes(index) ? (
               <>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    right: "0",
-                    bottom: "0",
-                    border: `1px solid ${colors.greenAccent[400]}`,
-                    borderRadius: "4px",
-                    pointerEvents: "none",
-                  }}
-                />
-
                 <TextField
                   value={value}
                   onChange={(e) => handleValueUpdate(key, e.target.value)}
@@ -154,15 +144,6 @@ const ClientDetails = ({
                   }
                   fullWidth
                   variant="standard"
-                  InputProps={{
-                    style: {
-                      height: "100%",
-                      boxSizing: "border-box",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      padding: "4px",
-                    },
-                  }}
                 />
               </>
             ) : key === "Active" ? (
@@ -192,6 +173,36 @@ const ClientDetails = ({
                   />
                   <Typography variant="h4">N</Typography>
                 </div>
+              </div>
+            ) : key === "GAddress" ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                }}
+              >
+                <Button
+                  sx={{ width: "50%" }}
+                  onClick={() =>
+                    window.open(
+                      "https://www.google.com/maps/place/Lebanon/@33.854721,35.862285,7z",
+                      "_blank"
+                    )
+                  }
+                >
+                  Choose
+                </Button>
+                <TextField
+                  sx={{ width: "50%" }}
+                  value={value}
+                  onChange={(e) => handleValueUpdate(key, e.target.value)}
+                  autoFocus
+                  onBlur={() =>
+                    setEditableCells((prev) => prev.filter((i) => i !== index))
+                  }
+                  variant="standard"
+                />
               </div>
             ) : (
               <div
@@ -230,7 +241,7 @@ const ClientDetails = ({
               gap: "5px",
             }}
           >
-          {rows}
+            {rows}
           </TableBody>
         </Table>
       </TableContainer>

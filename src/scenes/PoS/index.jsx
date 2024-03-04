@@ -560,6 +560,8 @@ const PoS = ({
           if (data.inv_list) {
             setSelectedMeals(data.inv_list);
             setMessage(data.invNo);
+            setSrv(data.srv);
+            setDiscValue(data.disc);
           }
         } else {
           console.log("fetettt bl else");

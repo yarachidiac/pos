@@ -35,16 +35,9 @@ const ChartAcc = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
-  //const [selectedUserDetails, setSelectedUserDetails] = useState(null);
-  // const [userDetailsCopy, setUserDetailsCopy] = useState({
-  //   ...selectedUserDetails,
-  // });
-
+  const storedSelectedRow = localStorage.getItem("selectedRow");
+  console.log("ssssssssssssssssssss", storedSelectedRow);
   useEffect(() => {
-    // Read company_name from localStorage
-    // const storedCompanyName = localStorage.getItem("company_name");
-    // setCompanyName(storedCompanyName);
-
     console.log("stored companyyyyyy", companyName);
 
     // Fetch users based on the company name
@@ -65,7 +58,7 @@ const ChartAcc = ({
   }, [clientDetails]);
 
   useEffect(() => {
-    localStorage.setItem("selectedRow", JSON.stringify( ));
+    localStorage.setItem("selectedRow", JSON.stringify(selectedRow));
   }, [selectedRow]);
 
   // useEffect(() => {
@@ -94,27 +87,22 @@ const ChartAcc = ({
     return <Typography variant="h4">{value}</Typography>;
   };
 
-  const renderCheckboxCell = ({ row }) => (
-    <Checkbox
-      checked={selectedRow === row}
-      onChange={() => {
-        if (selectedRow === row) {
-          console.log("checkboxxxxxxxxxxxxxxxxxx", row);
-          // If the row is already selected, unselect it
-          setSelectedRow({});
-        } else {
-          // Otherwise, select the row
-          console.log("checkboxxxxxxxxxxxxxxxxxx", row);
-
-          setSelectedRow(row);
-        }
-      }}
-      onClick={(event) => {
-        // Prevent modal opening when clicking on the checkbox
-        event.stopPropagation();
-      }}
-    />
-  );
+  console.log("Seeeeeeeeeeeeeeeeee", selectedRow)
+  const renderCheckboxCell = ({ row }) => {
+    console.log("Rrrrrrrrrrrrrrrrrr", row); // Moved outside the return statement
+    return (
+      <Checkbox
+        checked={selectedRow !== null && selectedRow["AccNo"] === row["AccNo"]}
+        onChange={(event) => {
+          setSelectedRow(selectedRow === row ? null : row);
+          event.stopPropagation();
+        }}
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+      />
+    );
+  };
 
   const columns = [
     {
@@ -325,11 +313,11 @@ const ChartAcc = ({
             {
               color: colors.greenAccent[600],
               height: "100%",
-              fontSize: "1.5rem"
+              fontSize: "1.5rem",
+            },
+          "& .css-ptiqhd-MuiSvgIcon-root": {
+            fontSize: "2rem",
           },
-          "& .css-ptiqhd-MuiSvgIcon-root":{
-            fontSize:"2rem"
-          }
           // "& .MuiCheckbox-root": {
           //   color: `${colors.greenAccent[200]} !important`,
           // },
@@ -340,6 +328,10 @@ const ChartAcc = ({
           rows={clients}
           columns={columns}
           getRowId={(row) => row.AccNo}
+          onSelectionModelChange={(newSelection) => {
+            setSelectedRow(newSelection.selectedRow);
+          }}
+          selectionModel={selectedRow}
           //autoHeight
           {...(clients && clients.initialState)}
           initialState={{

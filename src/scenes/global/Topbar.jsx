@@ -12,6 +12,7 @@ import Sidebar from "./Sidebar";
 import { useRefresh } from "../RefreshContex";
 import { useNavigate, useLocation } from "react-router-dom";
 import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
+import { width } from "@mui/system";
 const Topbar = ({
   isCollapsed,
   isMobile,
@@ -128,8 +129,15 @@ const navigate = useNavigate();
   }, []);
   
   return (
-    <Box sx={{ width: "70%" }}>
-      <Box display="flex">
+    <Box
+      sx={{
+        width: currentRoute === "/PoS" ? "70%" : "100%",
+        height: "8%",
+        display: "flex",
+        justifyContent: "space-around",
+      }}
+    >
+      {/* <Box display="flex">
         {isMobile && isCollapsed && (
           <IconButton onClick={handleMenuToggle}>
             <MenuOutlinedIcon />
@@ -144,115 +152,117 @@ const navigate = useNavigate();
               setIsMobile={setIsMobile}
             />
           )}
-        </Box>
-        <Box sx={{ display: "flex", p: "2", width: "100%", margin: "2px" }}>
-          {currentRoute === "/PoS" && (
-            <Box
+        </Box> */}
+      <Box
+        sx={{
+          display: "flex",
+          p: "2",
+          width: "80%",
+          margin: "2px",
+          height: "100%",
+        }}
+      >
+        {currentRoute === "/PoS" && (
+          <Box
+            sx={{
+              width: "30%",
+              display: "flex",
+              backgroundColor: colors.primary[500],
+              borderRadius: "3px",
+            }}
+          >
+            <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
+            <IconButton type="button" sx={{ p: 1 }}>
+              <SearchIcon />
+            </IconButton>
+          </Box>
+        )}
+        <Box sx={{ display: "flex", width: "70%", height: "100%" }}>
+          {(currentRoute === "/PoS" ||
+            currentRoute === "/Chart" ||
+            currentRoute === "/Sections" ||
+            location.pathname.includes("/Tables")) && (
+            <Button
+              onClick={handleClick}
               sx={{
                 width: "30%",
                 display: "flex",
-                backgroundColor: colors.primary[500],
-                borderRadius: "3px",
+                fontSize: "1rem",
+                fontWeight: "400",
+                backgroundColor:
+                  selectedTop === "Takeaway"
+                    ? colors.greenAccent[600]
+                    : colors.grey[700],
+                color:
+                  selectedTop === "Takeaway" ? colors.primary[500] : "black",
               }}
             >
-              <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-              <IconButton type="button" sx={{ p: 1 }}>
-                <SearchIcon />
-              </IconButton>
-            </Box>
+              Take Away
+            </Button>
           )}
-          <Box sx={{ display: "flex", width: "70%" }}>
-            <IconButton onClick={colorMode.toggleColorMode}>
-              {theme.palette.mode === "dark" ? (
-                <DarkModeOutlinedIcon />
-              ) : (
-                <LightModeOutlinedIcon />
-              )}
-            </IconButton>
-            <IconButton>
-              <NotificationsOutlinedIcon />
-            </IconButton>
-            {/* <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon />
-              </IconButton> */}
-            {(currentRoute === "/PoS" ||
-              currentRoute === "/Chart" ||
-              currentRoute === "/Sections" ||
-              location.pathname.includes("/Tables")) && (
+          {/* Delivery button */}
+          {!location.search.includes("selectedTableId") &&
+            currentRoute === "/PoS" && (
               <Button
-                onClick={handleClick}
+                onClick={handleChart}
                 sx={{
-                  width: "20%",
-                  display: "flex",
-                  fontSize: "1rem",
-                  fontWeight: "400",
-                  backgroundColor:
-                    selectedTop === "Takeaway"
-                      ? colors.greenAccent[600]
-                      : colors.grey[700],
-                  color:
-                    selectedTop === "Takeaway" ? colors.primary[500] : "black",
-                }}
-              >
-                Take Away
-              </Button>
-            )}
-            {/* Delivery button */}
-            {!location.search.includes("selectedTableId") &&
-              currentRoute === "/PoS" && (
-                <Button
-                  onClick={handleChart}
-                  sx={{
-                    width: "20%",
-                    display: "flex",
-                    fontSize: "1rem",
-                    fontWeight: "400",
-                    background:
-                      selectedTop === "Delivery"
-                        ? colors.greenAccent[600]
-                        : colors.grey[700],
-                    color:
-                      selectedTop === "Delivery"
-                        ? colors.primary[500]
-                        : "black",
-                  }}
-                >
-                  Delivery
-                </Button>
-              )}
-            {(currentRoute === "/PoS" ||
-              currentRoute === "/Chart" ||
-              currentRoute === "/Sections" ||
-              location.pathname.includes("/Tables")) && (
-              <Button
-                onClick={handleSections}
-                sx={{
-                  width: "20%",
+                  width: "30%",
                   display: "flex",
                   fontSize: "1rem",
                   fontWeight: "400",
                   background:
-                    selectedTop === "Tables"
+                    selectedTop === "Delivery"
                       ? colors.greenAccent[600]
                       : colors.grey[700],
                   color:
-                    selectedTop === "Tables" ? colors.primary[500] : "black",
+                    selectedTop === "Delivery" ? colors.primary[500] : "black",
                 }}
               >
-                Tables
+                Delivery
               </Button>
             )}
-            {currentRoute === "/PoS" && (
-              <IconButton onClick={handleRefreshClick}>
-                <RestoreOutlinedIcon />
-              </IconButton>
-            )}
-          </Box>
+          {(currentRoute === "/PoS" ||
+            currentRoute === "/Chart" ||
+            currentRoute === "/Sections" ||
+            location.pathname.includes("/Tables")) && (
+            <Button
+              onClick={handleSections}
+              sx={{
+                width: "30%",
+                display: "flex",
+                fontSize: "1rem",
+                fontWeight: "400",
+                background:
+                  selectedTop === "Tables"
+                    ? colors.greenAccent[600]
+                    : colors.grey[700],
+                color: selectedTop === "Tables" ? colors.primary[500] : "black",
+              }}
+            >
+              Tables
+            </Button>
+          )}
         </Box>
       </Box>
+      <Box sx={{ width: "20%" , marginRight:"auto"}}>
+        {/* <IconButton sx={{ width: "33%" }} onClick={colorMode.toggleColorMode}>
+          {theme.palette.mode === "dark" ? (
+            <DarkModeOutlinedIcon />
+          ) : (
+            <LightModeOutlinedIcon />
+          )}
+        </IconButton>
+        <IconButton sx={{ width: "33%" }}>
+          <NotificationsOutlinedIcon />
+        </IconButton> */}
+        {currentRoute === "/PoS" && (
+          <IconButton  onClick={handleRefreshClick}>
+            <RestoreOutlinedIcon />
+          </IconButton>
+        )}
+      </Box>
+
+      {/* </Box> */}
     </Box>
   );
 };
