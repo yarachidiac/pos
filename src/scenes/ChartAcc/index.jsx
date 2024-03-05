@@ -11,6 +11,7 @@ import ClientDetailsModal from "./ClientDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import { Checkbox } from "@mui/material";
+import { json } from "react-router-dom";
 
 const ChartAcc = ({
   companyName,
@@ -57,17 +58,6 @@ const ChartAcc = ({
     }
   }, [clientDetails]);
 
-  useEffect(() => {
-    localStorage.setItem("selectedRow", JSON.stringify(selectedRow));
-  }, [selectedRow]);
-
-  // useEffect(() => {
-  //   // Check if userDetails is truthy and open the modal
-  //   if (userDetails) {
-  //     setIsDetailsModalOpen(true);
-  //   }
-  // }, [userDetails]);
-
   const handleRowClick = (params) => {
     // Check if the clicked column is not the checkbox column
     if (params.field !== "checkbox") {
@@ -75,6 +65,18 @@ const ChartAcc = ({
       setClientDetails(params.row);
     }
   };
+  useEffect(() => {
+    // Compare clientDetails with selectedRow based on AccNo
+    if (
+      clientDetails &&
+      selectedRow &&
+      clientDetails.AccNo === selectedRow.AccNo
+    ) {
+      // Update selectedRow with the updated clientDetails
+      setSelectedRow(clientDetails);
+    }
+  }, [clientDetails]);
+
 
   const closeDetailsModal = () => {
     // Close the details modal

@@ -40,6 +40,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import KitchenDialog from './KitchenDialog';
 import { preventDefault } from '@fullcalendar/core/internal';
 import DelModal from './DelModal';
+import QRCode from 'qrcode.react';
+
 const PoS = ({
   companyName,
   branch,
@@ -117,11 +119,36 @@ const PoS = ({
         }
       );
       let mess;
+      const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
+      console.log("handle kitchennnnn", unsentMeals);
       if (response.ok) {
+        const groupkitchen = await fetch(
+          `http://192.168.16.113:8000/groupkitchen/${companyName}/${selectedTableId}/${username}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(unsentMeals),
+          }
+        );
+        if (groupkitchen.ok) {
+          const unprintedResponse = await groupkitchen.json();
+          console.log("ubbbbbbbbbbbb", unprintedResponse);
+          // Convert the JSON data to a string
+          const jsonString = JSON.stringify(unprintedResponse, null, 2);
+          // Use FileSaver to save the JSON data as a TXT file
+          const blob = new Blob([jsonString], { type: "application/json" });
+          FileSaver.saveAs(blob, "response-data.json");
+        }
+        
         setIsNav(true);
         mess = await response.json();
         setMessage(mess["invNo"]);
         setSelectedMeals([]);
+        setSelectedModifiers([]);
+        setSrv(0);
+        setDiscValue(0);
         navigate(`/PoS`);
         setSelectedTop("Takeaway");
         console.log("Insertion to kitchen successful");
@@ -1318,6 +1345,10 @@ const PoS = ({
                   )}
               </TableBody>
             </Table>
+            {selectedRow["GAddress"] !== "" &&
+              selectedRow["GAddress"] !== null && (
+                <QRCode value={`https://www.google.com/maps/place/${selectedRow["GAddress"]}`} />
+              )}
           </TableContainer>
         )}
       </Box>
@@ -1335,7 +1366,15 @@ const PoS = ({
         onCancel={handleConfCancel}
         onConfirm={handleConfKitchen}
       ></KitchenDialog>
-      <DelModal isOpenDel={isOpenDel} companyName={companyName} setIsOpenDel={setIsOpenDel} selectedRow={selectedRow} setSelectedRow={setSelectedRow} addTitle={addTitle} setAddTitle={setAddTitle}></DelModal>
+      <DelModal
+        isOpenDel={isOpenDel}
+        companyName={companyName}
+        setIsOpenDel={setIsOpenDel}
+        selectedRow={selectedRow}
+        setSelectedRow={setSelectedRow}
+        addTitle={addTitle}
+        setAddTitle={setAddTitle}
+      ></DelModal>
     </>
   );
 };

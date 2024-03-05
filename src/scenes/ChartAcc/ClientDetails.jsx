@@ -38,9 +38,6 @@ const ClientDetails = ({
 
   const [clientDetailsCopy, setClientDetailsCopy] = useState({ ...clientDetails });
 
-  const openMap = () => {
-    
-  }
 
   const handleEdit = (index) => {
     setEditableCells((prev) => [...prev, index]);
