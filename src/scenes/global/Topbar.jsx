@@ -27,8 +27,6 @@ const Topbar = ({
   setSelectedTop,
   isOpenDel,
   setIsOpenDel,
-  sectionNo,
-  setSectionNo,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -37,7 +35,6 @@ const Topbar = ({
   const location = useLocation();
   console.log("isMobile from topbarr:", isMobile);
   console.log("isCollapsed from topbarr:", isCollapsed);
-
   // const handleResize = () => {
   //   setIsMobile(window.innerWidth <= 768);
   //   if (window.innerWidth > 768) {
@@ -64,17 +61,18 @@ const Topbar = ({
   //     window.removeEventListener("resize", handleResize);
   //   };
   // }, []);
-  
-const navigate = useNavigate();
+
+  const navigate = useNavigate();
   const handleClick = () => {
     if (isNav) {
       navigate(`/PoS`);
       setSelectedTop("Takeaway");
+      
     } else {
       setIsConfOpenDialog(true);
       setPageRed(`/PoS`);
     }
-  }
+  };
 
   // const handleChart = () => {
   //   if (isNav) {
@@ -97,7 +95,7 @@ const navigate = useNavigate();
       setIsConfOpenDialog(true);
       setPageRed(secOrTab);
     }
-  }
+  };
 
   console.log("selecteddd topp", selectedTop);
   useEffect(() => {
@@ -111,7 +109,9 @@ const navigate = useNavigate();
           if (data && data.section_list && data.section_list.length > 1) {
             setSecOrTable(`/Sections`);
           } else {
-            const getsec = await fetch(`http://192.168.16.113:8000/getOneSection/${companyName}`);
+            const getsec = await fetch(
+              `http://192.168.16.113:8000/getOneSection/${companyName}`
+            );
             if (getsec.ok) {
               const sec = await getsec.json();
               const sectionNo = sec.sectionNo;
@@ -127,7 +127,7 @@ const navigate = useNavigate();
     };
     getLen();
   }, []);
-  
+
   return (
     <Box
       sx={{
@@ -244,7 +244,7 @@ const navigate = useNavigate();
           )}
         </Box>
       </Box>
-      <Box sx={{ width: "20%" , marginRight:"auto"}}>
+      <Box sx={{ width: "20%", marginRight: "auto" }}>
         {/* <IconButton sx={{ width: "33%" }} onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />
@@ -256,7 +256,7 @@ const navigate = useNavigate();
           <NotificationsOutlinedIcon />
         </IconButton> */}
         {currentRoute === "/PoS" && (
-          <IconButton  onClick={handleRefreshClick}>
+          <IconButton onClick={handleRefreshClick}>
             <RestoreOutlinedIcon />
           </IconButton>
         )}

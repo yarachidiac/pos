@@ -33,6 +33,8 @@ const Form = ({
   setInvType,
   setBranch,
   setUsername,
+  userControl,
+  setUserControl,
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -73,6 +75,9 @@ const Form = ({
         //updateCompanyName(values.company_name);
         localStorage.setItem("username", responseUser.user["username"]);
         await setUsername(localStorage.getItem("username"));
+        localStorage.setItem("user_control", responseUser.user["user_control"]);
+        const s= setUserControl(localStorage.getItem("user_control"));
+        console.log("pppppppppppppppppppp", s)
       } else {
         // Handle authentication error
         console.error("Authentication failed");

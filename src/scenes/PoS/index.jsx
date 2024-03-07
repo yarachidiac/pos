@@ -21,7 +21,7 @@ import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import EmojiFoodBeverageIcon from "@mui/icons-material/EmojiFoodBeverage";
-import { useState } from 'react';
+import { useState, useRef } from "react";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
@@ -41,6 +41,7 @@ import KitchenDialog from './KitchenDialog';
 import { preventDefault } from '@fullcalendar/core/internal';
 import DelModal from './DelModal';
 import QRCode from 'qrcode.react';
+import { useMediaQuery } from "@mui/material";
 
 const PoS = ({
   companyName,
@@ -60,7 +61,10 @@ const PoS = ({
   setSelectedTop,
   isOpenDel,
   setIsOpenDel,
-  addTitle, setAddTitle
+  addTitle,
+  setAddTitle,
+  message,
+  setMessage,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -77,7 +81,7 @@ const PoS = ({
   const [selectedMealForModify, setSelectedMealForModify] = useState();
   const [selectedMeals, setSelectedMeals] = useState([]);
   const [selectedModifiers, setSelectedModifiers] = useState([]);
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [srv, setSrv] = useState(0);
   const [discValue, setDiscValue] = useState(0);
   const location = useLocation();
@@ -85,6 +89,26 @@ const PoS = ({
   const searchParams = new URLSearchParams(location.search);
   const selectedTableId = searchParams.get("selectedTableId");
   const sectionNo = searchParams.get("sectionNo");
+  // Ref for the last item in the list
+  const lastItemRef = useRef(null);
+
+  // Function to scroll the last item into view
+  const scrollToLastItem = () => {
+    if (lastItemRef.current) {
+      lastItemRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  };
+
+  const prevSelectedMealsLength = useRef(selectedMeals.length);
+
+  // Effect to scroll to the last item whenever a new item is added to selectedMeals
+  useEffect(() => {
+    if (selectedMeals.length > prevSelectedMealsLength.current) {
+      scrollToLastItem();
+      // Update the previous length to the current length
+      prevSelectedMealsLength.current = selectedMeals.length;
+    }
+  }, [selectedMeals]);
 
   const handleConfCancel = async () => {
     setIsConfOpenDialog(false);
@@ -141,7 +165,7 @@ const PoS = ({
           const blob = new Blob([jsonString], { type: "application/json" });
           FileSaver.saveAs(blob, "response-data.json");
         }
-        
+
         setIsNav(true);
         mess = await response.json();
         setMessage(mess["invNo"]);
@@ -575,6 +599,7 @@ const PoS = ({
   const totalFinal = totalDiscount + totalTax;
   console.log("totalllll finalllllllll", totalFinal);
   console.log("the finall meal with details", selectedMeals);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -590,11 +615,6 @@ const PoS = ({
             setSrv(data.srv);
             setDiscValue(data.disc);
           }
-        } else {
-          console.log("fetettt bl else");
-          setSelectedMeals([]);
-          setSelectedModifiers([]);
-          setMessage("");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -610,16 +630,10 @@ const PoS = ({
           (meal) => meal.Printed !== "p"
         );
         console.log("unsennnnnnnnnnnnt", unsentMeals);
-        if (
-          location.search.includes("selectedTableId") &&
-          unsentMeals.length > 0
-        ) {
-          setIsNav(false);
-        } else {
-          const response = await fetch(
-            `http://192.168.16.113:8000/resetUsedBy/${companyName}/${selectedTableId}`
-          );
-          if (response.ok) {
+        if (location.search.includes("selectedTableId")) {
+          if (unsentMeals.length > 0) {
+            setIsNav(false);
+          } else {
             setIsNav(true);
           }
         }
@@ -628,7 +642,34 @@ const PoS = ({
       }
     };
     fetchData();
-  }, [selectedMeals]);
+  }, [selectedMeals, location]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log("aammmmmmmmmmmmmmmmmmm");
+        if (
+          !location.search.includes("selectedTableId")) {
+          const response = await fetch(
+            `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
+          );
+          if (response.ok) {
+            setSelectedMeals([]);
+            setSelectedModifiers([]);
+            setSrv(0);
+            setDiscValue(0);
+            setMessage("");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [location]);
+
+  const isIpadPro = useMediaQuery("(min-width: 900px) and (max-width: 1300px)");
 
   const getItemListTable = () => {
     return (
@@ -685,6 +726,7 @@ const PoS = ({
       </TableContainer>
     );
   };
+
   console.log("anabl posssssssssss", isOpenDel);
   return (
     <>
@@ -735,10 +777,24 @@ const PoS = ({
           ))}
         </Box>
         {/* Cards in Grid Layout */}
-        <Box sx={{ overflowY: "auto", height: "90%" }}>
+        <Box sx={{ overflowY: "auto", height: "90%", width: "100%" }}>
           <Grid container spacing={2}>
             {mealsCopy.map((meal) => (
-              <Grid item xs={12} sm={6} md={4} key={meal.ItemNo}>
+              <Grid
+                item
+                xs={12}
+                sm={isCollapsed ? 6 : 12}
+                md={
+                  isCollapsed
+                    ? isIpadPro
+                      ? 4 // iPad Pro collapsed
+                      : 3 // Other devices collapsed
+                    : isIpadPro
+                    ? 6 // iPad Pro expanded
+                    : 4 // Other devices expanded
+                }
+                key={meal.ItemNo}
+              >
                 <Card sx={{ position: "relative" }}>
                   <CardMedia
                     component="img"
@@ -894,10 +950,10 @@ const PoS = ({
               overflowY: "auto",
               display: "flex",
               flexDirection: "column",
-              gap: theme.spacing(2), // Add some spacing between each ListCard
+              // gap: theme.spacing(2), // Add some spacing between each ListCard
             }}
           >
-            {selectedMeals.map((selectedMeal) => (
+            {selectedMeals.map((selectedMeal, index) => (
               <Box sx={{ width: "100%" }}>
                 <Card
                   key={selectedMeal.index}
@@ -1099,6 +1155,9 @@ const PoS = ({
                     </Box>
                   </CardContent>
                 </Card>
+                {index === selectedMeals.length - 1 && (
+                  <div ref={lastItemRef}></div>
+                )}
               </Box>
             ))}
           </Box>
@@ -1347,7 +1406,9 @@ const PoS = ({
             </Table>
             {selectedRow["GAddress"] !== "" &&
               selectedRow["GAddress"] !== null && (
-                <QRCode value={`https://www.google.com/maps/place/${selectedRow["GAddress"]}`} />
+                <QRCode
+                  value={`https://www.google.com/maps/place/${selectedRow["GAddress"]}`}
+                />
               )}
           </TableContainer>
         )}

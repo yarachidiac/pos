@@ -21,6 +21,7 @@ import StoreIcon from "@mui/icons-material/Store";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
+import { useNavigate } from "react-router-dom";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -90,15 +91,23 @@ const SubItem = ({
 };
 
 
-const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
+const Sidebar = ({
+  isCollapsed,
+  isMobile,
+  setIsCollapsed,
+  setIsMobile,
+  userControl,
+  setShowSnackbar,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   //const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
- 
+  const navigate = useNavigate();
+
   console.log("isMobile from sidebar:", isMobile);
   console.log("isCollapsed from sidebar:", isCollapsed);
-  
+
   const handleSubItemClick = (menuItem) => {
     if (isCollapsed) {
       setIsCollapsed(false); // Open the sidebar
@@ -107,7 +116,14 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
     // Handle the SubItem click as needed
     setSelected(menuItem);
   };
-  
+
+  const handleManagePoS = () => {
+    if (userControl === "N") {
+      setShowSnackbar(true);
+    } else {
+      navigate("/ManagePoS");
+    }
+  };
 
   // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -231,7 +247,7 @@ const Sidebar = ({ isCollapsed, isMobile, setIsCollapsed, setIsMobile }) => {
             <Item
               icon={<PointOfSaleOutlinedIcon />}
               title="Manage POS"
-              to="/ManagePoS"
+              onClick={handleManagePoS}
               selected={selected}
               setSelected={setSelected}
             />

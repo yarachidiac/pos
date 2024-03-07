@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { TableChart } from "@mui/icons-material";
 
-const Tables = ({ addTitle, setAddTitle, companyName, username }) => {
+const Tables = ({ addTitle, setAddTitle, companyName, username, message }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,18 +44,21 @@ const Tables = ({ addTitle, setAddTitle, companyName, username }) => {
       }
       const data = await response.json();
       setTables(data);
+      await fetch(
+        `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchData(); // Check for changes whenever tables changes
   }, []);
 
   console.log("tableee flagggggggggg", tablesChanged);
   console.log("tablesssssssss", tables);
-  
+
   const handleAddSection = (title) => {
     setAddTitle(title);
     // Open the modal when "Add" button is clicked

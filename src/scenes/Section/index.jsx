@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
 
-const Section = ({addTitle, setAddTitle, companyName, }) => {
+const Section = ({ addTitle, setAddTitle, companyName, message }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,11 +42,14 @@ const Section = ({addTitle, setAddTitle, companyName, }) => {
         }
         const data = await response.json();
         setSections(data.section_list); // Update sections state with fetched data
+         await fetch(
+           `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
+         );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
+   
     fetchData(); // Call fetchData function when component mounts or companyName changes
   }, [companyName]); // Run useEffect whenever companyName changes
 

@@ -31,7 +31,8 @@ import Tables from './scenes/Section/Tables';
 import CircularProgress from "@mui/material/CircularProgress";
 import KitchenDialog from './scenes/PoS/KitchenDialog'; 
 import { format } from "date-fns";
-  
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";  
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -42,6 +43,7 @@ function App() {
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
   const [username, setUsername] = useState("");
+  const [userControl, setUserControl] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
     const storedSelectedRow = localStorage.getItem("selectedRow");
@@ -56,6 +58,8 @@ function App() {
   const [pageRed, setPageRed] = useState("");
   const [selectedTop, setSelectedTop] = useState("Takeaway");
   const [isOpenDel, setIsOpenDel] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [message, setMessage] = useState("");
 
  useEffect(() => {
    const initializeAuthentication = async () => {
@@ -67,11 +71,14 @@ function App() {
          const storedBranch = localStorage.getItem("user_branch");
          const storedInvType = localStorage.getItem("user_invType");
          const storedUsername = localStorage.getItem("username");
+         const storedUserControl = localStorage.getItem("user_control");
          console.log("ana bl Appp", storedCompanyName);
          setCompanyName(storedCompanyName);
          setBranch(storedBranch);
          setInvType(storedInvType);
          setUsername(storedUsername);
+         setUserControl(storedUserControl);
+         console.log("men l app", userControl);
          setIsAuthenticated(true);
        } else {
          setIsAuthenticated(false);
@@ -103,8 +110,8 @@ function App() {
               setInvType={setInvType}
               setBranch={setBranch}
               setUsername={setUsername}
-              // companyName={companyName}
-              // setCompanyName={setCompanyName}
+              userControl={userControl}
+              setUserControl={setUserControl}
             />
           ) : (
             <>
@@ -114,6 +121,8 @@ function App() {
                   isMobile={isMobile}
                   setIsCollapsed={setIsCollapsed}
                   setIsMobile={setIsMobile}
+                  userControl={userControl}
+                  setShowSnackbar={setShowSnackbar}
                 />
               )}
               <main className="content">
@@ -180,6 +189,8 @@ function App() {
                         setIsOpenDel={setIsOpenDel}
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
+                        message={message}
+                        setMessage={setMessage}
                       />
                     }
                   />
@@ -221,6 +232,7 @@ function App() {
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
                         addTtile={addTitle}
+                        message={message}
                       />
                     }
                   />
@@ -235,11 +247,26 @@ function App() {
                         setAddTitle={setAddTitle}
                         addTtile={addTitle}
                         username={username}
+                        message={message}
                       />
                     }
                   />
                 </Routes>
               </main>
+              <Snackbar
+                open={showSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setShowSnackbar(false)} // Close the snackbar when it's clicked away
+              >
+                <MuiAlert
+                  onClose={() => setShowSnackbar(false)}
+                  severity="warning"
+                  levation={6}
+                  variant="filled"
+                >
+                  You cannot access this page.
+                </MuiAlert>
+              </Snackbar>
             </>
           )}
         </div>
