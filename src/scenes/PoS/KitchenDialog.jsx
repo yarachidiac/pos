@@ -31,7 +31,7 @@ const KitchenDialog = ({ open, onCancel, onConfirm }) => {
           onClick={onCancel}
           style={{ fontSize: "0.9rem" }}
         >
-          Cancel
+          Stay
         </Button>
       </DialogActions>
     </Dialog>

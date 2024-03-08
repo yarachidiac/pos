@@ -31,9 +31,11 @@ import Tables from './scenes/Section/Tables';
 import CircularProgress from "@mui/material/CircularProgress";
 import KitchenDialog from './scenes/PoS/KitchenDialog'; 
 import { format } from "date-fns";
+import * as React from "react";
+import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";  
-function App() {
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -58,9 +60,10 @@ function App() {
   const [pageRed, setPageRed] = useState("");
   const [selectedTop, setSelectedTop] = useState("Takeaway");
   const [isOpenDel, setIsOpenDel] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
   const [message, setMessage] = useState("");
-
+  const [open, setOpen] = useState(false);
+  const [filterValue, setFilterValue] = useState("");
+  console.log("filter mn l app", filterValue);
  useEffect(() => {
    const initializeAuthentication = async () => {
      try {
@@ -98,6 +101,13 @@ function App() {
     return <CircularProgress color="success" />;;
   }
 
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+
+      setOpen(false);
+    };
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -115,6 +125,14 @@ function App() {
             />
           ) : (
             <>
+              <div>
+                <Snackbar
+                  open={open}
+                  autoHideDuration={2000}
+                  onClose={handleClose}
+                  message="You have no access to this page."
+                />
+              </div>
               {!isMobile && (
                 <Sidebar
                   isCollapsed={isCollapsed}
@@ -122,7 +140,7 @@ function App() {
                   setIsCollapsed={setIsCollapsed}
                   setIsMobile={setIsMobile}
                   userControl={userControl}
-                  setShowSnackbar={setShowSnackbar}
+                  setOpen={setOpen}
                 />
               )}
               <main className="content">
@@ -140,6 +158,7 @@ function App() {
                   setSelectedTop={setSelectedTop}
                   isOpenDel={isOpenDel}
                   setIsOpenDel={setIsOpenDel}
+                  setFilterValue={setFilterValue}
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
@@ -191,6 +210,7 @@ function App() {
                         setAddTitle={setAddTitle}
                         message={message}
                         setMessage={setMessage}
+                        filterValue={filterValue}
                       />
                     }
                   />
@@ -253,20 +273,6 @@ function App() {
                   />
                 </Routes>
               </main>
-              <Snackbar
-                open={showSnackbar}
-                autoHideDuration={6000}
-                onClose={() => setShowSnackbar(false)} // Close the snackbar when it's clicked away
-              >
-                <MuiAlert
-                  onClose={() => setShowSnackbar(false)}
-                  severity="warning"
-                  levation={6}
-                  variant="filled"
-                >
-                  You cannot access this page.
-                </MuiAlert>
-              </Snackbar>
             </>
           )}
         </div>

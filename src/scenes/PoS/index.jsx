@@ -65,6 +65,7 @@ const PoS = ({
   setAddTitle,
   message,
   setMessage,
+  filterValue,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -647,9 +648,7 @@ const PoS = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("aammmmmmmmmmmmmmmmmmm");
-        if (
-          !location.search.includes("selectedTableId")) {
+        if (!location.search.includes("selectedTableId")) {
           const response = await fetch(
             `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
           );
@@ -671,6 +670,7 @@ const PoS = ({
 
   const isIpadPro = useMediaQuery("(min-width: 900px) and (max-width: 1300px)");
 
+  console.log("filterrrrrrrrr", filterValue);
   const getItemListTable = () => {
     return (
       <TableContainer>
@@ -778,63 +778,77 @@ const PoS = ({
         </Box>
         {/* Cards in Grid Layout */}
         <Box sx={{ overflowY: "auto", height: "90%", width: "100%" }}>
-          <Grid container spacing={2}>
-            {mealsCopy.map((meal) => (
-              <Grid
-                item
-                xs={12}
-                sm={isCollapsed ? 6 : 12}
-                md={
-                  isCollapsed
-                    ? isIpadPro
-                      ? 4 // iPad Pro collapsed
-                      : 3 // Other devices collapsed
-                    : isIpadPro
-                    ? 6 // iPad Pro expanded
-                    : 4 // Other devices expanded
-                }
-                key={meal.ItemNo}
-              >
-                <Card sx={{ position: "relative" }}>
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
-                    alt={`Meal ${meal.ItemNo}`}
-                  />
-                  {meal.Disc !== null && meal.Disc !== 0 && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        backgroundColor: "red", // Add your preferred styling
-                        padding: "0.2rem 0.5rem",
-                        color: "#fff",
-                        fontSize: "1.4rem",
-                      }}
+          <Grid
+            container
+            spacing={1}
+            // sx={{ height: "100%" }}
+          >
+            {filterValue
+              ? mealsCopy
+                  .filter((meal) =>
+                    meal.ItemName.toLowerCase().includes(
+                      filterValue.toLowerCase()
+                    )
+                  )
+                  .map((meal) => (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={isCollapsed ? 6 : 12}
+                      md={
+                        isCollapsed
+                          ? isIpadPro
+                            ? 4 // iPad Pro collapsed
+                            : 3 // Other devices collapsed
+                          : isIpadPro
+                          ? 6 // iPad Pro expanded
+                          : 4 // Other devices expanded
+                      }
+                      key={meal.ItemNo}
                     >
-                      {meal.Disc !== null && meal.Disc !== 0 && (
-                        <Typography>{`-${meal.Disc}%`}</Typography>
-                      )}
-                      {/* {meal.Tax !== null && meal.Tax !== 0 && (
+                      <Card sx={{ position: "relative" }}>
+                        <CardMedia
+                          component="img"
+                          height="100"
+                          src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
+                          alt={`Meal ${meal.ItemNo}`}
+                        />
+                        {meal.Disc !== null && meal.Disc !== 0 && (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              position: "absolute",
+                              top: 0,
+                              right: 0,
+                              backgroundColor: "red", // Add your preferred styling
+                              padding: "0.2rem 0.5rem",
+                              color: "#fff",
+                              fontSize: "1.4rem",
+                            }}
+                          >
+                            {meal.Disc !== null && meal.Disc !== 0 && (
+                              <Typography>{`-${meal.Disc}%`}</Typography>
+                            )}
+                            {/* {meal.Tax !== null && meal.Tax !== 0 && (
                       <Typography>{`+${meal.Tax}%`}</Typography>
                     )} */}
-                    </Box>
-                  )}
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        //marginX: 1,
-                      }}
-                    >
-                      <Typography variant="h4">{meal.ItemName}</Typography>
+                          </Box>
+                        )}
+                        <CardContent>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              width: "200px",
+                              //marginX: 1,
+                            }}
+                          >
+                            <Typography variant="h4">
+                              {meal.ItemName}
+                            </Typography>
 
-                      <Typography
+                            {/* <Typography
                         variant="body2"
                         sx={{
                           textDecoration:
@@ -842,70 +856,254 @@ const PoS = ({
                         }}
                       >
                         {`$${meal.UPrice.toFixed(2)}`}
-                      </Typography>
+                      </Typography> */}
 
-                      {meal.Tax !== null && meal.Tax !== 0 && (
-                        <Typography variant="body2">{`$${(
-                          meal.UPrice +
-                          meal.UPrice * (meal.Tax / 100)
-                        ).toFixed(2)}`}</Typography>
-                      )}
-                    </Box>
-                    <Box
-                      sx={{ display: "flex", justifyContent: "space-between" }}
+                            {meal.Tax !== null && meal.Tax !== 0 ? (
+                              <Typography variant="body2">{`$${(
+                                meal.UPrice +
+                                meal.UPrice * (meal.Tax / 100)
+                              ).toFixed(2)}`}</Typography>
+                            ) : (
+                              <Typography variant="body2">{`$${meal.UPrice.toFixed(
+                                2
+                              )}`}</Typography>
+                            )}
+                          </Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Box display="flex" alignItems="center">
+                              <IconButton
+                                onClick={() =>
+                                  handleQuantityChangeGrid(
+                                    meal.ItemNo,
+                                    meal.quantity - 1
+                                  )
+                                }
+                              >
+                                <RemoveCircleOutlineOutlinedIcon
+                                  sx={{ fontSize: "35px" }}
+                                />
+                              </IconButton>
+                              <Typography variant="body1">
+                                {meal.quantity}
+                              </Typography>
+                              <IconButton
+                                onClick={() =>
+                                  handleQuantityChangeGrid(
+                                    meal.ItemNo,
+                                    meal.quantity + 1
+                                  )
+                                }
+                              >
+                                <AddCircleOutlineOutlinedIcon
+                                  sx={{ fontSize: "35px" }}
+                                />
+                              </IconButton>
+                            </Box>
+
+                            <Button
+                              //  variant="outlined"
+                              //  color="secondary"
+                              sx={{
+                                fontSize: "0.9rem",
+                                borderRadius: "20px",
+                                border: `2px solid ${colors.greenAccent[500]}`,
+                                color: colors.greenAccent[500],
+                                "&:hover": {
+                                  backgroundColor: colors.greenAccent[500],
+                                  color: colors.primary[500],
+                                },
+                              }}
+                              onClick={() =>
+                                handleOrderClick(meal.ItemNo, meal.quantity)
+                              }
+                            >
+                              Choose
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>{" "}
+                    </Grid>
+                  ))
+              : mealsCopy.map((meal) => (
+                  <Grid
+                    // sx={{ height: "50%" }}
+                    item
+                    xs={12}
+                    sm={isCollapsed ? 6 : 12}
+                    md={
+                      isCollapsed
+                        ? isIpadPro
+                          ? 4 // iPad Pro collapsed
+                          : 2.4 // Other devices collapsed
+                        : isIpadPro
+                        ? 6 // iPad Pro expanded
+                        : 4 // Other devices expanded
+                    }
+                    key={meal.ItemNo}
+                  >
+                    <Card
+                      sx={{
+                        position: "relative",
+                        height: "200px",
+                        "& .MuiCardContent-root:last-child ": {
+                          paddingBottom: "5px",
+                        },
+                      }}
                     >
-                      <Box display="flex" alignItems="center">
-                        <IconButton
-                          onClick={() =>
-                            handleQuantityChangeGrid(
-                              meal.ItemNo,
-                              meal.quantity - 1
-                            )
-                          }
+                      <CardMedia
+                        component="img"
+                        height="40%"
+                        src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
+                        alt={`Meal ${meal.ItemNo}`}
+                      />
+                      {meal.Disc !== null && meal.Disc !== 0 && (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            backgroundColor: "red", // Add your preferred styling
+                            padding: "0.2rem 0.5rem",
+                            color: "#fff",
+                            fontSize: "1.4rem",
+                          }}
                         >
-                          <RemoveCircleOutlineOutlinedIcon
-                            sx={{ fontSize: "35px" }}
-                          />
-                        </IconButton>
-                        <Typography variant="body1">{meal.quantity}</Typography>
-                        <IconButton
-                          onClick={() =>
-                            handleQuantityChangeGrid(
-                              meal.ItemNo,
-                              meal.quantity + 1
-                            )
-                          }
-                        >
-                          <AddCircleOutlineOutlinedIcon
-                            sx={{ fontSize: "35px" }}
-                          />
-                        </IconButton>
-                      </Box>
-
-                      <Button
-                        //  variant="outlined"
-                        //  color="secondary"
+                          {meal.Disc !== null && meal.Disc !== 0 && (
+                            <Typography>{`-${meal.Disc}%`}</Typography>
+                          )}
+                          {/* {meal.Tax !== null && meal.Tax !== 0 && (
+                      <Typography>{`+${meal.Tax}%`}</Typography>
+                    )} */}
+                        </Box>
+                      )}
+                      <CardContent
                         sx={{
-                          fontSize: "0.9rem",
-                          borderRadius: "20px",
-                          border: `2px solid ${colors.greenAccent[500]}`,
-                          color: colors.greenAccent[500],
-                          "&:hover": {
-                            backgroundColor: colors.greenAccent[500],
-                            color: colors.primary[500],
-                          },
+                          height: "60%",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
                         }}
-                        onClick={() =>
-                          handleOrderClick(meal.ItemNo, meal.quantity)
-                        }
                       >
-                        Choose
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            height: "60%",
+                            width: "100%",
+                            //marginX: 1,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              maxHeight: "50%",
+                              width: "100%", // Full width of the Box
+                              // overflow: "hidden", // Hide overflow
+                              wordWrap: "break-word", // Allow long words to break
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            <Typography sx={{ maxWidth: "100%" }} variant="h4">
+                              {meal.ItemName}
+                            </Typography>
+                          </Box>
+                          {/* <Typography
+                        variant="body2"
+                        sx={{
+                          textDecoration:
+                            meal.Disc || meal.Tax ? "line-through" : "none",
+                        }}
+                      >
+                        {`$${meal.UPrice.toFixed(2)}`}
+                      </Typography> */}
+                        </Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            height: "40%",
+                            width: "100%",
+                          }}
+                        >
+                          {/* <Box display="flex" alignItems="center">
+                            <IconButton
+                              onClick={() =>
+                                handleQuantityChangeGrid(
+                                  meal.ItemNo,
+                                  meal.quantity - 1
+                                )
+                              }
+                            >
+                              <RemoveCircleOutlineOutlinedIcon
+                                sx={{ fontSize: "35px" }}
+                              />
+                            </IconButton>
+                            <Typography variant="body1">
+                              {meal.quantity}
+                            </Typography>
+                            <IconButton
+                              onClick={() =>
+                                handleQuantityChangeGrid(
+                                  meal.ItemNo,
+                                  meal.quantity + 1
+                                )
+                              }
+                            >
+                              <AddCircleOutlineOutlinedIcon
+                                sx={{ fontSize: "35px" }}
+                              />
+                            </IconButton>
+                          </Box> */}
+
+                          {meal.Tax !== null && meal.Tax !== 0 ? (
+                            <Typography
+                              variant="body2"
+                              sx={{ width: "50%", height: "100%" }}
+                            >{`$${(
+                              meal.UPrice +
+                              meal.UPrice * (meal.Tax / 100)
+                            ).toFixed(2)}`}</Typography>
+                          ) : (
+                            <Typography
+                              sx={{ width: "50%", height: "100%" }}
+                              variant="body2"
+                            >{`$${meal.UPrice.toFixed(2)}`}</Typography>
+                          )}
+
+                          <Button
+                            //  variant="outlined"
+                            //  color="secondary"
+                            sx={{
+                              height: "100%",
+                              width: "50%",
+                              fontSize: "0.9rem",
+                              borderRadius: "20px",
+                              border: `2px solid ${colors.greenAccent[500]}`,
+                              color: colors.greenAccent[500],
+                              "&:hover": {
+                                backgroundColor: colors.greenAccent[500],
+                                color: colors.primary[500],
+                              },
+                            }}
+                            onClick={() =>
+                              handleOrderClick(meal.ItemNo, meal.quantity)
+                            }
+                          >
+                            Choose
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
           </Grid>
         </Box>
       </Box>

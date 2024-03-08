@@ -42,9 +42,11 @@ const Section = ({ addTitle, setAddTitle, companyName, message }) => {
         }
         const data = await response.json();
         setSections(data.section_list); // Update sections state with fetched data
-         await fetch(
-           `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
-         );
+        if (message) {
+           await fetch(
+             `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
+           );
+        }      
       } catch (error) {
         console.error("Error fetching data:", error);
       }

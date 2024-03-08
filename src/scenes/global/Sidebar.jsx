@@ -23,16 +23,33 @@ import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlin
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import { useNavigate } from "react-router-dom";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
+const Item = ({ title, to, icon, selected, setSelected, setOpen, userControl, }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+
+  const handleManagePoS = () => {
+    if (userControl === "N") {
+      setOpen(true);
+    } else {
+      navigate("/ManagePoS");
+    }
+  };
+
   return (
     <MenuItem
       active={selected === title}
       style={{
         color: colors.grey[100],
       }}
-      onClick={() => setSelected(title)}
+      onClick={() => {
+        if (title === "Manage POS") {
+          handleManagePoS();
+          setSelected(title);
+        } else {
+          setSelected(title);
+        }
+      }}
       icon={icon}
     >
       <Box width="200px">
@@ -90,20 +107,18 @@ const SubItem = ({
   );
 };
 
-
 const Sidebar = ({
   isCollapsed,
   isMobile,
   setIsCollapsed,
   setIsMobile,
   userControl,
-  setShowSnackbar,
+  setOpen,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   //const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const navigate = useNavigate();
 
   console.log("isMobile from sidebar:", isMobile);
   console.log("isCollapsed from sidebar:", isCollapsed);
@@ -117,14 +132,7 @@ const Sidebar = ({
     setSelected(menuItem);
   };
 
-  const handleManagePoS = () => {
-    if (userControl === "N") {
-      setShowSnackbar(true);
-    } else {
-      navigate("/ManagePoS");
-    }
-  };
-
+  
   // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // const handleResize = () => {
@@ -247,9 +255,10 @@ const Sidebar = ({
             <Item
               icon={<PointOfSaleOutlinedIcon />}
               title="Manage POS"
-              onClick={handleManagePoS}
               selected={selected}
               setSelected={setSelected}
+              setOpen={setOpen}
+              userControl={userControl}
             />
             <SubItem
               title="Inventory Management"

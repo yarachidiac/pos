@@ -27,6 +27,7 @@ const Topbar = ({
   setSelectedTop,
   isOpenDel,
   setIsOpenDel,
+  setFilterValue,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -67,7 +68,6 @@ const Topbar = ({
     if (isNav) {
       navigate(`/PoS`);
       setSelectedTop("Takeaway");
-      
     } else {
       setIsConfOpenDialog(true);
       setPageRed(`/PoS`);
@@ -171,7 +171,11 @@ const Topbar = ({
               borderRadius: "3px",
             }}
           >
-            <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
+            <InputBase
+              sx={{ ml: 2, flex: 1 }}
+              placeholder="Search"
+              onChange={(e) => setFilterValue(e.target.value)}
+            />
             <IconButton type="button" sx={{ p: 1 }}>
               <SearchIcon />
             </IconButton>

@@ -44,9 +44,11 @@ const Tables = ({ addTitle, setAddTitle, companyName, username, message }) => {
       }
       const data = await response.json();
       setTables(data);
-      await fetch(
-        `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
-      );
+      if (message) {
+        await fetch(
+          `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
+        );
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
