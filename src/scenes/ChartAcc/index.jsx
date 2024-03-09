@@ -32,9 +32,12 @@ const ChartAcc = ({
   // });
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [clientDetails, setClientDetails] = useState(null);
+  const [clientDetails, setClientDetails] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
+  const [clientDetailsCopy, setClientDetailsCopy] = useState({
+    ...clientDetails,
+  });
 
   const storedSelectedRow = localStorage.getItem("selectedRow");
   console.log("ssssssssssssssssssss", storedSelectedRow);
@@ -63,8 +66,10 @@ const ChartAcc = ({
     if (params.field !== "checkbox") {
       setIsDetailsModalOpen(true);
       setClientDetails(params.row);
+      setClientDetailsCopy(params.row)
     }
   };
+  console.log("indddddddddddddd", clientDetails);
   useEffect(() => {
     // Compare clientDetails with selectedRow based on AccNo
     if (
@@ -115,6 +120,15 @@ const ChartAcc = ({
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: 1,
       onClick: handleRowClick,
+    },
+    {
+      field: "Tel",
+      headerName: "Tel",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 200,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
     },
     {
       field: "Address",
@@ -217,6 +231,7 @@ const ChartAcc = ({
 
       // Set the userDetails state with the details of the newly added user
       setClientDetails(clientDetailsData);
+      setClientDetailsCopy(clientDetailsData)
       // Open the details modal
       setIsDetailsModalOpen(true);
     } catch (error) {
@@ -272,6 +287,8 @@ const ChartAcc = ({
         clients={clients}
         setClients={setClients}
         companyName={companyName}
+        clientDetailsCopy={clientDetailsCopy}
+        setClientDetailsCopy={setClientDetailsCopy}
       />
       <Box
         m="0 auto"

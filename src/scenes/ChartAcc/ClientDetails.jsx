@@ -24,50 +24,54 @@ const ClientDetails = ({
   clients,
   setClients,
   companyName,
-  checkUnsavedChanges,
   successMessage,
   setSuccessMessage,
-  clientDetailsCopyModel,
-  setClientDetailsCopyModel,
+  clientDetailsCopy,
+  setClientDetailsCopy,
+  unsavedChanges,
+  setUnsavedChanges
 }) => {
-  const [editableCells, setEditableCells] = useState([]);
+  console.log("cccccccccccccccccccccccc", clientDetails);
+  // const [editableCells, setEditableCells] = useState([]);
   //const [successMessage, setSuccessMessage] = useState(""); // New state for success message
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [clientDetailsCopy, setClientDetailsCopy] = useState({ ...clientDetails });
+  // const [clientDetailsCopy, setClientDetailsCopy] = useState({ ...clientDetails });
 
 
-  const handleEdit = (index) => {
-    setEditableCells((prev) => [...prev, index]);
-  };
+  // const handleEdit = (index) => {
+  //   setEditableCells((prev) => [...prev, index]);
+  // };
 
   const handleValueUpdate = (field, updatedValue) => {
+    // Convert empty string to null
+    // const processedValue = updatedValue === "" ? null : updatedValue;
     setClientDetailsCopy((prev) => ({
       ...prev,
       [field]: updatedValue,
     }));
   };
 
-  const handleCellClick = (index) => {
-    if (!editableCells.includes(index)) {
-      // Enter edit mode when the cell is clicked
-      handleEdit(index);
-    }
-  };
 
-  // Callback function to check for unsaved changes
-  const checkUnsavedChangesCallback = () => {
-    // Compare userDetailsCopy and userDetails for changes
-    return JSON.stringify(clientDetailsCopy) !== JSON.stringify(clientDetails);
-  };
+  // const handleCellClick = (index) => {
+  //   if (!editableCells.includes(index)) {
+  //     // Enter edit mode when the cell is clicked
+  //     handleEdit(index);
+  //   }
+  // };
+
 
   useEffect(() => {
-    // Set the callback function in the parent component
-    checkUnsavedChanges(checkUnsavedChangesCallback);
-    setClientDetailsCopyModel(clientDetailsCopy); // Corrected line
-  }, [clientDetailsCopy, clientDetails, checkUnsavedChanges]);
+    console.log("copppppppppppppppppppp", JSON.stringify(clientDetailsCopy));
+    console.log("ddddddddddddddddddddddddddddd", JSON.stringify(clientDetails));
+    if (JSON.stringify(clientDetailsCopy) != JSON.stringify(clientDetails)) {
+      setUnsavedChanges(true);
+    } else {
+      setUnsavedChanges(false);
+    }
+  }, [clientDetailsCopy, clientDetails, unsavedChanges]);
 
 
   // Trigger handleSave when userDetailsCopy changes
@@ -82,26 +86,18 @@ const ClientDetails = ({
       <TableRow
         key={key}
         style={{
-          width: window.innerWidth * 0.28,
+          width: "100%",
           display: "flex",
           flexDirection: "row",
-          height: window.innerHeight * 0.1,
-          //padding: '8px',
+          height: "auto",
           borderRadius: "4px",
           border: "1px solid #ccc",
-          // justifyContent: "space-between",
-          // justifyItems: "space-between",
-          // alignItems: "space-between"
         }}
       >
         <TableCell
           style={{
-            //minWidth: "80px",
             width: "30%",
-            height: "100%",
-            whiteSpace: "pre-wrap", // Allow text wrapping
-            overflowWrap: "normal", // Do not break words
-            //overflowWrap: "break-word",
+            height: "auto",
             boxSizing: "border-box",
           }}
         >
@@ -109,7 +105,7 @@ const ClientDetails = ({
             sx={{
               maxHeight: "100%",
               width: "100%",
-              alignItems: "start", // Align text to the start (left)
+              alignItems: "center",
               justifyContent: "center",
             }}
           >
@@ -120,112 +116,83 @@ const ClientDetails = ({
         <TableCell
           style={{
             width: "70%",
-            height: "100%",
+            height: "50px",
           }}
         >
-          <div
-            style={{
-              position: "relative",
-              height: "100%",
-              width: "100%",
-            }}
-          >
-            {editableCells.includes(index) ? (
-              <>
-                <TextField
-                  value={value}
-                  onChange={(e) => handleValueUpdate(key, e.target.value)}
-                  autoFocus
-                  onBlur={() =>
-                    setEditableCells((prev) => prev.filter((i) => i !== index))
+          {key === "Active" ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={value === "Y"}
+                  onChange={() =>
+                    handleValueUpdate(key, value === "Y" ? "N" : "Y")
                   }
-                  fullWidth
-                  variant="standard"
                 />
-              </>
-            ) : key === "Active" ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Checkbox
-                    checked={value === "Y"}
-                    onChange={() =>
-                      handleValueUpdate(key, value === "Y" ? "N" : "Y")
-                    }
-                  />
-                  <Typography variant="h4">Y</Typography>
-                </div>
+                <Typography variant="h4">Y</Typography>
+              </div>
 
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Checkbox
-                    checked={value === "N"}
-                    onChange={() =>
-                      handleValueUpdate(key, value === "N" ? "Y" : "N")
-                    }
-                  />
-                  <Typography variant="h4">N</Typography>
-                </div>
-              </div>
-            ) : key === "GAddress" ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                }}
-              >
-                <Button
-                  sx={{ width: "50%" }}
-                  onClick={() =>
-                    window.open(
-                      "https://www.google.com/maps/place/Lebanon/@33.854721,35.862285,7z",
-                      "_blank"
-                    )
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={value === "N"}
+                  onChange={() =>
+                    handleValueUpdate(key, value === "N" ? "Y" : "N")
                   }
-                >
-                  Choose
-                </Button>
-                <TextField
-                  sx={{ width: "50%" }}
-                  value={value}
-                  onChange={(e) => handleValueUpdate(key, e.target.value)}
-                  autoFocus
-                  onBlur={() =>
-                    setEditableCells((prev) => prev.filter((i) => i !== index))
-                  }
-                  variant="standard"
                 />
+                <Typography variant="h4">N</Typography>
               </div>
-            ) : (
-              <div
-                style={{
-                  cursor: "pointer",
-                  alignItems: "center",
-                  borderRadius: "4px",
-                  border: `1px solid ${colors.greenAccent[400]}`,
-                  display: "flex",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  width: "100%",
-                  justifyContent: "center",
-                }}
-                onClick={() => handleCellClick(index)}
+            </div>
+          ) : key === "GAddress" ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <Button
+                sx={{ width: "50%" }}
+                onClick={() =>
+                  window.open(
+                    "https://www.google.com/maps/place/Lebanon/@33.854721,35.862285,7z",
+                    "_blank"
+                  )
+                }
               >
-                <Typography variant="h4">{value}</Typography>
-              </div>
-            )}
-          </div>
+                Choose
+              </Button>
+              <TextField
+                sx={{ width: "50%" }}
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                // onBlur={() =>
+                //   setEditableCells((prev) => prev.filter((i) => i !== index))
+                // }
+                variant="outlined"
+              />
+            </div>
+          ) : (
+            <Box sx={{ height: "100%" }}>
+              <TextField
+                sx={{ width: "100%" }}
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                // onBlur={() =>
+                //   setEditableCells((prev) => prev.filter((i) => i !== index))
+                // }
+                variant="outlined"
+              />
+            </Box>
+          )}
         </TableCell>
       </TableRow>
     ));
+
 
   return (
     <Box style={{ height: "100%" }}>
@@ -258,7 +225,7 @@ const ClientDetails = ({
               {successMessage}
             </Typography>
           </Box>
-          {checkUnsavedChangesCallback() && (
+          {unsavedChanges && (
             <Box sx={{ minWidth: "5%" }}>
               <Button
                 variant="contained"
@@ -284,7 +251,7 @@ const ClientDetails = ({
           )}
         </Box>
       ) : (
-        checkUnsavedChangesCallback() && (
+        unsavedChanges && (
           <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
             <Button
               style={{

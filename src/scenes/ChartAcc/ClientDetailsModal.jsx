@@ -24,19 +24,21 @@ const ClientDetailsModal = ({
   clients,
   setClients,
   companyName,
+  clientDetailsCopy,
+  setClientDetailsCopy,
 }) => {
+  console.log("mmmmmmmmmmmmmmmmmmm", clientDetails);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  // const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-  const [clientDetailsCopyModel, setClientDetailsCopyModel] = useState({
-    ...clientDetails,
-  });
+  
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  if (!clientDetails) {
-    return null;
-  }
+  // if (!clientDetails) {
+  //   return null;
+  // }
   const modalStyle = {
     top: "50%",
     left: "50%",
@@ -88,14 +90,14 @@ const ClientDetailsModal = ({
   };
 
   // Callback function to set unsaved changes status
-  const checkUnsavedChanges = (unsavedChanges) => {
-    setHasUnsavedChanges(unsavedChanges);
-  };
+  // const checkUnsavedChanges = (unsavedChanges) => {
+  //   setHasUnsavedChanges(unsavedChanges);
+  // };
   const onClose = () => {
     setIsDetailsModalOpen(false);
   };
   const handleClose = () => {
-    if (hasUnsavedChanges) {
+    if (unsavedChanges) {
       setShowConfirmation(true);
     } else {
       setShowConfirmation(false);
@@ -106,14 +108,14 @@ const ClientDetailsModal = ({
     handleSave(
       companyName,
       clientDetails,
-      clientDetailsCopyModel,
+      clientDetailsCopy,
       setClients,
       setSuccessMessage,
       setClientDetails
     );
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
-    setHasUnsavedChanges(false);
+    setUnsavedChanges(false);
     setShowConfirmation(false); // Close the confirmation dialog
     onClose(); // Close the modal
   };
@@ -163,11 +165,12 @@ const ClientDetailsModal = ({
             setClientDetails={setClientDetails}
             setClients={setClients}
             companyName={companyName}
-            checkUnsavedChanges={checkUnsavedChanges}
             successMessage={successMessage}
             setSuccessMessage={setSuccessMessage}
-            clientDetailsCopyModel={clientDetailsCopyModel}
-            setClientDetailsCopyModel={setClientDetailsCopyModel}
+            clientDetailsCopy={clientDetailsCopy}
+            setClientDetailsCopy={setClientDetailsCopy}
+            unsavedChanges={unsavedChanges}
+            setUnsavedChanges={setUnsavedChanges}
             // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
           />
           <ConfirmationDialog
