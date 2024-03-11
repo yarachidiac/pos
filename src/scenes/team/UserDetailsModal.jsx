@@ -49,20 +49,17 @@ const UserDetailsModal = ({
   users,
   setUsers,
   companyName,
-  //userDetailsCopy,
-  //setUserDetailsCopy,
+  userDetailsCopy,
+  setUserDetailsCopy,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-  const [userDetailsCopyModel, setUserDetailsCopyModel] = useState({...userDetails});
-  console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetails);
-  console.log("ccccccccccccccccccccccccccccccccc", userDetailsCopyModel);
-
+  console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetailsCopy);
 
   const getOptionLabel = (option) => {
     switch (option) {
@@ -91,10 +88,7 @@ const UserDetailsModal = ({
   console.log("frommmm userdetailllllllllllllllll", userDetails);
 
   console.log("bl modalllllllllllll detailllll", userDetails);
-  if (!userDetails) {
-    return null;
-  }
-
+ 
   const modalStyle = {
     top: "50%",
     left: "50%",
@@ -246,11 +240,6 @@ const UserDetailsModal = ({
   //   setIsDrawerOpen(true);
   // };
 
-  // Callback function to set unsaved changes status
-  const checkUnsavedChanges = (unsavedChanges) => {
-    setHasUnsavedChanges(unsavedChanges);
-  };
-
   const onClose = () => {
     setIsDetailsModalOpen(false);
     setSelectedOption("general");
@@ -258,7 +247,7 @@ const UserDetailsModal = ({
   };
 
   const handleClose = () => {
-    if (hasUnsavedChanges) {
+    if (unsavedChanges) {
       setShowConfirmation(true);
     } else {
       setShowConfirmation(false);
@@ -270,14 +259,14 @@ const UserDetailsModal = ({
     handleSave(
       companyName,
       userDetails,
-      userDetailsCopyModel,
+      userDetailsCopy,
       setUsers,
       setSuccessMessage,
       setUserDetails
     );
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
-    setHasUnsavedChanges(false);
+    setUnsavedChanges(false);
     setShowConfirmation(false); // Close the confirmation dialog
     onClose(); // Close the modal
   };
@@ -300,12 +289,12 @@ const UserDetailsModal = ({
             setUserDetails={setUserDetails}
             setUsers={setUsers}
             companyName={companyName}
-            checkUnsavedChanges={checkUnsavedChanges}
             successMessage={successMessage}
             setSuccessMessage={setSuccessMessage}
-            userDetailsCopyModel={userDetailsCopyModel}
-            setUserDetailsCopyModel={setUserDetailsCopyModel}
-           // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
+            userDetailsCopy={userDetailsCopy}
+            setUserDetailsCopy={setUserDetailsCopy}
+            unsavedChanges={unsavedChanges}
+            setUnsavedChanges={setUnsavedChanges}
           />
         );
       case "stock-inventory":

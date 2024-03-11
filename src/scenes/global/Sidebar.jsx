@@ -384,7 +384,7 @@ const Sidebar = ({
             >
               <Item
                 title="Company Management"
-                to="/Company Management"
+                to="/CompanyManagement"
                 selected={selected}
                 setSelected={setSelected}
               />

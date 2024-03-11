@@ -89,7 +89,7 @@ const ClientDetails = ({
           width: "100%",
           display: "flex",
           flexDirection: "row",
-          height: "auto",
+          height: "80px",
           borderRadius: "4px",
           border: "1px solid #ccc",
         }}
@@ -116,7 +116,7 @@ const ClientDetails = ({
         <TableCell
           style={{
             width: "70%",
-            height: "50px",
+            // height: "50px",
           }}
         >
           {key === "Active" ? (
@@ -174,20 +174,20 @@ const ClientDetails = ({
                 //   setEditableCells((prev) => prev.filter((i) => i !== index))
                 // }
                 variant="outlined"
+                size="small"
               />
             </div>
           ) : (
-            <Box sx={{ height: "100%" }}>
-              <TextField
-                sx={{ width: "100%" }}
-                value={value}
-                onChange={(e) => handleValueUpdate(key, e.target.value)}
-                // onBlur={() =>
-                //   setEditableCells((prev) => prev.filter((i) => i !== index))
-                // }
-                variant="outlined"
-              />
-            </Box>
+            <TextField
+              sx={{ width: "100%" }}
+              value={value}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              // onBlur={() =>
+              //   setEditableCells((prev) => prev.filter((i) => i !== index))
+              // }
+              variant="outlined"
+              size="small"
+            />
           )}
         </TableCell>
       </TableRow>
@@ -202,7 +202,7 @@ const ClientDetails = ({
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
-              gap: "5px",
+              // gap: "5px",
             }}
           >
             {rows}

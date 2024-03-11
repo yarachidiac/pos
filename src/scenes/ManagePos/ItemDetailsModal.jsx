@@ -26,19 +26,15 @@ const ItemDetailsModal = ({
   companyName,
   setOldItemNo,
   setNewItemNo,
+  itemDetailsCopy,
+  setItemDetailsCopy
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-  const [itemDetailsCopyModel, setItemDetailsCopyModel] = useState({
-    ...itemDetails,
-  });
 
-  if (!itemDetails) {
-    return null;
-  }
   const modalStyle = {
     top: "50%",
     left: "50%",
@@ -89,15 +85,11 @@ const ItemDetailsModal = ({
     // Other styles...
   };
 
-  // Callback function to set unsaved changes status
-  const checkUnsavedChanges = (unsavedChanges) => {
-    setHasUnsavedChanges(unsavedChanges);
-  };
   const onClose = () => {
     setIsDetailsModalOpen(false);
   };
   const handleClose = () => {
-    if (hasUnsavedChanges) {
+    if (unsavedChanges) {
       setShowConfirmation(true);
     } else {
       setShowConfirmation(false);
@@ -108,14 +100,14 @@ const ItemDetailsModal = ({
     handleSave(
       companyName,
       itemDetails,
-      itemDetailsCopyModel,
+      itemDetailsCopy,
       setItems,
       setSuccessMessage,
       setItemDetails
     );
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
-    setHasUnsavedChanges(false);
+    setUnsavedChanges(false);
     setShowConfirmation(false); // Close the confirmation dialog
     onClose(); // Close the modal
   };
@@ -165,14 +157,14 @@ const ItemDetailsModal = ({
             setItemDetails={setItemDetails}
             setItems={setItems}
             companyName={companyName}
-            checkUnsavedChanges={checkUnsavedChanges}
             successMessage={successMessage}
             setSuccessMessage={setSuccessMessage}
-            itemDetailsCopyModel={itemDetailsCopyModel}
-            setItemDetailsCopyModel={setItemDetailsCopyModel}
+            itemDetailsCopy={itemDetailsCopy}
+            setItemDetailsCopy={setItemDetailsCopy}
             setOldItemNo={setOldItemNo}
             setNewItemNo={setNewItemNo}
-            // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
+            unsavedChanges={unsavedChanges}
+            setUnsavedChanges={setUnsavedChanges}
           />
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not

@@ -176,11 +176,10 @@ import CloseIcon from "@mui/icons-material/Close";function App() {
                     }
                   />
                   <Route
-                    path="/Company Management"
+                    path="/CompanyManagement"
                     element={
                       <Company
                         companyName={companyName}
-                        setCompanyName={setCompanyName}
                       />
                     }
                   />

@@ -21,21 +21,12 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState({});
+  const [userDetailsCopy, setUserDetailsCopy] = useState({...userDetails});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
-
-  //const [selectedUserDetails, setSelectedUserDetails] = useState(null);
-  // const [userDetailsCopy, setUserDetailsCopy] = useState({
-  //   ...selectedUserDetails,
-  // });
-
   useEffect(() => {
-    // Read company_name from localStorage
-    // const storedCompanyName = localStorage.getItem("company_name");
-    // setCompanyName(storedCompanyName);
-
     console.log("stored companyyyyyy", companyName);
 
     // Fetch users based on the company name
@@ -66,6 +57,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
     // Open the details modal and set the selected user details
     setIsDetailsModalOpen(true);
     setUserDetails(params.row);
+    setUserDetailsCopy(params.row);
   };
 
   const closeDetailsModal = () => {
@@ -204,6 +196,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
 
       // Set the userDetails state with the details of the newly added user
       setUserDetails(userDetailsData);
+      setUserDetailsCopy(userDetailsData);
       // Open the details modal
       setIsDetailsModalOpen(true);
     } catch (error) {
@@ -259,6 +252,8 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
         users={users}
         setUsers={setUsers}
         companyName={companyName}
+        userDetailsCopy={userDetailsCopy}
+        setUserDetailsCopy={setUserDetailsCopy}
       />
       <Box
         m="0 auto"

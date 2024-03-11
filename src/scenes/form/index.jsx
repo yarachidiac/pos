@@ -11,7 +11,6 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
-import { useCompany } from "../../context/CompanyContext";
 
 const initialValues = {
   username: "",

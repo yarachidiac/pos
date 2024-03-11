@@ -1,389 +1,192 @@
 import React, { useState, useEffect } from "react";
-import Drawer from "@mui/material/Drawer";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import { useTheme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import { tokens } from "../../theme";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
-import AppBar from "@mui/material/AppBar";
-import General from "./General";
-import AccountingOptions from "./AccountingOptions";
-import AccNumbers from "./AccNumbers";
+import Button from "@mui/material/Button";
+import General from "./General"
 import BackOffice from "./BackOffice";
-import POSOptions from "./POSOptions";
-import Language from "./Language";
-import { tokens } from "../../theme";
-import ExportFiles from "./ExportFiles";
 
-
-const Company = ({ companyName,  }) => {
+const Company = ({ companyName }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [companyDetails, setCompanyDetails] = useState(null);
+
+  const getOptionLabel = (option) => {
+    switch (option) {
+      case "general":
+        return "General";
+      case "back-office":
+        return "Back Office";
+      case "Accounting-numbers":
+        return "Accouting Numbers";
+      case "accounting-options":
+        return "Accounting Options";
+      case "language":
+        return "Language";
+      case "pos-options":
+        return "PoS Options";
+      case "export-files":
+        return "Export Files";
+      default:
+        return option.charAt(0).toUpperCase() + option.slice(1);
+    }
+  };
 
   const modalStyle = {
-    position: "relative",
-    top: 20,
-    left: 50,
-    bottom: 20,
-    right: 20,
-    minWidth: 600,
-    minHeight: 620,
+    marginLeft: "5%",
+    background: colors.whiteblack[100],
+    boxShadow: 24,
+    pt: 0, // Set top padding to 2
+    pr: 2, // Set right padding to 3
+    pb: 2, // Set bottom padding to 3
+    pl: 2, // Set left padding to 3
+    minWidth: "90%",
+    maxHeight: "90%",
     display: "flex",
-    bgcolor: colors.primary["400"],
-    boxShadow: 8,
     flexDirection: window.innerWidth < 650 ? "row" : "column",
-    
   };
 
   const modalContainerStyle = {
+    position: "relative",
     overflow: "hidden", // Hide overflow from the Drawer
+    //backgroundColor: "rgba(252, 252, 252, 0.92)",
   };
 
   const largerModalStyle = {
-    //width: "90%",
-    maxWidth: "90%",
-  
+    width: "90%",
+    //maxWidth: 800,
   };
 
   const heightModalStyle = {
-    minWidth: "90%",
-    //maxHeight: "80%", // Adjust the maximum height as needed
+    width: "100%",
+    minHeight: "60%", // Set the fixed height for smaller screens
+    maxHeight: "80%", // Adjust the maximum height as needed
   };
-
-
-  const appBarStyle = {
-    bgcolor: colors.grey[600],
-    borderRadius: "4px 4px 4px 4px",
-   width: "100%"
-  };
-
-  const toolbarStyle = {
-    display: "flex",
-      justifyContent: "space-between",
-    //padding: theme.spacing(2),
-    "& .css-9ex7vj-MuiTypography-root": {
-      fontSize: "1.1rem",
-      fontWeight: "600",
-      },
-      width: "100%",
-
-  };
-
-    const appBarContainer = {
-      minWidth: "15%",
-    };
 
   const appbarContentStyle = {
     display: "flex",
-    gap: theme.spacing(1), // Adjust the gap between items
-      //overflowX: "auto", // Enable horizontal scrolling
-   
+    gap: "1px",
+    width: "100%",
+    //backgroundColor: colors.greenAccent[600],
   };
 
-  const drawerContainerStyle = {
-    // Adjust the width as needed
-    //background: colors.primary[400],
-    width: "30%",
-    ".css-15b8vjn-MuiPaper-root-MuiDrawer-paper": {
-      position: "relative",
-      background: colors.primary[400],
-    },
-    ".css-12i7wg6-MuiPaper-root-MuiDrawer-paper": {
-      background: colors.primary[400],
-      position: "relative",
-    },
+  const appBarStyle = {
+    background: colors.whiteblack[100],
+    //background: "#fcfcfc",
+    //background: "#F8FBF8",
+    borderRadius: "0px",
+    height: "30%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center", // Center the content vertically
+    padding: "0px", // Remove padding
   };
 
-  const drawerListStyle = {
-    background: colors.primary[400],
-    "& .MuiListItem-root": {
-      gap: theme.spacing(1), // Adjust the gap between items
-      display: "flex",
+  const listItemStyle = {
+    width: "100%",
+    flex: "1",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center", // Center the content vertically
+  };
 
-       justifyContent: "space-between",
-      //position: "relative"
-    },
-    };
-    
+  const handleOptionChange = (option) => {
+    setSelectedOption(option);
+  };
 
-    const handleOptionChange = (option) => {
-      setSelectedOption(option);
-    };
-
-    const renderSelectedTable = () => {
-      switch (selectedOption) {
-        case "general":
-              return (
-                <General
-                  companyName={companyName}
-                  // companyDetails={companyDetails}
-                  // setCompanyDetails={setCompanyDetails}
-                />
-              );
-        case "Accounting-Options":
-          return <AccountingOptions />;
-        case "Accounting-Numbers":
-          return <AccNumbers />;
-        case "Back-Office":
-          return <BackOffice />;
-        case "POS-Options":
-          return <POSOptions />;
-        case "Language":
-          return <Language />;
-        case "Export-Files":
-          return <ExportFiles />;
-        default:
-          return null;
-      }
-    };
-
-
-    // useEffect(() => {
-    //   const fetchCompanyDetails = async () => {
-    //     try {
-    //       const response = await fetch(
-    //         `http://192.168.16.133:8000/company/${companyName}`
-    //       );
-    //       if (response.ok) {
-    //         const data = await response.json();
-    //         setCompanyDetails(data);
-    //       } else {
-    //         console.error("Failed to fetch company details");
-    //       }
-    //     } catch (error) {
-    //       console.error("Error during fetch:", error);
-    //     }
-    //   };
-
-    //   // Fetch company details when the component mounts
-    //   fetchCompanyDetails();
-    // }, [companyName]);
-
+  const renderSelectedTable = () => {
+    switch (selectedOption) {
+      case "general":
+        return <General companyName={companyName} />;
+      case "back-office":
+        return <BackOffice />;
+      // Add more cases for each option
+      default:
+        return null;
+    }
+  };
 
   return (
-    <Box
-      sx={{
-        ...modalStyle,
-        ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
-        ...modalContainerStyle,
-      }}
-    >
-      {/* Drawer Container */}
-      {window.innerWidth <= 650 ? (
-        <Box sx={drawerContainerStyle}>
-          <Drawer
-            variant="permanent"
-            anchor="left"
-            open={isDrawerOpen}
-            onClose={() => setIsDrawerOpen(false)}
-          >
-            <List sx={{ drawerListStyle }}>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("general")}
-                sx={{
-                  color:
-                    selectedOption === "general"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="General" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("Back-Office")}
-                sx={{
-                  color:
-                    selectedOption === "Back-Office"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="Back Office" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("Accounting-Numbers")}
-                sx={{
-                  color:
-                    selectedOption === "Accounting-Numbers"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="Accounting Numbers" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("Accounting-Options")}
-                sx={{
-                  color:
-                    selectedOption === "Accounting-Options"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="Accounting Options" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("Language")}
-                sx={{
-                  color:
-                    selectedOption === "Language"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="Language" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("POS-Options")}
-                sx={{
-                  color:
-                    selectedOption === "POS-Options"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="POS Options" />
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => handleOptionChange("Export-Files")}
-                sx={{
-                  color:
-                    selectedOption === "Export-Files"
-                      ? colors.greenAccent[400]
-                      : colors.grey[100],
-                }}
-              >
-                <ListItemText primary="Export Files" />
-              </ListItem>
-              {/* Add more list items for each route */}
-            </List>
-          </Drawer>
-        </Box>
-      ) : (
-        <Box sx={appBarContainer}>
-          <AppBar position="" sx={appBarStyle}>
-            <Toolbar sx={toolbarStyle}>
-               <Box sx={{ width: "inherit" }}>
-                <List sx={appbarContentStyle}>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("general")}
-                    sx={{
-                      color:
-                        selectedOption === "general"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText primary="General" />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("Back-Office")}
-                    sx={{
-                      color:
-                        selectedOption === "Back-Office"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText
-                      primary="Back Office"
-                      sx={{
-                        "& .MuiTypography-root": {
-                          variant: "h2", // or "h6" or any other valid variant
-                        },
-                      }}
-                    />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("Accounting-Numbers")}
-                    sx={{
-                      color:
-                        selectedOption === "Accounting-Numbers"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText primary="Accounting Numbers" />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("Accounting-Options")}
-                    sx={{
-                      color:
-                        selectedOption === "Accounting-Options"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText primary="Accounting Options" />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("Language")}
-                    sx={{
-                      color:
-                        selectedOption === "Language"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText primary="Language" />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("POS-Options")}
-                    sx={{
-                      color:
-                        selectedOption === "POS-Options"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText primary="POS Options" />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() => handleOptionChange("Export-Files")}
-                    sx={{
-                      color:
-                        selectedOption === "Export-Files"
-                          ? colors.greenAccent[400]
-                          : colors.grey[100],
-                    }}
-                  >
-                    <ListItemText primary="Export Files" />
-                  </ListItem>
-                </List>
-              </Box>
-            </Toolbar>
-          </AppBar>
-        </Box>
-      )}
       <Box
         sx={{
-          flexGrow: 1, // Allow the table to grow and take available space
-          width: window.innerWidth < 650 ? "70%" : "100%",
+          ...modalStyle,
+          ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
+          ...modalContainerStyle,
         }}
       >
-        {renderSelectedTable()}
+        <Box display="flex" justifyContent="space-between">
+          {/* <Box sx={{ p: "2%" }}>
+            <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
+              {userDetails.username}
+            </Typography>
+          </Box> */}
+        </Box>
+        <Box sx={appBarStyle}>
+          <Toolbar sx={{ width: "100%" }}>
+            <List sx={appbarContentStyle}>
+              {[
+                "general",
+                "back-office",
+                "accounting-numbers",
+                "accouting-options",
+                "language",
+                "pos-options",
+                "export-files",
+              ].map((option) => (
+                <Box
+                  key={option}
+                  sx={{
+                    flex: "1",
+                    display: "flex",
+                    //justifyContent: "center",
+                    "& .MuiButtonBase-root": {
+                      fontSize: "1.1rem",
+                      fontWeight: "700",
+                    },
+                  }}
+                >
+                  <Button
+                    key={option}
+                    onClick={() => handleOptionChange(option)}
+                    style={{
+                      ...listItemStyle,
+                      //variant:"contained",
+                      background:
+                        selectedOption === option
+                          ? colors.greenAccent[600]
+                          : colors.grey[700],
+                      color:
+                        selectedOption === option ? colors.primary[500] : "",
+                    }}
+                  >
+                    {getOptionLabel(option)}
+                  </Button>
+                </Box>
+              ))}
+            </List>
+          </Toolbar>
+        </Box>
+        <Box
+          sx={{
+            flexGrow: 1, // Allow the table to grow and take available space
+            width: window.innerWidth < 650 ? "60%" : "100%",
+            //maxHeight: "60%",
+            height: "500px",
+            //overflowY: "auto",
+          }}
+        >
+          {renderSelectedTable()}
+        </Box>
       </Box>
-
-      {/* Other modal content */}
-    </Box>
   );
 };
 

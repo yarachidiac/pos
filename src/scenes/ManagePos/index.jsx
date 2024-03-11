@@ -26,7 +26,8 @@ const ManagePoS = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [itemDetails, setItemDetails] = useState(null);
+  const [itemDetails, setItemDetails] = useState({});
+  const [itemDetailsCopy, setItemDetailsCopy] = useState({...itemDetails});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
@@ -58,6 +59,7 @@ const ManagePoS = ({
     // Open the details modal and set the selected user details
     setIsDetailsModalOpen(true);
     setItemDetails(params.row);
+    setItemDetailsCopy(params.row)
   };
 
   const renderTextCell = ({ value }) => {
@@ -137,6 +139,7 @@ const ManagePoS = ({
 
       // Set the userDetails state with the details of the newly added user
       setItemDetails(itemDetailsData);
+      setItemDetailsCopy(itemDetailsData);
       // Open the details modal
       setIsDetailsModalOpen(true);
     } catch (error) {
@@ -193,6 +196,8 @@ const ManagePoS = ({
         companyName={companyName}
         setOldItemNo={setOldItemNo}
         setNewItemNo={setNewItemNo}
+        itemDetailsCopy={itemDetailsCopy}
+        setItemDetailsCopy={setItemDetailsCopy}
       />
       <Box
         m="0 auto"

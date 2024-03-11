@@ -10,20 +10,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
+import Checkbox from "@mui/material/Checkbox";
+import { response } from "express";
 
 const General = ({ companyName }) => {
-  const [editableCells, setEditableCells] = useState([]);
-  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [successMessage, setSuccessMessage] = useState(""); 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const [companyDetails, setCompanyDetails] = useState(null);
-  const [companyDetailsCopy, setCompanyDetailsCopy] = useState(null);
-
-  const handleEdit = (index) => {
-    setEditableCells((prev) => [...prev, index]);
-  };
-
+  const [companyDetails, setCompanyDetails] = useState({});
+  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({ ...companyDetails });
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  
   const handleValueUpdate = (field, updatedValue) => {
     setCompanyDetailsCopy((prev) => ({
       ...prev,
@@ -40,6 +37,7 @@ const General = ({ companyName }) => {
         if (response.ok) {
           const data = await response.json();
           setCompanyDetails(data);
+          setCompanyDetailsCopy(data);
         } else {
           console.error("Failed to fetch company details");
         }
@@ -47,72 +45,144 @@ const General = ({ companyName }) => {
         console.error("Error during fetch:", error);
       }
     };
-
-    // Fetch company details when the component mounts
     fetchCompanyDetails();
   }, []);
 
+  const handleSave = async () => {
+    const saveResponse = await fetch(
+      `http://192.168.16.113:8000/updateCompany/${companyName}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(companyDetailsCopy),
+      }
+    );
+    const mesData = await saveResponse.json();
 
-  console.log("companyy detailssssssssss", companyDetails);
-  const handleCellClick = (index) => {
-    if (!editableCells.includes(index)) {
-      // Enter edit mode when the cell is clicked
-      handleEdit(index);
+    if (saveResponse.ok) {
+      setSuccessMessage(mesData.message);
     }
-  };
+  }
+  useEffect(() => {
+    if (JSON.stringify(companyDetailsCopy) !== JSON.stringify(companyDetails)) {
+      setUnsavedChanges(true);
+    } else {
+      setUnsavedChanges(false);
+    }
+  }, [companyDetailsCopy]);
+  
 
-  // Callback function to check for unsaved changes
-  const checkUnsavedChangesCallback = () => {
-    // Compare userDetailsCopy and userDetails for changes
-    return JSON.stringify(companyDetails) !== JSON.stringify(companyDetails);
-  };
-
-  // useEffect(() => {
-  //   // Set the callback function in the parent component
-  //   checkUnsavedChanges(checkUnsavedChangesCallback);
-  //   setUserDetailsCopyModel(userDetailsCopy); // Corrected line
-  // }, [userDetailsCopy, userDetails, checkUnsavedChanges]);
-
-  // Trigger handleSave when userDetailsCopy changes
-  // useEffect(() => {
-  //   handleSave();
-  // }, [userDetailsCopy]);
-  console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", companyDetails);
   const rows =
-    companyDetails && companyDetails.length > 0
-      ? Object.entries(companyDetails[0]).map(([key, value], index) => (
-          <TableRow key={key}>
-            <TableCell style={{ minWidth: "80px" }}>
-              <Typography variant="h4">{key}:</Typography>
-            </TableCell>
+    companyDetailsCopy.length > 0
+      ? Object.entries(companyDetailsCopy[0]).map(([key, value], index) => (
+          <TableRow
+            key={key}
+            style={{
+              width: window.innerWidth * 0.28,
+              display: "flex",
+              flexDirection: "row",
+              height: window.innerHeight * 0.1,
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+            }}
+          >
             <TableCell
-              style={{ minWidth: "80px" }}
-              onClick={() => handleCellClick(index)}
+              style={{
+                width: "30%",
+                height: "100%",
+                whiteSpace: "pre-wrap",
+                overflowWrap: "normal",
+                boxSizing: "border-box",
+              }}
             >
-              {editableCells.includes(index) ? (
-                <TextField
-                  value={value}
-                  onChange={(e) => handleValueUpdate(key, e.target.value)}
-                  autoFocus
-                  onBlur={() =>
-                    setEditableCells((prev) => prev.filter((i) => i !== index))
-                  } // Exit edit mode when focus is lost
-                />
-              ) : (
-                <Typography variant="h4">{value}</Typography>
-              )}
+              <Box
+                sx={{
+                  maxHeight: "100%",
+                  width: "100%",
+                  alignItems: "start",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography variant="h4">{key}</Typography>
+              </Box>
+            </TableCell>
+
+            <TableCell
+              style={{
+                width: "70%",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  position: "relative",
+                  height: "100%",
+                  width: "100%",
+                }}
+              >
+                {key === "Start Time" || key === "End Time" ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Checkbox
+                        checked={value === "Y"}
+                        onChange={() =>
+                          handleValueUpdate(key, value === "Y" ? "N" : "Y")
+                        }
+                      />
+                      <Typography variant="h4">Y</Typography>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Checkbox
+                        checked={value === "N"}
+                        onChange={() =>
+                          handleValueUpdate(key, value === "N" ? "Y" : "N")
+                        }
+                      />
+                      <Typography variant="h4">N</Typography>
+                    </div>
+                  </div>
+                ) : (
+                  <TextField
+                    value={value}
+                    onChange={(e) => handleValueUpdate(key, e.target.value)}
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
+              </div>
             </TableCell>
           </TableRow>
         ))
       : null;
 
   return (
-    <Box>
-      <TableContainer style={{ maxHeight: 400, overflowY: "auto" }}>
+    <Box style={{ height: "100%" }}>
+      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
-          <TableBody>{rows}</TableBody>
+          <TableBody>
+            <Box
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, 1fr)", // Adjust the number of columns
+                gap: "5px",
+              }}
+            >
+              {rows}
+            </Box>
+          </TableBody>
         </Table>
       </TableContainer>
+
       {successMessage ? (
         <Box
           sx={{
@@ -128,44 +198,37 @@ const General = ({ companyName }) => {
               {successMessage}
             </Typography>
           </Box>
-          <Box sx={{ minWidth: "5%" }}>
+          {unsavedChanges && (
+            <Box sx={{ minWidth: "5%" }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{
+                  //background: colors.greenAccent[600],
+                  fontSize: "1.1rem",
+                }}
+                onClick={handleSave}
+              >
+                Save
+              </Button>
+            </Box>
+          )}
+        </Box>
+      ) : (
+        unsavedChanges && (
+          <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
             <Button
+              style={{
+                fontSize: "1.1rem",
+              }}
               variant="contained"
-              style={{ background: colors.greenAccent[500] }}
-              // onClick={() =>
-              //   handleSave(
-              //     companyName,
-              //     userDetails,
-              //     userDetailsCopy,
-              //     setUsers,
-              //     setSuccessMessage,
-              //     setUserDetails
-              //   )
-              // }
+              color="secondary"
+              onClick={handleSave}
             >
               Save
             </Button>
           </Box>
-        </Box>
-      ) : (
-        <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
-          <Button
-            variant="contained"
-            style={{ background: colors.greenAccent[500] }}
-            // onClick={() =>
-            //   handleSave(
-            //     companyName,
-            //     userDetails,
-            //     userDetailsCopy,
-            //     setUsers,
-            //     setSuccessMessage,
-            //     setUserDetails
-            //   )
-            // }
-          >
-            Save
-          </Button>
-        </Box>
+        )
       )}
     </Box>
   );

@@ -26,19 +26,16 @@ const ItemDetails = ({
   checkUnsavedChanges,
   successMessage,
   setSuccessMessage,
-  itemDetailsCopyModel,
-  setItemDetailsCopyModel,
+  itemDetailsCopy,
+  setItemDetailsCopy,
   setOldItemNo,
   setNewItemNo,
+  unsavedChanges,
+  setUnsavedChanges,
 }) => {
-  const [editableCells, setEditableCells] = useState([]);
-  //const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });
-  //const [isEditing, setIsEditing] = useState(false);
   const [groupNames, setGroupNames] = useState([]);
   const [selectedGroupName, setSelectedGroupName] = useState(
     itemDetails.GroupName
@@ -48,9 +45,6 @@ const ItemDetails = ({
     GroupName: itemDetails.GroupName,
   });
 
-  const handleEdit = (index) => {
-    setEditableCells((prev) => [...prev, index]);
-  };
 
   const handleValueUpdate = (field, updatedValue) => {
     if (field === "GroupName") {
@@ -81,24 +75,13 @@ const ItemDetails = ({
     }
   };
 
-  const handleCellClick = (index) => {
-    if (!editableCells.includes(index)) {
-      // Enter edit mode when the cell is clicked
-      handleEdit(index);
-    }
-  };
-
-  // Callback function to check for unsaved changes
-  const checkUnsavedChangesCallback = () => {
-    // Compare userDetailsCopy and userDetails for changes
-    return JSON.stringify(itemDetailsCopy) !== JSON.stringify(itemDetails);
-  };
-
   useEffect(() => {
-    // Set the callback function in the parent component
-    checkUnsavedChanges(checkUnsavedChangesCallback);
-    setItemDetailsCopyModel(itemDetailsCopy); // Corrected line
-  }, [itemDetailsCopy, itemDetails, checkUnsavedChanges]);
+    if (JSON.stringify(itemDetailsCopy) !== JSON.stringify(itemDetails)) {
+      setUnsavedChanges(true);
+    } else {
+      setUnsavedChanges(false);
+    }
+  }, [itemDetailsCopy, itemDetails, unsavedChanges]);
 
   useEffect(() => {
     // Fetch groupItems when the component mounts
@@ -181,72 +164,22 @@ const ItemDetails = ({
               width: "100%",
             }}
           >
-            {editableCells.includes(index) ? (
-              <>
-                <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    right: "0",
-                    bottom: "0",
-                    border: `1px solid ${colors.greenAccent[400]}`,
-                    borderRadius: "4px",
-                    pointerEvents: "none",
-                  }}
-                />
-
-                <TextField
-                  value={value}
-                  onChange={(e) => handleValueUpdate(key, e.target.value)}
-                  autoFocus
-                  onBlur={() =>
-                    setEditableCells((prev) => prev.filter((i) => i !== index))
-                  }
-                  fullWidth
-                  variant="standard"
-                  InputProps={{
-                    style: {
-                      //height: "100%",
-                      //boxSizing: "border-box",
-                      //border: "1px solid #ccc",
-                      borderRadius: "4px",
-                      paddingLeft: "4px",
-                    },
-                  }}
-                />
-              </>
-            ) : key === "ItemNo" ||
-              key === "ItemName" ||
-              key === "UPrice" ||
-              key === "Disc" ||
-              key === "Tax" ||
-              key === "KT1" ||
-              key === "KT2" ||
-              key === "KT3" ||
-              key === "KT4" ? (
-              <div
-                style={{
-                  cursor: "pointer",
-                  alignItems: "center",
-                  borderRadius: "4px",
-                  border: `1px solid ${colors.greenAccent[400]}`,
-                  display: "flex",
-                  height: "100%",
-                  boxSizing: "border-box",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  width: "100%",
-                  justifyContent: "center",
-                  height: "100%",
-                }}
-                onClick={() => handleCellClick(index)}
-              >
-                <Typography variant="h4">{value}</Typography>
-              </div>
+            {key === "ItemNo" ||
+            key === "ItemName" ||
+            key === "UPrice" ||
+            key === "Disc" ||
+            key === "Tax" ||
+            key === "KT1" ||
+            key === "KT2" ||
+            key === "KT3" ||
+            key === "KT4" ? (
+              <TextField
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                fullWidth
+                size="small"
+                variant="outlined"
+              />
             ) : key === "Active" ? (
               <div
                 style={{
@@ -367,7 +300,7 @@ const ItemDetails = ({
               {successMessage}
             </Typography>
           </Box>
-          {checkUnsavedChangesCallback() && (
+          {unsavedChanges && (
             <Box sx={{ minWidth: "5%" }}>
               <Button
                 variant="contained"
@@ -396,7 +329,7 @@ const ItemDetails = ({
           )}
         </Box>
       ) : (
-        checkUnsavedChangesCallback() && (
+        unsavedChanges && (
           <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
             <Button
               style={{

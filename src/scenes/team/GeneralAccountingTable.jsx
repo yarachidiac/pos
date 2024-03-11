@@ -20,34 +20,19 @@ import Checkbox from "@mui/material/Checkbox";
 const GeneralAccountingTable = ({
   userDetails,
   setUserDetails,
-  users,
   setUsers,
   companyName,
-  checkUnsavedChanges,
   successMessage,
   setSuccessMessage,
-  userDetailsCopyModel,
-  setUserDetailsCopyModel,
-  //handleUserDetailsCopyChange,
+  userDetailsCopy,
+  setUserDetailsCopy,
+  unsavedChanges,
+  setUnsavedChanges,
 }) => {
-  const [editableCells, setEditableCells] = useState([]);
-  //const [successMessage, setSuccessMessage] = useState(""); // New state for success message
   console.log("fromm generallllllllllllllllllll", userDetails);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const [userDetailsCopy, setUserDetailsCopy] = useState({ ...userDetails });
-  //const [isEditing, setIsEditing] = useState(false);
-
-  
-  
-
-
-
-  const handleEdit = (index) => {
-    setEditableCells((prev) => [...prev, index]);
-  };
 
   const handleValueUpdate = (field, updatedValue) => {
     setUserDetailsCopy((prev) => ({
@@ -56,73 +41,15 @@ const GeneralAccountingTable = ({
     }));
   };
 
-  //   const handleSave = async () => {
-  //    try {
-  //      const data = userDetailsCopy;
-
-  //      // Send a POST request to save all edited fields
-  //      const saveResponse = await fetch(
-  //        `http://192.168.16.108:8000/users/${companyName}/${userDetails.id}`,
-  //        {
-  //          method: "POST",
-  //          headers: {
-  //            "Content-Type": "application/json",
-  //          },
-  //          body: JSON.stringify(data),
-  //        }
-  //      );
-  //      const responseData = await saveResponse.json();
-
-  //      if (saveResponse.ok) {
-  //        console.log("Save response:", responseData);
-  //        setSuccessMessage(responseData.message);
-
-  //        // If save is successful, update userDetails to match userDetailsCopy
-  //        setUserDetails(userDetailsCopy);
-
-  //        // If save is successful, fetch the updated users
-  //        const fetchResponse = await fetch(
-  //          `http://192.168.16.108:8000/users/${companyName}`
-  //        );
-  //        const updatedUsers = await fetchResponse.json();
-
-  //        console.log("Updated users:", updatedUsers);
-
-  //        // Update the users state in the Team component
-  //        setUsers(updatedUsers);
-
-  //        console.log("Save successful");
-  //      } else {
-  //        console.error("Save failed");
-  //      }
-  //    } catch (error) {
-  //      console.error("Error during save:", error);
-  //    }
-  //  };
-
-  const handleCellClick = (index) => {
-    if (!editableCells.includes(index)) {
-      // Enter edit mode when the cell is clicked
-      handleEdit(index);
-    }
-  };
-
-  // Callback function to check for unsaved changes
-  const checkUnsavedChangesCallback = () => {
-    // Compare userDetailsCopy and userDetails for changes
-    return JSON.stringify(userDetailsCopy) !== JSON.stringify(userDetails);
-  };
-
   useEffect(() => {
     // Set the callback function in the parent component
-    checkUnsavedChanges(checkUnsavedChangesCallback);
-    setUserDetailsCopyModel(userDetailsCopy); // Corrected line
-  }, [userDetailsCopy, userDetails, checkUnsavedChanges]);
+    if (JSON.stringify(userDetailsCopy) !== JSON.stringify(userDetails)) {
+      setUnsavedChanges(true);
+    } else {
+      setUnsavedChanges(false);
+    }
+  }, [userDetailsCopy, userDetails, unsavedChanges]);
 
-  // Trigger handleSave when userDetailsCopy changes
-  // useEffect(() => {
-  //   handleSave();
-  // }, [userDetailsCopy]);
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
   const rows = Object.entries(userDetailsCopy).map(([key, value], index) => (
     <TableRow
@@ -176,68 +103,19 @@ const GeneralAccountingTable = ({
             width: "100%",
           }}
         >
-          {editableCells.includes(index) ? (
-            <>
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  position: "absolute",
-                  top: "0",
-                  left: "0",
-                  right: "0",
-                  bottom: "0",
-                  border: `1px solid ${colors.greenAccent[400]}`,
-                  borderRadius: "4px",
-                  pointerEvents: "none",
-                }}
-              />
-
-              <TextField
-                value={value}
-                onChange={(e) => handleValueUpdate(key, e.target.value)}
-                autoFocus
-                onBlur={() =>
-                  setEditableCells((prev) => prev.filter((i) => i !== index))
-                }
-                fullWidth
-                variant="standard"
-                InputProps={{
-                  style: {
-                    height: "100%",
-                    boxSizing: "border-box",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    padding: "4px",
-                  },
-                }}
-              />
-            </>
-          ) : key === "username" ||
-            key === "password" ||
-            key === "email" ||
-            key === "id" ||
-            key === "SAType" ||
-            key === "Branch" ? (
-            <div
-              style={{
-                cursor: "pointer",
-                alignItems: "center",
-                borderRadius: "4px",
-                border: `1px solid ${colors.greenAccent[400]}`,
-                display: "flex",
-                height: "100%",
-                boxSizing: "border-box",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                width: "100%",
-                justifyContent: "center",
-              }}
-              onClick={() => handleCellClick(index)}
-            >
-              <Typography variant="h4">{value}</Typography>
-            </div>
+          {key === "username" ||
+          key === "password" ||
+          key === "email" ||
+          key === "id" ||
+          key === "SAType" ||
+          key === "Branch" ? (
+            <TextField
+              value={value}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+            />
           ) : (
             <div
               style={{
@@ -305,7 +183,7 @@ const GeneralAccountingTable = ({
               {successMessage}
             </Typography>
           </Box>
-          {checkUnsavedChangesCallback() && (
+          {unsavedChanges && (
             <Box sx={{ minWidth: "5%" }}>
               <Button
                 variant="contained"
@@ -331,14 +209,14 @@ const GeneralAccountingTable = ({
           )}
         </Box>
       ) : (
-        checkUnsavedChangesCallback() && (
+        unsavedChanges && (
           <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
             <Button
               style={{
                 fontSize: "1.1rem",
               }}
               variant="contained"
-              color= "secondary"
+              color="secondary"
               onClick={() =>
                 handleSave(
                   companyName,
