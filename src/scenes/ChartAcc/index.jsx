@@ -291,9 +291,9 @@ const ChartAcc = ({
         setClientDetailsCopy={setClientDetailsCopy}
       />
       <Box
-        m="0 auto"
+        ml="2%"
         height="75%"
-        width="90%"
+        width="95%"
         sx={{
           // "& .MuiDataGrid-root": {
           //   border: "none",

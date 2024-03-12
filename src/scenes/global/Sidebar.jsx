@@ -315,7 +315,7 @@ const Sidebar = ({
               />
               <Item
                 title="Journal Varchar"
-                to="/team"
+                to="/journal"
                 selected={selected}
                 setSelected={setSelected}
               />

@@ -128,9 +128,11 @@ const PoS = ({
   const handleKitchen = async () => {
     try {
       const currentDate = new Date();
-      const formattedDateTime = format(currentDate, "dd/MM/yyyy HH:mm:ss");
+      const formattedDate = format(currentDate, "dd/MM/yyyy");
+      const formattedTime = format(currentDate, "HH:mm:ss");
       const requestBody = {
-        date: formattedDateTime,
+        date: formattedDate,
+        time: formattedTime,
         discValue: discValue,
         srv: srv,
         meals: selectedMeals,
@@ -513,12 +515,14 @@ const PoS = ({
   const handlePlace = async () => {
     try {
       const currentDate = new Date();
-      const formattedDateTime = format(currentDate, "dd/MM/yyyy HH:mm:ss");
+      const formattedDate = format(currentDate, "dd/MM/yyyy");
+      const formattedTime = format(currentDate, "HH:mm:ss");
       // Encode the formatted date
-      console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", currentDate);
-      console.log("formatted dateeeeeeee", formattedDateTime);
+      console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", formattedDate);
+      console.log("formatted timeeeeeeeeeeee", formattedTime);
       const requestBody = {
-        date: formattedDateTime,
+        date: formattedDate,
+        time: formattedTime,
         discValue: discValue,
         srv: srv,
         meals: selectedMeals,
@@ -526,8 +530,6 @@ const PoS = ({
         invType: invType,
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
-
-      // Make a POST request to the /invoiceitem endpoint
       const response = await fetch(
         `http://192.168.16.113:8000/invoiceitem/${companyName}`,
         {

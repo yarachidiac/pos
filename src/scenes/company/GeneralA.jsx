@@ -11,16 +11,20 @@ import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import Checkbox from "@mui/material/Checkbox";
-import { response } from "express";
-
-const General = ({ companyName }) => {
-  const [successMessage, setSuccessMessage] = useState(""); 
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+const GeneralA = ({ companyName }) => {
+  const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [companyDetails, setCompanyDetails] = useState({});
-  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({ ...companyDetails });
+  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
+    ...companyDetails,
+  });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  
+
   const handleValueUpdate = (field, updatedValue) => {
     setCompanyDetailsCopy((prev) => ({
       ...prev,
@@ -62,9 +66,10 @@ const General = ({ companyName }) => {
     const mesData = await saveResponse.json();
 
     if (saveResponse.ok) {
+      setCompanyDetails(companyDetailsCopy);
       setSuccessMessage(mesData.message);
     }
-  }
+  };
   useEffect(() => {
     if (JSON.stringify(companyDetailsCopy) !== JSON.stringify(companyDetails)) {
       setUnsavedChanges(true);
@@ -72,98 +77,76 @@ const General = ({ companyName }) => {
       setUnsavedChanges(false);
     }
   }, [companyDetailsCopy]);
-  
+console.log("uppppppppppppppppppppp", companyDetails);
+console.log("copppppppp", companyDetailsCopy);
+  const rows = Object.keys(companyDetailsCopy).map((key, index) => (
+    <TableRow
+      key={key}
+      style={{
+        width: window.innerWidth * 0.28,
+        display: "flex",
+        flexDirection: "row",
+        height: window.innerHeight * 0.1,
+        borderRadius: "4px",
+        border: "1px solid #ccc",
+      }}
+    >
+      <TableCell
+        style={{
+          width: "30%",
+          height: "100%",
+          whiteSpace: "pre-wrap",
+          overflowWrap: "normal",
+          boxSizing: "border-box",
+        }}
+      >
+        <Box
+          sx={{
+            maxHeight: "100%",
+            width: "100%",
+            alignItems: "start",
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h4">{key}</Typography>
+        </Box>
+      </TableCell>
 
-  const rows =
-    companyDetailsCopy.length > 0
-      ? Object.entries(companyDetailsCopy[0]).map(([key, value], index) => (
-          <TableRow
-            key={key}
-            style={{
-              width: window.innerWidth * 0.28,
-              display: "flex",
-              flexDirection: "row",
-              height: window.innerHeight * 0.1,
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-            }}
-          >
-            <TableCell
-              style={{
-                width: "30%",
-                height: "100%",
-                whiteSpace: "pre-wrap",
-                overflowWrap: "normal",
-                boxSizing: "border-box",
-              }}
-            >
-              <Box
-                sx={{
-                  maxHeight: "100%",
-                  width: "100%",
-                  alignItems: "start",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography variant="h4">{key}</Typography>
-              </Box>
-            </TableCell>
-
-            <TableCell
-              style={{
-                width: "70%",
-                height: "100%",
-              }}
-            >
-              <div
-                style={{
-                  position: "relative",
-                  height: "100%",
-                  width: "100%",
-                }}
-              >
-                {key === "Start Time" || key === "End Time" ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-around",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <Checkbox
-                        checked={value === "Y"}
-                        onChange={() =>
-                          handleValueUpdate(key, value === "Y" ? "N" : "Y")
-                        }
-                      />
-                      <Typography variant="h4">Y</Typography>
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <Checkbox
-                        checked={value === "N"}
-                        onChange={() =>
-                          handleValueUpdate(key, value === "N" ? "Y" : "N")
-                        }
-                      />
-                      <Typography variant="h4">N</Typography>
-                    </div>
-                  </div>
-                ) : (
-                  <TextField
-                    value={value}
-                    onChange={(e) => handleValueUpdate(key, e.target.value)}
-                    fullWidth
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))
-      : null;
+      <TableCell
+        style={{
+          width: "70%",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+            height: "100%",
+            width: "100%",
+          }}
+        >
+          {key === "Start Time" || key === "End Time" ? (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TimePicker
+                value={dayjs(companyDetailsCopy[key])}
+                onChange={(newValue) => handleValueUpdate(key, newValue)}
+                size="small"
+                renderInput={(params) => <TextField size="small" {...params} />}
+              />
+            </LocalizationProvider>
+          ) : (
+            <TextField
+              value={companyDetailsCopy[key]}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+            />
+          )}
+        </div>
+      </TableCell>
+    </TableRow>
+  ));
 
   return (
     <Box style={{ height: "100%" }}>
@@ -234,4 +217,4 @@ const General = ({ companyName }) => {
   );
 };
 
-export default General;
+export default GeneralA;

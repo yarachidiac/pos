@@ -35,7 +35,8 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";function App() {
+import CloseIcon from "@mui/icons-material/Close";import Journal from './scenes/Journal';
+function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -177,11 +178,7 @@ import CloseIcon from "@mui/icons-material/Close";function App() {
                   />
                   <Route
                     path="/CompanyManagement"
-                    element={
-                      <Company
-                        companyName={companyName}
-                      />
-                    }
+                    element={<Company companyName={companyName} />}
                   />
                   <Route
                     path="/PoS"
@@ -267,6 +264,15 @@ import CloseIcon from "@mui/icons-material/Close";function App() {
                         addTtile={addTitle}
                         username={username}
                         message={message}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/journal"
+                    element={
+                      <Journal
+                        companyName={companyName}
+                      
                       />
                     }
                   />

@@ -219,10 +219,10 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
       <Box
         justifyContent="space-between"
         display="flex"
-        height="20%"
+        height="15%"
         alignItems="center"
       >
-        <Box sx={{ width: "50%", m: "2%" }}>
+        <Box sx={{ width: "50%", ml:"2%" }}>
           <Header title="Team" subtitle="Managing the Team Members" />
         </Box>
         <Box
@@ -256,9 +256,9 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
         setUserDetailsCopy={setUserDetailsCopy}
       />
       <Box
-        m="0 auto"
-        height="75%"
-        width="90%"
+        ml="2%"
+        height="80%"
+        width="95%"
         sx={{
           // "& .MuiDataGrid-root": {
           //   border: "none",

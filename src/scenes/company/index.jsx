@@ -11,7 +11,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
-import General from "./General"
+import GeneralA from "./GeneralA"
 import BackOffice from "./BackOffice";
 
 const Company = ({ companyName }) => {
@@ -106,7 +106,7 @@ const Company = ({ companyName }) => {
   const renderSelectedTable = () => {
     switch (selectedOption) {
       case "general":
-        return <General companyName={companyName} />;
+        return <GeneralA companyName={companyName} />;
       case "back-office":
         return <BackOffice />;
       // Add more cases for each option
