@@ -515,8 +515,54 @@ const PoS = ({
   const handlePlace = async () => {
     try {
       const currentDate = new Date();
-      const formattedDate = format(currentDate, "dd/MM/yyyy");
+      let formattedDate = format(currentDate, "dd/MM/yyyy");
+
+      // No need to format the time, use currentDate directly
+      const compTimeRequest = await fetch(
+        `http://192.168.16.113:8000/getCompTime/${companyName}`
+      );
+      if (compTimeRequest.ok) {
+        const compTimeResponse = await compTimeRequest.json();
+       const compTime = compTimeResponse.compTime; // Assuming this is your compTime value
+
+       // Extract the time components from the compTime string
+       const [hours, minutes, seconds] = compTime.split(":").map(Number);
+
+       // Create a new date object with a default date (e.g., January 1, 1970)
+       const date = new Date(1970, 0, 1, hours, minutes, seconds);
+
+        console.log("compTime", date);
+        console.log("compHHHHH", date.getHours());
+        console.log("compMMMMMMMMMM", date.getMinutes());
+        console.log("currentttt hourrrrrrrrr", currentDate.getHours());
+        console.log("currenttttttttttt minute", currentDate.getMinutes());
+
+        // Compare the time
+        if (
+          currentDate.getHours() < date.getHours() ||
+          (currentDate.getHours() === date.getHours() &&
+            currentDate.getMinutes() < date.getMinutes()) ||
+          (currentDate.getHours() === date.getHours() &&
+            currentDate.getMinutes() === date.getMinutes() &&
+            currentDate.getSeconds() < date.getSeconds())
+        ) {
+          formattedDate = currentDate;
+          formattedDate.setDate(currentDate.getDate() - 1);
+          console.log("formatted dateeeeeeeeee", formattedDate);
+          formattedDate = formattedDate.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          });
+          console.log("fffffffffffffffffffffffff", formattedDate);
+
+          console.log("fffffffffffffffffffffffff", formattedDate);
+        }
+      }
+
+      // Encode the formatted date
       const formattedTime = format(currentDate, "HH:mm:ss");
+    
       // Encode the formatted date
       console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", formattedDate);
       console.log("formatted timeeeeeeeeeeee", formattedTime);
@@ -531,7 +577,7 @@ const PoS = ({
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
-        `http://192.168.16.113:8000/invoiceitem/${companyName}`,
+        `http://192.168.16.113:8000/invoiceitem/${companyName}/${message}`,
         {
           method: "POST",
           headers: {

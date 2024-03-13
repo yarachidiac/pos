@@ -24,13 +24,34 @@ const GeneralA = ({ companyName }) => {
     ...companyDetails,
   });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-
+console.log(
+  "ssssssssssssssssssssss",
+  dayjs("2022-03-13T03:00:00").format("hh:mm A")
+);
   const handleValueUpdate = (field, updatedValue) => {
-    setCompanyDetailsCopy((prev) => ({
-      ...prev,
-      [field]: updatedValue,
-    }));
+    if (field === "EndTime") {
+      const date = new Date(updatedValue);
+
+      // Get the hours, minutes, and seconds from the date object
+      const hours = date.getHours().toString().padStart(2, "0"); // Ensure 2-digit format
+      const minutes = date.getMinutes().toString().padStart(2, "0"); // Ensure 2-digit format
+      const seconds = date.getSeconds().toString().padStart(2, "0"); // Ensure 2-digit format
+
+      // Construct the time string in "HH:mm:ss" format
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      console.log("Time:", timeString); // Output: Time: 02:35:00
+      setCompanyDetailsCopy((prev) => ({
+        ...prev,
+        [field]: timeString,
+      }));
+    } else {
+      setCompanyDetailsCopy((prev) => ({
+        ...prev,
+        [field]: updatedValue,
+      }));
+    }
   };
+
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
@@ -63,6 +84,7 @@ const GeneralA = ({ companyName }) => {
         body: JSON.stringify(companyDetailsCopy),
       }
     );
+    console.log("wwwwwwwwwwwwww",companyDetailsCopy);
     const mesData = await saveResponse.json();
 
     if (saveResponse.ok) {
@@ -125,10 +147,10 @@ console.log("copppppppp", companyDetailsCopy);
             width: "100%",
           }}
         >
-          {key === "Start Time" || key === "End Time" ? (
+          {key === "EndTime" ? (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
-                value={dayjs(companyDetailsCopy[key])}
+                value={dayjs(`0000-00-00T${companyDetailsCopy[key]}`)}
                 onChange={(newValue) => handleValueUpdate(key, newValue)}
                 size="small"
                 renderInput={(params) => <TextField size="small" {...params} />}
