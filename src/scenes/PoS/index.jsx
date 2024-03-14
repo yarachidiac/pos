@@ -97,6 +97,7 @@ const PoS = ({
   const [openIngred, setOpenIngred] = useState(false);
   const [nameCard, setNameCard] = useState("");
   const [ingredCard, setIngredCard] = useState("");
+  const [closeTClicked, setCloseTClicked] = useState(false);
 
   // Function to scroll the last item into view
   const scrollToLastItem = () => {
@@ -121,10 +122,17 @@ const PoS = ({
   };
 
   const handleConfKitchen = () => {
-    handleKitchen();
+    handlePlace();
     setIsConfOpenDialog(false);
   };
 
+  useEffect(() => {
+    if (closeTClicked) {
+      handlePlace();
+    }
+  }, [closeTClicked]);
+
+ 
   const handleKitchen = async () => {
     try {
       const currentDate = new Date();
@@ -536,6 +544,7 @@ const PoS = ({
         console.log("compMMMMMMMMMM", date.getMinutes());
         console.log("currentttt hourrrrrrrrr", currentDate.getHours());
         console.log("currenttttttttttt minute", currentDate.getMinutes());
+        console.log("clickk b aleb l place", closeTClicked);
 
         // Compare the time
         if (
@@ -566,6 +575,7 @@ const PoS = ({
       // Encode the formatted date
       console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", formattedDate);
       console.log("formatted timeeeeeeeeeeee", formattedTime);
+      const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
       const requestBody = {
         date: formattedDate,
         time: formattedTime,
@@ -574,10 +584,13 @@ const PoS = ({
         meals: selectedMeals,
         branch: branch,
         invType: invType,
+        closeTClicked: closeTClicked,
+        tableNo: selectedTableId,
+        unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
-        `http://192.168.16.113:8000/invoiceitem/${companyName}/${message}`,
+        `http://192.168.16.113:8000/invoiceitem/${companyName}`,
         {
           method: "POST",
           headers: {
@@ -609,7 +622,7 @@ const PoS = ({
               window.location.reload();
             }, 3000);
           }
-        }
+        } 
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);
         console.log("emptyyy chosenModifier", selectedMeals);
@@ -621,6 +634,8 @@ const PoS = ({
         setDiscValue(0);
         setSrv(0);
         setSelectedRow({});
+        navigate("/PoS");
+        setSelectedTop("Takeaway");
         console.log("Order placed successfully!");
       } else {
         console.error("Failed to place order:", response.statusText);
@@ -629,6 +644,9 @@ const PoS = ({
       console.error("Error placing order:", error);
     }
   };
+
+  
+console.log("closeTClicked", closeTClicked);
 
   const grossTotal = parseFloat(calculateTotalDiscountedPrice());
   const serviceValue = (grossTotal * srv) / 100;
@@ -1526,9 +1544,11 @@ const PoS = ({
                   variant="contained"
                   color="secondary"
                   sx={{ borderRadius: "20px", width: "50%" }}
-                  onClick={handleKitchen}
+                  onClick={() => {
+                    setCloseTClicked(true);
+                  }}
                 >
-                  Send to Kitchen
+                  Close Table
                 </Button>
               </Box>
               <Button onClick={handlePrint}>Print</Button>
