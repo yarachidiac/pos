@@ -18,7 +18,14 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { TableChart } from "@mui/icons-material";
 
-const Tables = ({ addTitle, setAddTitle, companyName, username, message }) => {
+const Tables = ({
+  addTitle,
+  setAddTitle,
+  companyName,
+  username,
+  message,
+  setMessage,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -157,17 +164,23 @@ const Tables = ({ addTitle, setAddTitle, companyName, username, message }) => {
           data.message === "you can access this table" &&
           data.usedBy !== ""
         ) {
+          setMessage(data.invNo);
           navigate(`/PoS?selectedTableId=${tableNo}`);
         } else if (
           data.message === "you can access this table" &&
           data.usedBy === ""
         ) {
-          await fetch(
+          const reqOpen = await fetch(
             `http://192.168.16.113:8000/openTable/${companyName}/${tableNo}/${username}`,
             {
               method: "POST",
             }
           );
+          if (reqOpen.ok) {
+            const res = await reqOpen.json();
+            console.log("bl open table", res);
+            setMessage(res.message);
+          }
           navigate(`/PoS?selectedTableId=${tableNo}`);
         } else if (data.message === "you can't access this table right now") {
           navigate(`/Tables/${sectionNo}`);

@@ -122,8 +122,9 @@ const PoS = ({
   };
 
   const handleConfKitchen = () => {
-    handlePlace();
     setIsConfOpenDialog(false);
+    handlePlace();
+
   };
 
   useEffect(() => {
@@ -133,75 +134,75 @@ const PoS = ({
   }, [closeTClicked]);
 
  
-  const handleKitchen = async () => {
-    try {
-      const currentDate = new Date();
-      const formattedDate = format(currentDate, "dd/MM/yyyy");
-      const formattedTime = format(currentDate, "HH:mm:ss");
-      const requestBody = {
-        date: formattedDate,
-        time: formattedTime,
-        discValue: discValue,
-        srv: srv,
-        meals: selectedMeals,
-        branch: branch,
-        invType: invType,
-      };
+  // const handleKitchen = async () => {
+  //   try {
+  //     const currentDate = new Date();
+  //     const formattedDate = format(currentDate, "dd/MM/yyyy");
+  //     const formattedTime = format(currentDate, "HH:mm:ss");
+  //     const requestBody = {
+  //       date: formattedDate,
+  //       time: formattedTime,
+  //       discValue: discValue,
+  //       srv: srv,
+  //       meals: selectedMeals,
+  //       branch: branch,
+  //       invType: invType,
+  //     };
 
-      const response = await fetch(
-        `http://192.168.16.113:8000/insertInv/${companyName}/${selectedTableId}/${username}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
-      let mess;
-      const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
-      console.log("handle kitchennnnn", unsentMeals);
-      if (response.ok) {
-        const groupkitchen = await fetch(
-          `http://192.168.16.113:8000/groupkitchen/${companyName}/${selectedTableId}/${username}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(unsentMeals),
-          }
-        );
-        if (groupkitchen.ok) {
-          const unprintedResponse = await groupkitchen.json();
-          console.log("ubbbbbbbbbbbb", unprintedResponse);
-          // Convert the JSON data to a string
-          const jsonString = JSON.stringify(unprintedResponse, null, 2);
-          // Use FileSaver to save the JSON data as a TXT file
-          const blob = new Blob([jsonString], { type: "application/json" });
-          FileSaver.saveAs(blob, "response-data.json");
-        }
+  //     const response = await fetch(
+  //       `http://192.168.16.113:8000/insertInv/${companyName}/${selectedTableId}/${username}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(requestBody),
+  //       }
+  //     );
+  //     let mess;
+  //     const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
+  //     console.log("handle kitchennnnn", unsentMeals);
+  //     if (response.ok) {
+  //       const groupkitchen = await fetch(
+  //         `http://192.168.16.113:8000/groupkitchen/${companyName}/${selectedTableId}/${username}`,
+  //         {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify(unsentMeals),
+  //         }
+  //       );
+  //       if (groupkitchen.ok) {
+  //         const unprintedResponse = await groupkitchen.json();
+  //         console.log("ubbbbbbbbbbbb", unprintedResponse);
+  //         // Convert the JSON data to a string
+  //         const jsonString = JSON.stringify(unprintedResponse, null, 2);
+  //         // Use FileSaver to save the JSON data as a TXT file
+  //         const blob = new Blob([jsonString], { type: "application/json" });
+  //         FileSaver.saveAs(blob, "response-data.json");
+  //       }
 
-        setIsNav(true);
-        mess = await response.json();
-        setMessage(mess["invNo"]);
-        setSelectedMeals([]);
-        setSelectedModifiers([]);
-        setSrv(0);
-        setDiscValue(0);
-        navigate(`/PoS`);
-        setSelectedTop("Takeaway");
-        console.log("Insertion to kitchen successful");
-        setIsConfOpenDialog(false);
-      } else {
-        // Handle error response
-        console.error("Error inserting into kitchen:", response.statusText);
-      }
-    } catch (error) {
-      // Handle network errors or other exceptions
-      console.error("Error inserting into kitchen:", error);
-    }
-  };
+  //       setIsNav(true);
+  //       mess = await response.json();
+  //       setMessage(mess["invNo"]);
+  //       setSelectedMeals([]);
+  //       setSelectedModifiers([]);
+  //       setSrv(0);
+  //       setDiscValue(0);
+  //       navigate(`/PoS`);
+  //       setSelectedTop("Takeaway");
+  //       console.log("Insertion to kitchen successful");
+  //       setIsConfOpenDialog(false);
+  //     } else {
+  //       // Handle error response
+  //       console.error("Error inserting into kitchen:", response.statusText);
+  //     }
+  //   } catch (error) {
+  //     // Handle network errors or other exceptions
+  //     console.error("Error inserting into kitchen:", error);
+  //   }
+  // };
 
   const handlePrint = () => {
     printJS({
@@ -524,6 +525,7 @@ const PoS = ({
     try {
       const currentDate = new Date();
       let formattedDate = format(currentDate, "dd/MM/yyyy");
+      const realDate = format(currentDate, "dd/MM/yyyy");
 
       // No need to format the time, use currentDate directly
       const compTimeRequest = await fetch(
@@ -587,6 +589,8 @@ const PoS = ({
         closeTClicked: closeTClicked,
         tableNo: selectedTableId,
         unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
+        message: message,
+        realDate: realDate,
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
@@ -637,6 +641,8 @@ const PoS = ({
         navigate("/PoS");
         setSelectedTop("Takeaway");
         console.log("Order placed successfully!");
+        setIsNav(true);
+        setIsConfOpenDialog(false);
       } else {
         console.error("Failed to place order:", response.statusText);
       }
@@ -1789,12 +1795,14 @@ console.log("closeTClicked", closeTClicked);
         addTitle={addTitle}
         setAddTitle={setAddTitle}
       ></DelModal>
-      <IngredDialog
-        open={openIngred}
-        onCancel={handleCloseCard}
-        nameCard={nameCard}
-        ingredCard={ingredCard}
-      ></IngredDialog>
+      {ingredCard && (
+        <IngredDialog
+          open={openIngred}
+          onCancel={handleCloseCard}
+          nameCard={nameCard}
+          ingredCard={ingredCard}
+        ></IngredDialog>
+      )}
     </>
   );
 };

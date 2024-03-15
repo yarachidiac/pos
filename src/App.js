@@ -36,6 +36,7 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";import Journal from './scenes/Journal';
+import Reports from './scenes/Reports';
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -264,17 +265,17 @@ function App() {
                         addTtile={addTitle}
                         username={username}
                         message={message}
+                        setMessage={setMessage}
                       />
                     }
                   />
                   <Route
                     path="/journal"
-                    element={
-                      <Journal
-                        companyName={companyName}
-                      
-                      />
-                    }
+                    element={<Journal companyName={companyName} />}
+                  />
+                  <Route
+                    path="/Reports"
+                    element={<Reports companyName={companyName} />}
                   />
                 </Routes>
               </main>

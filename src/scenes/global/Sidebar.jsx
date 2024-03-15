@@ -22,7 +22,8 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import { useNavigate } from "react-router-dom";
-
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 const Item = ({ title, to, icon, selected, setSelected, setOpen, userControl, }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -253,12 +254,19 @@ const Sidebar = ({
               setSelected={setSelected}
             />
             <Item
-              icon={<PointOfSaleOutlinedIcon />}
+              icon={<PostAddOutlinedIcon />}
               title="Manage POS"
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}
               userControl={userControl}
+            />
+            <Item
+              icon={<AssessmentOutlinedIcon />}
+              title="Reports"
+              to="/Reports"
+              selected={selected}
+              setSelected={setSelected}
             />
             <SubItem
               title="Inventory Management"
