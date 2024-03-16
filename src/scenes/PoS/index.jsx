@@ -1634,13 +1634,8 @@ console.log("closeTClicked", closeTClicked);
                   justifyContent: "space-between",
                 }}
               >
-                <Typography variant="h4">Tax</Typography>
-                {selectedMeals && selectedMeals.length > 0 && (
-                  <Typography variant="h4">
-                    {selectedMeals[0]["Tax"]}%
-                  </Typography>
-                )}
-
+                <Typography variant="h4">Tax</Typography>`{" "}
+                <Typography variant="h4">{`11%`}</Typography>`
                 <Typography variant="h4">${totalTax.toFixed(2)}</Typography>
               </Box>
               <Box
@@ -1707,7 +1702,7 @@ console.log("closeTClicked", closeTClicked);
                 <TableRow>
                   <TableCell>Tax:</TableCell>
                   <TableCell>
-                    {selectedMeals.length > 0 ? selectedMeals[0].Tax : 0}% ($
+                    {`11%`} ($
                     {totalTax.toFixed(2)})
                   </TableCell>
                 </TableRow>

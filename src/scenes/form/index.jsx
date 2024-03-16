@@ -11,6 +11,7 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
+import { useState } from "react";
 
 const initialValues = {
   username: "",
@@ -38,7 +39,7 @@ const Form = ({
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  //const { updateCompanyName, clearCompanyName } = useCompany();
+  const [logMess, setLogMess] = useState("");
 
   const handleFormSubmit = async (values) => {
     try {
@@ -61,22 +62,34 @@ const Form = ({
 
       if (response.ok) {
         const responseUser = await response.json();
-        console.log("heyyyyyyyyyy", responseUser.user);
-        localStorage.setItem("company_name", values.company_name);
-        await setCompanyName(localStorage.getItem("company_name"));
-        console.log("logged innn userrrrrr", responseUser.user["Branch"]);
-        localStorage.setItem("user_branch", responseUser.user["Branch"]);
-        await setBranch(localStorage.getItem("user_branch"));
-        localStorage.setItem("user_invType", responseUser.user["SAType"]);
-        await setInvType(localStorage.getItem("user_invType"));
-        sessionStorage.setItem("isAuthenticated", "true");
-        await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"));
-        //updateCompanyName(values.company_name);
-        localStorage.setItem("username", responseUser.user["username"]);
-        await setUsername(localStorage.getItem("username"));
-        localStorage.setItem("user_control", responseUser.user["user_control"]);
-        const s= setUserControl(localStorage.getItem("user_control"));
-        console.log("pppppppppppppppppppp", s)
+        if (responseUser.message === "Invalid Credentials") {
+          setLogMess(responseUser.message);
+          
+        }else{
+          console.log("heyyyyyyyyyy", responseUser.user);
+          localStorage.setItem("company_name", values.company_name);
+          await setCompanyName(localStorage.getItem("company_name"));
+          console.log("logged innn userrrrrr", responseUser.user["Branch"]);
+          localStorage.setItem("user_branch", responseUser.user["Branch"]);
+          await setBranch(localStorage.getItem("user_branch"));
+          localStorage.setItem("user_invType", responseUser.user["SAType"]);
+          await setInvType(localStorage.getItem("user_invType"));
+          sessionStorage.setItem("isAuthenticated", "true");
+          await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"));
+          //updateCompanyName(values.company_name);
+          localStorage.setItem("username", responseUser.user["username"]);
+          await setUsername(localStorage.getItem("username"));
+          localStorage.setItem(
+            "user_control",
+            responseUser.user["user_control"]
+          );
+          const s = setUserControl(localStorage.getItem("user_control"));
+          console.log("pppppppppppppppppppp", s);
+          setLogMess(responseUser.message);
+        }
+        setTimeout(() => {
+          setLogMess("");
+        }, 3000);
       } else {
         // Handle authentication error
         console.error("Authentication failed");
@@ -98,6 +111,17 @@ const Form = ({
         >
           <Typography variant="h5" mb={3}>
             Login
+          </Typography>
+          <Typography
+            color="error"
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: "1rem", // Add margin bottom for spacing
+            }}
+          >
+            {logMess}
           </Typography>
           <Formik
             onSubmit={handleFormSubmit}

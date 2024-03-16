@@ -44,9 +44,24 @@ const ItemDetails = ({
     GroupNo: itemDetails.GroupNo,
     GroupName: itemDetails.GroupName,
   });
-
-
+  const [valMessage, setValMessage] = useState("");
   const handleValueUpdate = (field, updatedValue) => {
+    if (field === "Tax" || field === "UPrice" || field === "Disc" || field === "Srv") {
+      // Validate if the value is a number
+      if (isNaN(updatedValue)) {
+        setValMessage(`${field} must be a number`);
+        return;
+      }
+    } else if (field === "KT1" || field === "KT2" || field === "KT3" || field === "KT4") {
+      // Validate if the value has more than 2 characters
+      if (updatedValue.length > 2) {
+        setValMessage(`${field} must be at most 2 characters long`);
+        return;
+      }
+    }
+
+    setValMessage(""); // Clear validation message if no error
+
     if (field === "GroupName") {
       // For Select component
       setItemDetailsCopy((prev) => ({
@@ -179,6 +194,7 @@ const ItemDetails = ({
                 fullWidth
                 size="small"
                 variant="outlined"
+                inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
               />
             ) : key === "Active" ? (
               <div
@@ -271,7 +287,7 @@ const ItemDetails = ({
           }
         `}
       </style>
-      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
+      <TableContainer style={{ height: "85%", overflowY: "auto" }}>
         <Table>
           <TableBody
             style={{
@@ -284,59 +300,45 @@ const ItemDetails = ({
           </TableBody>
         </Table>
       </TableContainer>
-
-      {successMessage ? (
-        <Box
-          sx={{
-            minHeight: "10%",
-            width: "auto",
-            justifyContent: "space-between",
-            display: "flex",
-            alignItems: "center", // Add this line to center vertically
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{height:"5%"}}>
+        {valMessage && (
+          <Typography
+            variant="body1"
+            color="error"
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+            }}
+          >
+            {valMessage}
+          </Typography>
+        )}
+      </Box>
+      <Box
+        sx={{
+          minHeight: "10%",
+          width: "100%",
+          justifyContent: "space-between",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {successMessage && (
+          <Box sx={{ width: "95%", marginTop: "auto" }}>
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
               {successMessage}
             </Typography>
           </Box>
-          {unsavedChanges && (
-            <Box sx={{ minWidth: "5%" }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{
-                  //background: colors.greenAccent[600],
-                  fontSize: "1.1rem",
-                }}
-                onClick={() =>
-                  handleSave(
-                    companyName,
-                    itemDetails,
-                    itemDetailsCopy,
-                    setItems,
-                    setSuccessMessage,
-                    setItemDetails,
-                    setOldItemNo,
-                    setNewItemNo,
-                    setItemDetailsCopy
-                  )
-                }
-              >
-                Save
-              </Button>
-            </Box>
-          )}
-        </Box>
-      ) : (
-        unsavedChanges && (
-          <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
+        )}
+        {unsavedChanges && (
+          <Box sx={{ width: "5%", marginLeft: "auto", marginTop: "auto" }}>
             <Button
-              style={{
-                fontSize: "1.1rem",
-              }}
               variant="contained"
               color="secondary"
+              style={{
+                //background: colors.greenAccent[600],
+                fontSize: "1.1rem",
+              }}
               onClick={() =>
                 handleSave(
                   companyName,
@@ -354,8 +356,8 @@ const ItemDetails = ({
               Save
             </Button>
           </Box>
-        )
-      )}
+        )}
+      </Box>
     </Box>
   );
 };

@@ -16,7 +16,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
 import Checkbox from "@mui/material/Checkbox";
-import MapDialog from "./MapDialog.jsx";
 
 const ClientDetails = ({
   clientDetails,
@@ -37,30 +36,51 @@ const ClientDetails = ({
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [valMessage, setValMessage] = useState("");
 
-  // const [clientDetailsCopy, setClientDetailsCopy] = useState({ ...clientDetails });
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-
-  // const handleEdit = (index) => {
-  //   setEditableCells((prev) => [...prev, index]);
-  // };
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    if (!email) {
+      setValMessage("");
+    } else if (!validateEmail(email)) {
+      setValMessage("Invalid email format");
+    } else {
+      setValMessage("");
+    }
+    handleValueUpdate("Email", email);
+  };
 
   const handleValueUpdate = (field, updatedValue) => {
-    // Convert empty string to null
-    // const processedValue = updatedValue === "" ? null : updatedValue;
+    if (
+      field === "AccDisc" ||
+      field === "VAT" ||
+      field === "AccPrice" ||
+      field === "Floor"
+    ) {
+      if (isNaN(updatedValue)) {
+        setValMessage(`${field} should be number`);
+        return;
+      } else {
+        setValMessage("");
+      }
+    } else if (field === "Tel") {
+      if (!/^\d+$/.test(updatedValue)) {
+        setValMessage("Telephone number should contain only digits");
+        return;
+      } else {
+        setValMessage("");
+      }
+    }
     setClientDetailsCopy((prev) => ({
       ...prev,
       [field]: updatedValue,
     }));
   };
-
-
-  // const handleCellClick = (index) => {
-  //   if (!editableCells.includes(index)) {
-  //     // Enter edit mode when the cell is clicked
-  //     handleEdit(index);
-  //   }
-  // };
 
 
   useEffect(() => {
@@ -74,10 +94,6 @@ const ClientDetails = ({
   }, [clientDetailsCopy, clientDetails, unsavedChanges]);
 
 
-  // Trigger handleSave when userDetailsCopy changes
-  // useEffect(() => {
-  //   handleSave();
-  // }, [userDetailsCopy]);
   console.log("groupppppppppppppppppp", clientDetailsCopy);
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", clientDetailsCopy);
   const rows = Object.entries(clientDetailsCopy)
@@ -177,6 +193,14 @@ const ClientDetails = ({
                 size="small"
               />
             </div>
+          ) : key === "Email" ? (
+            <TextField
+              value={value}
+              onChange={handleEmailChange}
+              fullWidth
+              variant="outlined"
+              size="small"
+            />
           ) : (
             <TextField
               sx={{ width: "100%" }}
@@ -196,7 +220,7 @@ const ClientDetails = ({
 
   return (
     <Box style={{ height: "100%" }}>
-      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
+      <TableContainer style={{ height: "85%", overflowY: "auto" }}>
         <Table>
           <TableBody
             style={{
@@ -209,56 +233,46 @@ const ClientDetails = ({
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ height: "5%" }}>
+        {valMessage && (
+          <Typography
+            variant="body1"
+            color="error"
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+            }}
+          >
+            {valMessage}
+          </Typography>
+        )}
+      </Box>
 
-      {successMessage ? (
-        <Box
-          sx={{
-            minHeight: "10%",
-            width: "auto",
-            justifyContent: "space-between",
-            display: "flex",
-            alignItems: "center", // Add this line to center vertically
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          height: "10%",
+          width: "auto",
+          justifyContent: "space-between",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {successMessage && (
+          <Box sx={{ width: "95%", marginTop: "auto" }}>
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
               {successMessage}
             </Typography>
           </Box>
-          {unsavedChanges && (
-            <Box sx={{ minWidth: "5%" }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{
-                  //background: colors.greenAccent[600],
-                  fontSize: "1.1rem",
-                }}
-                onClick={() =>
-                  handleSave(
-                    companyName,
-                    clientDetails,
-                    clientDetailsCopy,
-                    setClients,
-                    setSuccessMessage,
-                    setClientDetails
-                  )
-                }
-              >
-                Save
-              </Button>
-            </Box>
-          )}
-        </Box>
-      ) : (
-        unsavedChanges && (
-          <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
+        )}
+        {unsavedChanges && (
+          <Box sx={{ minWidth: "5%", marginLeft: "auto", marginTop: "auto" }}>
             <Button
-              style={{
-                fontSize: "1.1rem",
-              }}
               variant="contained"
               color="secondary"
+              style={{
+                //background: colors.greenAccent[600],
+                fontSize: "1.1rem",
+              }}
               onClick={() =>
                 handleSave(
                   companyName,
@@ -266,15 +280,16 @@ const ClientDetails = ({
                   clientDetailsCopy,
                   setClients,
                   setSuccessMessage,
-                  setClientDetails
+                  setClientDetails,
+                  valMessage,
                 )
               }
             >
               Save
             </Button>
           </Box>
-        )
-      )}
+        )}
+      </Box>
     </Box>
   );
 };

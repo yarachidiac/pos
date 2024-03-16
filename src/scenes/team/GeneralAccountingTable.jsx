@@ -33,6 +33,24 @@ const GeneralAccountingTable = ({
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [valMessage, setValMessage] = useState("");
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    if (!email) {
+      setValMessage("");
+    } else if (!validateEmail(email)) {
+      setValMessage("Invalid email format");
+    } else {
+      setValMessage("");
+    }
+    handleValueUpdate("email", email);
+  };
 
   const handleValueUpdate = (field, updatedValue) => {
     setUserDetailsCopy((prev) => ({
@@ -58,7 +76,7 @@ const GeneralAccountingTable = ({
         width: window.innerWidth * 0.28,
         display: "flex",
         flexDirection: "row",
-        height: window.innerHeight * 0.1,
+        height: "100%",
         //padding: '8px',
         borderRadius: "4px",
         border: "1px solid #ccc",
@@ -89,7 +107,6 @@ const GeneralAccountingTable = ({
           <Typography variant="h4">{key}</Typography>
         </Box>
       </TableCell>
-
       <TableCell
         style={{
           width: "70%",
@@ -105,13 +122,20 @@ const GeneralAccountingTable = ({
         >
           {key === "username" ||
           key === "password" ||
-          key === "email" ||
           key === "id" ||
           key === "SAType" ||
           key === "Branch" ? (
             <TextField
               value={value}
               onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+            />
+          ) : key === "email" ? (
+            <TextField
+              value={value}
+              onChange={handleEmailChange}
               fullWidth
               variant="outlined"
               size="small"
@@ -152,7 +176,7 @@ const GeneralAccountingTable = ({
 
   return (
     <Box style={{ height: "100%" }}>
-      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
+      <TableContainer style={{ height: "85%", overflowY: "auto" }}>
         <Table>
           <TableBody>
             <Box
@@ -167,56 +191,45 @@ const GeneralAccountingTable = ({
           </TableBody>
         </Table>
       </TableContainer>
-
-      {successMessage ? (
-        <Box
-          sx={{
-            minHeight: "10%",
-            width: "auto",
-            justifyContent: "space-between",
-            display: "flex",
-            alignItems: "center", // Add this line to center vertically
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ height: "5%", marginTop: "auto" }}>
+        {valMessage && (
+          <Typography
+            variant="body1"
+            color="error"
+            style={{
+              fontSize: "1.1rem",
+              fontWeight:"bold"
+            }}
+          >
+            {valMessage}
+          </Typography>
+        )}
+      </Box>
+      <Box
+        sx={{
+          height: "10%",
+          width: "100%",
+          justifyContent: "space-between",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        {successMessage && (
+          <Box sx={{ width: "95%", marginTop: "auto" }}>
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
               {successMessage}
             </Typography>
           </Box>
-          {unsavedChanges && (
-            <Box sx={{ minWidth: "5%" }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{
-                  //background: colors.greenAccent[600],
-                  fontSize: "1.1rem",
-                }}
-                onClick={() =>
-                  handleSave(
-                    companyName,
-                    userDetails,
-                    userDetailsCopy,
-                    setUsers,
-                    setSuccessMessage,
-                    setUserDetails
-                  )
-                }
-              >
-                Save
-              </Button>
-            </Box>
-          )}
-        </Box>
-      ) : (
-        unsavedChanges && (
-          <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
+        )}
+        {unsavedChanges && (
+          <Box sx={{ minWidth: "5%", marginLeft: "auto", marginTop: "auto" }}>
             <Button
-              style={{
-                fontSize: "1.1rem",
-              }}
               variant="contained"
               color="secondary"
+              style={{
+                //background: colors.greenAccent[600],
+                fontSize: "1.1rem",
+              }}
               onClick={() =>
                 handleSave(
                   companyName,
@@ -224,15 +237,16 @@ const GeneralAccountingTable = ({
                   userDetailsCopy,
                   setUsers,
                   setSuccessMessage,
-                  setUserDetails
+                  setUserDetails,
+                  valMessage
                 )
               }
             >
               Save
             </Button>
           </Box>
-        )
-      )}
+        )}
+      </Box>
     </Box>
   );
 };
