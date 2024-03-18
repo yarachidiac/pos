@@ -263,8 +263,8 @@ const Sidebar = ({
             />
             <Item
               icon={<AssessmentOutlinedIcon />}
-              title="Reports"
-              to="/Reports"
+              title="Manage Groups"
+              to="/Groups"
               selected={selected}
               setSelected={setSelected}
             />

@@ -36,7 +36,7 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";import Journal from './scenes/Journal';
-import Reports from './scenes/Reports';
+import Groups from './scenes/Groups';
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -220,7 +220,6 @@ function App() {
                         invType={invType}
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
-                        //setCompanyName={setCompanyName}
                         setOldItemNo={setOldItemNo}
                         setNewItemNo={setNewItemNo}
                         oldItemNo={oldItemNo}
@@ -274,8 +273,17 @@ function App() {
                     element={<Journal companyName={companyName} />}
                   />
                   <Route
-                    path="/Reports"
-                    element={<Reports companyName={companyName} />}
+                    path="/Groups"
+                    element={
+                      <Groups
+                        companyName={companyName}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
+                        setOldItemNo={setOldItemNo}
+                        setNewItemNo={setNewItemNo}
+                        oldItemNo={oldItemNo}
+                      />
+                    }
                   />
                 </Routes>
               </main>
