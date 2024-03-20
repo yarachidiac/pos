@@ -4,17 +4,13 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import TableContainer from "@mui/material/TableContainer";
 import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { handleSave } from "./SaveHandler.jsx";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Checkbox from "@mui/material/Checkbox";
 
 const GroupDetails = ({
   groupDetails,
@@ -22,7 +18,6 @@ const GroupDetails = ({
   groups,
   setGroups,
   companyName,
-  checkUnsavedChanges,
   successMessage,
   setSuccessMessage,
   groupDetailsCopy,
@@ -35,18 +30,19 @@ const GroupDetails = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [valMessage, setValMessage] = useState("");
+  const tableContainerStyle = {
+    height: "80%",
+    width: "100%",
+  };
+
   const handleValueUpdate = (field, updatedValue) => {
     if (field === "GroupName" || field === "GroupNo") {
-      // For Select component
       setGroupDetailsCopy((prev) => ({
         ...prev,
         [field]: updatedValue,
       }));
     } else if (field === "Image") {
-      // For file input
       const file = updatedValue.target.files[0];
-      console.log("in handlee file ", file);
       setGroupDetailsCopy((prev) => ({
         ...prev,
         [field]: file.name,
@@ -63,7 +59,7 @@ const GroupDetails = ({
   }, [groupDetailsCopy, groupDetails, unsavedChanges]);
 
   return (
-    <Box style={{ height: "100%" }}>
+    <Box style={{ height: "100%", width: "100%" }}>
       <style>
         {`
           #file-input {
@@ -71,24 +67,21 @@ const GroupDetails = ({
           }
         `}
       </style>
-      <TableContainer
-        style={{ height: "50%", overflowY: "auto", width: "100%" }}
-      >
+      <TableContainer style={tableContainerStyle}>
         <Table>
           <TableBody
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
+              display: "block",
               gap: "5px",
             }}
           >
             <TableRow>
-              <TableCell style={{ maxWidth: "10%" }}>
+              <TableCell>
                 <Box>
                   <Typography variant="h4">GroupNo</Typography>
                 </Box>
               </TableCell>
-              <TableCell style={{ maxWidth: "30%" }}>
+              <TableCell>
                 <TextField
                   value={groupDetailsCopy.GroupNo}
                   onChange={(e) => handleValueUpdate("GroupNo", e.target.value)}
@@ -101,12 +94,12 @@ const GroupDetails = ({
             </TableRow>
 
             <TableRow>
-              <TableCell style={{ maxWidth: "10%" }}>
+              <TableCell>
                 <Box>
                   <Typography variant="h4">GroupName</Typography>
                 </Box>
               </TableCell>
-              <TableCell style={{ maxWidth: "30%" }}>
+              <TableCell>
                 <TextField
                   value={groupDetailsCopy.GroupName}
                   onChange={(e) =>
@@ -120,7 +113,7 @@ const GroupDetails = ({
             </TableRow>
 
             <TableRow>
-              <TableCell style={{ maxWidth: "10%" }}>
+              <TableCell>
                 <Box>
                   <Typography variant="h4">Image</Typography>
                 </Box>
@@ -145,24 +138,10 @@ const GroupDetails = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ height: "10%" }}>
-        {valMessage && (
-          <Typography
-            variant="body1"
-            color="error"
-            style={{
-              fontSize: "1.1rem",
-              fontWeight: "bold",
-            }}
-          >
-            {valMessage}
-          </Typography>
-        )}
-      </Box>
       <Box
         sx={{
-          minHeight: "25%",
-          width: "100%",
+          heigh: "20%",
+          width: "90%",
           justifyContent: "space-between",
           display: "flex",
           flexDirection: "row",

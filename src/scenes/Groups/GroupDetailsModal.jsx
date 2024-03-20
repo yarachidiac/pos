@@ -57,11 +57,11 @@ const GroupDetailsModal = ({
     //backgroundColor: "rgba(252, 252, 252, 0.92)",
   };
   const largerModalStyle = {
-      width: "50%",
-      height:"30%"
+      width: "35%",
+      height:"50%"
   };
   const heightModalStyle = {
-    width: "70%",
+    width: "40%",
     height: "30%",
   };
   const iconButtonStyle = {
@@ -117,11 +117,11 @@ const GroupDetailsModal = ({
       <Box
         sx={{
           ...modalStyle,
-          ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
+          ...(window.innerWidth > 750 ? largerModalStyle : heightModalStyle),
           ...modalContainerStyle,
         }}
       >
-        <Box display="flex" justifyContent="space-between">
+        <Box sx={{ display:"flex", justifyContent:"space-between", width:"100%", height:"20%"}}>
           <Box sx={{ p: "2%" }}>
             <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
               {groupDetails.GroupName}
@@ -141,11 +141,8 @@ const GroupDetailsModal = ({
 
         <Box
           sx={{
-            flexGrow: 1, // Allow the table to grow and take available space
-            width: window.innerWidth < 650 ? "60%" : "100%",
-            //maxHeight: "60%",
-            height: "500px",
-            //overflowY: "auto",
+            width: "100%",
+            height: "80%",
           }}
         >
           <GroupDetails

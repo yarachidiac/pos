@@ -662,14 +662,13 @@ console.log("closeTClicked", closeTClicked);
   let totalTax = 0;
   if (
     selectedMeals &&
-    selectedMeals.length > 0 &&
-    selectedMeals[0]["Tax"] !== undefined
+    selectedMeals.length > 0
   ) {
     const totalTaxSD =
       parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100);
     console.log(totalTaxSD);
     const totall =
-      ((serviceValue * selectedMeals[0]["Tax"]) / 100) * (1 - discValue / 100);
+      ((serviceValue * 11) / 100) * (1 - discValue / 100);
     console.log(totall);
     totalTax = totalTaxSD + totall;
   }

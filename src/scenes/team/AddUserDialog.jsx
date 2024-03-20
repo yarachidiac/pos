@@ -9,55 +9,72 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { height } from "@mui/system";
 
-const AddUserDialog = ({
-  isOpen,
-  onClose,
-  onAdd,
-  successMess,
-  title
-}) => {
+const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
   const [userName, setUserName] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [valMessage, setValMessage] = useState("");
+
+  const handleChange = (e) => {
+    const titleIncludesNumber = title.includes("Number");
+    if (titleIncludesNumber && isNaN(e.target.value)) {
+      setValMessage("Number only allowed");
+    } else {
+      setValMessage("");
+      setUserName(e.target.value);
+
+    }
+  };
 
   const handleAddUser = () => {
-    // Perform any validation if needed
-    // Call the onAddUser function with the new user details
     onAdd({ name: userName });
     setUserName("");
-    // Close the dialog
+    setValMessage("");
     onClose();
   };
 
-
-   const handleCancel = () => {
-     // Reset userName to an empty string
-     setUserName("");
-     // Close the dialog
-     onClose();
-   };
-
+  const handleCancel = () => {
+    setValMessage("");
+    setUserName("");
+    onClose();
+  };
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>
-        <Typography variant="h1">{title}</Typography>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      sx={{ "& .MuiPaper-root": { height: "30%", width:"18%" } }}
+    >
+      <DialogTitle sx={{ height: "30%" }}>
+        <Typography sx={{ height: "100%" }} variant="h1">
+          {title}
+        </Typography>
       </DialogTitle>
-      <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {/* <Typography variant="h4">Enter user details:</Typography> */}
+      <DialogContent sx={{ height: "40%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column",  }}>
+          {/* Display validation message */}
+
           <TextField
+            sx={{ height: "70%" }}
             margin="dense"
             label="Name"
             value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={handleChange}
           />
-          <Typography variant="body1">{successMess}</Typography>
+            {valMessage && (
+              <Typography sx={{ height: "10%" }}  variant="body1" color="error">
+                {valMessage}
+              </Typography>
+            )}
+          <Typography sx={{ height: "10%" }} variant="body1">
+            {successMess}
+          </Typography>
         </Box>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ height: "30%" }}>
         <Button
           variant="contained"
           color="secondary"

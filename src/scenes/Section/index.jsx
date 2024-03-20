@@ -31,7 +31,6 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
   const handleOpenTables = (sectionNo) => {
     navigate(`/Tables/${sectionNo}`);
   };
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -52,8 +51,9 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
       }
     };
    
-    fetchData(); // Call fetchData function when component mounts or companyName changes
-  }, [companyName]); // Run useEffect whenever companyName changes
+  useEffect(() => {
+    fetchData(); // Check for changes whenever tables changes
+  }, []);
 
   const handleAddSection = (title) => {
     setAddTitle(title);
@@ -129,15 +129,15 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
       }
 
       const allsection = await sectionsResponse.json();
-
       // Set the userDetails state with the details of the newly added user
-      setSections(allsection);
+      setSections(allsection.section_list);
       // Open the details modal
     } catch (error) {
       console.error("Error:", error.message);
     }
   };
 
+  console.log("ttttttttttttttttt", sections);
   return (
     <Box
       sx={{
@@ -179,69 +179,72 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
         </Box>
       </Box>
       <Container sx={{ height: "90%" }}>
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            height: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "auto",
-          }}
-        >
-          {sections.map((section, index) => (
-            <Grid key={section.SectionNo} item xs={12} sm={6} md={4} lg={3}>
-              <Box
-                position="relative"
-                width="100%"
-                paddingTop="100%"
-                bgcolor={colors.blueAccent[800]}
-              >
-                <Typography
-                  variant="h5"
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  {section.Name}
-                </Typography>
-                <ButtonBase
-                  sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  onClick={() => handleOpenTables(section.SectionNo)}
-                />
-                <Button
-                  size="large"
-                  sx={{
-                    position: "absolute",
-                    bottom: 8,
-                    right: 8,
-                    backgroundColor: colors.greenAccent[500],
-                    color: colors.primary[500],
-                    zIndex: 1, // Ensure the Edit button is above the ButtonBase
-                  }}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setSectionNo(section.SectionNo);
-                    setSectionName(section.Name);
-                    handleEditClick("Update Section");
-                  }}
-                >
-                  Edit
-                </Button>
-              </Box>
-            </Grid>
-          ))}
+  <Grid
+    container
+    spacing={2}
+    sx={{
+      height: "100%",
+      justifyContent: "center",
+      alignItems: "center",
+      overflow: "auto",
+    }}
+  >
+    {
+      sections.map((section, index) => (
+        <Grid key={section.SectionNo} item xs={12} sm={6} md={4} lg={3}>
+          <Box
+            position="relative"
+            width="100%"
+            paddingTop="100%"
+            bgcolor={colors.blueAccent[800]}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              {section.Name}
+            </Typography>
+            <ButtonBase
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+              }}
+              onClick={() => handleOpenTables(section.SectionNo)}
+            />
+            <Button
+              size="large"
+              sx={{
+                position: "absolute",
+                bottom: 8,
+                right: 8,
+                backgroundColor: colors.greenAccent[500],
+                color: colors.primary[500],
+                zIndex: 1, // Ensure the Edit button is above the ButtonBase
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                setSectionNo(section.SectionNo);
+                setSectionName(section.Name);
+                handleEditClick("Update Section");
+              }}
+            >
+              Edit
+            </Button>
+          </Box>
         </Grid>
-      </Container>
+      ))
+    }
+  </Grid>
+</Container>
+
       <SectionDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
