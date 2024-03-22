@@ -533,29 +533,28 @@ const PoS = ({
       );
       if (compTimeRequest.ok) {
         const compTimeResponse = await compTimeRequest.json();
-       const compTime = compTimeResponse.compTime; // Assuming this is your compTime value
+        const compTime = compTimeResponse.compTime; // Assuming this is your compTime value
 
-       // Extract the time components from the compTime string
-       const [hours, minutes, seconds] = compTime.split(":").map(Number);
+        // Extract the time components from the compTime string
+        const [hours, minutes, seconds] = compTime.split(":").map(Number);
 
-       // Create a new date object with a default date (e.g., January 1, 1970)
-       const date = new Date(1970, 0, 1, hours, minutes, seconds);
+        // Create a new Date object with the company's end time
+        const endTime = new Date();
+        endTime.setHours(hours);
+        endTime.setMinutes(minutes);
+        endTime.setSeconds(seconds);
 
-        console.log("compTime", date);
-        console.log("compHHHHH", date.getHours());
-        console.log("compMMMMMMMMMM", date.getMinutes());
-        console.log("currentttt hourrrrrrrrr", currentDate.getHours());
-        console.log("currenttttttttttt minute", currentDate.getMinutes());
-        console.log("clickk b aleb l place", closeTClicked);
+        // Create a new Date object with the current time
+        const currentTime = new Date();
 
-        // Compare the time
+        // Check if the current time is between 12:00 AM and the company's end time
         if (
-          currentDate.getHours() < date.getHours() ||
-          (currentDate.getHours() === date.getHours() &&
-            currentDate.getMinutes() < date.getMinutes()) ||
-          (currentDate.getHours() === date.getHours() &&
-            currentDate.getMinutes() === date.getMinutes() &&
-            currentDate.getSeconds() < date.getSeconds())
+          currentTime.getHours() >= 0 && // Check if the current hour is after midnight
+          currentTime.getHours() < hours && // Check if the current hour is before the end time hour
+          (currentTime.getHours() !== hours || // Additional check for the hour
+            currentTime.getMinutes() < minutes || // Check if current minutes are before the end time minutes
+            (currentTime.getMinutes() === minutes && // Additional check for minutes
+              currentTime.getSeconds() < seconds)) // Check if current seconds are before the end time seconds
         ) {
           formattedDate = currentDate;
           formattedDate.setDate(currentDate.getDate() - 1);
@@ -591,6 +590,12 @@ const PoS = ({
         unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
         message: message,
         realDate: realDate,
+        accno:
+          selectedRow["AccNo"] !== undefined &&
+          selectedRow["AccNo"] !== "" &&
+          selectedRow["AccNo"] !== null
+            ? selectedRow["AccNo"]
+            : "",
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
@@ -643,6 +648,7 @@ const PoS = ({
         console.log("Order placed successfully!");
         setIsNav(true);
         setIsConfOpenDialog(false);
+        setCloseTClicked(false);
       } else {
         console.error("Failed to place order:", response.statusText);
       }
@@ -666,15 +672,19 @@ console.log("closeTClicked", closeTClicked);
   ) {
     const totalTaxSD =
       parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100);
-    console.log(totalTaxSD);
+    console.log("discVl", discValue);
+    console.log("bbbbb",
+      `${parseFloat(calculateTotalTax())} * ${(1 + srv / 100)} * ${(1 - discValue / 100)}`
+    );
+    console.log("calculate tax", parseFloat(calculateTotalTax()));
+    console.log("total taxSDDDDDDDDD", totalTaxSD);
     const totall =
       ((serviceValue * 11) / 100) * (1 - discValue / 100);
-    console.log(totall);
+    console.log("ooooooooooooooooooooooooooooooooo",totall);
     totalTax = totalTaxSD + totall;
   }
-  console.log("total taxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", totalTax);
   const totalFinal = totalDiscount + totalTax;
-  console.log("totalllll finalllllllll", totalFinal);
+  console.log("totallll DV MAA TOTAL", totalFinal);
   console.log("the finall meal with details", selectedMeals);
 
   useEffect(() => {
@@ -918,7 +928,11 @@ console.log("closeTClicked", closeTClicked);
                           <CardMedia
                             component="img"
                             height="40%"
-                            src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
+                            src={
+                              meal.Image
+                                ? `${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`
+                                : `${process.env.PUBLIC_URL}/maxresdefault.jpg`
+                            }
                             alt={`Meal ${meal.ItemNo}`}
                           />
                           {meal.Disc !== null && meal.Disc !== 0 && (
@@ -1111,7 +1125,9 @@ console.log("closeTClicked", closeTClicked);
                         <CardMedia
                           component="img"
                           height="40%"
-                          src={`${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`}
+                        src={ meal.Image ? 
+                          `${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`
+                          : `${process.env.PUBLIC_URL}/maxresdefault.jpg`}
                           alt={`Meal ${meal.ItemNo}`}
                         />
                         {meal.Disc !== null && meal.Disc !== 0 && (

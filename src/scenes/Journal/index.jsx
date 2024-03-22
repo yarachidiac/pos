@@ -52,14 +52,13 @@ const Journal = ({ companyName,}) => {
       field: "InvNo",
       headerName: "InvNo",
       cellClassName: "name-column--cell",
-      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 50,
     },
     {
       field: "ItemName",
-      headerName: "ItemName",
+      headerName: "Item",
       headerAlign: "left",
       align: "left",
       minWidth: 200,
@@ -68,10 +67,10 @@ const Journal = ({ companyName,}) => {
     },
     {
       field: "GroupName",
-      headerName: "GroupName",
+      headerName: "Group",
       headerAlign: "left",
       align: "left",
-      minWidth: 200,
+      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
     },
@@ -80,7 +79,7 @@ const Journal = ({ companyName,}) => {
       headerName: "Branch",
       headerAlign: "left",
       align: "left",
-      minWidth: 200,
+      minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
     },
@@ -89,37 +88,64 @@ const Journal = ({ companyName,}) => {
       headerName: "Disc",
       headerAlign: "left",
       align: "left",
-      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 30,
     },
     {
       field: "Tax",
       headerName: "Tax",
       headerAlign: "left",
       align: "left",
-      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 30,
     },
     {
       field: "UPrice",
       headerName: "UPrice",
       headerAlign: "left",
       align: "left",
-      minWidth: 200,
+      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 30,
     },
     {
       field: "Qty",
       headerName: "Qty",
       headerAlign: "left",
       align: "left",
-      minWidth: 200,
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      minWidth: 50,
+    },
+    {
+      field: "Date",
+      headerName: "Date",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      minWidth: 50,
+    },
+    {
+      field: "Time",
+      headerName: "Time",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      minWidth: 50,
+    },
+    {
+      field: "RealDate",
+      headerName: "RealDate",
+      headerAlign: "left",
+      align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 50,
@@ -137,9 +163,9 @@ const Journal = ({ companyName,}) => {
         <Header title="Invoices History" />
       </Box>
       <Box
-        m="0 2%"
+        ml = "1%"
         height="95%"
-        width="95%"
+        width="94%"
         sx={{
           // "& .MuiDataGrid-root": {
           //   border: "none",

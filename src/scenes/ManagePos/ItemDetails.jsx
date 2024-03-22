@@ -187,7 +187,7 @@ const ItemDetails = ({
             key === "KT1" ||
             key === "KT2" ||
             key === "KT3" ||
-            key === "KT4" ? (
+            key === "KT4" || key ==="Ingredients" ? (
               <TextField
                 value={value}
                 onChange={(e) => handleValueUpdate(key, e.target.value)}
