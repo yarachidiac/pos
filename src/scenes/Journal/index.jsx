@@ -44,9 +44,10 @@ const Journal = ({ companyName,}) => {
     {
       field: "InvType",
       headerName: "InvType",
-      minWidth: 50,
+      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
+      flex: "1",
     },
     {
       field: "InvNo",
@@ -54,7 +55,8 @@ const Journal = ({ companyName,}) => {
       cellClassName: "name-column--cell",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
+      flex: "1",
     },
     {
       field: "ItemName",
@@ -64,6 +66,7 @@ const Journal = ({ companyName,}) => {
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
+      flex: "1",
     },
     {
       field: "GroupName",
@@ -73,6 +76,7 @@ const Journal = ({ companyName,}) => {
       minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
+      flex: "1",
     },
     {
       field: "Branch",
@@ -82,6 +86,7 @@ const Journal = ({ companyName,}) => {
       minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
+      flex: "1",
     },
     {
       field: "Disc",
@@ -90,7 +95,8 @@ const Journal = ({ companyName,}) => {
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 30,
+      minWidth: 50,
+      flex: "1",
     },
     {
       field: "Tax",
@@ -99,7 +105,8 @@ const Journal = ({ companyName,}) => {
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 30,
+      minWidth: 50,
+      flex: "1",
     },
     {
       field: "UPrice",
@@ -109,7 +116,8 @@ const Journal = ({ companyName,}) => {
       minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 30,
+      minWidth: 100,
+      flex: "1",
     },
     {
       field: "Qty",
@@ -120,6 +128,7 @@ const Journal = ({ companyName,}) => {
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 50,
+      flex: "1",
     },
     {
       field: "Date",
@@ -129,7 +138,8 @@ const Journal = ({ companyName,}) => {
       minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
+      flex: "1",
     },
     {
       field: "Time",
@@ -139,7 +149,8 @@ const Journal = ({ companyName,}) => {
       minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
+      flex: "1",
     },
     {
       field: "RealDate",
@@ -148,25 +159,27 @@ const Journal = ({ companyName,}) => {
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
+      flex: "1",
     },
   ];
 
   return (
     <Box
       sx={{
-        height: "85%",
-        width: "100%",
+        height: "90%",
+        width: "95%",
+        flexDirection: "column",
+        ml: "2%",
       }}
     >
-      <Box sx={{ width: "50%", height:"2%",mb:"2%",ml:"2%" }}>
+      <Box sx={{ height: "10%", width: "90%" }}>
         <Header title="Invoices History" />
       </Box>
       <Box
-        ml = "1%"
-        height="95%"
-        width="94%"
         sx={{
+          height: "85%",
+          width: "100%",
           // "& .MuiDataGrid-root": {
           //   border: "none",
           // },
@@ -203,7 +216,7 @@ const Journal = ({ companyName,}) => {
         }}
       >
         <DataGrid
-          style={{ height: "100%", width:"100%"}}
+          style={{ height: "100%", width: "100%" }}
           rows={inv}
           columns={columns}
           getRowId={(row) => row.InvNo}

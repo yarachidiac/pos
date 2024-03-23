@@ -203,20 +203,18 @@ const Tables = ({
     >
       <Box
         sx={{
-          height: "20%",
+          height: "15%",
           width: "90%",
           justifyContent: "space-around",
           display: "flex",
           flexDirection: "row",
+          ml:"3%"
         }}
       >
-        <Box sx={{ ml: "10%", mt: "2%" }}>
           <Header title="Table" subtitle="Choose Table" />
-        </Box>
         <Box
           sx={{
-            height: "100%",
-            width: "10%",
+            height: "80px",
             marginLeft: "auto",
             justifyContent: "flex-end",
             alignContent: "center",
@@ -234,7 +232,7 @@ const Tables = ({
           </Button>
         </Box>
       </Box>
-      <Container sx={{ height: "80%" }}>
+      <Container sx={{ height: "85%" }}>
         <Grid
           container
           spacing={2}

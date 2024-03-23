@@ -148,19 +148,17 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
     >
       <Box
         sx={{
-          height: "10%",
+          height: "15%",
           width: "90%",
           justifyContent: "space-around",
           display: "flex",
           flexDirection: "row",
+          ml:"3%"
         }}
       >
-        <Box sx={{ ml: "10%", mt: "2%" }}>
           <Header title="Section" subtitle="Choose Title" />
-        </Box>
         <Box
           sx={{
-            width: "10%",
             marginLeft: "auto",
             justifyContent: "flex-end",
             alignContent: "center",
@@ -178,7 +176,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
           </Button>
         </Box>
       </Box>
-      <Container sx={{ height: "90%" }}>
+      <Container sx={{ height: "85%" }}>
   <Grid
     container
     spacing={2}
