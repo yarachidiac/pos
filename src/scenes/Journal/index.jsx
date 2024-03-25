@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, TextField, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
@@ -8,6 +8,10 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
 const Journal = ({ companyName,}) => {
   const theme = useTheme();
@@ -15,6 +19,66 @@ const Journal = ({ companyName,}) => {
   const [pageSize, setPageSize] = useState(10);
   const [inv, setInv] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [filteredData, setFilteredData] = useState([]);
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+
+  const handleStartTimeChange = (time) => {
+    setStartTime(time);
+  };
+
+  const handleEndTimeChange = (time) => {
+    setEndTime(time);
+  };
+
+
+  useEffect(() => {
+    if (startDate !== null && endDate !== null) {
+      console.log("innnnnnnnnnnnnnnnnnnnn", inv);
+      const filtered = inv.filter((row) => {
+        const rowDate = row.Date;
+        const [day, month, year] = rowDate.split("/");
+        const startDateObject = new Date(startDate);
+        const endDateObject = new Date(endDate);
+        const startDateY = startDateObject.getFullYear();
+        const startDateM = startDateObject.getMonth() + 1;
+        const startDateD = startDateObject.getDate();
+        const endDateY = endDateObject.getFullYear();
+        const endDateM = endDateObject.getMonth() + 1;
+        const endDateD = endDateObject.getDate();
+        return (
+          (year > startDateY ||
+            (year == startDateY && month > startDateM) ||
+            (year == startDateY &&
+              month == startDateM &&
+              day >= startDateD)) &&
+          (year < endDateY ||
+            (year == endDateY && month < endDateM) ||
+            (year == endDateY && month == endDateM && day <= endDateD))
+        );
+      });
+      setFilteredData(filtered);
+    }
+
+    if (startTime && endTime) {
+      console.log("startTime", startTime);
+      console.log("endTime", endTime);
+
+    }
+  }, [startDate, endDate, startTime, endTime, inv]);
+
+
+console.log("Filterrrrrrrrrr", filteredData)
 
   useEffect(() => {
     console.log("stored companyyyyyy", companyName);
@@ -173,8 +237,50 @@ const Journal = ({ companyName,}) => {
         ml: "2%",
       }}
     >
-      <Box sx={{ height: "10%", width: "90%" }}>
+      <Box
+        sx={{
+          height: "10%",
+          width: "100%",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
         <Header title="Invoices History" />
+        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Start Date"
+              value={startDate}
+              onChange={handleStartDateChange}
+              sx={{ ml: "2%" }}
+            />
+            <DatePicker
+              label="End Date"
+              value={endDate}
+              onChange={handleEndDateChange}
+              sx={{ ml: "2%" }}
+            />
+            <TimePicker
+              label="Start Time"
+              value={startDate}
+              onChange={handleStartTimeChange} 
+              sx={{ ml: "2%" }}
+            />
+            <TimePicker
+              label="End Time"
+              value={endDate} 
+              onChange={handleEndTimeChange}
+              sx={{ ml: "2%" }}
+            />
+          </LocalizationProvider>
+          {/* <Button
+            variant="contained"
+            color="primary"
+            sx={{ height: "100%", ml: "2%" }}
+          >
+            Apply
+          </Button> */}
+        </Box>
       </Box>
       <Box
         sx={{
@@ -217,9 +323,9 @@ const Journal = ({ companyName,}) => {
       >
         <DataGrid
           style={{ height: "100%", width: "100%" }}
-          rows={inv}
+          rows={filteredData.map((row, index) => ({ ...row, id: index }))}
           columns={columns}
-          getRowId={(row) => row.InvNo}
+          getRowId={(row) => row.id}
           //autoHeight
           {...(inv && inv.initialState)}
           initialState={{
