@@ -12,6 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import InvDetailsModal from "./InvDetailsModal";
 
 const Journal = ({ companyName,}) => {
   const theme = useTheme();
@@ -24,6 +25,8 @@ const Journal = ({ companyName,}) => {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
+  const [openInvDetailsModal, setOpenIvDetailsModal] = useState(false);
+  const [selectedInv, setSelectedInv] = useState("");
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -41,31 +44,41 @@ const Journal = ({ companyName,}) => {
     setEndTime(time);
   };
 
+  const handleRowClick = (params) => {
+    setOpenIvDetailsModal(true);
+    console.log("Ssssssssssssss", params.row.InvNo);
+    setSelectedInv(params.row.InvNo);
+  };
 
   useEffect(() => {
     if (startDate !== null && endDate !== null) {
       console.log("innnnnnnnnnnnnnnnnnnnn", inv);
       const filtered = inv.filter((row) => {
         const rowDate = row.Date;
-        const [day, month, year] = rowDate.split("/");
-        const startDateObject = new Date(startDate);
-        const endDateObject = new Date(endDate);
-        const startDateY = startDateObject.getFullYear();
-        const startDateM = startDateObject.getMonth() + 1;
-        const startDateD = startDateObject.getDate();
-        const endDateY = endDateObject.getFullYear();
-        const endDateM = endDateObject.getMonth() + 1;
-        const endDateD = endDateObject.getDate();
-        return (
-          (year > startDateY ||
-            (year == startDateY && month > startDateM) ||
-            (year == startDateY &&
-              month == startDateM &&
-              day >= startDateD)) &&
-          (year < endDateY ||
-            (year == endDateY && month < endDateM) ||
-            (year == endDateY && month == endDateM && day <= endDateD))
-        );
+        if (rowDate) {
+          // Check if rowDate is not null
+          const [day, month, year] = rowDate.split("/");
+          const startDateObject = new Date(startDate);
+          const endDateObject = new Date(endDate);
+          const startDateY = startDateObject.getFullYear();
+          const startDateM = startDateObject.getMonth() + 1;
+          const startDateD = startDateObject.getDate();
+          const endDateY = endDateObject.getFullYear();
+          const endDateM = endDateObject.getMonth() + 1;
+          const endDateD = endDateObject.getDate();
+          return (
+            (year > startDateY ||
+              (year == startDateY && month > startDateM) ||
+              (year == startDateY &&
+                month == startDateM &&
+                day >= startDateD)) &&
+            (year < endDateY ||
+              (year == endDateY && month < endDateM) ||
+              (year == endDateY && month == endDateM && day <= endDateD))
+          );
+        } else {
+          return false; // Exclude rows with null Date
+        }
       });
       setFilteredData(filtered);
     }
@@ -73,19 +86,15 @@ const Journal = ({ companyName,}) => {
     if (startTime && endTime) {
       console.log("startTime", startTime);
       console.log("endTime", endTime);
-
     }
   }, [startDate, endDate, startTime, endTime, inv]);
+
 
 
 console.log("Filterrrrrrrrrr", filteredData)
 
   useEffect(() => {
-    console.log("stored companyyyyyy", companyName);
-
-    // Fetch users based on the company name
-    if (companyName) {
-      fetch(`http://192.168.16.113:8000/getAllInv/${companyName}`)
+      fetch(`http://192.168.16.113:8000/getInvHistory/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -97,7 +106,7 @@ console.log("Filterrrrrrrrrr", filteredData)
           }
         })
         .catch((error) => console.error("Error fetching users", error));
-    }
+    
   }, []);
 
   const renderTextCell = ({ value }) => {
@@ -122,26 +131,7 @@ console.log("Filterrrrrrrrrr", filteredData)
       minWidth: 100,
       flex: "1",
     },
-    {
-      field: "ItemName",
-      headerName: "Item",
-      headerAlign: "left",
-      align: "left",
-      minWidth: 200,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
-    {
-      field: "GroupName",
-      headerName: "Group",
-      headerAlign: "left",
-      align: "left",
-      minWidth: 100,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
+    
     {
       field: "Branch",
       headerName: "Branch",
@@ -157,38 +147,6 @@ console.log("Filterrrrrrrrrr", filteredData)
       headerName: "Disc",
       headerAlign: "left",
       align: "left",
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
-      flex: "1",
-    },
-    {
-      field: "Tax",
-      headerName: "Tax",
-      headerAlign: "left",
-      align: "left",
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
-      flex: "1",
-    },
-    {
-      field: "UPrice",
-      headerName: "UPrice",
-      headerAlign: "left",
-      align: "left",
-      minWidth: 100,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
-      flex: "1",
-    },
-    {
-      field: "Qty",
-      headerName: "Qty",
-      headerAlign: "left",
-      align: "left",
-      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 50,
@@ -263,12 +221,12 @@ console.log("Filterrrrrrrrrr", filteredData)
             <TimePicker
               label="Start Time"
               value={startDate}
-              onChange={handleStartTimeChange} 
+              onChange={handleStartTimeChange}
               sx={{ ml: "2%" }}
             />
             <TimePicker
               label="End Time"
-              value={endDate} 
+              value={endDate}
               onChange={handleEndTimeChange}
               sx={{ ml: "2%" }}
             />
@@ -323,9 +281,9 @@ console.log("Filterrrrrrrrrr", filteredData)
       >
         <DataGrid
           style={{ height: "100%", width: "100%" }}
-          rows={filteredData.map((row, index) => ({ ...row, id: index }))}
+          rows={filteredData.length > 0 ? filteredData : inv}
           columns={columns}
-          getRowId={(row) => row.id}
+          getRowId={(row) => row.InvNo}
           //autoHeight
           {...(inv && inv.initialState)}
           initialState={{
@@ -334,14 +292,21 @@ console.log("Filterrrrrrrrrr", filteredData)
           }}
           pageSizeOptions={[10, 20, 30]}
           disableSelectionOnClick // Add this line to disable selection on click
-          //   onSelectionModelChange={(newSelection) => {
-          //     // Set the selected row when the selection changes
-          //     setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
-          //   }}
-          //   selectionModel={[selectedRow]}
+          onRowClick={(params) => {
+            console.log("Params:", params);
+
+            handleRowClick(params);
+          }}
           pagination // Add this line to enable pagination
         />
       </Box>
+      <InvDetailsModal
+        isOpen={openInvDetailsModal}
+        setOpenIvDetailsModal={setOpenIvDetailsModal}
+        companyName={companyName}
+        setSelectedInv={setSelectedInv}
+        selectedInv={selectedInv}
+      />
     </Box>
   );
 };

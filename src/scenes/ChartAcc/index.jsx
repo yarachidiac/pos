@@ -365,7 +365,6 @@ const ChartAcc = ({
           // }}
           onRowClick={(params) => {
             console.log("Params:", params);
-
             handleRowClick(params);
           }}
           // selectionModel={[selectedRow]}

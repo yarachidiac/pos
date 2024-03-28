@@ -208,10 +208,10 @@ const Tables = ({
           justifyContent: "space-around",
           display: "flex",
           flexDirection: "row",
-          ml:"3%"
+          ml: "3%",
         }}
       >
-          <Header title="Table" subtitle="Choose Table" />
+        <Header title="Table" subtitle="Choose Table" />
         <Box
           sx={{
             height: "80px",
@@ -232,7 +232,7 @@ const Tables = ({
           </Button>
         </Box>
       </Box>
-      <Container sx={{ height: "85%" }}>
+      <Container sx={{ height: "85%", width: "100%" }}>
         <Grid
           container
           spacing={2}
@@ -241,10 +241,11 @@ const Tables = ({
             justifyContent: "center",
             alignItems: "center",
             overflow: "auto",
+            width: "100%",
           }}
         >
           {tables.map((table) => (
-            <Grid key={table.TableNo} item xs={12} sm={6} md={4} lg={3}>
+            <Grid key={table.TableNo} item xs={12} sm={6} md={4} lg={3} >
               <Box
                 position="relative"
                 width="100%"

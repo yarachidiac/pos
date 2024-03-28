@@ -568,7 +568,7 @@ const PoS = ({
 
           console.log("fffffffffffffffffffffffff", formattedDate);
         }
-      }
+    
 
       // Encode the formatted date
       const formattedTime = format(currentDate, "HH:mm:ss");
@@ -576,6 +576,7 @@ const PoS = ({
       // Encode the formatted date
       console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", formattedDate);
       console.log("formatted timeeeeeeeeeeee", formattedTime);
+      const accno = selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
       const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
       const requestBody = {
         date: formattedDate,
@@ -590,12 +591,7 @@ const PoS = ({
         unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
         message: message,
         realDate: realDate,
-        accno:
-          selectedRow["AccNo"] !== undefined &&
-          selectedRow["AccNo"] !== "" &&
-          selectedRow["AccNo"] !== null
-            ? selectedRow["AccNo"]
-            : "",
+        accno: accno,
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
@@ -631,7 +627,8 @@ const PoS = ({
               window.location.reload();
             }, 3000);
           }
-        } 
+        }
+      }
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);
         console.log("emptyyy chosenModifier", selectedMeals);
@@ -650,7 +647,7 @@ const PoS = ({
         setIsConfOpenDialog(false);
         setCloseTClicked(false);
       } else {
-        console.error("Failed to place order:", response.statusText);
+        console.error("Failed to place order:");
       }
     } catch (error) {
       console.error("Error placing order:", error);
