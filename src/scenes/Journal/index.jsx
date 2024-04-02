@@ -37,6 +37,7 @@ const Journal = ({ companyName,}) => {
   };
 
   const handleStartTimeChange = (time) => {
+    console.log("tttttttttttttt", time);
     setStartTime(time);
   };
 
@@ -51,45 +52,67 @@ const Journal = ({ companyName,}) => {
   };
 
   useEffect(() => {
-    if (startDate !== null && endDate !== null) {
       console.log("innnnnnnnnnnnnnnnnnnnn", inv);
       const filtered = inv.filter((row) => {
         const rowDate = row.Date;
-        if (rowDate) {
+        const rowTime = row.Time;
+
+        if (rowDate || rowTime) {
           // Check if rowDate is not null
           const [day, month, year] = rowDate.split("/");
+          const [hour, min] = rowTime.split(":");
           const startDateObject = new Date(startDate);
           const endDateObject = new Date(endDate);
+          const startTimeObject = new Date(startTime);
+          const endTimeObject = new Date(endTime);
           const startDateY = startDateObject.getFullYear();
           const startDateM = startDateObject.getMonth() + 1;
           const startDateD = startDateObject.getDate();
           const endDateY = endDateObject.getFullYear();
           const endDateM = endDateObject.getMonth() + 1;
           const endDateD = endDateObject.getDate();
-          return (
-            (year > startDateY ||
-              (year == startDateY && month > startDateM) ||
-              (year == startDateY &&
-                month == startDateM &&
-                day >= startDateD)) &&
-            (year < endDateY ||
-              (year == endDateY && month < endDateM) ||
-              (year == endDateY && month == endDateM && day <= endDateD))
-          );
-        } else {
-          return false; // Exclude rows with null Date
-        }
+          console.log("hhhhh", startTimeObject.getHours());
+          console.log("hhhhh", startTimeObject.getMinutes());
+          const startTimeH = startTimeObject.getHours();
+          const startTimeM = startTimeObject.getMinutes();
+          const endTimeH = endTimeObject.getHours();
+          const endTimeM = endTimeObject.getMinutes();
+          if (startDate !== null && endDate !== null && startTime == null && endTime == null) {
+            return (
+              (year > startDateY ||
+                (year == startDateY && month > startDateM) ||
+                (year == startDateY &&
+                  month == startDateM &&
+                  day >= startDateD)) &&
+              (year < endDateY ||
+                (year == endDateY && month < endDateM) ||
+                (year == endDateY && month == endDateM && day <= endDateD))
+            );
+          } else if (startTime!==null && endTime!==null && startDate == null && endDate == null) {
+            return (
+              (hour > startTimeH ||
+                (hour == startTimeH && min > startTimeM)) &&
+              (hour < endTimeH ||
+                (hour == endTimeH && min < endTimeM))
+            );
+          } else if(startTime!== null && endTime !== null && startDate!==null && endDate !==null){
+            return (
+              (year > startDateY ||
+                (year == startDateY && month > startDateM) ||
+                (year == startDateY &&
+                  month == startDateM &&
+                  day >= startDateD)) &&
+              (year < endDateY ||
+                (year == endDateY && month < endDateM) ||
+                (year == endDateY && month == endDateM && day <= endDateD)) &&
+              (hour > startTimeH || (hour == startTimeH && min > startTimeM)) &&
+              (hour < endTimeH || (hour == endTimeH && min < endTimeM))
+            );
+          }
+        } 
       });
       setFilteredData(filtered);
-    }
-
-    if (startTime && endTime) {
-      console.log("startTime", startTime);
-      console.log("endTime", endTime);
-    }
   }, [startDate, endDate, startTime, endTime, inv]);
-
-
 
 console.log("Filterrrrrrrrrr", filteredData)
 
@@ -281,7 +304,7 @@ console.log("Filterrrrrrrrrr", filteredData)
       >
         <DataGrid
           style={{ height: "100%", width: "100%" }}
-          rows={filteredData.length > 0 ? filteredData : inv}
+          rows={filteredData.length > 0 || (startTime ||  endTime || startDate || endDate) ? filteredData : inv}
           columns={columns}
           getRowId={(row) => row.InvNo}
           //autoHeight

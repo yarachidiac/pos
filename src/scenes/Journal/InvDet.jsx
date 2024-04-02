@@ -11,10 +11,12 @@ const InvDet = ({ companyName, selectedInv }) => {
   const [pageSize, setPageSize] = useState(10);
   const [inv, setInv] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [invDet, setInvDet] = useState({});
+  const [invDet, setInvDet] = useState([]);
 
   useEffect(() => {
-    fetch(`http://192.168.16.113:8000/getInvHistoryDetails/${companyName}`)
+    fetch(
+      `http://192.168.16.113:8000/getInvHistoryDetails/${companyName}/${selectedInv}`
+    )
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property
