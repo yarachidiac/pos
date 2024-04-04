@@ -6,8 +6,11 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
-  const handleNavigate = () => {
+  const handleNavigateHistory = () => {
     navigate("/Journal");
+  };
+  const handleNavigateDailySales = () => {
+    navigate("/Daily");
   };
 
   return (
@@ -20,9 +23,21 @@ const Dashboard = () => {
           fontWeight: "bold",
           background: `${colors.blueAccent[800]}`,
         }}
-        onClick={handleNavigate}
+        onClick={handleNavigateHistory}
       >
         Invoices History
+      </Button>
+      <Button
+        sx={{
+          width: "50%",
+          height: "50%",
+          fontSize: "1.8rem",
+          fontWeight: "bold",
+          background: `${colors.blueAccent[800]}`,
+        }}
+        onClick={handleNavigateDailySales}
+      >
+        Daily Sales
       </Button>
     </Box>
   );

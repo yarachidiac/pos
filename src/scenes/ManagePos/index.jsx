@@ -44,9 +44,9 @@ const ManagePoS = ({
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
-
-          if (Array.isArray(data)) {
-            setItems(data);
+          console.log("ssssssssssssss", data);
+          if (Array.isArray(data[0])) {
+            setItems(data[0]);
           } else {
             console.error("Invalid data format received:", data);
           }

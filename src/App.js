@@ -1,8 +1,8 @@
-import { ColorModeContext, useMode } from './theme';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import Topbar from './scenes/global/Topbar';
+import { ColorModeContext, useMode } from "./theme";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import Topbar from "./scenes/global/Topbar";
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "./scenes/dashboard"; 
+import Dashboard from "./scenes/dashboard";
 import Sidebar from "./scenes/global/Sidebar";
 import Form from "./scenes/form";
 import Team from "./scenes/team";
@@ -21,28 +21,30 @@ import Team from "./scenes/team";
 // import UserSettings from "./scenes/UserSettings";
 // import GeneralInformation from "./scenes/GeneralInformation";
 import { useState, useEffect } from "react";
-import Company from './scenes/company';
-import PoS from './scenes/PoS';
-import ManagePoS from './scenes/ManagePos';
+import Company from "./scenes/company";
+import PoS from "./scenes/PoS";
+import ManagePoS from "./scenes/ManagePos";
 import { useNavigate, useLocation } from "react-router-dom";
-import ChartAcc from './scenes/ChartAcc';
-import Section from './scenes/Section';
-import Tables from './scenes/Section/Tables';
+import ChartAcc from "./scenes/ChartAcc";
+import Section from "./scenes/Section";
+import Tables from "./scenes/Section/Tables";
 import CircularProgress from "@mui/material/CircularProgress";
-import KitchenDialog from './scenes/PoS/KitchenDialog'; 
+import KitchenDialog from "./scenes/PoS/KitchenDialog";
 import { format } from "date-fns";
 import * as React from "react";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";import Journal from './scenes/Journal';
-import Groups from './scenes/Groups';
+import CloseIcon from "@mui/icons-material/Close";
+import Journal from "./scenes/Journal";
+import Groups from "./scenes/Groups";
+import DailySales from "./scenes/dashboard/DailySales";
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [companyName, setCompanyName] = useState(""); 
+  const [companyName, setCompanyName] = useState("");
   const [loading, setLoading] = useState(true);
   const [branch, setBranch] = useState("");
   const [invType, setInvType] = useState("");
@@ -51,13 +53,15 @@ function App() {
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
     const storedSelectedRow = localStorage.getItem("selectedRow");
-    return storedSelectedRow!== "undefined" ? JSON.parse(storedSelectedRow) : {};
+    return storedSelectedRow !== "undefined"
+      ? JSON.parse(storedSelectedRow)
+      : {};
   });
   const [oldItemNo, setOldItemNo] = useState("");
   const [newItemNo, setNewItemNo] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [isConfOpenDialog, setIsConfOpenDialog] = useState(false);  
+  const [isConfOpenDialog, setIsConfOpenDialog] = useState(false);
   const [isNav, setIsNav] = useState(true);
   const [pageRed, setPageRed] = useState("");
   const [selectedTop, setSelectedTop] = useState("Takeaway");
@@ -66,50 +70,49 @@ function App() {
   const [open, setOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("");
   console.log("filter mn l app", filterValue);
- useEffect(() => {
-   const initializeAuthentication = async () => {
-     try {
-       const storedAuthStatus = sessionStorage.getItem("isAuthenticated");
+  useEffect(() => {
+    const initializeAuthentication = async () => {
+      try {
+        const storedAuthStatus = sessionStorage.getItem("isAuthenticated");
 
-       if (storedAuthStatus === "true") {
-         const storedCompanyName = localStorage.getItem("company_name");
-         const storedBranch = localStorage.getItem("user_branch");
-         const storedInvType = localStorage.getItem("user_invType");
-         const storedUsername = localStorage.getItem("username");
-         const storedUserControl = localStorage.getItem("user_control");
-         console.log("ana bl Appp", storedCompanyName);
-         setCompanyName(storedCompanyName);
-         setBranch(storedBranch);
-         setInvType(storedInvType);
-         setUsername(storedUsername);
-         setUserControl(storedUserControl);
-         console.log("men l app", userControl);
-         setIsAuthenticated(true);
-       } else {
-         setIsAuthenticated(false);
-       }
-     } catch (error) {
-       console.error("Error initializing authentication:", error);
-     } finally {
-       setLoading(false);
-     }
-   };
+        if (storedAuthStatus === "true") {
+          const storedCompanyName = localStorage.getItem("company_name");
+          const storedBranch = localStorage.getItem("user_branch");
+          const storedInvType = localStorage.getItem("user_invType");
+          const storedUsername = localStorage.getItem("username");
+          const storedUserControl = localStorage.getItem("user_control");
+          console.log("ana bl Appp", storedCompanyName);
+          setCompanyName(storedCompanyName);
+          setBranch(storedBranch);
+          setInvType(storedInvType);
+          setUsername(storedUsername);
+          setUserControl(storedUserControl);
+          console.log("men l app", userControl);
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error initializing authentication:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-   initializeAuthentication();
- }, [setCompanyName, setBranch, setInvType]);
-
+    initializeAuthentication();
+  }, [setCompanyName, setBranch, setInvType]);
 
   if (loading) {
-    return <CircularProgress color="success" />;;
+    return <CircularProgress color="success" />;
   }
 
-    const handleClose = (event, reason) => {
-      if (reason === "clickaway") {
-        return;
-      }
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-      setOpen(false);
-    };
+    setOpen(false);
+  };
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -271,6 +274,10 @@ function App() {
                   <Route
                     path="/journal"
                     element={<Journal companyName={companyName} />}
+                  />
+                  <Route
+                    path="/Daily"
+                    element={<DailySales companyName={companyName} />}
                   />
                   <Route
                     path="/Groups"
