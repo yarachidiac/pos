@@ -15,59 +15,36 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import {
-  Select,
-  MenuItem,
-} from "@mui/material";
-
-const GeneralA = ({ companyName }) => {
+const StatSet = ({ companyName }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [companyDetails, setCompanyDetails] = useState({});
-  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
-    ...companyDetails,
+  const [stationDetails, setStationDetails] = useState({});
+  const [stationDetailsCopy, setStationDetailsCopy] = useState({
+    ...stationDetails,
   });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-console.log(
-  "ssssssssssssssssssssss",
-  dayjs("2022-03-13T03:00:00").format("hh:mm A")
-);
-  const handleValueUpdate = (field, updatedValue) => {
-    if (field === "EndTime") {
-      const date = new Date(updatedValue);
-
-      // Get the hours, minutes, and seconds from the date object
-      const hours = date.getHours().toString().padStart(2, "0"); // Ensure 2-digit format
-      const minutes = date.getMinutes().toString().padStart(2, "0"); // Ensure 2-digit format
-      const seconds = date.getSeconds().toString().padStart(2, "0"); // Ensure 2-digit format
-
-      // Construct the time string in "HH:mm:ss" format
-      const timeString = `${hours}:${minutes}:${seconds}`;
-      console.log("Time:", timeString); // Output: Time: 02:35:00
-      setCompanyDetailsCopy((prev) => ({
-        ...prev,
-        [field]: timeString,
-      }));
-    } else {
-      setCompanyDetailsCopy((prev) => ({
+  console.log(
+    "ssssssssssssssssssssss",
+    dayjs("2022-03-13T03:00:00").format("hh:mm A")
+  );
+  const handleValueUpdate = (field, updatedValue) => { 
+      setStationDetailsCopy((prev) => ({
         ...prev,
         [field]: updatedValue,
       }));
-    }
   };
 
-
   useEffect(() => {
-    const fetchCompanyDetails = async () => {
+    const fetchStationDetails = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.113:8000/company/${companyName}`
+          `http://192.168.16.113:8000/station/${companyName}`
         );
         if (response.ok) {
           const data = await response.json();
-          setCompanyDetails(data);
-          setCompanyDetailsCopy(data);
+          setStationDetails(data);
+          setStationDetailsCopy(data);
         } else {
           console.error("Failed to fetch company details");
         }
@@ -75,38 +52,38 @@ console.log(
         console.error("Error during fetch:", error);
       }
     };
-    fetchCompanyDetails();
+    fetchStationDetails();
   }, []);
 
   const handleSave = async () => {
     const saveResponse = await fetch(
-      `http://192.168.16.113:8000/updateCompany/${companyName}`,
+      `http://192.168.16.113:8000/updateStation/${companyName}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(companyDetailsCopy),
+        body: JSON.stringify(stationDetailsCopy),
       }
     );
-    console.log("wwwwwwwwwwwwww",companyDetailsCopy);
+    console.log("wwwwwwwwwwwwww", stationDetailsCopy);
     const mesData = await saveResponse.json();
 
     if (saveResponse.ok) {
-      setCompanyDetails(companyDetailsCopy);
+      setStationDetails(stationDetailsCopy);
       setSuccessMessage(mesData.message);
     }
   };
   useEffect(() => {
-    if (JSON.stringify(companyDetailsCopy) !== JSON.stringify(companyDetails)) {
+    if (JSON.stringify(stationDetailsCopy) !== JSON.stringify(stationDetails)) {
       setUnsavedChanges(true);
     } else {
       setUnsavedChanges(false);
     }
-  }, [companyDetailsCopy]);
-console.log("uppppppppppppppppppppp", companyDetails);
-console.log("copppppppp", companyDetailsCopy);
-  const rows = Object.keys(companyDetailsCopy).map((key, index) => (
+  }, [stationDetailsCopy]);
+  console.log("uppppppppppppppppppppp", stationDetails);
+  console.log("copppppppp", stationDetailsCopy);
+  const rows = Object.keys(stationDetailsCopy).map((key, index) => (
     <TableRow
       key={key}
       style={{
@@ -151,37 +128,15 @@ console.log("copppppppp", companyDetailsCopy);
             height: "100%",
             width: "100%",
           }}
-        >
-          {key === "EndTime" ? (
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TimePicker
-                value={dayjs(`0000-00-00T${companyDetailsCopy[key]}`)}
-                onChange={(newValue) => handleValueUpdate(key, newValue)}
-                size="small"
-                renderInput={(params) => <TextField size="small" {...params} />}
-              />
-            </LocalizationProvider>
-          ) : key == "Currency" ? (
-            <Select
-              value={companyDetailsCopy[key]}
-              onChange={(e) => handleValueUpdate(key, e.target.value)}
-              fullWidth
-              variant="outlined"
-              size="small"
-            >
-              <MenuItem value={"USD"}>USD</MenuItem>
-              <MenuItem value={"EUR"}>EUR</MenuItem>
-              {/* Add more options as needed */}
-            </Select>
-          ) : (
+        >       
             <TextField
-              value={companyDetailsCopy[key]}
+              value={stationDetailsCopy[key]}
               onChange={(e) => handleValueUpdate(key, e.target.value)}
               fullWidth
               variant="outlined"
               size="small"
             />
-          )}
+     
         </div>
       </TableCell>
     </TableRow>
@@ -256,4 +211,4 @@ console.log("copppppppp", companyDetailsCopy);
   );
 };
 
-export default GeneralA;
+export default StatSet;

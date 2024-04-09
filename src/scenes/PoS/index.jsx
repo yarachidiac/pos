@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
+import Avatar from "@mui/material/Avatar";
 
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
@@ -824,49 +825,73 @@ console.log("closeTClicked", closeTClicked);
   return (
     <>
       {/* First Box (70% width) */}
-      <Box width="70%" padding={2} height="90%">
+      <Box
+        sx={{
+          width: isCollapsed ? "69%" : "60%",
+          padding: "1%",
+          height: "90%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {/* Filter Buttons with Icons */}
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "3%",
-            height: "7%",
-            width: "98%",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            // marginBottom: "3%",
+            //height: "7%",
+            overflowX: "auto",
           }}
         >
-          <Button
-            style={{
-              backgroundColor:
-                selectedCategory === "All"
-                  ? colors.greenAccent[500]
-                  : colors.primary[500],
-              color: selectedCategory === "All" ? colors.primary[500] : "black",
-              //borderRadius: "20px",
-            }}
-            startIcon={<LocalCafeIcon />}
-            onClick={() => handleCategoryClick("All")}
-          >
-            All
-          </Button>
-          {categories.map((category) => (
+          <Box sx={{ width: "40%" }}>
             <Button
-              key={category.GroupNo}
               style={{
+                fontWeight: "bold",
+                fontSize: "1rem",
+
                 backgroundColor:
-                  selectedCategory === category.GroupName
+                  selectedCategory === "All"
                     ? colors.greenAccent[500]
                     : colors.primary[500],
                 color:
-                  selectedCategory === category.GroupName
-                    ? colors.primary[500]
-                    : "black",
+                  selectedCategory === "All" ? colors.primary[500] : "black",
+                //borderRadius: "20px",
               }}
-              startIcon={<LocalCafeIcon />}
-              onClick={() => handleCategoryClick(category)}
+              onClick={() => handleCategoryClick("All")}
             >
-              {category.GroupName}
+              {/* <Avatar
+                alt="Image"
+                src="/path/to/image.jpg"
+                sx={{ width: 40, height: 40 }} // Customize the size as needed
+              /> */}
+              All
             </Button>
+          </Box>
+
+          {categories.map((category) => (
+            <Box sx={{ width: "40%", marginLeft: "5%" }}>
+              <Button
+                key={category.GroupNo}
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  backgroundColor:
+                    selectedCategory === category.GroupName
+                      ? colors.greenAccent[500]
+                      : colors.primary[500],
+                  color:
+                    selectedCategory === category.GroupName
+                      ? colors.primary[500]
+                      : "black",
+                }}
+                // startIcon={<LocalCafeIcon />}
+                onClick={() => handleCategoryClick(category)}
+              >
+                {category.GroupName}
+              </Button>
+            </Box>
           ))}
         </Box>
         {/* Cards in Grid Layout */}
@@ -1122,9 +1147,11 @@ console.log("closeTClicked", closeTClicked);
                         <CardMedia
                           component="img"
                           height="40%"
-                        src={ meal.Image ? 
-                          `${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`
-                          : `${process.env.PUBLIC_URL}/maxresdefault.jpg`}
+                          src={
+                            meal.Image
+                              ? `${process.env.PUBLIC_URL}/${companyName}/images/${meal.Image}`
+                              : `${process.env.PUBLIC_URL}/maxresdefault.jpg`
+                          }
                           alt={`Meal ${meal.ItemNo}`}
                         />
                         {meal.Disc !== null && meal.Disc !== 0 && (
@@ -1282,13 +1309,17 @@ console.log("closeTClicked", closeTClicked);
 
       <Box
         sx={{
+          marginLeft: "auto",
           height: "100%",
-          width: isCollapsed ? "30%" : "26%",
+          // width: isCollapsed ? "30%" : "26%",
+          width: "30%",
+          display: "flex",
+          flexDirection: "column",
           top: 0,
           right: 0,
-          position: "absolute",
-          paddingLeft: "1%",
-          paddingTop: "1%",
+          position: "fixed",
+          // paddingLeft: "1%",
+          // paddingTop: "1%",
         }}
       >
         <Box sx={{ height: "60%", backgroundColor: colors.primary[500] }}>
@@ -1532,15 +1563,17 @@ console.log("closeTClicked", closeTClicked);
           </Box>
         </Box>
         {/* Final Box */}
-        <Box sx={{ height: "40%" }}>
+        <Box sx={{ height: "40%", width: "100%" }}>
           <Card
             style={{
+              width: "100%",
               height: "100%",
               backgroundColor: colors.primary[400],
             }}
           >
             <CardContent
               style={{
+                width: "100%",
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
@@ -1549,15 +1582,24 @@ console.log("closeTClicked", closeTClicked);
             >
               <Box
                 sx={{
-                  height: "10%",
+                  width: "100%",
+                  height: "15%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
                 }}
               >
-                <Typography variant="h4" fontWeight="bold">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: "20px", width: "50%" }}
+                  onClick={handlePrint}
+                >
+                  Print
+                </Button>
+                {/* <Typography variant="h4" fontWeight="bold">
                   Payment Summary
-                </Typography>
+                </Typography> */}
                 <Button
                   variant="contained"
                   color="secondary"
@@ -1569,7 +1611,7 @@ console.log("closeTClicked", closeTClicked);
                   Close Table
                 </Button>
               </Box>
-              <Button onClick={handlePrint}>Print</Button>
+
               <Box
                 sx={{
                   height: "10%",
@@ -1583,7 +1625,7 @@ console.log("closeTClicked", closeTClicked);
               </Box>
               <Box
                 sx={{
-                  height: "12%",
+                  height: "15%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -1592,6 +1634,7 @@ console.log("closeTClicked", closeTClicked);
                 <Button
                   onClick={() => handleOpenNumericKeypad("Service")}
                   sx={{
+                    width: "50%",
                     borderRadius: "20px",
                     border: `2px solid ${colors.greenAccent[500]}`,
                     color: colors.greenAccent[500],
@@ -1604,7 +1647,7 @@ console.log("closeTClicked", closeTClicked);
               </Box>
               <Box
                 sx={{
-                  height: "12%",
+                  height: "15%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -1613,6 +1656,7 @@ console.log("closeTClicked", closeTClicked);
                 <Button
                   onClick={() => handleOpenNumericKeypad("Discount")}
                   sx={{
+                    width: "50%",
                     borderRadius: "20px",
                     border: `2px solid ${colors.greenAccent[500]}`,
                     color: colors.greenAccent[500],
@@ -1646,8 +1690,10 @@ console.log("closeTClicked", closeTClicked);
                   justifyContent: "space-between",
                 }}
               >
-                <Typography variant="h4">Tax</Typography>`{" "}
-                <Typography variant="h4">{`11%`}</Typography>`
+                <Typography variant="h4" sx={{ width: "50%" }}>
+                  Tax
+                </Typography>
+                <Typography variant="h4">{`11%`}</Typography>
                 <Typography variant="h4">${totalTax.toFixed(2)}</Typography>
               </Box>
               <Box

@@ -24,7 +24,7 @@ import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import { useNavigate } from "react-router-dom";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-const Item = ({ title, to, icon, selected, setSelected, setOpen, userControl, }) => {
+const Item = ({ title, to, icon, selected, setSelected, setOpen, userControl}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
@@ -115,6 +115,7 @@ const Sidebar = ({
   setIsMobile,
   userControl,
   setOpen,
+  companyName
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -216,7 +217,7 @@ const Sidebar = ({
                 <>
                   <Box>
                     <Typography variant="h3" color={colors.grey[100]}>
-                      ADMIN
+                      {companyName}
                     </Typography>
                   </Box>
 
@@ -268,7 +269,7 @@ const Sidebar = ({
               selected={selected}
               setSelected={setSelected}
             />
-            <SubItem
+            {/* <SubItem
               title="Inventory Management"
               icon={<Inventory2OutlinedIcon />}
               isCollapsed={isCollapsed}
@@ -306,8 +307,8 @@ const Sidebar = ({
                 selected={selected}
                 setSelected={setSelected}
               />
-            </SubItem>
-            <SubItem
+            </SubItem> */}
+            {/* <SubItem
               title="Accounting"
               icon={<AccountBalanceOutlinedIcon />}
               isCollapsed={isCollapsed}
@@ -339,8 +340,8 @@ const Sidebar = ({
                 selected={selected}
                 setSelected={setSelected}
               />
-            </SubItem>
-            <SubItem
+            </SubItem> */}
+            {/* <SubItem
               title="Payment & Receivable"
               icon={<PaidOutlinedIcon />}
               isCollapsed={isCollapsed}
@@ -360,8 +361,8 @@ const Sidebar = ({
                 selected={selected}
                 setSelected={setSelected}
               />
-            </SubItem>
-            <SubItem
+            </SubItem> */}
+            {/* <SubItem
               title="Reports"
               icon={<SummarizeOutlinedIcon />}
               isCollapsed={isCollapsed}
@@ -381,7 +382,7 @@ const Sidebar = ({
                 selected={selected}
                 setSelected={setSelected}
               />
-            </SubItem>
+            </SubItem> */}
             <SubItem
               title="Company Settings"
               icon={<StoreIcon />}
@@ -398,7 +399,7 @@ const Sidebar = ({
               />
               <Item
                 title="Station Settings"
-                to="/Company Management"
+                to="/Station"
                 selected={selected}
                 setSelected={setSelected}
               />

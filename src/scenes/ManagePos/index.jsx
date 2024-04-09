@@ -45,8 +45,8 @@ const ManagePoS = ({
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
           console.log("ssssssssssssss", data);
-          if (Array.isArray(data[0])) {
-            setItems(data[0]);
+          if (Array.isArray(data)) {
+            setItems(data);
           } else {
             console.error("Invalid data format received:", data);
           }
@@ -68,20 +68,12 @@ const ManagePoS = ({
 
   const columns = [
     {
-      field: "GroupName",
-      headerName: "Group Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
-      minWidth: 200,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-    },
-    {
       field: "ItemNo",
       headerName: "Item No",
       headerAlign: "left",
       align: "left",
       minWidth: 100,
+      flex: 1,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
     },
@@ -90,6 +82,16 @@ const ManagePoS = ({
       headerName: "Item Name",
       headerAlign: "left",
       align: "left",
+      minWidth: 200,
+      flex: 1,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
+    {
+      field: "GroupName",
+      headerName: "Group Name",
+      flex: 1,
+      cellClassName: "name-column--cell",
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
@@ -155,14 +157,14 @@ const ManagePoS = ({
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "100%",
       }}
     >
       <Box
         justifyContent="space-between"
         display="flex"
-        height="20%"
+        height="15%"
         alignItems="center"
       >
         <Box sx={{ width: "50%", m: "2%" }}>
@@ -201,7 +203,7 @@ const ManagePoS = ({
       />
       <Box
         m="0 auto"
-        height="75%"
+        height="80%"
         width="90%"
         sx={{
           // "& .MuiDataGrid-root": {

@@ -155,14 +155,14 @@ const Groups = ({
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "100%",
       }}
     >
       <Box
         justifyContent="space-between"
         display="flex"
-        height="20%"
+        height="15%"
         alignItems="center"
       >
         <Box sx={{ width: "50%", m: "2%" }}>
@@ -201,7 +201,7 @@ const Groups = ({
       />
       <Box
         m="0 auto"
-        height="75%"
+        height="80%"
         width="90%"
         sx={{
           // "& .MuiDataGrid-root": {

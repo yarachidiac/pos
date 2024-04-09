@@ -39,6 +39,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Journal from "./scenes/Journal";
 import Groups from "./scenes/Groups";
 import DailySales from "./scenes/dashboard/DailySales";
+import Station from "./scenes/Station";
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -146,6 +147,7 @@ function App() {
                   setIsMobile={setIsMobile}
                   userControl={userControl}
                   setOpen={setOpen}
+                  companyName={companyName}
                 />
               )}
               <main className="content">
@@ -278,6 +280,10 @@ function App() {
                   <Route
                     path="/Daily"
                     element={<DailySales companyName={companyName} />}
+                  />
+                  <Route
+                    path="/Station"
+                    element={<Station companyName={companyName} />}
                   />
                   <Route
                     path="/Groups"

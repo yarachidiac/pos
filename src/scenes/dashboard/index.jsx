@@ -14,11 +14,15 @@ const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ width: "90%", height: "90%" }}>
+    <Box
+      sx={{ width: "90%", height: "90%", display: "flex", justifyContent: "center", alignItems:"center" }}
+    >
       <Button
         sx={{
-          width: "50%",
-          height: "50%",
+          marginLeft: "2%",
+
+          width: "30%",
+          height: "30%",
           fontSize: "1.8rem",
           fontWeight: "bold",
           background: `${colors.blueAccent[800]}`,
@@ -29,8 +33,9 @@ const Dashboard = () => {
       </Button>
       <Button
         sx={{
-          width: "50%",
-          height: "50%",
+          marginLeft: "2%",
+          width: "30%",
+          height: "30%",
           fontSize: "1.8rem",
           fontWeight: "bold",
           background: `${colors.blueAccent[800]}`,

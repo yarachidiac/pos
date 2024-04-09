@@ -247,18 +247,18 @@ const ChartAcc = ({
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "100%",
       }}
     >
       <Box
         justifyContent="space-between"
         display="flex"
-        height="20%"
+        height="10%"
         alignItems="center"
       >
         <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Client" subtitle="Managing Client Members" />
+          <Header title="Client"  />
         </Box>
         <Box
           sx={{
@@ -292,7 +292,7 @@ const ChartAcc = ({
       />
       <Box
         ml="2%"
-        height="75%"
+        height="90%"
         width="95%"
         sx={{
           // "& .MuiDataGrid-root": {
