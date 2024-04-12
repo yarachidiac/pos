@@ -24,12 +24,32 @@ import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import { useNavigate } from "react-router-dom";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
-const Item = ({ title, to, icon, selected, setSelected, setOpen, userControl}) => {
+const Item = ({
+  title,
+  to,
+  icon,
+  selected,
+  setSelected,
+  setOpen,
+  userControl,
+  isNav,
+  setIsConfOpenDialog,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
 
   const handleManagePoS = () => {
+    // console.log("ggggggggggggggggg", isNav)
+    // if (isNav) {
+    //   if (userControl === "N") {
+    //     setOpen(true);
+    //   } else {
+    //     navigate("/ManagePoS");
+    //   }
+    // } else {
+    //   setIsConfOpenDialog(true);
+    // }
     if (userControl === "N") {
       setOpen(true);
     } else {
@@ -46,17 +66,21 @@ const Item = ({ title, to, icon, selected, setSelected, setOpen, userControl}) =
       onClick={() => {
         if (title === "Manage POS") {
           handleManagePoS();
-          setSelected(title);
-        } else {
-          setSelected(title);
+        } else if(title === "POS"){
+          if (isNav) {
+           navigate("/PoS")
+          } else {
+            setIsConfOpenDialog(true);
+         }
         }
-      }}
+      }  
+      }
       icon={icon}
     >
       <Box width="200px">
         <Typography>{title}</Typography>
       </Box>
-      <Link to={to} />
+      {/* <Link to={to} /> */}
     </MenuItem>
   );
 };
@@ -69,6 +93,7 @@ const SubItem = ({
   handleSubItemClick,
   selected,
   setSelected,
+  isNav, setIsConfOpenDialog,
 }) => {
   const handleItemClick = () => {
     // Call the handler to open the sidebar and handle the SubItem click
@@ -115,7 +140,9 @@ const Sidebar = ({
   setIsMobile,
   userControl,
   setOpen,
-  companyName
+  companyName,
+  isNav,
+  setIsConfOpenDialog,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -134,7 +161,6 @@ const Sidebar = ({
     setSelected(menuItem);
   };
 
-  
   // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   // const handleResize = () => {
@@ -253,6 +279,8 @@ const Sidebar = ({
               to="/PoS"
               selected={selected}
               setSelected={setSelected}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
             />
             <Item
               icon={<PostAddOutlinedIcon />}
@@ -261,6 +289,8 @@ const Sidebar = ({
               setSelected={setSelected}
               setOpen={setOpen}
               userControl={userControl}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
             />
             <Item
               icon={<AssessmentOutlinedIcon />}

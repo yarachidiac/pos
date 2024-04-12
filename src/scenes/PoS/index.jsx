@@ -1335,7 +1335,10 @@ console.log("closeTClicked", closeTClicked);
             >
               Order Summary {selectedRow && selectedRow["AccName"]}{" "}
               {message && message}{" "}
-              {selectedTableId && `Table: ${selectedTableId}`}
+              {selectedTableId && `Table: ${selectedTableId}`}{" "}
+              {selectedMeals.length > 0 && (
+                <span> Selected {selectedMeals.length}</span>
+              )}
             </Typography>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
@@ -1600,16 +1603,18 @@ console.log("closeTClicked", closeTClicked);
                 {/* <Typography variant="h4" fontWeight="bold">
                   Payment Summary
                 </Typography> */}
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  sx={{ borderRadius: "20px", width: "50%" }}
-                  onClick={() => {
-                    setCloseTClicked(true);
-                  }}
-                >
-                  Close Table
-                </Button>
+                {location.search.includes("selectedTableId") && (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ borderRadius: "20px", width: "50%" }}
+                    onClick={() => {
+                      setCloseTClicked(true);
+                    }}
+                  >
+                    Close Table
+                  </Button>
+                )}
               </Box>
 
               <Box

@@ -4,6 +4,10 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
+import Button from "@mui/material/Button";
+import AddUserDialog from "../team/AddUserDialog";
+import Header from "../../components/Header";
+import { useState } from "react";
 
 const DelModal = ({
   isOpenDel,
@@ -16,6 +20,8 @@ const DelModal = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const handleClose = () => {
     setIsOpenDel(false);
   };
@@ -54,7 +60,9 @@ const DelModal = ({
     maxHeight: "80%", // Adjust the maximum height as needed
   };
   const iconButtonStyle = {
-    // Other styles...
+    // Other styles..
+    width: "5%",
+    heigh:"5%",
     display: "flex",
     color: colors.greenAccent[500],
     ...(window.innerWidth < 650
@@ -70,6 +78,12 @@ const DelModal = ({
     // Other styles...
   };
 
+ const handleAddUser = (title) => {
+   setAddTitle(title);
+   // Open the modal when "Add" button is clicked
+   setIsDialogOpen(true);
+ };
+
   return (
     <Modal open={isOpenDel} onClose={handleClose}>
       <Box
@@ -79,15 +93,55 @@ const DelModal = ({
           ...modalContainerStyle,
         }}
       >
-        <Box>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={handleClose}
-            sx={iconButtonStyle}
+        <Box
+          sx={{
+            justifyContent: "space-between",
+            display: "flex",
+            height: "10%",
+            mt: "1%",
+            ml:"2%"
+          }}
+        >
+          <Box sx={{ width: "50%" }}>
+            <Header title="Client" />
+          </Box>
+          <Box
+            sx={{
+              //width: "10%",
+            }}
           >
-            <CloseIcon />
-          </IconButton>
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ fontSize: "1.1rem" }}
+              onClick={()=>setSelectedRow(null)}
+            >
+              Clear
+            </Button>
+          </Box>
+          <Box
+            sx={{
+             // width: "5%",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ fontSize: "1.1rem" }}
+              onClick={() => handleAddUser("Add Client")}
+            >
+              Add
+            </Button>
+          </Box>
+          <Box
+            sx={{
+              mr:"2%"
+            }}
+          >
+            <IconButton edge="end" color="inherit" onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
         </Box>
 
         <ChartAcc
@@ -96,6 +150,9 @@ const DelModal = ({
           setSelectedRow={setSelectedRow}
           addTitle={addTitle}
           setAddTitle={setAddTitle}
+          setIsOpenDel={setIsOpenDel}
+          isDialogOpen={isDialogOpen}
+          setIsDialogOpen={setIsDialogOpen}
         />
       </Box>
     </Modal>

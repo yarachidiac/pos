@@ -19,6 +19,9 @@ const ChartAcc = ({
   setAddTitle,
   selectedRow,
   setSelectedRow,
+  setIsOpenDel,
+  isDialogOpen,
+  setIsDialogOpen,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -33,7 +36,7 @@ const ChartAcc = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [clientDetails, setClientDetails] = useState({});
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
   const [clientDetailsCopy, setClientDetailsCopy] = useState({
     ...clientDetails,
@@ -63,11 +66,16 @@ const ChartAcc = ({
 
   const handleRowClick = (params) => {
     // Check if the clicked column is not the checkbox column
-    if (params.field !== "checkbox") {
-      setIsDetailsModalOpen(true);
-      setClientDetails(params.row);
-      setClientDetailsCopy(params.row)
-    }
+    // if (params.field !== "checkbox") {
+    //   setIsDetailsModalOpen(true);
+    //   setClientDetails(params.row);
+    //   setClientDetailsCopy(params.row)
+    // }
+
+    setIsDetailsModalOpen(true);
+    setClientDetails(params);
+    setClientDetailsCopy(params);
+    console.log("pppppppppppppp", params);
   };
   console.log("indddddddddddddd", clientDetails);
   useEffect(() => {
@@ -82,7 +90,6 @@ const ChartAcc = ({
     }
   }, [clientDetails]);
 
-
   const closeDetailsModal = () => {
     // Close the details modal
     setIsDetailsModalOpen(false);
@@ -94,20 +101,41 @@ const ChartAcc = ({
     return <Typography variant="h4">{value}</Typography>;
   };
 
-  console.log("Seeeeeeeeeeeeeeeeee", selectedRow)
+  console.log("Seeeeeeeeeeeeeeeeee", selectedRow);
   const renderCheckboxCell = ({ row }) => {
     console.log("Rrrrrrrrrrrrrrrrrr", row); // Moved outside the return statement
     return (
-      <Checkbox
-        checked={selectedRow !== null && selectedRow["AccNo"] === row["AccNo"]}
-        onChange={(event) => {
-          setSelectedRow(selectedRow === row ? null : row);
-          event.stopPropagation();
-        }}
+      <Button
+        // checked={selectedRow !== null && selectedRow["AccNo"] === row["AccNo"]}
+        // onChange={(event) => {
+        //   setSelectedRow(selectedRow === row ? null : row);
+        //   event.stopPropagation();
+        // }}
         onClick={(event) => {
+          setSelectedRow(row);
+          setIsOpenDel(false);
           event.stopPropagation();
         }}
-      />
+      >
+        {/* {selectedRow !== null && selectedRow["AccNo"] === row["AccNo"]
+          ? "Unselect"
+          : "Select"} */}
+        Select
+      </Button>
+    );
+  };
+
+  console.log("selectedRow", selectedRow);
+  const renderProfile = ({ row }) => {
+    console.log("Rrrrrrrrrrrrrrrrrr", row); // Moved outside the return statement
+    return (
+      <Button
+        onClick={(event) => {
+          handleRowClick(row);
+        }}
+      >
+        Profile
+      </Button>
     );
   };
 
@@ -149,6 +177,13 @@ const ChartAcc = ({
       headerClassName: "header-cell", // Apply the custom style to the header
     },
     {
+      field: "profile",
+      headerName: "",
+      renderCell: renderProfile,
+      minWidth: 50,
+      headerClassName: "header-cell",
+    },
+    {
       field: "checkbox",
       headerName: "",
       renderCell: renderCheckboxCell,
@@ -188,11 +223,11 @@ const ChartAcc = ({
     // },
   ];
 
-  const handleAddUser = (title) => {
-    setAddTitle(title);
-    // Open the modal when "Add" button is clicked
-    setIsDialogOpen(true);
-  };
+  // const handleAddUser = (title) => {
+  //   setAddTitle(title);
+  //   // Open the modal when "Add" button is clicked
+  //   setIsDialogOpen(true);
+  // };
 
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
@@ -231,7 +266,7 @@ const ChartAcc = ({
 
       // Set the userDetails state with the details of the newly added user
       setClientDetails(clientDetailsData);
-      setClientDetailsCopy(clientDetailsData)
+      setClientDetailsCopy(clientDetailsData);
       // Open the details modal
       setIsDetailsModalOpen(true);
     } catch (error) {
@@ -251,14 +286,28 @@ const ChartAcc = ({
         width: "100%",
       }}
     >
-      <Box
+      {/* <Box
         justifyContent="space-between"
         display="flex"
         height="10%"
         alignItems="center"
       >
         <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Client"  />
+          <Header title="Client" />
+        </Box>
+        <Box
+          sx={{
+            width: "10%",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            style={{ fontSize: "1.1rem" }}
+            onClick={setSelectedRow(null)}
+          >
+            Clear
+          </Button>
         </Box>
         <Box
           sx={{
@@ -277,7 +326,7 @@ const ChartAcc = ({
             Add
           </Button>
         </Box>
-      </Box>
+      </Box> */}
       <ClientDetailsModal
         isOpen={isDetailsModalOpen}
         setIsDetailsModalOpen={setIsDetailsModalOpen}
@@ -292,7 +341,7 @@ const ChartAcc = ({
       />
       <Box
         ml="2%"
-        height="90%"
+        height="100%"
         width="95%"
         sx={{
           // "& .MuiDataGrid-root": {
@@ -365,7 +414,6 @@ const ChartAcc = ({
           // }}
           onRowClick={(params) => {
             console.log("Params:", params);
-            handleRowClick(params);
           }}
           // selectionModel={[selectedRow]}
           pagination // Add this line to enable pagination
