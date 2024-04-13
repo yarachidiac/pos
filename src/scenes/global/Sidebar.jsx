@@ -53,7 +53,57 @@ const Item = ({
     if (userControl === "N") {
       setOpen(true);
     } else {
-      navigate("/ManagePoS");
+      if (isNav) {
+        navigate("/ManagePoS");
+      } else {
+        setIsConfOpenDialog(true);
+      }
+    }
+  };
+
+  const handleManageGroups = () => {
+  if (userControl === "N") {
+    setOpen(true);
+  } else {
+    if (isNav) {
+      navigate("/Groups");
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  }};
+
+  const handleComp = () => {
+    if (userControl === "N") {
+    setOpen(true);
+  } else {
+    if (isNav) {
+      navigate("/CompanyManagement");
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  }
+  }
+
+  const handleUser = () => {
+    if (userControl === "N") {
+      setOpen(true);
+    } else {
+      if (isNav) {
+        navigate("/team");
+      } else {
+        setIsConfOpenDialog(true);
+      }
+    }
+  }
+  const handleStation = () => {
+    if (userControl === "N") {
+      setOpen(true);
+    } else {
+      if (isNav) {
+        navigate("/Station");
+      } else {
+        setIsConfOpenDialog(true);
+      }
     }
   };
 
@@ -72,6 +122,14 @@ const Item = ({
           } else {
             setIsConfOpenDialog(true);
          }
+        } else if (title === "Manage Groups") {
+          handleManageGroups();
+        } else if (title === "Company Management") {
+          handleComp();
+        } else if (title === "User Settings") {
+          handleUser();
+        } else if (title === "Station Settings") {
+          handleStation();
         }
       }  
       }
@@ -276,7 +334,6 @@ const Sidebar = ({
             <Item
               icon={<PointOfSaleOutlinedIcon />}
               title="POS"
-              to="/PoS"
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
@@ -295,9 +352,12 @@ const Sidebar = ({
             <Item
               icon={<AssessmentOutlinedIcon />}
               title="Manage Groups"
-              to="/Groups"
               selected={selected}
               setSelected={setSelected}
+              setOpen={setOpen}
+              userControl={userControl}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
             />
             {/* <SubItem
               title="Inventory Management"
@@ -420,24 +480,40 @@ const Sidebar = ({
               handleSubItemClick={handleSubItemClick}
               selected={selected} // Pass selected to SubItem
               setSelected={setSelected}
+              setOpen={setOpen}
+              userControl={userControl}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
             >
               <Item
                 title="Company Management"
                 to="/CompanyManagement"
                 selected={selected}
                 setSelected={setSelected}
+                setOpen={setOpen}
+                userControl={userControl}
+                isNav={isNav}
+                setIsConfOpenDialog={setIsConfOpenDialog}
               />
               <Item
                 title="Station Settings"
                 to="/Station"
                 selected={selected}
                 setSelected={setSelected}
+                setOpen={setOpen}
+                userControl={userControl}
+                isNav={isNav}
+                setIsConfOpenDialog={setIsConfOpenDialog}
               />
               <Item
                 title="User Settings"
                 to="/team"
                 selected={selected}
                 setSelected={setSelected}
+                setOpen={setOpen}
+                userControl={userControl}
+                isNav={isNav}
+                setIsConfOpenDialog={setIsConfOpenDialog}
               />
 
               <SubItem

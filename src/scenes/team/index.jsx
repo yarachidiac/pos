@@ -198,7 +198,9 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
       setUserDetails(userDetailsData);
       setUserDetailsCopy(userDetailsData);
       // Open the details modal
-      setIsDetailsModalOpen(true);
+      setTimeout(() => {
+        setIsDetailsModalOpen(true);
+      }, 2000);
     } catch (error) {
       console.error("Error:", error.message);
     }
@@ -212,7 +214,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "100%",
       }}
     >

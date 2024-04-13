@@ -122,18 +122,34 @@ const handleConfirmSelection = () => {
           backgroundColor: colors.primary[400],
         }}
       >
-        <Grid container spacing={2} sx={{ overflow: "auto", height: "100%" }}>
-          {Array.isArray(modifiers) &&
-            modifiers.map((modifier) => (
-              <Grid item xs={12} sm={6} md={3} key={modifier.id}>
-                <Card sx={{ position: "relative" }}>
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    src={`${process.env.PUBLIC_URL}/${companyName}/images/${modifier.Image}`}
-                    alt={`Modifier ${modifier.ItemNo}`}
-                  />
-                  {/* <Box
+        <Box sx={{ height: "90%", width: "100%", overflow: "auto" }}>
+          <Grid container spacing={1} sx={{}}>
+            {Array.isArray(modifiers) &&
+              modifiers.map((modifier) => (
+                <Grid item xs={12} sm={6} md={2.4} key={modifier.id}>
+                  <Card
+                    sx={{
+                      height: "100%",
+                      width: "100%",
+                      "& .MuiCardContent-root:last-child ": {
+                        paddingBottom: "5px",
+                      },
+                      "& .MuiCardContent-root": {
+                        padding: "5px",
+                      },
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="40%"
+                      src={
+                        modifier.Image
+                          ? `${process.env.PUBLIC_URL}/${companyName}/images/${modifier.Image}`
+                          : `${process.env.PUBLIC_URL}/maxresdefault.jpg`
+                      }
+                      alt={`Modifier ${modifier.ItemNo}`}
+                    />
+                    {/* <Box
                   sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -148,30 +164,67 @@ const handleConfirmSelection = () => {
                 >
                   <Typography></Typography>
                 </Box> */}
-                  <CardContent>
-                    <Box
+                    <CardContent
                       sx={{
+                        height: "60%",
                         display: "flex",
-                        flexDirection: "row",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <Typography variant="h4">{modifier.ItemName}</Typography>
-                      <Typography variant="body2"></Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        flexDirection: "row",
-                      }}
-                    >
-                      <Button
+                      <Box
                         sx={{
-                          fontSize: "0.9rem",
-                          borderRadius: "20px",
-                          border: `2px solid ${colors.greenAccent[500]}`,
-                          color: colors.greenAccent[500],
-                          "&:hover": {
+                          display: "flex",
+                          flexDirection: "column",
+                          maxHeight: "50%",
+                          width: "100%", // Full width of the Box
+                          // overflow: "hidden", // Hide overflow
+                          wordWrap: "break-word", // Allow long words to break
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        <Typography variant="h4">
+                          {modifier.ItemName}
+                        </Typography>
+                        <Typography variant="body2"></Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          flexDirection: "row",
+                        }}
+                      >
+                        <Button
+                          sx={{
+                            fontSize: "0.9rem",
+                            borderRadius: "20px",
+                            border: `2px solid ${colors.greenAccent[500]}`,
+                            color: colors.greenAccent[500],
+                            "&:hover": {
+                              backgroundColor: selectedModifiers.some(
+                                (meal) =>
+                                  meal.index === selectedMealForModify &&
+                                  meal.modifiers.some(
+                                    (selectedModifier) =>
+                                      selectedModifier.ItemNo ===
+                                      modifier.ItemNo
+                                  )
+                              )
+                                ? colors.greenAccent[500]
+                                : "inherit",
+                              color: selectedModifiers.some(
+                                (meal) =>
+                                  meal.index === selectedMealForModify &&
+                                  meal.modifiers.some(
+                                    (selectedModifier) =>
+                                      selectedModifier.ItemNo ===
+                                      modifier.ItemNo
+                                  )
+                              )
+                                ? colors.primary[500]
+                                : colors.greenAccent[500],
+                            },
                             backgroundColor: selectedModifiers.some(
                               (meal) =>
                                 meal.index === selectedMealForModify &&
@@ -180,8 +233,8 @@ const handleConfirmSelection = () => {
                                     selectedModifier.ItemNo === modifier.ItemNo
                                 )
                             )
-                              ? colors.greenAccent[500]
-                              : "inherit",
+                              ? colors.greenAccent[500] // Set background color to green for selected modifiers
+                              : "inherit", // Set to default background color
                             color: selectedModifiers.some(
                               (meal) =>
                                 meal.index === selectedMealForModify &&
@@ -190,10 +243,12 @@ const handleConfirmSelection = () => {
                                     selectedModifier.ItemNo === modifier.ItemNo
                                 )
                             )
-                              ? colors.primary[500]
+                              ? colors.primary[500] // Set background color to green for selected modifiers
                               : colors.greenAccent[500],
-                          },
-                          backgroundColor: selectedModifiers.some(
+                          }}
+                          onClick={() => handleChooseModifier(modifier)}
+                        >
+                          {selectedModifiers.some(
                             (meal) =>
                               meal.index === selectedMealForModify &&
                               meal.modifiers.some(
@@ -201,50 +256,30 @@ const handleConfirmSelection = () => {
                                   selectedModifier.ItemNo === modifier.ItemNo
                               )
                           )
-                            ? colors.greenAccent[500] // Set background color to green for selected modifiers
-                            : "inherit", // Set to default background color
-                          color: selectedModifiers.some(
-                            (meal) =>
-                              meal.index === selectedMealForModify &&
-                              meal.modifiers.some(
-                                (selectedModifier) =>
-                                  selectedModifier.ItemNo === modifier.ItemNo
-                              )
-                          )
-                            ? colors.primary[500] // Set background color to green for selected modifiers
-                            : colors.greenAccent[500],
-                        }}
-                        onClick={() => handleChooseModifier(modifier)}
-                      >
-                        {selectedModifiers.some(
-                          (meal) =>
-                            meal.index === selectedMealForModify &&
-                            meal.modifiers.some(
-                              (selectedModifier) =>
-                                selectedModifier.ItemNo === modifier.ItemNo
-                            )
-                        )
-                          ? "Unchoose" // If the modifier is selected, show "Unchoose"
-                          : "Choose"}
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-        </Grid>
-        <Button
-          marginLeft="auto"
-          variant="h4"
-          sx={{
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            fontSize: "1rem",
-          }}
-          onClick={handleConfirmSelection}
-        >
-          Close
-        </Button>
+                            ? "Unchoose" // If the modifier is selected, show "Unchoose"
+                            : "Choose"}
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+          </Grid>
+        </Box>
+        <Box sx={{ height: "10%" }}>
+          <Button
+            marginLeft="auto"
+            variant="h4"
+            sx={{
+              backgroundColor: colors.greenAccent[500],
+              color: colors.primary[500],
+              fontSize: "1rem",
+            }}
+            onClick={handleConfirmSelection}
+          >
+            Close
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );

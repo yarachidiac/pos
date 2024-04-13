@@ -715,13 +715,13 @@ console.log("closeTClicked", closeTClicked);
           (meal) => meal.Printed !== "p"
         );
         console.log("unsennnnnnnnnnnnt", unsentMeals);
-        if (location.search.includes("selectedTableId")) {
+        //if (location.search.includes("selectedTableId")) {
           if (unsentMeals.length > 0) {
             setIsNav(false);
           } else {
             setIsNav(true);
           }
-        }
+        //}
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -1619,7 +1619,7 @@ console.log("closeTClicked", closeTClicked);
 
               <Box
                 sx={{
-                  height: "10%",
+                  height: "9%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -1676,7 +1676,7 @@ console.log("closeTClicked", closeTClicked);
               </Box>
               <Box
                 sx={{
-                  height: "10%",
+                  height: "9%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -1689,7 +1689,7 @@ console.log("closeTClicked", closeTClicked);
               </Box>
               <Box
                 sx={{
-                  height: "10%",
+                  height: "9%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -1703,7 +1703,7 @@ console.log("closeTClicked", closeTClicked);
               </Box>
               <Box
                 sx={{
-                  height: "10%",
+                  height: "9%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -1718,11 +1718,11 @@ console.log("closeTClicked", closeTClicked);
                 onSubmit={handleSubmit}
                 type={numericKeypadType}
               />
-              <Box sx={{ height: "10%" }}>
+              <Box sx={{ height: "15%" }}>
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={{ borderRadius: "20px", width: "100%" }}
+                  sx={{ borderRadius: "20px", width: "100%", height:"100%" }}
                   onClick={() => handlePlace()}
                 >
                   Place Order

@@ -268,7 +268,9 @@ const ChartAcc = ({
       setClientDetails(clientDetailsData);
       setClientDetailsCopy(clientDetailsData);
       // Open the details modal
-      setIsDetailsModalOpen(true);
+      setTimeout(() => {
+        setIsDetailsModalOpen(true);
+      }, 2000);
     } catch (error) {
       console.error("Error:", error.message);
     }

@@ -107,13 +107,13 @@ function App() {
     return <CircularProgress color="success" />;
   }
 
-  // const handleClose = (event, reason) => {
-  //   if (reason === "clickaway") {
-  //     return;
-  //   }
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
-  //   setOpen(false);
-  // };
+    setOpen(false);
+  };
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -135,7 +135,7 @@ function App() {
                 <Snackbar
                   open={open}
                   autoHideDuration={2000}
-                  // onClose={handleClose}
+                  onClose={handleClose}
                   message="You have no access to this page."
                 />
               </div>

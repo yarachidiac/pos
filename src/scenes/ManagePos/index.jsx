@@ -125,7 +125,7 @@ const ManagePoS = ({
       setSuccessMess(responseData.message);
       setTimeout(() => {
         setSuccessMess("");
-      }, 2000);
+      }, 8000);
       console.log("Response from the server:", responseData);
 
       // Fetch the details of the newly added user
@@ -143,7 +143,9 @@ const ManagePoS = ({
       setItemDetails(itemDetailsData);
       setItemDetailsCopy(itemDetailsData);
       // Open the details modal
-      setIsDetailsModalOpen(true);
+      setTimeout(() => {
+        setIsDetailsModalOpen(true);
+      }, 2000);
     } catch (error) {
       console.error("Error:", error.message);
     }

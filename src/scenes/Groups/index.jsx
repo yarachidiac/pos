@@ -141,7 +141,9 @@ const Groups = ({
       setGroupDetails(groupDetailsData);
       setGroupDetailsCopy(groupDetailsData);
       // Open the details modal
-      setIsDetailsModalOpen(true);
+      setTimeout(() => {
+        setIsDetailsModalOpen(true);
+      }, 2000);
     } catch (error) {
       console.error("Error:", error.message);
     }

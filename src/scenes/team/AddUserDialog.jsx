@@ -32,7 +32,9 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
     onAdd({ name: userName });
     setUserName("");
     setValMessage("");
-    onClose();
+    setTimeout(() => {
+      onClose();
+    }, 2000); 
   };
 
   const handleCancel = () => {
@@ -45,7 +47,7 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
     <Dialog
       open={isOpen}
       onClose={onClose}
-      sx={{ "& .MuiPaper-root": { height: "30%", width:"18%" } }}
+      sx={{ "& .MuiPaper-root": { height: "35%", width: "18%" } }}
     >
       <DialogTitle sx={{ height: "30%" }}>
         <Typography sx={{ height: "100%" }} variant="h1">
@@ -53,22 +55,22 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
         </Typography>
       </DialogTitle>
       <DialogContent sx={{ height: "40%" }}>
-        <Box sx={{ display: "flex", flexDirection: "column",  }}>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
           {/* Display validation message */}
 
           <TextField
             sx={{ height: "70%" }}
             margin="dense"
-            label="Name"
+            label={title.includes("Number") ? "Number" : "Name"}
             value={userName}
             onChange={handleChange}
           />
-            {valMessage && (
-              <Typography sx={{ height: "10%" }}  variant="body1" color="error">
-                {valMessage}
-              </Typography>
-            )}
-          <Typography sx={{ height: "10%" }} variant="body1">
+          {valMessage && (
+            <Typography sx={{ height: "10%" }} variant="body1" color="error">
+              {valMessage}
+            </Typography>
+          )}
+          <Typography sx={{ height: "20%", color:colors.greenAccent[500], fontSize:"1.4em", fontWeight:"bold" }} variant="body1">
             {successMess}
           </Typography>
         </Box>
