@@ -122,11 +122,11 @@ const handleConfirmSelection = () => {
           backgroundColor: colors.primary[400],
         }}
       >
-        <Box sx={{ height: "90%", width: "100%", overflow: "auto" }}>
+        <Box sx={{ height: "95%", width: "100%", overflow: "auto" }}>
           <Grid container spacing={1} sx={{}}>
             {Array.isArray(modifiers) &&
               modifiers.map((modifier) => (
-                <Grid item xs={12} sm={6} md={2.4} key={modifier.id}>
+                <Grid item xs={12} sm={6} md={2} key={modifier.id}>
                   <Card
                     sx={{
                       height: "100%",
@@ -176,7 +176,7 @@ const handleConfirmSelection = () => {
                         sx={{
                           display: "flex",
                           flexDirection: "column",
-                          maxHeight: "50%",
+                          maxHeight: "60%",
                           width: "100%", // Full width of the Box
                           // overflow: "hidden", // Hide overflow
                           wordWrap: "break-word", // Allow long words to break
@@ -190,9 +190,12 @@ const handleConfirmSelection = () => {
                       </Box>
                       <Box
                         sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          flexDirection: "row",
+                          // display: "flex",
+                          // justifyContent: "flex-end",
+                          // flexDirection: "row",
+                          height: "40%",
+                          //width: "10%",
+                          marginLeft: "auto",
                         }}
                       >
                         <Button
@@ -266,7 +269,7 @@ const handleConfirmSelection = () => {
               ))}
           </Grid>
         </Box>
-        <Box sx={{ height: "10%" }}>
+        <Box sx={{ height: "5%" }}>
           <Button
             marginLeft="auto"
             variant="h4"

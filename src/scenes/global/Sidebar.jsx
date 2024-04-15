@@ -244,6 +244,7 @@ const Sidebar = ({
   return (
     <Box
       sx={{
+        //width: isCollapsed ? "5%" : "15%",
         position: isMobile && !isCollapsed ? "fixed" : "relative",
         zIndex: 1000, // Adjust the z-index to make sure it appears above other content
         //width: isCollapsed ? "auto" : "240px", // Adjust the width as needed

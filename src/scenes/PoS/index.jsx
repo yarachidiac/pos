@@ -827,7 +827,9 @@ console.log("closeTClicked", closeTClicked);
       {/* First Box (70% width) */}
       <Box
         sx={{
-          width: isCollapsed ? "69%" : "60%",
+          width: `calc(${window.innerWidth}px - (${
+            isCollapsed ? "80px" : "270px"
+          } + ${window.innerWidth * 0.3}px))`,
           padding: "1%",
           height: "90%",
           display: "flex",
@@ -841,7 +843,7 @@ console.log("closeTClicked", closeTClicked);
             flexDirection: "row",
             justifyContent: "space-around",
             // marginBottom: "3%",
-            //height: "7%",
+            height: "10%",
             overflowX: "auto",
           }}
         >
@@ -1309,8 +1311,9 @@ console.log("closeTClicked", closeTClicked);
 
       <Box
         sx={{
-          marginLeft: "auto",
+          // marginLeft: "auto",
           height: "100%",
+          //width: `calc(${window.innerWidth * 0.3}% - 270px)`,
           // width: isCollapsed ? "30%" : "26%",
           width: "30%",
           display: "flex",
@@ -1722,7 +1725,7 @@ console.log("closeTClicked", closeTClicked);
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={{ borderRadius: "20px", width: "100%", height:"100%" }}
+                  sx={{ borderRadius: "20px", width: "100%", height: "100%" }}
                   onClick={() => handlePlace()}
                 >
                   Place Order

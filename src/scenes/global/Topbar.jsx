@@ -135,7 +135,7 @@ const Topbar = ({
         location.pathname.includes("/Tables")) && (
         <Box
           sx={{
-            width: currentRoute === "/PoS" ? "70%" : "100%",
+            width: currentRoute === "/PoS" ? "60%" : "100%",
             height: "8%",
             display: "flex",
             justifyContent: "space-around",
