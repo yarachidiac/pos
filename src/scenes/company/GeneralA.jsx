@@ -29,6 +29,8 @@ const GeneralA = ({ companyName }) => {
     ...companyDetails,
   });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [curr, setCurr] = useState([]);
+
 console.log(
   "ssssssssssssssssssssss",
   dayjs("2022-03-13T03:00:00").format("hh:mm A")
@@ -66,8 +68,9 @@ console.log(
         );
         if (response.ok) {
           const data = await response.json();
-          setCompanyDetails(data);
-          setCompanyDetailsCopy(data);
+          setCompanyDetails(data.compOb);
+          setCompanyDetailsCopy(data.compOb);
+          setCurr(data.curOb)
         } else {
           console.error("Failed to fetch company details");
         }
@@ -169,9 +172,12 @@ console.log("copppppppp", companyDetailsCopy);
               variant="outlined"
               size="small"
             >
-              <MenuItem value={"USD"}>USD</MenuItem>
-              <MenuItem value={"EUR"}>EUR</MenuItem>
-              {/* Add more options as needed */}
+              {curr.map((cur) => (
+                <MenuItem key={cur.id} value={cur.id}>
+                  {cur.name}
+                </MenuItem>
+              ))}
+
             </Select>
           ) : (
             <TextField

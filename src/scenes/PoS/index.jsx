@@ -99,6 +99,8 @@ const PoS = ({
   const [nameCard, setNameCard] = useState("");
   const [ingredCard, setIngredCard] = useState("");
   const [closeTClicked, setCloseTClicked] = useState(false);
+  const [curr, setCurr] = useState("");
+  const [infCom, setInfCom] = useState({});
 
   // Function to scroll the last item into view
   const scrollToLastItem = () => {
@@ -339,10 +341,26 @@ const PoS = ({
     fetchCategories();
     // Fetch categories when the component mounts
     fetchAllItems();
+
+    fetchCur();
   }, []);
 
   console.log("the branch and the SATYpe", branch, invType);
   console.log("company in pos ", companyName);
+
+  const fetchCur = async() => {
+    try {
+      const response = await fetch(
+        `http://192.168.16.113:8000/getCurr/${companyName}`
+      );
+      const data = await response.json();
+      console.log("aaaaaaaaaaaaaaaaaaaa", data);
+      setCurr(data["Code"]); // Assuming your API response has a 'categories' property
+      setInfCom(data);
+    } catch (error) {
+      console.error("Error fetching categoriesitems:", error);
+    }
+  }
 
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
@@ -785,19 +803,19 @@ console.log("closeTClicked", closeTClicked);
                   <TableCell>{selectedMeal.quantity}</TableCell>
                   <TableCell>{selectedMeal.ItemName}</TableCell>
                   <TableCell>
-                    $
                     {(
                       selectedMeal.UPrice -
                       (selectedMeal.UPrice * selectedMeal.Disc) / 100
-                    ).toFixed(2)}
+                    ).toFixed(2)}{" "}
+                    {curr}
                   </TableCell>
                   <TableCell>
-                    $
                     {(
                       (selectedMeal.UPrice -
                         (selectedMeal.UPrice * selectedMeal.Disc) / 100) *
                       selectedMeal.quantity
-                    ).toFixed(2)}
+                    ).toFixed(2)}{" "}
+                    {curr}
                   </TableCell>
                 </TableRow>
                 {/* Modifier rows */}
@@ -1068,15 +1086,17 @@ console.log("closeTClicked", closeTClicked);
                                 <Typography
                                   variant="body2"
                                   sx={{ width: "50%", height: "100%" }}
-                                >{`$${(
+                                >{`${(
                                   meal.UPrice +
                                   meal.UPrice * (meal.Tax / 100)
-                                ).toFixed(2)}`}</Typography>
+                                ).toFixed(2)} ${curr}`}</Typography>
                               ) : (
                                 <Typography
                                   sx={{ width: "50%", height: "100%" }}
                                   variant="body2"
-                                >{`$${meal.UPrice.toFixed(2)}`}</Typography>
+                                >{`${meal.UPrice.toFixed(
+                                  2
+                                )} ${curr}`}</Typography>
                               )}
 
                               <Button
@@ -1120,7 +1140,7 @@ console.log("closeTClicked", closeTClicked);
                           : 2.4 // Other devices collapsed
                         : isIpadPro
                         ? 6 // iPad Pro expanded
-                        : 4 // Other devices expanded
+                        : 3 // Other devices expanded
                     }
                     key={meal.ItemNo}
                   >
@@ -1263,17 +1283,19 @@ console.log("closeTClicked", closeTClicked);
 
                             {meal.Tax !== null && meal.Tax !== 0 ? (
                               <Typography
-                                variant="body2"
+                                variant="h4"
                                 sx={{ width: "50%", height: "100%" }}
-                              >{`$${(
+                              >{`${(
                                 meal.UPrice +
                                 meal.UPrice * (meal.Tax / 100)
-                              ).toFixed(2)}`}</Typography>
+                              ).toFixed(2)}   ${curr}`}</Typography>
                             ) : (
                               <Typography
                                 sx={{ width: "50%", height: "100%" }}
-                                variant="body2"
-                              >{`$${meal.UPrice.toFixed(2)}`}</Typography>
+                                variant="h4"
+                              >{`${meal.UPrice.toFixed(
+                                2
+                              )}   ${curr}`}</Typography>
                             )}
 
                             <Button
@@ -1444,10 +1466,10 @@ console.log("closeTClicked", closeTClicked);
                           color="text.secondary"
                           style={{ height: "10%", width: "100%" }}
                         >
-                          {`$${
+                          {`${
                             selectedMeal.UPrice -
                             (selectedMeal.UPrice * selectedMeal.Disc) / 100
-                          }`}
+                          } ${curr}`}
                         </Typography>
                         {selectedMeal.chosenModifiers !== undefined && (
                           <Typography style={{ height: "50%", width: "100%" }}>
@@ -1629,7 +1651,9 @@ console.log("closeTClicked", closeTClicked);
                 }}
               >
                 <Typography variant="h4">Gross Total</Typography>
-                <Typography variant="h4">${grossTotal}</Typography>
+                <Typography variant="h4">
+                  {grossTotal} {curr}
+                </Typography>
               </Box>
               <Box
                 sx={{
@@ -1651,7 +1675,9 @@ console.log("closeTClicked", closeTClicked);
                   Service
                 </Button>
                 <Typography variant="h4">{srv}%</Typography>
-                <Typography variant="h4">${serviceValue.toFixed(2)}</Typography>
+                <Typography variant="h4">
+                  {serviceValue.toFixed(2)} {curr}
+                </Typography>
               </Box>
               <Box
                 sx={{
@@ -1674,7 +1700,7 @@ console.log("closeTClicked", closeTClicked);
                 </Button>
                 <Typography variant="h4">{discValue}%</Typography>
                 <Typography variant="h4">
-                  ${discountValue.toFixed(2)}
+                  {discountValue.toFixed(2)} {curr}
                 </Typography>
               </Box>
               <Box
@@ -1687,7 +1713,7 @@ console.log("closeTClicked", closeTClicked);
               >
                 <Typography variant="h4">Total</Typography>
                 <Typography variant="h4">
-                  ${totalDiscount.toFixed(2)}
+                  {totalDiscount.toFixed(2)} {curr}
                 </Typography>
               </Box>
               <Box
@@ -1702,7 +1728,9 @@ console.log("closeTClicked", closeTClicked);
                   Tax
                 </Typography>
                 <Typography variant="h4">{`11%`}</Typography>
-                <Typography variant="h4">${totalTax.toFixed(2)}</Typography>
+                <Typography variant="h4">
+                  {totalTax.toFixed(2)} {curr}
+                </Typography>
               </Box>
               <Box
                 sx={{
@@ -1713,7 +1741,12 @@ console.log("closeTClicked", closeTClicked);
                 }}
               >
                 <Typography variant="h4">Total</Typography>
-                <Typography variant="h4">${finalTotal.toFixed(2)}</Typography>
+                <Typography variant="h4">
+                  {finalTotal.toFixed(2)} 
+                </Typography>
+                <Typography variant="h4">
+                  {finalTotal.toFixed(2)} {curr}
+                </Typography>
               </Box>
               <NumericKeypad
                 open={isNumericKeypadOpen}
@@ -1747,34 +1780,39 @@ console.log("closeTClicked", closeTClicked);
               <TableBody>
                 <TableRow>
                   <TableCell>Gross Total:</TableCell>
-                  <TableCell>${grossTotal}</TableCell>
+                  <TableCell>
+                    {grossTotal} {curr}
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Service:</TableCell>
                   <TableCell>
-                    {srv}% (${serviceValue.toFixed(2)})
+                    {srv}% ({serviceValue.toFixed(2)} {curr})
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Discount:</TableCell>
                   <TableCell>
-                    {discValue}% (${discountValue.toFixed(2)})
+                    {discValue}% ({discountValue.toFixed(2)} {curr})
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Total Discount:</TableCell>
-                  <TableCell>${totalDiscount.toFixed(2)}</TableCell>
+                  <TableCell>
+                    {totalDiscount.toFixed(2)} {curr}
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Tax:</TableCell>
                   <TableCell>
-                    {`11%`} ($
-                    {totalTax.toFixed(2)})
+                    {`11%`} ({totalTax.toFixed(2)} {curr})
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Total:</TableCell>
-                  <TableCell>${finalTotal.toFixed(2)}</TableCell>
+                  <TableCell>
+                    {finalTotal.toFixed(2)} {curr}
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>

@@ -41,22 +41,18 @@ const Company = ({ companyName }) => {
   };
 
   const modalStyle = {
-    marginLeft: "5%",
     background: colors.whiteblack[100],
     boxShadow: 24,
-    pt: 0, // Set top padding to 2
-    pr: 2, // Set right padding to 3
-    pb: 2, // Set bottom padding to 3
-    pl: 2, // Set left padding to 3
     minWidth: "90%",
     maxHeight: "90%",
     display: "flex",
     flexDirection: window.innerWidth < 650 ? "row" : "column",
+    justifyContent: "center",
   };
 
   const modalContainerStyle = {
-    position: "relative",
-    overflow: "hidden", // Hide overflow from the Drawer
+    // position: "relative",
+    // overflow: "hidden", 
     //backgroundColor: "rgba(252, 252, 252, 0.92)",
   };
 
@@ -116,6 +112,15 @@ const Company = ({ companyName }) => {
   };
 
   return (
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Box
         sx={{
           ...modalStyle,
@@ -187,6 +192,7 @@ const Company = ({ companyName }) => {
           {renderSelectedTable()}
         </Box>
       </Box>
+    </Box>
   );
 };
 

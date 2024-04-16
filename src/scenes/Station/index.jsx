@@ -10,7 +10,7 @@ const Station = ({ companyName }) => {
     marginLeft: "5%",
     background: colors.whiteblack[100],
     boxShadow: 24,
-    pt: 0, // Set top padding to 2
+    pt: 2, // Set top padding to 2
     pr: 2, // Set right padding to 3
     pb: 2, // Set bottom padding to 3
     pl: 2, // Set left padding to 3
@@ -20,11 +20,6 @@ const Station = ({ companyName }) => {
     flexDirection: window.innerWidth < 650 ? "row" : "column",
   };
 
-  const modalContainerStyle = {
-    position: "relative",
-    overflow: "hidden", // Hide overflow from the Drawer
-    //backgroundColor: "rgba(252, 252, 252, 0.92)",
-  };
 
   const largerModalStyle = {
     width: "90%",
@@ -38,23 +33,24 @@ const Station = ({ companyName }) => {
   };
 
   return (
-    <Box
-      sx={{
-        ...modalStyle,
-        ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
-        ...modalContainerStyle,
-      }}
-    >
+    <Box sx={{width:"100%", height:"100%", display:"flex", justifyContent:"center", alignItems:"center"}}>
       <Box
         sx={{
-          flexGrow: 1, // Allow the table to grow and take available space
-          width: window.innerWidth < 650 ? "60%" : "100%",
-          //maxHeight: "60%",
-          height: "500px",
-          //overflowY: "auto",
+          ...modalStyle,
+          ...(window.innerWidth > 650 ? largerModalStyle : heightModalStyle),
         }}
       >
-        <StatSet companyName={companyName}/>
+        <Box
+          sx={{
+            flexGrow: 1, // Allow the table to grow and take available space
+            width: window.innerWidth < 650 ? "60%" : "100%",
+            //maxHeight: "60%",
+            height: "500px",
+            //overflowY: "auto",
+          }}
+        >
+          <StatSet companyName={companyName} />
+        </Box>
       </Box>
     </Box>
   );

@@ -171,23 +171,27 @@ function App() {
                 />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
-                  <Route
-                    path="/team"
-                    element={
-                      <Team
-                        companyName={companyName}
-                        setBranch={setBranch}
-                        setInvType={setInvType}
-                        //setCompanyName={setCompanyName}
-                        addTitle={addTitle}
-                        setAddTitle={setAddTitle}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/CompanyManagement"
-                    element={<Company companyName={companyName} />}
-                  />
+                  {userControl === "Y" && (
+                    <Route
+                      path="/team"
+                      element={
+                        <Team
+                          companyName={companyName}
+                          setBranch={setBranch}
+                          setInvType={setInvType}
+                          //setCompanyName={setCompanyName}
+                          addTitle={addTitle}
+                          setAddTitle={setAddTitle}
+                        />
+                      }
+                    />
+                  )}
+                  {userControl === "Y" && (
+                    <Route
+                      path="/CompanyManagement"
+                      element={<Company companyName={companyName} />}
+                    />
+                  )}
                   <Route
                     path="/PoS"
                     element={
@@ -218,33 +222,37 @@ function App() {
                       />
                     }
                   />
-                  <Route
-                    path="/ManagePoS"
-                    element={
-                      <ManagePoS
-                        companyName={companyName}
-                        branch={branch}
-                        invType={invType}
-                        addTitle={addTitle}
-                        setAddTitle={setAddTitle}
-                        setOldItemNo={setOldItemNo}
-                        setNewItemNo={setNewItemNo}
-                        oldItemNo={oldItemNo}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/Chart"
-                    element={
-                      <ChartAcc
-                        companyName={companyName}
-                        addTitle={addTitle}
-                        setAddTitle={setAddTitle}
-                        selectedRow={selectedRow}
-                        setSelectedRow={setSelectedRow}
-                      />
-                    }
-                  />
+                  {userControl === "Y" && (
+                    <Route
+                      path="/ManagePoS"
+                      element={
+                        <ManagePoS
+                          companyName={companyName}
+                          branch={branch}
+                          invType={invType}
+                          addTitle={addTitle}
+                          setAddTitle={setAddTitle}
+                          setOldItemNo={setOldItemNo}
+                          setNewItemNo={setNewItemNo}
+                          oldItemNo={oldItemNo}
+                        />
+                      }
+                    />
+                  )}
+                  {userControl === "Y" && (
+                    <Route
+                      path="/Chart"
+                      element={
+                        <ChartAcc
+                          companyName={companyName}
+                          addTitle={addTitle}
+                          setAddTitle={setAddTitle}
+                          selectedRow={selectedRow}
+                          setSelectedRow={setSelectedRow}
+                        />
+                      }
+                    />
+                  )}
                   <Route
                     path="/Sections"
                     element={
@@ -287,19 +295,21 @@ function App() {
                     path="/Station"
                     element={<Station companyName={companyName} />}
                   />
-                  <Route
-                    path="/Groups"
-                    element={
-                      <Groups
-                        companyName={companyName}
-                        addTitle={addTitle}
-                        setAddTitle={setAddTitle}
-                        setOldItemNo={setOldItemNo}
-                        setNewItemNo={setNewItemNo}
-                        oldItemNo={oldItemNo}
-                      />
-                    }
-                  />
+                  {userControl === "Y" && (
+                    <Route
+                      path="/Groups"
+                      element={
+                        <Groups
+                          companyName={companyName}
+                          addTitle={addTitle}
+                          setAddTitle={setAddTitle}
+                          setOldItemNo={setOldItemNo}
+                          setNewItemNo={setNewItemNo}
+                          oldItemNo={oldItemNo}
+                        />
+                      }
+                    />
+                  )}
                 </Routes>
               </main>
             </>
