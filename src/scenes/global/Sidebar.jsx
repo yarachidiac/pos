@@ -106,6 +106,17 @@ const Item = ({
       }
     }
   };
+  const handleKitchen = () => {
+    if (userControl === "N") {
+      setOpen(true);
+    } else {
+      if (isNav) {
+        navigate("/Kitchen");
+      } else {
+        setIsConfOpenDialog(true);
+      }
+    }
+  };
 
   return (
     <MenuItem
@@ -130,6 +141,8 @@ const Item = ({
           handleUser();
         } else if (title === "Station Settings") {
           handleStation();
+        } else if (title === "Kitchen") {
+          handleKitchen();
         }
       }  
       }
@@ -516,7 +529,16 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
               />
-
+              <Item
+                title="Kitchen"
+                to="/Kitchen"
+                selected={selected}
+                setSelected={setSelected}
+                setOpen={setOpen}
+                userControl={userControl}
+                isNav={isNav}
+                setIsConfOpenDialog={setIsConfOpenDialog}
+              />
               <SubItem
                 title="General Information"
                 icon={<MenuOutlinedIcon />}

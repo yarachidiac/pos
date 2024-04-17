@@ -7,7 +7,6 @@ const Station = ({ companyName }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const modalStyle = {
-    marginLeft: "5%",
     background: colors.whiteblack[100],
     boxShadow: 24,
     pt: 2, // Set top padding to 2

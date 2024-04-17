@@ -40,6 +40,7 @@ import Journal from "./scenes/Journal";
 import Groups from "./scenes/Groups";
 import DailySales from "./scenes/dashboard/DailySales";
 import Station from "./scenes/Station";
+import Kitchen from "./scenes/Kitchen";
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -294,6 +295,16 @@ function App() {
                   <Route
                     path="/Station"
                     element={<Station companyName={companyName} />}
+                  />
+                  <Route
+                    path="/Kitchen"
+                    element={
+                      <Kitchen
+                        companyName={companyName}
+                        addTitle={addTitle}
+                        setAddTitle={setAddTitle}
+                      />
+                    }
                   />
                   {userControl === "Y" && (
                     <Route

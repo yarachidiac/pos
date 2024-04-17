@@ -1740,13 +1740,21 @@ console.log("closeTClicked", closeTClicked);
                   justifyContent: "space-between",
                 }}
               >
-                <Typography variant="h4">Total</Typography>
-                <Typography variant="h4">
-                  {finalTotal.toFixed(2)} 
-                </Typography>
-                <Typography variant="h4">
-                  {finalTotal.toFixed(2)} {curr}
-                </Typography>
+                <Box sx={{ width: "45%" }}>
+                  <Typography variant="h4">Total</Typography>
+                </Box>
+                <Box>
+                  <Typography variant="h4">
+                    {infCom.KD === "/"
+                      ? (finalTotal / infCom.Rate).toLocaleString() + " USD"
+                      : (finalTotal * infCom.Rate).toLocaleString() + " LBP"}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography variant="h4">
+                    {finalTotal.toLocaleString()} {curr}
+                  </Typography>
+                </Box>
               </Box>
               <NumericKeypad
                 open={isNumericKeypadOpen}
