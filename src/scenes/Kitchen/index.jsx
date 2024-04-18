@@ -70,51 +70,53 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
     fetchStationDetails();
   }, []);
     
-    const handleUserDetailsChange = async (newUserDetails) => {
-    //   try {
-    //     console.log("newUserDetailssssssssss", newUserDetails.name);
-    //     const apiUrl = `http://192.168.16.113:8000/addusers/${companyName}/${newUserDetails.name}`;
+    const handleKitchenDetailsChange = async (newKitchenDetails) => {
+      try {
+        console.log("newUserDetailssssssssss", newKitchenDetails.name);
+        const apiUrl = `http://192.168.16.113:8000/addKitchen/${companyName}`;
 
-    //     const response = await fetch(apiUrl, {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(newUserDetails),
-    //     });
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newKitchenDetails),
+        });
 
-    //     if (!response.ok) {
-    //       throw new Error(`HTTP error! Status: ${response.status}`);
-    //     }
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-    //     const responseData = await response.json();
-    //     setSuccessMess(responseData.message);
-    //     setTimeout(() => {
-    //       setSuccessMess("");
-    //     }, 2000);
-    //     console.log("Response from the server:", responseData);
+        const responseData = await response.json();
+        setSuccessMess(responseData.message);
+        setTimeout(() => {
+          setSuccessMess("");
+        }, 2000);
+        console.log("Response from the server:", responseData);
 
-    //     // Fetch the details of the newly added user
-    //     const userDetailsResponse = await fetch(
-    //       `http://192.168.16.113:8000/getUserDetail/${companyName}/${newUserDetails.name}`
-    //     );
+        // Fetch the details of the newly added user
+        const kitchenDetailsResponse = await fetch(
+          `http://192.168.16.113:8000/kitchen/${companyName}`
+        );
 
-    //     if (!userDetailsResponse.ok) {
-    //       throw new Error(`HTTP error! Status: ${userDetailsResponse.status}`);
-    //     }
+        if (!kitchenDetailsResponse.ok) {
+          throw new Error(
+            `HTTP error! Status: ${kitchenDetailsResponse.status}`
+          );
+        }
 
-    //     const userDetailsData = await userDetailsResponse.json();
+        const kitchenDetailsData = await kitchenDetailsResponse.json();
 
-    //     // Set the userDetails state with the details of the newly added user
-    //     setUserDetails(userDetailsData);
-    //     setUserDetailsCopy(userDetailsData);
-    //     // Open the details modal
-    //     setTimeout(() => {
-    //       setIsDetailsModalOpen(true);
-    //     }, 2000);
-    //   } catch (error) {
-    //     console.error("Error:", error.message);
-    //   }
+        // Set the userDetails state with the details of the newly added user
+        setKitchenDetails(kitchenDetailsData);
+        setKitchenDetailsCopy(kitchenDetailsData);
+        // Open the details modal
+        // setTimeout(() => {
+        //   setIsDetailsModalOpen(true);
+        // }, 2000);
+      } catch (error) {
+        console.error("Error:", error.message);
+      }
     };
 
     const handleCloseDialog = () => {
@@ -183,7 +185,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
           <AddUserDialog
             isOpen={isDialogOpen}
             onClose={handleCloseDialog}
-            onAdd={handleUserDetailsChange}
+            onAdd={handleKitchenDetailsChange}
             successMess={successMess}
             title={addTitle}
           />

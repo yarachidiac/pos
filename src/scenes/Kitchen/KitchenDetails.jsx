@@ -59,6 +59,7 @@ export default function KitchenDetails(props){
       setSuccessMessage(mesData.message);
     }
   };
+  
   useEffect(() => {
     if (
       JSON.stringify(props.kitchenDetailsCopy) !==
@@ -86,6 +87,7 @@ export default function KitchenDetails(props){
   const printerOptions = ["Printer 1", "Printer 2", "Printer 3"]; // Example printer options
   const reportOptions = ["Report 1", "Report 2", "Report 3"]; // Example report options
   const rows = props.kitchenDetailsCopy.map((detail, index) => (
+    console.log("hereeeeeeeeeee i am", detail.PrinterName),
     <TableRow key={index}>
       <TableCell>
         <Typography variant="h4">KT{detail.KT}</Typography>

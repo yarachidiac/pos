@@ -4,7 +4,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import { Typography } from "@mui/material";
+import { Select, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import TableContainer from "@mui/material/TableContainer";
 import TextField from "@mui/material/TextField";
@@ -13,8 +13,8 @@ import { tokens } from "../../theme";
 import Checkbox from "@mui/material/Checkbox";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+
+import { MenuItem } from "@mui/material";
 const StatSet = ({ companyName }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
@@ -24,16 +24,27 @@ const StatSet = ({ companyName }) => {
     ...stationDetails,
   });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  console.log(
-    "ssssssssssssssssssssss",
-    dayjs("2022-03-13T03:00:00").format("hh:mm A")
-  );
-  const handleValueUpdate = (field, updatedValue) => { 
-      setStationDetailsCopy((prev) => ({
-        ...prev,
-        [field]: updatedValue,
-      }));
+  const reportOptions = ["Report 1", "Report 2", "Report 3"]; // Example report options
+  const [errorMess, setErrorMess] = useState("");
+
+  const handleValueUpdate = (field, updatedValue) => {
+    if (field === "QtyPrintInv" || field === "QtyPrintKT") {
+      if (isNaN(updatedValue)) {
+        setErrorMess("Only Numbers");
+        setTimeout(() => {
+          setErrorMess("");
+        }, 2000);
+        return; // Stop execution if updatedValue is not a number
+      }
+    }
+     setErrorMess("");
+    // Update stationDetailsCopy state
+    setStationDetailsCopy((prev) => ({
+      ...prev,
+      [field]: updatedValue,
+    }));
   };
+
 
   useEffect(() => {
     const fetchStationDetails = async () => {
@@ -128,7 +139,56 @@ const StatSet = ({ companyName }) => {
             height: "100%",
             width: "100%",
           }}
-        >       
+        >
+          {key === "AllowPrintInv" || key === "AllowPrintKT" ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={stationDetailsCopy[key] === "Y"}
+                  onChange={() =>
+                    handleValueUpdate(
+                      key,
+                      stationDetailsCopy[key] === "Y" ? "N" : "Y"
+                    )
+                  }
+                />
+                <Typography variant="h4">Y</Typography>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={stationDetailsCopy[key] === "N"}
+                  onChange={() =>
+                    handleValueUpdate(
+                      key,
+                      stationDetailsCopy[key] === "N" ? "Y" : "N"
+                    )
+                  }
+                />
+                <Typography variant="h4">N</Typography>
+              </div>
+            </div>
+          ) : key === "ReceiptName" ? (
+            <Select
+              value={stationDetailsCopy[key]}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+            >
+              {reportOptions.map((report, index) => (
+                <MenuItem key={index} value={report}>
+                  {report}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
             <TextField
               value={stationDetailsCopy[key]}
               onChange={(e) => handleValueUpdate(key, e.target.value)}
@@ -136,7 +196,7 @@ const StatSet = ({ companyName }) => {
               variant="outlined"
               size="small"
             />
-     
+          )}
         </div>
       </TableCell>
     </TableRow>
@@ -159,6 +219,11 @@ const StatSet = ({ companyName }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {errorMess && (
+        <Typography variant="h3" style={{ color: colors.redAccent[500] }}>
+          {errorMess}
+        </Typography>
+      )}
 
       {successMessage ? (
         <Box
