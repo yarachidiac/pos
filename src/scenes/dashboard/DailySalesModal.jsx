@@ -14,6 +14,7 @@ const DailySalesModal = ({
   companyName,
   setSelectedItem,
   selectedItem,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -111,6 +112,7 @@ const DailySalesModal = ({
           <DailySalesDetails
             companyName={companyName}
             selectedItem={selectedItem}
+            url={url}
           />
         </Box>
         {/* Other modal content */}

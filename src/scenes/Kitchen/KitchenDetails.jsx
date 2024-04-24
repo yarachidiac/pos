@@ -41,7 +41,7 @@ export default function KitchenDetails(props){
 
   const handleSave = async () => {
     const saveResponse = await fetch(
-      `http://192.168.16.113:8000/updateKitchen/${props.companyName}`,
+      `${props.url}/pos/updateKitchen/${props.companyName}`,
       {
         method: "POST",
         headers: {

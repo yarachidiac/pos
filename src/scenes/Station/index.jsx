@@ -3,7 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import StatSet from "./StatSet";
 import Header from "../../components/Header";
-const Station = ({ companyName }) => {
+const Station = ({ companyName, url }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,7 +62,7 @@ const Station = ({ companyName }) => {
             ...modalStyle,
           }}
         >
-          <StatSet companyName={companyName} />
+          <StatSet companyName={companyName} url={url}/>
         </Box>
       </Box>
     </Box>

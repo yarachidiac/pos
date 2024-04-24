@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-const DailySales = ({ companyName }) => {
+const DailySales = ({ companyName, url }) => {
   const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [daily, setDaily] = useState([]);
@@ -18,7 +18,7 @@ const DailySales = ({ companyName }) => {
     }
 
   useEffect(() => {
-    fetch(`http://192.168.16.113:8000/allitemswithmod/${companyName}`)
+    fetch(`${url}/pos/allitemswithmod/${companyName}`)
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property
@@ -101,7 +101,7 @@ const DailySales = ({ companyName }) => {
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "95%",
         flexDirection: "column",
         ml: "2%",
@@ -184,6 +184,7 @@ const DailySales = ({ companyName }) => {
         companyName={companyName}
         setSelectedItem={setSelectedItem}
         selectedItem={selectedItem}
+        url={url}
       />
     </Box>
   );

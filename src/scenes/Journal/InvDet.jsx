@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 
-const InvDet = ({ companyName, selectedInv }) => {
+const InvDet = ({ companyName, selectedInv, url }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -14,9 +14,7 @@ const InvDet = ({ companyName, selectedInv }) => {
   const [invDet, setInvDet] = useState([]);
 
   useEffect(() => {
-    fetch(
-      `http://192.168.16.113:8000/getInvHistoryDetails/${companyName}/${selectedInv}`
-    )
+    fetch(`${url}/pos/getInvHistoryDetails/${companyName}/${selectedInv}`)
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property
@@ -160,7 +158,7 @@ const InvDet = ({ companyName, selectedInv }) => {
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "95%",
         flexDirection: "column",
         ml: "2%",
@@ -178,7 +176,7 @@ const InvDet = ({ companyName, selectedInv }) => {
       </Box>
       <Box
         sx={{
-          height: "85%",
+          height: "90%",
           width: "100%",
           // "& .MuiDataGrid-root": {
           //   border: "none",

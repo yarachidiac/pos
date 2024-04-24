@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
 
-const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
+const Section = ({ addTitle, setAddTitle, companyName, message, url}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -33,18 +33,14 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
   };
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `http://192.168.16.113:8000/allsections/${companyName}`
-        );
+        const response = await fetch(`${url}/pos/allsections/${companyName}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
         setSections(data.section_list); // Update sections state with fetched data
         if (message) {
-           await fetch(
-             `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
-           );
+           await fetch(`${url}/pos/resetUsedBy/${companyName}/${message}`);
         }      
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,7 +73,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
     try {
       if (addTitle === "Add Section") {
         console.log("newwwwwwwww sectionnnnnn", sectionInfo);
-        const apiUrl = `http://192.168.16.113:8000/addsections/${companyName}`;
+        const apiUrl = `${url}/pos/addsections/${companyName}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -98,7 +94,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
         }, 2000);
         console.log("Response from the server:", responseData);
       } else {
-        const apiUrl = `http://192.168.16.113:8000/updateSections/${companyName}/${sectionNo}`;
+        const apiUrl = `${url}/pos/updateSections/${companyName}/${sectionNo}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -121,7 +117,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, }) => {
       }
       // Fetch the details of the newly added user
       const sectionsResponse = await fetch(
-        `http://192.168.16.113:8000/allsections/${companyName}`
+        `${url}/pos/allsections/${companyName}`
       );
 
       if (!sectionsResponse.ok) {

@@ -71,6 +71,9 @@ function App() {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("");
+  // const url = "https://pssapi.net:444/";
+  const url = "http://192.168.16.112:8000";
+
   console.log("filter mn l app", filterValue);
   useEffect(() => {
     const initializeAuthentication = async () => {
@@ -129,6 +132,7 @@ function App() {
               setUsername={setUsername}
               userControl={userControl}
               setUserControl={setUserControl}
+              url={url}
             />
           ) : (
             <>
@@ -151,6 +155,7 @@ function App() {
                   companyName={companyName}
                   isNav={isNav}
                   setIsConfOpenDialog={setIsConfOpenDialog}
+                  url={url}
                 />
               )}
               <main className="content">
@@ -183,6 +188,7 @@ function App() {
                           //setCompanyName={setCompanyName}
                           addTitle={addTitle}
                           setAddTitle={setAddTitle}
+                          url={url}
                         />
                       }
                     />
@@ -190,7 +196,7 @@ function App() {
                   {userControl === "Y" && (
                     <Route
                       path="/CompanyManagement"
-                      element={<Company companyName={companyName} />}
+                      element={<Company companyName={companyName} url={url} />}
                     />
                   )}
                   <Route
@@ -220,6 +226,7 @@ function App() {
                         message={message}
                         setMessage={setMessage}
                         filterValue={filterValue}
+                        url={url}
                       />
                     }
                   />
@@ -236,6 +243,7 @@ function App() {
                           setOldItemNo={setOldItemNo}
                           setNewItemNo={setNewItemNo}
                           oldItemNo={oldItemNo}
+                          url={url}
                         />
                       }
                     />
@@ -250,6 +258,7 @@ function App() {
                           setAddTitle={setAddTitle}
                           selectedRow={selectedRow}
                           setSelectedRow={setSelectedRow}
+                          url={url}
                         />
                       }
                     />
@@ -265,6 +274,7 @@ function App() {
                         setAddTitle={setAddTitle}
                         addTtile={addTitle}
                         message={message}
+                        url={url}
                       />
                     }
                   />
@@ -281,20 +291,21 @@ function App() {
                         username={username}
                         message={message}
                         setMessage={setMessage}
+                        url={url}
                       />
                     }
                   />
                   <Route
                     path="/journal"
-                    element={<Journal companyName={companyName} />}
+                    element={<Journal companyName={companyName} url={url} />}
                   />
                   <Route
                     path="/Daily"
-                    element={<DailySales companyName={companyName} />}
+                    element={<DailySales companyName={companyName} url={url} />}
                   />
                   <Route
                     path="/Station"
-                    element={<Station companyName={companyName} />}
+                    element={<Station companyName={companyName} url={url} />}
                   />
                   <Route
                     path="/Kitchen"
@@ -303,6 +314,7 @@ function App() {
                         companyName={companyName}
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
+                        url={url}
                       />
                     }
                   />
@@ -317,6 +329,7 @@ function App() {
                           setOldItemNo={setOldItemNo}
                           setNewItemNo={setNewItemNo}
                           oldItemNo={oldItemNo}
+                          url={url}
                         />
                       }
                     />

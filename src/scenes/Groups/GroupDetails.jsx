@@ -26,6 +26,7 @@ const GroupDetails = ({
   setNewItemNo,
   unsavedChanges,
   setUnsavedChanges,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -171,7 +172,7 @@ const GroupDetails = ({
                   setSuccessMessage,
                   setGroupDetails,
                   setOldItemNo,
-                  setNewItemNo
+                  setNewItemNo, url
                 )
               }
             >

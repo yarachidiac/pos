@@ -28,6 +28,7 @@ const GroupDetailsModal = ({
   setNewItemNo,
   groupDetailsCopy,
   setGroupDetailsCopy,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -97,9 +98,11 @@ const GroupDetailsModal = ({
       companyName,
       groupDetails,
       groupDetailsCopy,
-      setGroups,
       setSuccessMessage,
-      setGroupDetails
+      setGroupDetails,
+      setOldItemNo,
+      setNewItemNo,
+      url
     );
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
@@ -158,6 +161,7 @@ const GroupDetailsModal = ({
             setNewItemNo={setNewItemNo}
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
+            url={url}
           />
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not

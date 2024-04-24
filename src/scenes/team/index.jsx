@@ -11,7 +11,7 @@ import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 
-const Team = ({ companyName, addTitle, setAddTitle}) => {
+const Team = ({ companyName, addTitle, setAddTitle, url}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -28,10 +28,11 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
 
   useEffect(() => {
     console.log("stored companyyyyyy", companyName);
+    console.log("urll team", url);
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.113:8000/users/${companyName}`)
+      fetch(`${url}/pos/users/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -162,7 +163,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
       console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.113:8000/addusers/${companyName}/${newUserDetails.name}`;
+      const apiUrl = `${url}/pos/addusers/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -185,7 +186,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
 
       // Fetch the details of the newly added user
       const userDetailsResponse = await fetch(
-        `http://192.168.16.113:8000/getUserDetail/${companyName}/${newUserDetails.name}`
+        `${url}/pos/getUserDetail/${companyName}/${newUserDetails.name}`
       );
 
       if (!userDetailsResponse.ok) {
@@ -256,6 +257,7 @@ const Team = ({ companyName, addTitle, setAddTitle}) => {
         companyName={companyName}
         userDetailsCopy={userDetailsCopy}
         setUserDetailsCopy={setUserDetailsCopy}
+        url={url}
       />
       <Box
         ml="2%"

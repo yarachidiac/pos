@@ -28,12 +28,14 @@ const GeneralAccountingTable = ({
   setUserDetailsCopy,
   unsavedChanges,
   setUnsavedChanges,
+  url,
+  valMessage,
+  setValMessage,
 }) => {
   console.log("fromm generallllllllllllllllllll", userDetails);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [valMessage, setValMessage] = useState("");
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -198,7 +200,7 @@ const GeneralAccountingTable = ({
             color="error"
             style={{
               fontSize: "1.1rem",
-              fontWeight:"bold"
+              fontWeight: "bold",
             }}
           >
             {valMessage}
@@ -238,7 +240,8 @@ const GeneralAccountingTable = ({
                   setUsers,
                   setSuccessMessage,
                   setUserDetails,
-                  valMessage
+                  valMessage,
+                  url
                 )
               }
             >

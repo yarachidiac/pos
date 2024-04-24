@@ -14,7 +14,7 @@ import Button from "@mui/material/Button";
 import GeneralA from "./GeneralA"
 import BackOffice from "./BackOffice";
 
-const Company = ({ companyName }) => {
+const Company = ({ companyName, url }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");

@@ -16,6 +16,7 @@ const ManagePoS = ({
   setAddTitle,
   setOldItemNo,
   setNewItemNo,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,7 +41,7 @@ const ManagePoS = ({
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.113:8000/allitemswithmod/${companyName}`)
+      fetch(`${url}/pos/allitemswithmod/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -107,7 +108,7 @@ const ManagePoS = ({
   const handleItemDetailsChange = async (newItemDetails) => {
     try {
       console.log("newUserDetailssssssssss", newItemDetails.name);
-      const apiUrl = `http://192.168.16.113:8000/additems/${companyName}/${newItemDetails.name}`;
+      const apiUrl = `${url}/pos/additems/${companyName}/${newItemDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -130,7 +131,7 @@ const ManagePoS = ({
 
       // Fetch the details of the newly added user
       const itemDetailsResponse = await fetch(
-        `http://192.168.16.113:8000/getItemDetail/${companyName}/${newItemDetails.name}`
+        `${url}/pos/getItemDetail/${companyName}/${newItemDetails.name}`
       );
 
       if (!itemDetailsResponse.ok) {
@@ -202,6 +203,7 @@ const ManagePoS = ({
         setNewItemNo={setNewItemNo}
         itemDetailsCopy={itemDetailsCopy}
         setItemDetailsCopy={setItemDetailsCopy}
+        url={url}
       />
       <Box
         m="0 auto"

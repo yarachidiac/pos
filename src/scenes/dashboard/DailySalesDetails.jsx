@@ -5,13 +5,13 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
-const DailySalesDetails = ({ companyName, selectedItem }) => {
+const DailySalesDetails = ({ companyName, selectedItem, url }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [dailyDet, setDailyDet] = useState([]);
 
   useEffect(() => {
-    fetch(`http://192.168.16.113:8000/getDailySalesDetails/${companyName}/${selectedItem}`)
+    fetch(`${url}/pos/getDailySalesDetails/${companyName}/${selectedItem}`)
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property

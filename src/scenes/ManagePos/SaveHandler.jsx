@@ -2,20 +2,20 @@ const handleSave = async (
   companyName,
   itemDetails,
   itemDetailsCopy,
-  setUsers,
   setSuccessMessage,
   setItemDetails,
   setOldItemNo,
   setNewItemNo,
-  
+  url
 ) => {
   try {
+    console.log("urllllllllllll", url);
     const data = itemDetailsCopy;
     console.log("iddddddddddddddd", itemDetails.ItemNo);
     console.log("itemmmmmmmmmmmmmmmmmmmmNOOOOO", itemDetails);
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
-      `http://192.168.16.113:8000/updateItems/${companyName}/${itemDetails.ItemNo}`,
+      `${url}/pos/updateItems/${companyName}/${itemDetails.ItemNo}`,
       {
         method: "POST",
         headers: {

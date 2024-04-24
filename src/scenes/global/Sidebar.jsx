@@ -118,6 +118,14 @@ const Item = ({
     }
   };
 
+  const handleDashboard = () => {
+        if (isNav) {
+          navigate("/");
+        } else {
+          setIsConfOpenDialog(true);
+        }
+  };
+
   return (
     <MenuItem
       active={selected === title}
@@ -143,6 +151,8 @@ const Item = ({
           handleStation();
         } else if (title === "Kitchen") {
           handleKitchen();
+        } else if (title === "Dashboard") {
+          handleDashboard();
         }
       }  
       }
@@ -340,10 +350,10 @@ const Sidebar = ({
           <Box>
             <Item
               icon={<HomeOutlinedIcon />}
-              title="Dahboard"
-              to="/"
+              title="Dashboard"
               selected={selected}
               setSelected={setSelected}
+              isNav={isNav}
             />
             <Item
               icon={<PointOfSaleOutlinedIcon />}

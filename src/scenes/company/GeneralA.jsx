@@ -20,7 +20,7 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const GeneralA = ({ companyName }) => {
+const GeneralA = ({ companyName, url }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -64,7 +64,7 @@ console.log(
     const fetchCompanyDetails = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.113:8000/company/${companyName}`
+          `${url}/pos/company/${companyName}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -83,7 +83,7 @@ console.log(
 
   const handleSave = async () => {
     const saveResponse = await fetch(
-      `http://192.168.16.113:8000/updateCompany/${companyName}`,
+      `${url}/pos/updateCompany/${companyName}`,
       {
         method: "POST",
         headers: {

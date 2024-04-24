@@ -32,9 +32,12 @@ const ItemDetails = ({
   setNewItemNo,
   unsavedChanges,
   setUnsavedChanges,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+      console.log("urllllllllllll mn l itemdetails", url);
+
 
   const [groupNames, setGroupNames] = useState([]);
   const [selectedGroupName, setSelectedGroupName] = useState(
@@ -103,7 +106,7 @@ const ItemDetails = ({
     const fetchGroupItems = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.113:8000/groupitems/${companyName}`
+          `${url}/pos/groupitems/${companyName}`
         );
         if (!response.ok) {
           throw new Error("Error fetching groupItems");
@@ -344,12 +347,11 @@ const ItemDetails = ({
                   companyName,
                   itemDetails,
                   itemDetailsCopy,
-                  setItems,
                   setSuccessMessage,
                   setItemDetails,
                   setOldItemNo,
                   setNewItemNo,
-                  setItemDetailsCopy
+                  url
                 )
               }
             >

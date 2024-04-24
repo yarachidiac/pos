@@ -22,7 +22,9 @@ const ChartAcc = ({
   setIsOpenDel,
   isDialogOpen,
   setIsDialogOpen,
+  url,
 }) => {
+  console.log("adedefaf", url)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -49,7 +51,7 @@ const ChartAcc = ({
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.113:8000/clients/${companyName}`)
+      fetch(`${url}/pos/clients/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -232,7 +234,7 @@ const ChartAcc = ({
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
       console.log("newUserDetailssssssssss", newUserDetails.name);
-      const apiUrl = `http://192.168.16.113:8000/addclients/${companyName}/${newUserDetails.name}`;
+      const apiUrl = `${url}/pos/addclients/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -255,7 +257,7 @@ const ChartAcc = ({
 
       // Fetch the details of the newly added user
       const clientDetailsResponse = await fetch(
-        `http://192.168.16.113:8000/getClientDetail/${companyName}/${newUserDetails.name}`
+        `${url}/pos/getClientDetail/${companyName}/${newUserDetails.name}`
       );
 
       if (!clientDetailsResponse.ok) {
@@ -340,6 +342,7 @@ const ChartAcc = ({
         companyName={companyName}
         clientDetailsCopy={clientDetailsCopy}
         setClientDetailsCopy={setClientDetailsCopy}
+        url={url}
       />
       <Box
         ml="2%"

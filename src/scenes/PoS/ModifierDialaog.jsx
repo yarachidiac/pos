@@ -20,6 +20,7 @@ const ModifierDialog = ({
   selectedMealForModify,
   selectedModifiers,
   setSelectedModifiers,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -34,7 +35,7 @@ const ModifierDialog = ({
   const fetchModifiers = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.113:8000/getModifiers/${companyName}`
+        `${url}/pos/getModifiers/${companyName}`
       );
       const data = await response.json();
       setModifiers(data);

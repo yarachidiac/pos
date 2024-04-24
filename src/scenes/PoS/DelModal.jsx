@@ -17,6 +17,7 @@ const DelModal = ({
   setSelectedRow,
   addTitle,
   setAddTitle,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -153,6 +154,7 @@ const DelModal = ({
           setIsOpenDel={setIsOpenDel}
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
+          url={url}
         />
       </Box>
     </Modal>

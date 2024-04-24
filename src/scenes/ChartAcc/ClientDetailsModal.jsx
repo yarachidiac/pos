@@ -26,6 +26,7 @@ const ClientDetailsModal = ({
   companyName,
   clientDetailsCopy,
   setClientDetailsCopy,
+  url,
 }) => {
   console.log("mmmmmmmmmmmmmmmmmmm", clientDetails);
   const theme = useTheme();
@@ -33,8 +34,9 @@ const ClientDetailsModal = ({
   // const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-  
+
   const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [valMessage, setValMessage] = useState("");
 
   // if (!clientDetails) {
   //   return null;
@@ -109,9 +111,10 @@ const ClientDetailsModal = ({
       companyName,
       clientDetails,
       clientDetailsCopy,
-      setClients,
       setSuccessMessage,
-      setClientDetails
+      setClientDetails,
+      valMessage,
+      url,
     );
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
@@ -171,6 +174,9 @@ const ClientDetailsModal = ({
             setClientDetailsCopy={setClientDetailsCopy}
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
+            url={url}
+            valMessage={valMessage}
+            setValMessage={setValMessage}
             // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
           />
           <ConfirmationDialog

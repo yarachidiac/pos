@@ -16,6 +16,7 @@ const Groups = ({
   setAddTitle,
   setOldItemNo,
   setNewItemNo,
+  url
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,7 +41,7 @@ const Groups = ({
 
     // Fetch users based on the company name
     if (companyName) {
-      fetch(`http://192.168.16.113:8000/groupitems/${companyName}`)
+      fetch(`${url}/pos/groupitems/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -105,7 +106,7 @@ const Groups = ({
   const handleGroupDetailsChange = async (newGroupDetails) => {
     try {
       console.log("newUserDetailssssssssss", newGroupDetails.name);
-      const apiUrl = `http://192.168.16.113:8000/addgroup/${companyName}/${newGroupDetails.name}`;
+      const apiUrl = `${url}/pos/addgroup/${companyName}/${newGroupDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -128,7 +129,7 @@ const Groups = ({
 
       // Fetch the details of the newly added user
       const groupDetailsResponse = await fetch(
-        `http://192.168.16.113:8000/getGroupDetail/${companyName}/${newGroupDetails.name}`
+        `${url}/pos/getGroupDetail/${companyName}/${newGroupDetails.name}`
       );
 
       if (!groupDetailsResponse.ok) {
@@ -200,6 +201,7 @@ const Groups = ({
         setNewItemNo={setNewItemNo}
         groupDetailsCopy={groupDetailsCopy}
         setGroupDetailsCopy={setGroupDetailsCopy}
+        url={url}
       />
       <Box
         m="0 auto"

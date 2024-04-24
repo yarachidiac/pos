@@ -2,10 +2,10 @@ const handleSave = async (
   companyName,
   clientDetails,
   clientDetailsCopy,
-  setClients,
   setSuccessMessage,
   setClientDetails,
   valMessage,
+  url,
 ) => {
   try {
     const data = clientDetailsCopy;
@@ -14,7 +14,7 @@ const handleSave = async (
     // Send a POST request to save all edited fields
     if (valMessage !== "Invalid email format") {
       const saveResponse = await fetch(
-        `http://192.168.16.113:8000/updateClients/${companyName}/${clientDetails.AccNo}`,
+        `${url}/pos/updateClients/${companyName}/${clientDetails.AccNo}`,
         {
           method: "POST",
           headers: {

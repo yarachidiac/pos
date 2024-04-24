@@ -28,6 +28,7 @@ const Topbar = ({
   isOpenDel,
   setIsOpenDel,
   setFilterValue,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -101,16 +102,14 @@ const Topbar = ({
   useEffect(() => {
     const getLen = async () => {
       try {
-        const response = await fetch(
-          `http://192.168.16.113:8000/allsections/${companyName}`
-        );
+        const response = await fetch(`${url}/pos/allsections/${companyName}`);
         if (response.ok) {
           const data = await response.json();
           if (data && data.section_list && data.section_list.length > 1) {
             setSecOrTable(`/Sections`);
           } else {
             const getsec = await fetch(
-              `http://192.168.16.113:8000/getOneSection/${companyName}`
+              `${url}/pos/getOneSection/${companyName}`
             );
             if (getsec.ok) {
               const sec = await getsec.json();

@@ -27,7 +27,8 @@ const ItemDetailsModal = ({
   setOldItemNo,
   setNewItemNo,
   itemDetailsCopy,
-  setItemDetailsCopy
+  setItemDetailsCopy,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -101,9 +102,11 @@ const ItemDetailsModal = ({
       companyName,
       itemDetails,
       itemDetailsCopy,
-      setItems,
       setSuccessMessage,
-      setItemDetails
+      setItemDetails,
+      setOldItemNo,
+      setNewItemNo,
+      url,
     );
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
@@ -165,6 +168,7 @@ const ItemDetailsModal = ({
             setNewItemNo={setNewItemNo}
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
+            url={url}
           />
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not

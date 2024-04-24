@@ -5,7 +5,7 @@ const handleSave = async (
   setSuccessMessage,
   setGroupDetails,
   setOldItemNo,
-  setNewItemNo
+  setNewItemNo, url
 ) => {
   try {
     const data = groupDetailsCopy;
@@ -13,7 +13,7 @@ const handleSave = async (
     console.log("itemmmmmmmmmmmmmmmmmmmmNOOOOO", groupDetails);
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
-      `http://192.168.16.113:8000/updateGroups/${companyName}/${groupDetails.GroupNo}`,
+      `${url}/pos/updateGroups/${companyName}/${groupDetails.GroupNo}`,
       {
         method: "POST",
         headers: {

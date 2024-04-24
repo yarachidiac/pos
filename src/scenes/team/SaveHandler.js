@@ -5,9 +5,11 @@ const handleSave = async (
   setUsers,
   setSuccessMessage,
   setUserDetails,
-  valMessage
+  valMessage,
+  url
 ) => {
   try {
+    console.log("khrassss mn l confirm user", url);
     // Check if there is a validation message
     if (!valMessage) {
       const data = userDetailsCopy;
@@ -15,7 +17,7 @@ const handleSave = async (
 
       // Send a POST request to save all edited fields
       const saveResponse = await fetch(
-        `http://192.168.16.113:8000/users/${companyName}/${userDetails.id}`,
+        `${url}/pos/users/${companyName}/${userDetails.id}`,
         {
           method: "POST",
           headers: {

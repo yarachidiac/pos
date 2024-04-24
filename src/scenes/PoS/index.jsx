@@ -45,7 +45,8 @@ import QRCode from 'qrcode.react';
 import { useMediaQuery } from "@mui/material";
 import ButtonBase from "@mui/material/ButtonBase";
 import IngredDialog from './IngredDialog';
-
+import AllowDialog from './AllowDialog';
+  
 const PoS = ({
   companyName,
   branch,
@@ -69,6 +70,7 @@ const PoS = ({
   message,
   setMessage,
   filterValue,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -101,7 +103,16 @@ const PoS = ({
   const [closeTClicked, setCloseTClicked] = useState(false);
   const [curr, setCurr] = useState("");
   const [infCom, setInfCom] = useState({});
+  const [defaultPrinter, setDefaultPrinter] = useState("");
+  const [allowPrintInv, setAllowPrintInv] = useState("Y");
+  const [allowPrintKT, setAllowPrintKT] = useState("Y");
+  const [allowDialog, setAllowDialog] = useState(false);
+  const [qtyPrintKT, setQtyPrintKT] = useState(1);
+  const [prRemark, setPrRemark] = useState("");
 
+  const handleCloseAllow = () => {
+    setAllowDialog(false);
+  };
   // Function to scroll the last item into view
   const scrollToLastItem = () => {
     if (lastItemRef.current) {
@@ -208,31 +219,36 @@ const PoS = ({
   // };
 
   const handlePrint = () => {
-    printJS({
-      printable: "myPrintableContent",
-      type: "html",
-      targetStyles: ["*"],
-      documentTitle: "Receipt",
-      honorColor: true,
-      scanStyles: false,
-      // style: `
-      //   @media print {
-      //     @page {
-      //       marginLeft: 1mm;
-      //     }
-      //   }
-      // `,
-      header: null,
-      footer: null,
-      showModal: true,
-      onError: (error) => {
-        console.error("Printing error:", error);
-      },
-      onPrintDialogClose: () => {
-        console.log("Print dialog closed");
-      },
-      printerName: "OP",
-    });
+    if(allowPrintInv === "Y"){
+      printJS({
+        printable: "myPrintableContent",
+        type: "html",
+        targetStyles: ["*"],
+        documentTitle: "Receipt",
+        honorColor: true,
+        scanStyles: false,
+        // style: `
+        //   @media print {
+        //     @page {
+        //       marginLeft: 1mm;
+        //     }
+        //   }
+        // `,
+        header: null,
+        footer: null,
+        showModal: true,
+        onError: (error) => {
+          console.error("Printing error:", error);
+        },
+        onPrintDialogClose: () => {
+          console.log("Print dialog closed");
+        },
+        printerName: defaultPrinter,
+      });
+    } else {
+      setAllowDialog(true);
+      setPrRemark("print is not allowed");
+    }
   };
 
   const { refreshNeeded, resetRefresh } = useRefresh();
@@ -254,10 +270,10 @@ const PoS = ({
       let url;
       if (selectedCategoryCode) {
         // If a category is selected, fetch items for the selected category
-        url = `http://192.168.16.113:8000/categoriesitems/${companyName}/${selectedCategoryCode}`;
+        url = `${url}/pos/categoriesitems/${companyName}/${selectedCategoryCode}`;
       } else {
         // Otherwise, fetch all items
-        url = `http://192.168.16.113:8000/allitems/${companyName}`;
+        url = `${url}/pos/allitems/${companyName}`;
       }
       const response = await fetch(url);
       const data = await response.json();
@@ -343,15 +359,33 @@ const PoS = ({
     fetchAllItems();
 
     fetchCur();
+
+    fetchAllowPrint();
   }, []);
 
   console.log("the branch and the SATYpe", branch, invType);
   console.log("company in pos ", companyName);
 
+  const fetchAllowPrint = async () => {
+    try {
+      const response = await fetch(
+        `${url}/pos/getAllowPrint/${companyName}`
+      );
+      const data = await response.json();
+      console.log("aaaaaaaaaaaaaaaaaaaa", data);
+      setDefaultPrinter(data["defaultPrinter"]); 
+      setAllowPrintKT(data["allowKT"]);
+      setAllowPrintInv(data["allowInv"])
+      setQtyPrintKT(data["qtyPrintKT"]);
+    } catch (error) {
+      console.error("Error fetching categoriesitems:", error);
+    }
+  };
+
   const fetchCur = async() => {
     try {
       const response = await fetch(
-        `http://192.168.16.113:8000/getCurr/${companyName}`
+        `${url}/pos/getCurr/${companyName}`
       );
       const data = await response.json();
       console.log("aaaaaaaaaaaaaaaaaaaa", data);
@@ -394,7 +428,7 @@ const PoS = ({
   const fetchCategories = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.113:8000/categories/${companyName}`
+        `${url}/pos/categories/${companyName}`
       );
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
@@ -460,7 +494,7 @@ const PoS = ({
   const fetchItemsCategory = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.113:8000/categoriesitems/${companyName}/${selectedCategoryCode}`
+        `${url}/pos/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -473,7 +507,7 @@ const PoS = ({
   const fetchAllItems = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.113:8000/allitems/${companyName}`
+        `${url}/pos/allitems/${companyName}`
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
@@ -548,7 +582,7 @@ const PoS = ({
 
       // No need to format the time, use currentDate directly
       const compTimeRequest = await fetch(
-        `http://192.168.16.113:8000/getCompTime/${companyName}`
+        `${url}/pos/getCompTime/${companyName}`
       );
       if (compTimeRequest.ok) {
         const compTimeResponse = await compTimeRequest.json();
@@ -611,10 +645,11 @@ const PoS = ({
         message: message,
         realDate: realDate,
         accno: accno,
+        qtyPrintKT: qtyPrintKT,
       };
       console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
-        `http://192.168.16.113:8000/invoiceitem/${companyName}`,
+        `${url}/pos/invoiceitem/${companyName}`,
         {
           method: "POST",
           headers: {
@@ -630,21 +665,26 @@ const PoS = ({
         const responseData = await response.json();
         console.log("mmmmmmmmmmmmmmmmmmmmmmm", responseData);
         if (responseData["message"] === "Invoice items added successfully") {
-          // Convert the JSON data to a string
-          const jsonString = JSON.stringify(responseData, null, 2);
-          // Use FileSaver to save the JSON data as a TXT file
-          const blob = new Blob([jsonString], { type: "application/json" });
-          FileSaver.saveAs(blob, "response-data.json");
+          if (allowPrintKT === "Y") {
+            // Convert the JSON data to a string
+            const jsonString = JSON.stringify(responseData, null, 2);
+            // Use FileSaver to save the JSON data as a TXT file
+            const blob = new Blob([jsonString], { type: "application/json" });
+            FileSaver.saveAs(blob, "response-data.json");
 
-          // Increment the placeOrderCount
-          placeOrderCount++;
+            // Increment the placeOrderCount
+            placeOrderCount++;
 
-          // Check if the placeOrderCount reaches 3
-          if (placeOrderCount === 3) {
-            // Reload the page after 3 placing orders
-            setTimeout(() => {
-              window.location.reload();
-            }, 3000);
+            // Check if the placeOrderCount reaches 3
+            if (placeOrderCount === 3) {
+              // Reload the page after 3 placing orders
+              setTimeout(() => {
+                window.location.reload();
+              }, 3000);
+            }
+          }
+          if (!selectedTableId) {
+            handlePrint();
           }
         }
       }
@@ -708,7 +748,7 @@ console.log("closeTClicked", closeTClicked);
       try {
         if (location.search.includes("selectedTableId")) {
           const response = await fetch(
-            `http://192.168.16.113:8000/getInv/${companyName}/${selectedTableId}/${username}`
+            `${url}/pos/getInv/${companyName}/${selectedTableId}/${username}`
           );
           const data = await response.json();
           console.log("getttttttttt invvvvv", data);
@@ -752,7 +792,7 @@ console.log("closeTClicked", closeTClicked);
       try {
         if (!location.search.includes("selectedTableId") && message) {
           const response = await fetch(
-            `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
+            `${url}/pos/${companyName}/${message}`
           );
           if (response.ok) {
             setSelectedMeals([]);
@@ -1887,6 +1927,7 @@ console.log("closeTClicked", closeTClicked);
         selectedMealForModify={selectedMealForModify}
         selectedModifiers={selectedModifiers}
         setSelectedModifiers={setSelectedModifiers}
+        url={url}
       />
       <KitchenDialog
         open={isConfOpenDialog}
@@ -1901,6 +1942,7 @@ console.log("closeTClicked", closeTClicked);
         setSelectedRow={setSelectedRow}
         addTitle={addTitle}
         setAddTitle={setAddTitle}
+        url={url}
       ></DelModal>
       {ingredCard && (
         <IngredDialog
@@ -1910,6 +1952,11 @@ console.log("closeTClicked", closeTClicked);
           ingredCard={ingredCard}
         ></IngredDialog>
       )}
+      <AllowDialog
+        open={allowDialog}
+        onCancel={handleCloseAllow}
+        nameCard={prRemark}
+      ></AllowDialog>
     </>
   );
 };

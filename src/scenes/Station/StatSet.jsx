@@ -15,7 +15,7 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import { MenuItem } from "@mui/material";
-const StatSet = ({ companyName }) => {
+const StatSet = ({ companyName, url }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -50,7 +50,7 @@ const StatSet = ({ companyName }) => {
     const fetchStationDetails = async () => {
       try {
         const response = await fetch(
-          `http://192.168.16.113:8000/station/${companyName}`
+          `${url}/pos/station/${companyName}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -68,7 +68,7 @@ const StatSet = ({ companyName }) => {
 
   const handleSave = async () => {
     const saveResponse = await fetch(
-      `http://192.168.16.113:8000/updateStation/${companyName}`,
+      `${url}/pos/updateStation/${companyName}`,
       {
         method: "POST",
         headers: {

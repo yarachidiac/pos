@@ -14,7 +14,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import InvDetailsModal from "./InvDetailsModal";
 
-const Journal = ({ companyName,}) => {
+const Journal = ({ companyName, url}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -117,7 +117,7 @@ const Journal = ({ companyName,}) => {
 console.log("Filterrrrrrrrrr", filteredData)
 
   useEffect(() => {
-      fetch(`http://192.168.16.113:8000/getInvHistory/${companyName}`)
+      fetch(`${url}/pos/getInvHistory/${companyName}`)
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
@@ -212,7 +212,7 @@ console.log("Filterrrrrrrrrr", filteredData)
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "95%",
         flexDirection: "column",
         ml: "2%",
@@ -220,7 +220,7 @@ console.log("Filterrrrrrrrrr", filteredData)
     >
       <Box
         sx={{
-          height: "10%",
+          height: "15%",
           width: "100%",
           display: "flex",
           flexDirection: "row",
@@ -265,7 +265,7 @@ console.log("Filterrrrrrrrrr", filteredData)
       </Box>
       <Box
         sx={{
-          height: "85%",
+          height: "80%",
           width: "100%",
           // "& .MuiDataGrid-root": {
           //   border: "none",
@@ -304,7 +304,15 @@ console.log("Filterrrrrrrrrr", filteredData)
       >
         <DataGrid
           style={{ height: "100%", width: "100%" }}
-          rows={filteredData.length > 0 || (startTime ||  endTime || startDate || endDate) ? filteredData : inv}
+          rows={
+            filteredData.length > 0 ||
+            startTime ||
+            endTime ||
+            startDate ||
+            endDate
+              ? filteredData
+              : inv
+          }
           columns={columns}
           getRowId={(row) => row.InvNo}
           //autoHeight
@@ -329,6 +337,7 @@ console.log("Filterrrrrrrrrr", filteredData)
         companyName={companyName}
         setSelectedInv={setSelectedInv}
         selectedInv={selectedInv}
+        url={url}
       />
     </Box>
   );

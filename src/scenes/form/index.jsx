@@ -35,6 +35,7 @@ const Form = ({
   setUsername,
   userControl,
   setUserControl,
+  url
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -45,7 +46,7 @@ const Form = ({
     try {
       // Clear the company name from local storage
       //clearCompanyName();
-      const response = await fetch("http://192.168.16.113:8000/login", {
+      const response = await fetch(`${url}/pos/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

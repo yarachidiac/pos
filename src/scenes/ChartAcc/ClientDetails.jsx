@@ -28,7 +28,7 @@ const ClientDetails = ({
   clientDetailsCopy,
   setClientDetailsCopy,
   unsavedChanges,
-  setUnsavedChanges
+  setUnsavedChanges, url, valMessage, setValMessage
 }) => {
   console.log("cccccccccccccccccccccccc", clientDetails);
   // const [editableCells, setEditableCells] = useState([]);
@@ -36,7 +36,6 @@ const ClientDetails = ({
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [valMessage, setValMessage] = useState("");
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -278,10 +277,10 @@ const ClientDetails = ({
                   companyName,
                   clientDetails,
                   clientDetailsCopy,
-                  setClients,
                   setSuccessMessage,
                   setClientDetails,
                   valMessage,
+                  url,
                 )
               }
             >

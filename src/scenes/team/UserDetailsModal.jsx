@@ -23,7 +23,7 @@ import { handleSave } from "./SaveHandler";
 import { margin } from "@mui/system";
 import Button from "@mui/material/Button";
 
-const StockInventoryTable = ({ userDetails }) => (
+const StockInventoryTable = ({ userDetails, }) => (
   <Box>
     <Table>
       <TableBody>
@@ -51,6 +51,7 @@ const UserDetailsModal = ({
   companyName,
   userDetailsCopy,
   setUserDetailsCopy,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -59,7 +60,9 @@ const UserDetailsModal = ({
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const [valMessage, setValMessage] = useState("");
   console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetailsCopy);
+  console.log("ana url mn l userDetailsModal", url)
 
   const getOptionLabel = (option) => {
     switch (option) {
@@ -256,14 +259,20 @@ const UserDetailsModal = ({
   };
 
   const handleConfirmClose = async () => {
+        console.log("ekhrrrrrr", url);
+
     handleSave(
       companyName,
       userDetails,
       userDetailsCopy,
       setUsers,
       setSuccessMessage,
-      setUserDetails
+      setUserDetails,
+      valMessage,
+      url
     );
+        console.log("ekhrrrrrr3333", url);
+
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
     setUnsavedChanges(false);
@@ -295,6 +304,9 @@ const UserDetailsModal = ({
             setUserDetailsCopy={setUserDetailsCopy}
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
+            url={url}
+            valMessage={valMessage}
+            setValMessage={setValMessage}
           />
         );
       case "stock-inventory":

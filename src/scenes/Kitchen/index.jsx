@@ -7,7 +7,7 @@ import Header from "../../components/Header";
 import { Button } from "@mui/material";
 import AddUserDialog from "../team/AddUserDialog";
 import { useState, useEffect } from "react";
-const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
+const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,9 +44,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
   useEffect(() => {
     const fetchStationDetails = async () => {
       try {
-        const response = await fetch(
-          `http://192.168.16.113:8000/kitchen/${companyName}`
-        );
+        const response = await fetch(`${url}/pos/kitchen/${companyName}`);
         if (response.ok) {
           const data = await response.json();
             setKitchenDetails(data);
@@ -54,9 +52,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
         } else {
           console.error("Failed to fetch company details");
         }
-        const response1 = await fetch(
-          `http://192.168.16.113:8000/prlist/${companyName}`
-        );
+        const response1 = await fetch(`${url}/pos/prlist/${companyName}`);
         if (response1.ok) {
           const data = await response1.json();
           setPrList(data);
@@ -73,7 +69,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
     const handleKitchenDetailsChange = async (newKitchenDetails) => {
       try {
         console.log("newUserDetailssssssssss", newKitchenDetails.name);
-        const apiUrl = `http://192.168.16.113:8000/addKitchen/${companyName}`;
+        const apiUrl = `${url}/pos/addKitchen/${companyName}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -96,7 +92,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
 
         // Fetch the details of the newly added user
         const kitchenDetailsResponse = await fetch(
-          `http://192.168.16.113:8000/kitchen/${companyName}`
+          `${url}/pos/kitchen/${companyName}`
         );
 
         if (!kitchenDetailsResponse.ok) {
@@ -181,6 +177,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle}) => {
             setUnsavedChanges={setUnsavedChanges}
             prList={prList}
             setPrList={setPrList}
+            url={url}
           ></KitchenDetails>
           <AddUserDialog
             isOpen={isDialogOpen}

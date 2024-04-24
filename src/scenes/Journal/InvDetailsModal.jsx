@@ -15,6 +15,7 @@ const InvDetailsModal = ({
   companyName,
   setSelectedInv,
   selectedInv,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -109,7 +110,7 @@ const InvDetailsModal = ({
             //overflowY: "auto",
           }}
         >
-          <InvDet companyName={companyName} selectedInv={selectedInv} />
+          <InvDet companyName={companyName} selectedInv={selectedInv} url={url } />
         </Box>
         {/* Other modal content */}
       </Box>

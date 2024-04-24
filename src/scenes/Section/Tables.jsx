@@ -25,6 +25,7 @@ const Tables = ({
   username,
   message,
   setMessage,
+  url,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -44,7 +45,7 @@ const Tables = ({
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+        `${url}/pos/alltables/${companyName}/${sectionNo}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -52,9 +53,7 @@ const Tables = ({
       const data = await response.json();
       setTables(data);
       if (message) {
-        await fetch(
-          `http://192.168.16.113:8000/resetUsedBy/${companyName}/${message}`
-        );
+        await fetch(`${url}/pos/resetUsedBy/${companyName}/${message}`);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -91,7 +90,7 @@ const Tables = ({
     try {
       if (addTitle === "Add Table") {
         console.log("newwwwwwwww sectionnnnnn", sectionInfo);
-        const apiUrl = `http://192.168.16.113:8000/addtables/${companyName}/${sectionNo}`;
+        const apiUrl = `${url}/pos/addtables/${companyName}/${sectionNo}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -112,7 +111,7 @@ const Tables = ({
         }, 2000);
         console.log("Response from the server:", responseData);
       } else {
-        const apiUrl = `http://192.168.16.113:8000/updateTables/${companyName}/${sectionNo}/${selectedTableId}`;
+        const apiUrl = `${url}/pos/updateTables/${companyName}/${sectionNo}/${selectedTableId}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -135,7 +134,7 @@ const Tables = ({
       }
       // Fetch the details of the newly added user
       const tablesResponse = await fetch(
-        `http://192.168.16.113:8000/alltables/${companyName}/${sectionNo}`
+        `${url}/pos/alltables/${companyName}/${sectionNo}`
       );
 
       if (!tablesResponse.ok) {
@@ -156,7 +155,7 @@ const Tables = ({
     try {
       console.log("fetit tfatish");
       const response = await fetch(
-        `http://192.168.16.113:8000/chooseAccess/${companyName}/${tableNo}/${username}`
+        `${url}/pos/chooseAccess/${companyName}/${tableNo}/${username}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -171,7 +170,7 @@ const Tables = ({
           data.usedBy === ""
         ) {
           const reqOpen = await fetch(
-            `http://192.168.16.113:8000/openTable/${companyName}/${tableNo}/${username}`,
+            `${url}/pos/openTable/${companyName}/${tableNo}/${username}`,
             {
               method: "POST",
             }
