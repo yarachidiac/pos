@@ -219,7 +219,8 @@ const PoS = ({
   // };
 
   const handlePrint = () => {
-    if(allowPrintInv === "Y"){
+    if (allowPrintInv === "Y") {
+      console.log("ana bl print station", defaultPrinter);
       printJS({
         printable: "myPrintableContent",
         type: "html",

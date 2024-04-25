@@ -100,7 +100,7 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
   return (
     <Box
       sx={{
-        height: "90%",
+        height: "100%",
         width: "95%",
         flexDirection: "column",
         ml: "2%",
@@ -119,7 +119,7 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
       </Box>
       <Box
         sx={{
-          height: "85%",
+          height: "90%",
           width: "100%",
           // "& .MuiDataGrid-root": {
           //   border: "none",

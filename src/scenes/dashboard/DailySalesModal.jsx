@@ -32,7 +32,7 @@ const DailySalesModal = ({
     pl: 2, // Set left padding to 3
     //width: "100%",
     minWidth: "90%",
-    minHeight: "90%", // Set a minimum height for smaller screens
+    minHeight: "100%", // Set a minimum height for smaller screens
     //maxHeight: "90%", // Set a maximum height for smaller screens
     display: "flex",
     flexDirection: window.innerWidth < 650 ? "row" : "column",
