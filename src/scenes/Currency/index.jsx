@@ -2,19 +2,20 @@ import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import { height } from "@mui/system";
-import KitchenDetails from "./KitchenDetails";
 import Header from "../../components/Header";
 import { Button } from "@mui/material";
 import AddUserDialog from "../team/AddUserDialog";
 import { useState, useEffect } from "react";
-const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
+import CurrencyDetails from "./CurrencyDetails";
+
+const Currency = ({ companyName, addTitle, setAddTitle, url}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-  const [kitchenDetails, setKitchenDetails] = useState([]);
-  const [kitchenDetailsCopy, setKitchenDetailsCopy] = useState([
-    ...kitchenDetails,
+  const [currencyDetails, setCurrencyDetails] = useState([]);
+  const [currencyDetailsCopy, setCurrencyDetailsCopy] = useState([
+    ...currencyDetails,
   ]);
 
     const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -42,20 +43,13 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
     
     
   useEffect(() => {
-    const fetchStationDetails = async () => {
+    const fetchCurrencyDetails = async () => {
       try {
-        const response = await fetch(`${url}/pos/kitchen/${companyName}`);
+        const response = await fetch(`${url}/pos/currency/${companyName}`);
         if (response.ok) {
           const data = await response.json();
-            setKitchenDetails(data);
-            setKitchenDetailsCopy(data);
-        } else {
-          console.error("Failed to fetch company details");
-        }
-        const response1 = await fetch(`${url}/pos/prlist/${companyName}`);
-        if (response1.ok) {
-          const data = await response1.json();
-          setPrList(data);
+            setCurrencyDetails(data);
+            setCurrencyDetailsCopy(data);
         } else {
           console.error("Failed to fetch company details");
         }
@@ -63,13 +57,13 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
         console.error("Error during fetch:", error);
       }
     };
-    fetchStationDetails();
+    fetchCurrencyDetails();
   }, []);
     
-    const handleKitchenDetailsChange = async (newKitchenDetails) => {
+    const handleCurrencyDetailsChange = async (newKitchenDetails) => {
       try {
         console.log("newUserDetailssssssssss", newKitchenDetails.name);
-        const apiUrl = `${url}/pos/addKitchen/${companyName}`;
+        const apiUrl = `${url}/pos/addCurrency/${companyName}`;
 
         const response = await fetch(apiUrl, {
           method: "POST",
@@ -91,21 +85,21 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
         console.log("Response from the server:", responseData);
 
         // Fetch the details of the newly added user
-        const kitchenDetailsResponse = await fetch(
-          `${url}/pos/kitchen/${companyName}`
+        const CurrencyDetailsResponse = await fetch(
+          `${url}/pos/currency/${companyName}`
         );
 
-        if (!kitchenDetailsResponse.ok) {
+        if (!CurrencyDetailsResponse.ok) {
           throw new Error(
-            `HTTP error! Status: ${kitchenDetailsResponse.status}`
+            `HTTP error! Status: ${CurrencyDetailsResponse.status}`
           );
         }
 
-        const kitchenDetailsData = await kitchenDetailsResponse.json();
+        const CurrencyDetailsData = await CurrencyDetailsResponse.json();
 
         // Set the userDetails state with the details of the newly added user
-        setKitchenDetails(kitchenDetailsData);
-        setKitchenDetailsCopy(kitchenDetailsData);
+        setCurrencyDetails(CurrencyDetailsData);
+        setCurrencyDetailsCopy(CurrencyDetailsData);
         // Open the details modal
         // setTimeout(() => {
         //   setIsDetailsModalOpen(true);
@@ -131,14 +125,16 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
     >
       <Box
         sx={{
-          justifyContent:"space-between",
-        display:"flex",
-        height:"10%",
-        alignItems:"center",
+          width: "100%",
+          height: "10%",
+          display: "flex",
+          flexDirection: "row",
+          //justifyContent: "space-around",
+          //alignItems: "center",
         }}
       >
         <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Kitchen Settings" />
+          <Header title="Currency Settings" />
         </Box>
         <Box
           sx={{
@@ -152,7 +148,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
             variant="contained"
             color="secondary"
             style={{ fontSize: "1.1rem" }}
-            onClick={() => handleAddUser("Add Kitchen Number")}
+            onClick={() => handleAddUser("Add Currency Number")}
           >
             Add
           </Button>
@@ -172,22 +168,20 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
             ...modalStyle,
           }}
         >
-          <KitchenDetails
+          <CurrencyDetails
             companyName={companyName}
-            kitchenDetails={kitchenDetails}
-            setKitchenDetails={setKitchenDetails}
-            kitchenDetailsCopy={kitchenDetailsCopy}
-            setKitchenDetailsCopy={setKitchenDetailsCopy}
+            currencyDetails={currencyDetails}
+            setCurrencyDetails={setCurrencyDetails}
+            currencyDetailsCopy={currencyDetailsCopy}
+            setCurrencyDetailsCopy={setCurrencyDetailsCopy}
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
-            prList={prList}
-            setPrList={setPrList}
             url={url}
-          ></KitchenDetails>
+          ></CurrencyDetails>
           <AddUserDialog
             isOpen={isDialogOpen}
             onClose={handleCloseDialog}
-            onAdd={handleKitchenDetailsChange}
+            onAdd={handleCurrencyDetailsChange}
             successMess={successMess}
             title={addTitle}
           />
@@ -196,4 +190,4 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
     </Box>
   );
 };
-export default Kitchen;
+export default Currency;

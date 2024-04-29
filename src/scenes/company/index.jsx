@@ -41,6 +41,7 @@ const Company = ({ companyName, url }) => {
   };
 
   const modalStyle = {
+    pl:"1%",
     background: colors.whiteblack[100],
     boxShadow: 24,
     minWidth: "90%",
@@ -102,7 +103,7 @@ const Company = ({ companyName, url }) => {
   const renderSelectedTable = () => {
     switch (selectedOption) {
       case "general":
-        return <GeneralA companyName={companyName} />;
+        return <GeneralA companyName={companyName} url={ url} />;
       case "back-office":
         return <BackOffice />;
       // Add more cases for each option

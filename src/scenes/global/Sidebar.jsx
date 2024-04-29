@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
@@ -24,6 +24,7 @@ import PointOfSaleOutlinedIcon from "@mui/icons-material/PointOfSaleOutlined";
 import { useNavigate } from "react-router-dom";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 const Item = ({
   title,
   to,
@@ -34,6 +35,7 @@ const Item = ({
   userControl,
   isNav,
   setIsConfOpenDialog,
+  setIsAuthenticated,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -62,27 +64,28 @@ const Item = ({
   };
 
   const handleManageGroups = () => {
-  if (userControl === "N") {
-    setOpen(true);
-  } else {
-    if (isNav) {
-      navigate("/Groups");
+    if (userControl === "N") {
+      setOpen(true);
     } else {
-      setIsConfOpenDialog(true);
+      if (isNav) {
+        navigate("/Groups");
+      } else {
+        setIsConfOpenDialog(true);
+      }
     }
-  }};
+  };
 
   const handleComp = () => {
     if (userControl === "N") {
-    setOpen(true);
-  } else {
-    if (isNav) {
-      navigate("/CompanyManagement");
+      setOpen(true);
     } else {
-      setIsConfOpenDialog(true);
+      if (isNav) {
+        navigate("/CompanyManagement");
+      } else {
+        setIsConfOpenDialog(true);
+      }
     }
-  }
-  }
+  };
 
   const handleUser = () => {
     if (userControl === "N") {
@@ -94,7 +97,7 @@ const Item = ({
         setIsConfOpenDialog(true);
       }
     }
-  }
+  };
   const handleStation = () => {
     if (userControl === "N") {
       setOpen(true);
@@ -118,12 +121,30 @@ const Item = ({
     }
   };
 
+  const handleCurrency = () => {
+    if (userControl === "N") {
+      setOpen(true);
+    } else {
+      if (isNav) {
+        navigate("/Currency");
+      } else {
+        setIsConfOpenDialog(true);
+      }
+    }
+  };
+
   const handleDashboard = () => {
-        if (isNav) {
-          navigate("/");
-        } else {
-          setIsConfOpenDialog(true);
-        }
+    if (isNav) {
+      navigate("/");
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    setIsAuthenticated(false);
   };
 
   return (
@@ -135,12 +156,12 @@ const Item = ({
       onClick={() => {
         if (title === "Manage POS") {
           handleManagePoS();
-        } else if(title === "POS"){
+        } else if (title === "POS") {
           if (isNav) {
-           navigate("/PoS")
+            navigate("/PoS");
           } else {
             setIsConfOpenDialog(true);
-         }
+          }
         } else if (title === "Manage Groups") {
           handleManageGroups();
         } else if (title === "Company Management") {
@@ -153,9 +174,12 @@ const Item = ({
           handleKitchen();
         } else if (title === "Dashboard") {
           handleDashboard();
+        } else if (title === "Currency") {
+          handleCurrency();
+        } else if (title === "Logout") {
+          handleLogout();
         }
-      }  
-      }
+      }}
       icon={icon}
     >
       <Box width="200px">
@@ -224,6 +248,7 @@ const Sidebar = ({
   companyName,
   isNav,
   setIsConfOpenDialog,
+  setIsAuthenticated,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -549,7 +574,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
               />
-              <SubItem
+              {/* <SubItem
                 title="General Information"
                 icon={<MenuOutlinedIcon />}
                 isCollapsed={isCollapsed}
@@ -562,15 +587,23 @@ const Sidebar = ({
                   to="/Department Management"
                   selected={selected}
                   setSelected={setSelected}
-                />
-                <Item
-                  title="Currency"
-                  to="/Currency"
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-              </SubItem>
+                /> */}
+              <Item
+                title="Currency"
+                to="/Currency"
+                selected={selected}
+                setSelected={setSelected}
+                userControl={userControl}
+                isNav={isNav}
+                setIsConfOpenDialog={setIsConfOpenDialog}
+              />
+              {/* </SubItem> */}
             </SubItem>
+            <Item
+              icon={<LogoutOutlinedIcon />}
+              title="Logout"
+              setIsAuthenticated={setIsAuthenticated}
+            />
           </Box>
         </Menu>
       </ProSidebar>

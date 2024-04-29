@@ -41,6 +41,8 @@ import Groups from "./scenes/Groups";
 import DailySales from "./scenes/dashboard/DailySales";
 import Station from "./scenes/Station";
 import Kitchen from "./scenes/Kitchen";
+import Currency from "./scenes/Currency";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -156,6 +158,7 @@ function App() {
                   isNav={isNav}
                   setIsConfOpenDialog={setIsConfOpenDialog}
                   url={url}
+                  setIsAuthenticated={setIsAuthenticated}
                 />
               )}
               <main className="content">
@@ -324,6 +327,24 @@ function App() {
                       element={
                         <Groups
                           companyName={companyName}
+                          addTitle={addTitle}
+                          setAddTitle={setAddTitle}
+                          setOldItemNo={setOldItemNo}
+                          setNewItemNo={setNewItemNo}
+                          oldItemNo={oldItemNo}
+                          url={url}
+                        />
+                      }
+                    />
+                  )}
+                  {userControl === "Y" && (
+                    <Route
+                      path="/Currency"
+                      element={
+                        <Currency
+                          companyName={companyName}
+                          branch={branch}
+                          invType={invType}
                           addTitle={addTitle}
                           setAddTitle={setAddTitle}
                           setOldItemNo={setOldItemNo}

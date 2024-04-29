@@ -141,53 +141,34 @@ export default function KitchenDetails(props){
         </Table>
       </TableContainer>
 
-      {successMessage ? (
-        <Box
-          sx={{
-            minHeight: "10%",
-            width: "auto",
-            justifyContent: "space-between",
-            display: "flex",
-            alignItems: "center", // Add this line to center vertically
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          minHeight: "10%",
+          width: "100%",
+          display: "flex",
+          alignItems: "center", // Center vertically
+        }}
+      >
+        <Box sx={{ flexGrow: 1 }}>
+          {successMessage && (
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
               {successMessage}
             </Typography>
-          </Box>
-          {props.unsavedChanges && (
-            <Box sx={{ minWidth: "5%" }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{
-                  //background: colors.greenAccent[600],
-                  fontSize: "1.1rem",
-                }}
-                onClick={handleSave}
-              >
-                Save
-              </Button>
-            </Box>
           )}
         </Box>
-      ) : (
-        props.unsavedChanges && (
-          <Box sx={{ width: "10%", marginTop: 2, marginLeft: "auto" }}>
+        {props.unsavedChanges && (
+          <Box sx={{ minWidth: "5%" }}>
             <Button
-              style={{
-                fontSize: "1.1rem",
-              }}
               variant="contained"
               color="secondary"
+              style={{ fontSize: "1.1rem" }}
               onClick={handleSave}
             >
               Save
             </Button>
           </Box>
-        )
-      )}
+        )}
+      </Box>
     </Box>
   );
 };
