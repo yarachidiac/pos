@@ -56,7 +56,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/ManagePoS");
+        navigate("pointofsale/ManagePoS");
       } else {
         setIsConfOpenDialog(true);
       }
@@ -135,7 +135,7 @@ const Item = ({
 
   const handleDashboard = () => {
     if (isNav) {
-      navigate("/");
+      navigate("/pointofsale");
     } else {
       setIsConfOpenDialog(true);
     }

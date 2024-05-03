@@ -89,7 +89,11 @@ const GroupDetails = ({
                   fullWidth
                   size="small"
                   variant="outlined"
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                  inputProps={{
+                    inputMode: "numeric",
+                    pattern: "[0-9]*",
+                    readOnly: true,
+                  }}
                 />
               </TableCell>
             </TableRow>
@@ -172,7 +176,8 @@ const GroupDetails = ({
                   setSuccessMessage,
                   setGroupDetails,
                   setOldItemNo,
-                  setNewItemNo, url
+                  setNewItemNo,
+                  url
                 )
               }
             >

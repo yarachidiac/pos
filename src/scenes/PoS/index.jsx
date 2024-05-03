@@ -295,8 +295,6 @@ const PoS = ({
   };
 
   const handleAddMod = () => {
-    console.log("selected Modifierssssssssssssssss", selectedModifiers);
-
     // Update the state with the modified selectedMeals array
     setSelectedMeals((prevSelectedMeals) =>
       prevSelectedMeals.map((meal) => {
@@ -349,10 +347,7 @@ const PoS = ({
       quantity: 1,
     }));
     setMealsCopy(copy);
-    console.log("Copy with unique identifiers:", copy);
   }, [meals]);
-
-  console.log(" l copy kel ma tetghayar l meal", mealsCopy);
 
   useEffect(() => {
     fetchCategories();
@@ -364,16 +359,12 @@ const PoS = ({
     fetchAllowPrint();
   }, []);
 
-  console.log("the branch and the SATYpe", branch, invType);
-  console.log("company in pos ", companyName);
-
   const fetchAllowPrint = async () => {
     try {
       const response = await fetch(
         `${url}/pos/getAllowPrint/${companyName}`
       );
       const data = await response.json();
-      console.log("aaaaaaaaaaaaaaaaaaaa", data);
       setDefaultPrinter(data["defaultPrinter"]); 
       setAllowPrintKT(data["allowKT"]);
       setAllowPrintInv(data["allowInv"])
@@ -389,7 +380,6 @@ const PoS = ({
         `${url}/pos/getCurr/${companyName}`
       );
       const data = await response.json();
-      console.log("aaaaaaaaaaaaaaaaaaaa", data);
       setCurr(data["Code"]); // Assuming your API response has a 'categories' property
       setInfCom(data);
     } catch (error) {
@@ -404,8 +394,6 @@ const PoS = ({
     }
   }, [selectedCategoryCode]);
 
-  console.log("olddd itemm noooooooooo", oldItemNo);
-  console.log("newwwww itemm noooo", newItemNo);
   useEffect(() => {
     // Update the selected meals to match the ItemNo in mealsCopy
     const updatedSelectedMeals = selectedMeals.map((meal) => {
@@ -447,7 +435,6 @@ const PoS = ({
       setSelectedCategory(category.GroupName);
       setSelectedCategoryCode(category.GroupNo);
     }
-    console.log(selectedCategoryCode);
   };
 
   const handleOrderClick = (mealId, newQuantity) => {
@@ -499,7 +486,6 @@ const PoS = ({
       );
       const data = await response.json();
       setMeals(data); // Assuming your API response has a 'categories' property
-      console.log("haydeeeeeeeeeeee l copy kel ma tetghayar l meal", meals);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
@@ -516,9 +502,6 @@ const PoS = ({
       console.error("Error fetching categoriesitems:", error);
     }
   };
-  console.log("mealssssssssssss", meals);
-
-  console.log("selected mealllllllll", selectedMeals);
 
   const calculateTotalDiscountedPrice = () => {
     let totalPrice = 0;
@@ -612,15 +595,12 @@ const PoS = ({
         ) {
           formattedDate = currentDate;
           formattedDate.setDate(currentDate.getDate() - 1);
-          console.log("formatted dateeeeeeeeee", formattedDate);
           formattedDate = formattedDate.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           });
-          console.log("fffffffffffffffffffffffff", formattedDate);
-
-          console.log("fffffffffffffffffffffffff", formattedDate);
+        
         }
     
 
@@ -628,8 +608,6 @@ const PoS = ({
       const formattedTime = format(currentDate, "HH:mm:ss");
     
       // Encode the formatted date
-      console.log("CURRENTTTTTTTTTTdateeeeeeeeeeeeeeeee", formattedDate);
-      console.log("formatted timeeeeeeeeeeee", formattedTime);
       const accno = selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
       const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
       const requestBody = {
@@ -648,7 +626,6 @@ const PoS = ({
         accno: accno,
         qtyPrintKT: qtyPrintKT,
       };
-      console.log("bodyyyyyyyyyyyyyyy", requestBody);
       const response = await fetch(
         `${url}/pos/invoiceitem/${companyName}`,
         {
@@ -659,12 +636,10 @@ const PoS = ({
           body: JSON.stringify(requestBody),
         }
       );
-      console.log("selecteddddddddd bl place order", requestBody);
 
       // Check if the request was successful (status code 2xx)
       if (response.ok) {
         const responseData = await response.json();
-        console.log("mmmmmmmmmmmmmmmmmmmmmmm", responseData);
         if (responseData["message"] === "Invoice items added successfully") {
           if (allowPrintKT === "Y") {
             // Convert the JSON data to a string
@@ -691,7 +666,6 @@ const PoS = ({
       }
         // Reset selectedMeals to an empty array
         setSelectedModifiers([]);
-        console.log("emptyyy chosenModifier", selectedMeals);
         setSelectedMeals([]);
         setMealsCopy((prevMealsCopy) =>
           prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
@@ -702,7 +676,6 @@ const PoS = ({
         setSelectedRow({});
         navigate("/PoS");
         setSelectedTop("Takeaway");
-        console.log("Order placed successfully!");
         setIsNav(true);
         setIsConfOpenDialog(false);
         setCloseTClicked(false);
@@ -715,35 +688,23 @@ const PoS = ({
   };
 
   
-console.log("closeTClicked", closeTClicked);
 
   const grossTotal = parseFloat(calculateTotalDiscountedPrice());
   const serviceValue = (grossTotal * srv) / 100;
   const discountValue = ((grossTotal + serviceValue) * discValue) / 100;
   const totalDiscount = (grossTotal + serviceValue) * (1 - discValue / 100);
-  console.log("dddddddddddddddddddddddddddd", totalDiscount);
   let totalTax = 0;
   if (
     selectedMeals &&
     selectedMeals.length > 0
   ) {
     const totalTaxSD =
-      parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100);
-    console.log("discVl", discValue);
-    console.log("bbbbb",
-      `${parseFloat(calculateTotalTax())} * ${(1 + srv / 100)} * ${(1 - discValue / 100)}`
-    );
-    console.log("calculate tax", parseFloat(calculateTotalTax()));
-    console.log("total taxSDDDDDDDDD", totalTaxSD);
+      parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100); 
     const totall =
       ((serviceValue * 11) / 100) * (1 - discValue / 100);
-    console.log("ooooooooooooooooooooooooooooooooo",totall);
     totalTax = totalTaxSD + totall;
   }
   const totalFinal = totalDiscount + totalTax;
-  console.log("totallll DV MAA TOTAL", totalFinal);
-  console.log("the finall meal with details", selectedMeals);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -752,7 +713,6 @@ console.log("closeTClicked", closeTClicked);
             `${url}/pos/getInv/${companyName}/${selectedTableId}/${username}`
           );
           const data = await response.json();
-          console.log("getttttttttt invvvvv", data);
           if (data.inv_list) {
             setSelectedMeals(data.inv_list);
             setMessage(data.invNo);
@@ -773,7 +733,6 @@ console.log("closeTClicked", closeTClicked);
         const unsentMeals = selectedMeals.filter(
           (meal) => meal.Printed !== "p"
         );
-        console.log("unsennnnnnnnnnnnt", unsentMeals);
         //if (location.search.includes("selectedTableId")) {
           if (unsentMeals.length > 0) {
             setIsNav(false);
@@ -823,7 +782,6 @@ console.log("closeTClicked", closeTClicked);
 
   const isIpadPro = useMediaQuery("(min-width: 900px) and (max-width: 1300px)");
 
-  console.log("filterrrrrrrrr", filterValue);
   const getItemListTable = () => {
     return (
       <TableContainer>
@@ -880,7 +838,6 @@ console.log("closeTClicked", closeTClicked);
     );
   };
 
-  console.log("anabl posssssssssss", isOpenDel);
   return (
     <>
       {/* First Box (70% width) */}

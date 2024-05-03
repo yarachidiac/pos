@@ -30,6 +30,7 @@ const GeneralA = ({ companyName, url }) => {
   });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [curr, setCurr] = useState([]);
+  const [error, setError] = useState("");
 
 console.log(
   "ssssssssssssssssssssss",
@@ -51,6 +52,16 @@ console.log(
         ...prev,
         [field]: timeString,
       }));
+    } else if (field === "Phone" || field === "Rate") {
+      if (!isNaN(updatedValue)) {
+        setCompanyDetailsCopy((prev) => ({
+          ...prev,
+          [field]: updatedValue,
+        }));
+        setError("");
+      } else {
+        setError(`${field} must be a number.`);
+      }
     } else {
       setCompanyDetailsCopy((prev) => ({
         ...prev,
@@ -58,6 +69,15 @@ console.log(
       }));
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      const timeout = setTimeout(() => {
+        setError("");
+      }, 2000); // Adjust the duration as needed (in milliseconds)
+      return () => clearTimeout(timeout);
+    }
+  }, [error]);
 
 
   useEffect(() => {
@@ -195,7 +215,7 @@ console.log("copppppppp", companyDetailsCopy);
 
   return (
     <Box style={{ height: "100%" }}>
-      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
+      <TableContainer style={{ height: "80%", overflowY: "auto" }}>
         <Table>
           <TableBody>
             <Box
@@ -210,7 +230,11 @@ console.log("copppppppp", companyDetailsCopy);
           </TableBody>
         </Table>
       </TableContainer>
-
+      {error && (
+        <Box sx={{ height: "10%",}}>
+          <Typography variant="h1" color="red">{error}</Typography>
+        </Box>
+      )}
       <Box
         sx={{
           minHeight: "10%",
@@ -219,7 +243,7 @@ console.log("copppppppp", companyDetailsCopy);
           alignItems: "center", // Center vertically
         }}
       >
-        <Box sx={{ width:"90%" }}>
+        <Box sx={{ width: "90%" }}>
           {successMessage && (
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
               {successMessage}

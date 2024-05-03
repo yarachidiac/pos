@@ -73,8 +73,8 @@ function App() {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("");
-  // const url = "https://pssapi.net:444/";
-  const url = "http://192.168.16.112:8000";
+  const url = "https://pssapi.net:444";
+  //const url = "http://192.168.16.112:8000";
 
   console.log("filter mn l app", filterValue);
   useEffect(() => {
@@ -179,7 +179,7 @@ function App() {
                   setFilterValue={setFilterValue}
                 />
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/pointofsale/" element={<Dashboard />} />
                   {userControl === "Y" && (
                     <Route
                       path="/team"
@@ -235,7 +235,7 @@ function App() {
                   />
                   {userControl === "Y" && (
                     <Route
-                      path="/ManagePoS"
+                      path="/pointofsale/ManagePoS"
                       element={
                         <ManagePoS
                           companyName={companyName}

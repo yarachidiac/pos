@@ -122,6 +122,15 @@ const ItemDetails = ({
     fetchGroupItems();
   }, []);
 
+  useEffect(() => {
+    if (valMessage) {
+      const timeout = setTimeout(() => {
+        setValMessage("");
+      }, 2000); // Adjust the duration as needed (in milliseconds)
+      return () => clearTimeout(timeout);
+    }
+  }, [valMessage]);
+
   // Trigger handleSave when userDetailsCopy changes
   // useEffect(() => {
   //   handleSave();
@@ -182,15 +191,15 @@ const ItemDetails = ({
               width: "100%",
             }}
           >
-            {key === "ItemNo" ||
-            key === "ItemName" ||
+            {key === "ItemName" ||
             key === "UPrice" ||
             key === "Disc" ||
             key === "Tax" ||
             key === "KT1" ||
             key === "KT2" ||
             key === "KT3" ||
-            key === "KT4" || key ==="Ingredients" ? (
+            key === "KT4" ||
+            key === "Ingredients" ? (
               <TextField
                 value={value}
                 onChange={(e) => handleValueUpdate(key, e.target.value)}
@@ -198,6 +207,19 @@ const ItemDetails = ({
                 size="small"
                 variant="outlined"
                 inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+              />
+            ) : key === "ItemNo" ? (
+              <TextField
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                fullWidth
+                size="small"
+                variant="outlined"
+                inputProps={{
+                  inputMode: "numeric",
+                  pattern: "[0-9]*",
+                  readOnly: true,
+                }}
               />
             ) : key === "Active" ? (
               <div
@@ -306,10 +328,9 @@ const ItemDetails = ({
       <Box sx={{height:"5%"}}>
         {valMessage && (
           <Typography
-            variant="body1"
+            variant="h1"
             color="error"
             style={{
-              fontSize: "1.1rem",
               fontWeight: "bold",
             }}
           >
@@ -351,7 +372,7 @@ const ItemDetails = ({
                   setItemDetails,
                   setOldItemNo,
                   setNewItemNo,
-                  url
+                  url,
                 )
               }
             >
