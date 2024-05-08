@@ -26,6 +26,7 @@ const Tables = ({
   message,
   setMessage,
   url,
+  v,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -164,7 +165,7 @@ const Tables = ({
           data.usedBy !== ""
         ) {
           setMessage(data.invNo);
-          navigate(`/PoS?selectedTableId=${tableNo}`);
+          navigate(`/${v}/PoS?selectedTableId=${tableNo}`);
         } else if (
           data.message === "you can access this table" &&
           data.usedBy === ""
@@ -180,9 +181,9 @@ const Tables = ({
             console.log("bl open table", res);
             setMessage(res.message);
           }
-          navigate(`/PoS?selectedTableId=${tableNo}`);
+          navigate(`/${v}/PoS?selectedTableId=${tableNo}`);
         } else if (data.message === "you can't access this table right now") {
-          navigate(`/Tables/${sectionNo}`);
+          navigate(`/${v}/Tables/${sectionNo}`);
         }
       } else {
         console.error("Failed to choose access");

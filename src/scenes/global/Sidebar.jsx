@@ -36,6 +36,7 @@ const Item = ({
   isNav,
   setIsConfOpenDialog,
   setIsAuthenticated,
+  v,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -56,7 +57,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("pointofsale/ManagePoS");
+        navigate(`/${v}/ManagePoS`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -68,7 +69,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/Groups");
+        navigate(`/${v}/Groups`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -80,7 +81,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/CompanyManagement");
+        navigate(`/${v}/CompanyManagement`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -92,7 +93,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/team");
+        navigate(`/${v}/team`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -103,7 +104,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/Station");
+        navigate(`/${v}/Station`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -114,7 +115,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/Kitchen");
+        navigate(`/${v}/Kitchen`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -126,7 +127,7 @@ const Item = ({
       setOpen(true);
     } else {
       if (isNav) {
-        navigate("/Currency");
+        navigate(`/${v}/Currency`);
       } else {
         setIsConfOpenDialog(true);
       }
@@ -135,7 +136,7 @@ const Item = ({
 
   const handleDashboard = () => {
     if (isNav) {
-      navigate("/pointofsale");
+      navigate(`/${v}/`);
     } else {
       setIsConfOpenDialog(true);
     }
@@ -158,7 +159,7 @@ const Item = ({
           handleManagePoS();
         } else if (title === "POS") {
           if (isNav) {
-            navigate("/PoS");
+            navigate(`/${v}/PoS`);
           } else {
             setIsConfOpenDialog(true);
           }
@@ -249,6 +250,7 @@ const Sidebar = ({
   isNav,
   setIsConfOpenDialog,
   setIsAuthenticated,
+  v,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -379,6 +381,7 @@ const Sidebar = ({
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
+              v={v}
             />
             <Item
               icon={<PointOfSaleOutlinedIcon />}
@@ -387,6 +390,7 @@ const Sidebar = ({
               setSelected={setSelected}
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
             />
             <Item
               icon={<PostAddOutlinedIcon />}
@@ -397,6 +401,7 @@ const Sidebar = ({
               userControl={userControl}
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
             />
             <Item
               icon={<AssessmentOutlinedIcon />}
@@ -407,6 +412,7 @@ const Sidebar = ({
               userControl={userControl}
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
             />
             {/* <SubItem
               title="Inventory Management"
@@ -543,6 +549,7 @@ const Sidebar = ({
                 userControl={userControl}
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
+                v={v}
               />
               <Item
                 title="Station Settings"
@@ -553,6 +560,7 @@ const Sidebar = ({
                 userControl={userControl}
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
+                v={v}
               />
               <Item
                 title="User Settings"
@@ -563,6 +571,7 @@ const Sidebar = ({
                 userControl={userControl}
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
+                v={v}
               />
               <Item
                 title="Kitchen"
@@ -573,6 +582,7 @@ const Sidebar = ({
                 userControl={userControl}
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
+                v={v}
               />
               {/* <SubItem
                 title="General Information"
@@ -596,6 +606,7 @@ const Sidebar = ({
                 userControl={userControl}
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
+                v={v}
               />
               {/* </SubItem> */}
             </SubItem>

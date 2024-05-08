@@ -12,6 +12,7 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   username: "",
@@ -35,12 +36,14 @@ const Form = ({
   setUsername,
   userControl,
   setUserControl,
-  url
+  url,
+  v,
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [logMess, setLogMess] = useState("");
+  const navigate = useNavigate();
 
   const handleFormSubmit = async (values) => {
     try {
@@ -87,6 +90,7 @@ const Form = ({
           const s = setUserControl(localStorage.getItem("user_control"));
           console.log("pppppppppppppppppppp", s);
           setLogMess(responseUser.message);
+          navigate(`/${v}/`);
         }
         setTimeout(() => {
           setLogMess("");

@@ -9,7 +9,7 @@ import {
   Grid,
   Typography,
   useTheme,
-  Stack
+  Stack,
 } from "@mui/material";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
 
-const Section = ({ addTitle, setAddTitle, companyName, message, url}) => {
+const Section = ({ addTitle, setAddTitle, companyName, message, url, v}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -29,7 +29,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url}) => {
 
   const navigate = useNavigate();
   const handleOpenTables = (sectionNo) => {
-    navigate(`/Tables/${sectionNo}`);
+    navigate(`/${v}/Tables/${sectionNo}`);
   };
     const fetchData = async () => {
       try {

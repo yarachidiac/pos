@@ -75,6 +75,7 @@ function App() {
   const [filterValue, setFilterValue] = useState("");
   const url = "https://pssapi.net:444";
   //const url = "http://192.168.16.112:8000";
+  const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
   useEffect(() => {
@@ -135,6 +136,7 @@ function App() {
               userControl={userControl}
               setUserControl={setUserControl}
               url={url}
+              v={v}
             />
           ) : (
             <>
@@ -159,6 +161,7 @@ function App() {
                   setIsConfOpenDialog={setIsConfOpenDialog}
                   url={url}
                   setIsAuthenticated={setIsAuthenticated}
+                  v={v}
                 />
               )}
               <main className="content">
@@ -177,12 +180,13 @@ function App() {
                   isOpenDel={isOpenDel}
                   setIsOpenDel={setIsOpenDel}
                   setFilterValue={setFilterValue}
+                  v={v}
                 />
                 <Routes>
-                  <Route path="/pointofsale/" element={<Dashboard />} />
+                  <Route path={`/${v}/`} element={<Dashboard v={v} />} />
                   {userControl === "Y" && (
                     <Route
-                      path="/team"
+                      path={`/${v}/team`}
                       element={
                         <Team
                           companyName={companyName}
@@ -198,12 +202,12 @@ function App() {
                   )}
                   {userControl === "Y" && (
                     <Route
-                      path="/CompanyManagement"
+                      path={`/${v}/CompanyManagement`}
                       element={<Company companyName={companyName} url={url} />}
                     />
                   )}
                   <Route
-                    path="/PoS"
+                    path={`/${v}/PoS`}
                     element={
                       <PoS
                         companyName={companyName}
@@ -230,12 +234,13 @@ function App() {
                         setMessage={setMessage}
                         filterValue={filterValue}
                         url={url}
+                        v={v}
                       />
                     }
                   />
                   {userControl === "Y" && (
                     <Route
-                      path="/pointofsale/ManagePoS"
+                      path={`/${v}/ManagePoS`}
                       element={
                         <ManagePoS
                           companyName={companyName}
@@ -253,7 +258,7 @@ function App() {
                   )}
                   {userControl === "Y" && (
                     <Route
-                      path="/Chart"
+                      path={`/${v}/Chart`}
                       element={
                         <ChartAcc
                           companyName={companyName}
@@ -267,7 +272,7 @@ function App() {
                     />
                   )}
                   <Route
-                    path="/Sections"
+                    path={`/${v}/Sections`}
                     element={
                       <Section
                         companyName={companyName}
@@ -278,11 +283,12 @@ function App() {
                         addTtile={addTitle}
                         message={message}
                         url={url}
+                        v={v}
                       />
                     }
                   />
                   <Route
-                    path="/Tables/:sectionNo"
+                    path={`/${v}/Tables/:sectionNo`}
                     element={
                       <Tables
                         companyName={companyName}
@@ -295,23 +301,24 @@ function App() {
                         message={message}
                         setMessage={setMessage}
                         url={url}
+                        v={v}
                       />
                     }
                   />
                   <Route
-                    path="/journal"
+                    path={`/${v}/journal`}
                     element={<Journal companyName={companyName} url={url} />}
                   />
                   <Route
-                    path="/Daily"
+                    path={`/${v}/Daily`}
                     element={<DailySales companyName={companyName} url={url} />}
                   />
                   <Route
-                    path="/Station"
+                    path={`/${v}/Station`}
                     element={<Station companyName={companyName} url={url} />}
                   />
                   <Route
-                    path="/Kitchen"
+                    path={`/${v}/Kitchen`}
                     element={
                       <Kitchen
                         companyName={companyName}
@@ -323,7 +330,7 @@ function App() {
                   />
                   {userControl === "Y" && (
                     <Route
-                      path="/Groups"
+                      path={`/${v}/Groups`}
                       element={
                         <Groups
                           companyName={companyName}
@@ -339,7 +346,7 @@ function App() {
                   )}
                   {userControl === "Y" && (
                     <Route
-                      path="/Currency"
+                      path={`/${v}/Currency`}
                       element={
                         <Currency
                           companyName={companyName}

@@ -71,6 +71,7 @@ const PoS = ({
   setMessage,
   filterValue,
   url,
+  v,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -674,7 +675,7 @@ const PoS = ({
         setDiscValue(0);
         setSrv(0);
         setSelectedRow({});
-        navigate("/PoS");
+        navigate(`/${v}/PoS`);
         setSelectedTop("Takeaway");
         setIsNav(true);
         setIsConfOpenDialog(false);

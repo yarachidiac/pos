@@ -29,11 +29,12 @@ const Topbar = ({
   setIsOpenDel,
   setFilterValue,
   url,
+  v,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  const [secOrTab, setSecOrTable] = useState(`/Sections`);
+  const [secOrTab, setSecOrTable] = useState(`/${v}/Sections`);
   const location = useLocation();
   console.log("isMobile from topbarr:", isMobile);
   console.log("isCollapsed from topbarr:", isCollapsed);
@@ -67,11 +68,11 @@ const Topbar = ({
   const navigate = useNavigate();
   const handleClick = () => {
     if (isNav) {
-      navigate(`/PoS`);
+      navigate(`/${v}/PoS`);
       setSelectedTop("Takeaway");
     } else {
       setIsConfOpenDialog(true);
-      setPageRed(`/PoS`);
+      setPageRed(`/${v}/PoS`);
     }
   };
 
@@ -106,7 +107,7 @@ const Topbar = ({
         if (response.ok) {
           const data = await response.json();
           if (data && data.section_list && data.section_list.length > 1) {
-            setSecOrTable(`/Sections`);
+            setSecOrTable(`/${v}/Sections`);
           } else {
             const getsec = await fetch(
               `${url}/pos/getOneSection/${companyName}`
@@ -114,7 +115,7 @@ const Topbar = ({
             if (getsec.ok) {
               const sec = await getsec.json();
               const sectionNo = sec.sectionNo;
-              setSecOrTable(`/Tables/${sectionNo}`);
+              setSecOrTable(`/${v}/Tables/${sectionNo}`);
             }
           }
         } else {
@@ -129,12 +130,12 @@ const Topbar = ({
 
   return (
     <>
-      {(currentRoute == "/PoS" ||
-        currentRoute == "/Sections" ||
+      {(currentRoute == `/${v}/PoS` ||
+        currentRoute == `/${v}/Sections` ||
         location.pathname.includes("/Tables")) && (
         <Box
           sx={{
-            width: currentRoute === "/PoS" ? "60%" : "100%",
+            width: currentRoute === `/${v}/PoS` ? "60%" : "100%",
             height: "8%",
             display: "flex",
             justifyContent: "space-around",
@@ -165,7 +166,7 @@ const Topbar = ({
               height: "100%",
             }}
           >
-            {currentRoute === "/PoS" && (
+            {currentRoute === `/${v}/PoS` && (
               <Box
                 sx={{
                   width: "30%",
@@ -185,9 +186,9 @@ const Topbar = ({
               </Box>
             )}
             <Box sx={{ display: "flex", width: "70%", height: "100%" }}>
-              {(currentRoute === "/PoS" ||
-                currentRoute === "/Chart" ||
-                currentRoute === "/Sections" ||
+              {(currentRoute === `/${v}/PoS` ||
+                currentRoute === `/${v}/Chart` ||
+                currentRoute === `/${v}/Sections` ||
                 location.pathname.includes("/Tables")) && (
                 <Button
                   onClick={handleClick}
@@ -204,6 +205,10 @@ const Topbar = ({
                       selectedTop === "Takeaway"
                         ? colors.primary[500]
                         : "black",
+                    "&:hover": {
+                      background: colors.greenAccent[500],
+                      color: colors.primary[500],
+                    },
                   }}
                 >
                   Take Away
@@ -211,7 +216,7 @@ const Topbar = ({
               )}
               {/* Delivery button */}
               {!location.search.includes("selectedTableId") &&
-                currentRoute === "/PoS" && (
+                currentRoute === `/${v}/PoS` && (
                   <Button
                     onClick={handleChart}
                     sx={{
@@ -232,9 +237,9 @@ const Topbar = ({
                     Delivery
                   </Button>
                 )}
-              {(currentRoute === "/PoS" ||
-                currentRoute === "/Chart" ||
-                currentRoute === "/Sections" ||
+              {(currentRoute === `/${v}/PoS` ||
+                currentRoute === `/${v}/Chart` ||
+                currentRoute === `/${v}/Sections` ||
                 location.pathname.includes("/Tables")) && (
                 <Button
                   onClick={handleSections}
@@ -249,6 +254,10 @@ const Topbar = ({
                         : colors.grey[700],
                     color:
                       selectedTop === "Tables" ? colors.primary[500] : "black",
+                    "&:hover": {
+                      background: colors.greenAccent[500],
+                      color: colors.primary[500],
+                    },
                   }}
                 >
                   Tables
@@ -267,7 +276,7 @@ const Topbar = ({
         <IconButton sx={{ width: "33%" }}>
           <NotificationsOutlinedIcon />
         </IconButton> */}
-            {currentRoute === "/PoS" && (
+            {currentRoute === `/${v}/PoS` && (
               <IconButton onClick={handleRefreshClick}>
                 <RestoreOutlinedIcon />
               </IconButton>

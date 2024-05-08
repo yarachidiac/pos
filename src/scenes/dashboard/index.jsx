@@ -2,15 +2,15 @@ import { Button, Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = () => {
+const Dashboard = ({v}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const handleNavigateHistory = () => {
-    navigate("/Journal");
+    navigate(`/${v}/Journal`);
   };
   const handleNavigateDailySales = () => {
-    navigate("/Daily");
+    navigate(`/${v}/Daily`);
   };
 
   return (
