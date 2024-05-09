@@ -27,6 +27,7 @@ const Tables = ({
   setMessage,
   url,
   v,
+  userControl
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -222,14 +223,17 @@ const Tables = ({
             display: "flex",
           }}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ fontSize: "1.1rem" }}
-            onClick={() => handleAddSection("Add Table")}
-          >
-            Add
-          </Button>
+          {userControl ===
+            "Y" && (
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ fontSize: "1.1rem" }}
+                onClick={() => handleAddSection("Add Table")}
+              >
+                Add
+              </Button>
+            )}
         </Box>
       </Box>
       <Container sx={{ height: "85%", width: "100%" }}>
@@ -300,27 +304,30 @@ const Tables = ({
                   }}
                   onClick={() => handleOpenPOS(table.TableNo)}
                 />
-                <Button
-                  size="large"
-                  sx={{
-                    position: "absolute",
-                    bottom: 8,
-                    right: 8,
-                    backgroundColor: colors.greenAccent[500],
-                    color: colors.primary[500],
-                    zIndex: 1, // Ensure the Edit button is above the ButtonBase
-                  }}
-                  onClick={() => {
-                    console.log("honnnnnnnnnnnnnn", table.TableNo);
-                    setTableNo(table.TableNo);
-                    setTableWaiter(table.TableWaiter);
-                    setActive(table.Active);
-                    setDescription(table.Description);
-                    handleEditClick("Update Table", table.TableNo);
-                  }}
-                >
-                  Edit
-                </Button>
+                {userControl ===
+                  "Y" && (
+                    <Button
+                      size="large"
+                      sx={{
+                        position: "absolute",
+                        bottom: 8,
+                        right: 8,
+                        backgroundColor: colors.greenAccent[500],
+                        color: colors.primary[500],
+                        zIndex: 1, // Ensure the Edit button is above the ButtonBase
+                      }}
+                      onClick={() => {
+                        console.log("honnnnnnnnnnnnnn", table.TableNo);
+                        setTableNo(table.TableNo);
+                        setTableWaiter(table.TableWaiter);
+                        setActive(table.Active);
+                        setDescription(table.Description);
+                        handleEditClick("Update Table", table.TableNo);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  )}
               </Box>
             </Grid>
           ))}

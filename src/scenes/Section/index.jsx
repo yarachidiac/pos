@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
 
-const Section = ({ addTitle, setAddTitle, companyName, message, url, v}) => {
+const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userControl}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -149,10 +149,11 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v}) => {
           justifyContent: "space-around",
           display: "flex",
           flexDirection: "row",
-          ml:"3%"
+          ml: "3%",
         }}
       >
-          <Header title="Section" subtitle="Choose Title" />
+        <Header title="Section" subtitle="Choose Title" />
+
         <Box
           sx={{
             marginLeft: "auto",
@@ -162,82 +163,86 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v}) => {
             display: "flex",
           }}
         >
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ fontSize: "1.1rem" }}
-            onClick={() => handleAddSection("Add Section")}
-          >
-            Add
-          </Button>
+          {userControl ===
+            "Y" &&(
+              <Button
+                variant="contained"
+                color="secondary"
+                style={{ fontSize: "1.1rem" }}
+                onClick={() => handleAddSection("Add Section")}
+              >
+                Add
+              </Button>
+            )}
         </Box>
       </Box>
       <Container sx={{ height: "85%" }}>
-  <Grid
-    container
-    spacing={2}
-    sx={{
-      height: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-      overflow: "auto",
-    }}
-  >
-    {
-      sections.map((section, index) => (
-        <Grid key={section.SectionNo} item xs={12} sm={6} md={4} lg={3}>
-          <Box
-            position="relative"
-            width="100%"
-            paddingTop="100%"
-            bgcolor={colors.blueAccent[800]}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
-            >
-              {section.Name}
-            </Typography>
-            <ButtonBase
-              sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-              }}
-              onClick={() => handleOpenTables(section.SectionNo)}
-            />
-            <Button
-              size="large"
-              sx={{
-                position: "absolute",
-                bottom: 8,
-                right: 8,
-                backgroundColor: colors.greenAccent[500],
-                color: colors.primary[500],
-                zIndex: 1, // Ensure the Edit button is above the ButtonBase
-              }}
-              onClick={(event) => {
-                event.stopPropagation();
-                setSectionNo(section.SectionNo);
-                setSectionName(section.Name);
-                handleEditClick("Update Section");
-              }}
-            >
-              Edit
-            </Button>
-          </Box>
+        <Grid
+          container
+          spacing={2}
+          sx={{
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            overflow: "auto",
+          }}
+        >
+          {sections.map((section, index) => (
+            <Grid key={section.SectionNo} item xs={12} sm={6} md={4} lg={3}>
+              <Box
+                position="relative"
+                width="100%"
+                paddingTop="100%"
+                bgcolor={colors.blueAccent[800]}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {section.Name}
+                </Typography>
+                <ButtonBase
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                  }}
+                  onClick={() => handleOpenTables(section.SectionNo)}
+                />
+                {userControl ===
+                  "Y" && (
+                    <Button
+                      size="large"
+                      sx={{
+                        position: "absolute",
+                        bottom: 8,
+                        right: 8,
+                        backgroundColor: colors.greenAccent[500],
+                        color: colors.primary[500],
+                        zIndex: 1, // Ensure the Edit button is above the ButtonBase
+                      }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setSectionNo(section.SectionNo);
+                        setSectionName(section.Name);
+                        handleEditClick("Update Section");
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  )}
+              </Box>
+            </Grid>
+          ))}
         </Grid>
-      ))
-    }
-  </Grid>
-</Container>
+      </Container>
 
       <SectionDialog
         isOpen={isDialogOpen}

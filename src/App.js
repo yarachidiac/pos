@@ -284,6 +284,7 @@ function App() {
                         message={message}
                         url={url}
                         v={v}
+                        userControl={userControl}
                       />
                     }
                   />
@@ -302,6 +303,7 @@ function App() {
                         setMessage={setMessage}
                         url={url}
                         v={v}
+                        userControl={userControl}
                       />
                     }
                   />
