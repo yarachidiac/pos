@@ -125,6 +125,7 @@ const Form = ({
               fontWeight: "bold",
               textAlign: "center",
               marginBottom: "1rem", // Add margin bottom for spacing
+              height:"10px",
             }}
           >
             {logMess}
@@ -156,6 +157,7 @@ const Form = ({
                       name="username"
                       error={!!touched.username && !!errors.username}
                       helperText={touched.username && errors.username}
+                      sx={{ height: "64px" }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -170,6 +172,7 @@ const Form = ({
                       name="password"
                       error={!!touched.password && !!errors.password}
                       helperText={touched.password && errors.password}
+                      sx={{ height: "64px" }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -184,6 +187,7 @@ const Form = ({
                       name="company_name"
                       error={!!touched.company_name && !!errors.company_name}
                       helperText={touched.company_name && errors.company_name}
+                      sx={{ height: "64px" }}
                     />
                   </Grid>
                   <Grid item xs={12}>
