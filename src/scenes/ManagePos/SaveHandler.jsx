@@ -9,10 +9,19 @@ const handleSave = async (
   url
 ) => {
   try {
-    console.log("urllllllllllll", url);
+    
     const data = itemDetailsCopy;
-    console.log("iddddddddddddddd", itemDetails.ItemNo);
-    console.log("itemmmmmmmmmmmmmmmmmmmmNOOOOO", itemDetails);
+   const isImageSame =
+     itemDetails["Image"] &&
+     itemDetailsCopy["Image"] &&
+     itemDetails["Image"]["data"] === itemDetailsCopy["Image"]["data"];
+
+   // If the image is the same, include the existedImage field with value 1
+   if (isImageSame) {
+     data["existedImage"] = 1;
+   } else {
+     data["existedImage"] = 0;
+   }
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
       `${url}/pos/updateItems/${companyName}/${itemDetails.ItemNo}`,

@@ -73,8 +73,8 @@ function App() {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("");
-  const url = "https://pssapi.net:444";
-  //const url = "http://192.168.16.112:8000";
+  //const url = "https://pssapi.net:444";
+  const url = "http://192.168.16.112:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);

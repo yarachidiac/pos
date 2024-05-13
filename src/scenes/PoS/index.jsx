@@ -791,7 +791,7 @@ const PoS = ({
             <TableRow>
               <TableCell>Qty</TableCell>
               <TableCell>Barcode</TableCell>
-              <TableCell>Unit Price</TableCell>
+              <TableCell>Price</TableCell>
               <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
@@ -807,7 +807,6 @@ const PoS = ({
                       selectedMeal.UPrice -
                       (selectedMeal.UPrice * selectedMeal.Disc) / 100
                     ).toFixed(2)}{" "}
-                    {curr}
                   </TableCell>
                   <TableCell>
                     {(
@@ -815,6 +814,8 @@ const PoS = ({
                         (selectedMeal.UPrice * selectedMeal.Disc) / 100) *
                       selectedMeal.quantity
                     ).toFixed(2)}{" "}
+                  </TableCell>
+                  <TableCell>
                     {curr}
                   </TableCell>
                 </TableRow>
@@ -861,10 +862,11 @@ const PoS = ({
             justifyContent: "space-around",
             // marginBottom: "3%",
             height: "10%",
+            width: "100%",
             overflowX: "auto",
           }}
         >
-          <Box sx={{ width: "40%" }}>
+          <Box sx={{ flex: "0 0 auto", minWidth: "10%", height: "100%" }}>
             <Button
               style={{
                 fontWeight: "bold",
@@ -890,7 +892,15 @@ const PoS = ({
           </Box>
 
           {categories.map((category) => (
-            <Box sx={{ width: "40%", marginLeft: "5%" }}>
+            <Box
+              key={category.GroupNo}
+              sx={{
+                flex: "0 0 auto", // Allow item to shrink if necessary
+                minWidth: "20%", // Ensure each category button has 20% width
+                marginLeft: "5%",
+                height: "100%",
+              }}
+            >
               <Button
                 key={category.GroupNo}
                 style={{
@@ -904,6 +914,7 @@ const PoS = ({
                     selectedCategory === category.GroupName
                       ? colors.primary[500]
                       : "black",
+                  width: "100%",
                 }}
                 // startIcon={<LocalCafeIcon />}
                 onClick={() => handleCategoryClick(category)}
@@ -940,7 +951,7 @@ const PoS = ({
                             : 2.4 // Other devices collapsed
                           : isIpadPro
                           ? 6 // iPad Pro expanded
-                          : 4 // Other devices expanded
+                          : 3 // Other devices expanded
                       }
                       key={meal.ItemNo}
                     >
@@ -1780,51 +1791,67 @@ const PoS = ({
           <Typography variant="h3">Your Order</Typography>
           {getItemListTable()}
         </div>
-        <div>
+        <div
+          style={{
+            //fontFamily: "Arial, sans-serif",
+            backgroundColor: "#f7f7f7",
+            // padding: "20px",
+            borderRadius: "10px",
+          }}
+        >
           <Typography variant="h3">Payment Summary</Typography>
-          <TableContainer>
+          <TableContainer
+            style={{
+              backgroundColor: "white",
+              borderRadius: "10px",
+              overflow: "hidden",
+            }}
+          >
             <Table>
               <TableBody>
-                <TableRow>
+                <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                   <TableCell>Gross Total:</TableCell>
-                  <TableCell>
+                  <TableCell colSpan={3}>
                     {grossTotal} {curr}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Service:</TableCell>
-                  <TableCell>
-                    {srv}% ({serviceValue.toFixed(2)} {curr})
-                  </TableCell>
+                  <TableCell>{srv}%</TableCell>
+                  <TableCell>{serviceValue.toFixed(2)}</TableCell>
+                  <TableCell>{curr}</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Discount:</TableCell>
-                  <TableCell>
-                    {discValue}% ({discountValue.toFixed(2)} {curr})
-                  </TableCell>
+                  <TableCell>{discValue}%</TableCell>
+                  <TableCell>{discountValue.toFixed(2)}</TableCell>
+                  <TableCell>{curr}</TableCell>
                 </TableRow>
-                <TableRow>
+                <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                   <TableCell>Total Discount:</TableCell>
-                  <TableCell>
+                  <TableCell colSpan={3}>
                     {totalDiscount.toFixed(2)} {curr}
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>Tax:</TableCell>
-                  <TableCell>
-                    {`11%`} ({totalTax.toFixed(2)} {curr})
-                  </TableCell>
+                  <TableCell>11%</TableCell>
+                  <TableCell>{totalTax.toFixed(2)}</TableCell>
+                  <TableCell>{curr}</TableCell>
                 </TableRow>
-                <TableRow>
+                <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                   <TableCell>Total:</TableCell>
-                  <TableCell>
-                    {finalTotal.toFixed(2)} {curr}
+                  <TableCell colSpan={3}>
+                    {infCom.KD === "/"
+                      ? (finalTotal / infCom.Rate).toLocaleString() + " USD"
+                      : (finalTotal * infCom.Rate).toLocaleString() + " LBP"}
                   </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
         </div>
+
         {selectedRow && Object.keys(selectedRow).length > 0 && (
           <TableContainer>
             <Table>

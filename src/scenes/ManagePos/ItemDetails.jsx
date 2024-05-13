@@ -39,6 +39,8 @@ const ItemDetails = ({
       console.log("urllllllllllll mn l itemdetails", url);
 
 
+  console.log("itemDetails", itemDetails)
+  console.log("itemDetailsCopy",)
   const [groupNames, setGroupNames] = useState([]);
   const [selectedGroupName, setSelectedGroupName] = useState(
     itemDetails.GroupName
@@ -49,13 +51,23 @@ const ItemDetails = ({
   });
   const [valMessage, setValMessage] = useState("");
   const handleValueUpdate = (field, updatedValue) => {
-    if (field === "Tax" || field === "UPrice" || field === "Disc" || field === "Srv") {
+    if (
+      field === "Tax" ||
+      field === "UPrice" ||
+      field === "Disc" ||
+      field === "Srv"
+    ) {
       // Validate if the value is a number
       if (isNaN(updatedValue)) {
         setValMessage(`${field} must be a number`);
         return;
       }
-    } else if (field === "KT1" || field === "KT2" || field === "KT3" || field === "KT4") {
+    } else if (
+      field === "KT1" ||
+      field === "KT2" ||
+      field === "KT3" ||
+      field === "KT4"
+    ) {
       // Validate if the value has more than 2 characters
       if (updatedValue.length > 2) {
         setValMessage(`${field} must be at most 2 characters long`);
@@ -75,14 +87,22 @@ const ItemDetails = ({
       setSelectedGroupName(updatedValue.GroupName);
       setSelectedGroup(updatedValue); // Also update the selected group object
     } else if (field === "Image") {
-      // For file input
       const file = updatedValue.target.files[0];
       console.log("in handlee file ", file);
-      setItemDetailsCopy((prev) => ({
-        ...prev,
-        [field]: file.name,
-        GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
-      }));
+
+      // Read the file as base64 and set it in the state
+      const reader = new FileReader();
+      reader.onload = () => {
+        setItemDetailsCopy((prev) => ({
+          ...prev,
+          [field]: {
+            name: file.name,
+            data: reader.result.split(",")[1], // Extracting base64 data
+          },
+          GroupNo: selectedGroup?.GroupNo || "",
+        }));
+      };
+      reader.readAsDataURL(file);
     } else {
       // For TextField and other fields
       setItemDetailsCopy((prev) => ({
