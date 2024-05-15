@@ -72,6 +72,7 @@ const PoS = ({
   filterValue,
   url,
   v,
+  compPhone, compCity, compStreet,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -269,15 +270,15 @@ const PoS = ({
 
   const loadItems = async () => {
     try {
-      let url;
+      let ref;
       if (selectedCategoryCode) {
         // If a category is selected, fetch items for the selected category
-        url = `${url}/pos/categoriesitems/${companyName}/${selectedCategoryCode}`;
+        ref = `${url}/pos/categoriesitems/${companyName}/${selectedCategoryCode}`;
       } else {
         // Otherwise, fetch all items
-        url = `${url}/pos/allitems/${companyName}`;
+        ref = `${url}/pos/allitems/${companyName}`;
       }
-      const response = await fetch(url);
+      const response = await fetch(ref);
       const data = await response.json();
       setMeals(data);
     } catch (error) {
@@ -790,8 +791,8 @@ const PoS = ({
           <TableHead>
             <TableRow>
               <TableCell>Qty</TableCell>
-              <TableCell>Barcode</TableCell>
-              <TableCell>Price</TableCell>
+              <TableCell>Description</TableCell>
+              {/* <TableCell>Price</TableCell> */}
               <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
@@ -802,12 +803,12 @@ const PoS = ({
                 <TableRow>
                   <TableCell>{selectedMeal.quantity}</TableCell>
                   <TableCell>{selectedMeal.ItemName}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {(
                       selectedMeal.UPrice -
                       (selectedMeal.UPrice * selectedMeal.Disc) / 100
                     ).toFixed(2)}{" "}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     {(
                       (selectedMeal.UPrice -
@@ -815,9 +816,9 @@ const PoS = ({
                       selectedMeal.quantity
                     ).toFixed(2)}{" "}
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {curr}
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
                 {/* Modifier rows */}
                 {selectedMeal.chosenModifiers &&
@@ -1788,7 +1789,41 @@ const PoS = ({
       </Box>
       <Box id="myPrintableContent" sx={{ display: "none" }}>
         <div>
-          <Typography variant="h3">Your Order</Typography>
+          <div>
+            <TableContainer>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{companyName}</TableCell>
+                  </TableRow>
+                  {compCity && (
+                    <TableRow>
+                      <TableCell>City:</TableCell>
+                      <TableCell>{compCity}</TableCell>
+                    </TableRow>
+                  )}
+                  {compStreet && (
+                    <TableRow>
+                      <TableCell>Street:</TableCell>
+                      <TableCell>{compStreet}</TableCell>
+                    </TableRow>
+                  )}
+                  {compPhone && (
+                    <TableRow>
+                      <TableCell>Phone:</TableCell>
+                      <TableCell>{compPhone}</TableCell>
+                    </TableRow>
+                  )}
+                  {branch && (
+                    <TableRow>
+                      <TableCell>Branch:</TableCell>
+                      <TableCell>{branch}</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
           {getItemListTable()}
         </div>
         <div
@@ -1815,30 +1850,38 @@ const PoS = ({
                     {grossTotal} {curr}
                   </TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableCell>Service:</TableCell>
-                  <TableCell>{srv}%</TableCell>
-                  <TableCell>{serviceValue.toFixed(2)}</TableCell>
-                  <TableCell>{curr}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Discount:</TableCell>
-                  <TableCell>{discValue}%</TableCell>
-                  <TableCell>{discountValue.toFixed(2)}</TableCell>
-                  <TableCell>{curr}</TableCell>
-                </TableRow>
-                <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-                  <TableCell>Total Discount:</TableCell>
-                  <TableCell colSpan={3}>
-                    {totalDiscount.toFixed(2)} {curr}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Tax:</TableCell>
-                  <TableCell>11%</TableCell>
-                  <TableCell>{totalTax.toFixed(2)}</TableCell>
-                  <TableCell>{curr}</TableCell>
-                </TableRow>
+                {srv !== 0 && (
+                  <TableRow>
+                    <TableCell>Service:</TableCell>
+                    <TableCell>{srv}%</TableCell>
+                    <TableCell>{serviceValue.toFixed(2)}</TableCell>
+                    <TableCell>{curr}</TableCell>
+                  </TableRow>
+                )}
+                {discValue !== 0 && (
+                  <TableRow>
+                    <TableCell>Discount:</TableCell>
+                    <TableCell>{discValue}%</TableCell>
+                    <TableCell>{discountValue.toFixed(2)}</TableCell>
+                    <TableCell>{curr}</TableCell>
+                  </TableRow>
+                )}
+                {totalDiscount !== 0 && (discValue !== 0 || srv !== 0) && (
+                  <TableRow style={{ backgroundColor: "#f0f0f0" }}>
+                    <TableCell>Total:</TableCell>
+                    <TableCell colSpan={3}>
+                      {totalDiscount.toFixed(2)} {curr}
+                    </TableCell>
+                  </TableRow>
+                )}
+                {totalTax !== 0 && (
+                  <TableRow>
+                    <TableCell>Tax:</TableCell>
+                    <TableCell>11%</TableCell>
+                    <TableCell>{totalTax.toFixed(2)}</TableCell>
+                    <TableCell>{curr}</TableCell>
+                  </TableRow>
+                )}
                 <TableRow style={{ backgroundColor: "#f0f0f0" }}>
                   <TableCell>Total:</TableCell>
                   <TableCell colSpan={3}>

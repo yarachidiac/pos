@@ -38,6 +38,9 @@ const Form = ({
   setUserControl,
   url,
   v,
+  setCompCity,
+  setCompStreet,
+  setCompPhone
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -69,15 +72,27 @@ const Form = ({
         if (responseUser.message === "Invalid Credentials") {
           setLogMess(responseUser.message);
           
-        }else{
+        } else {
+          console.log("kkkkkkkkkkkkkkk", responseUser.comp);
           console.log("heyyyyyyyyyy", responseUser.user);
           localStorage.setItem("company_name", values.company_name);
           await setCompanyName(localStorage.getItem("company_name"));
-          console.log("logged innn userrrrrr", responseUser.user["Branch"]);
+
           localStorage.setItem("user_branch", responseUser.user["Branch"]);
           await setBranch(localStorage.getItem("user_branch"));
+
           localStorage.setItem("user_invType", responseUser.user["SAType"]);
           await setInvType(localStorage.getItem("user_invType"));
+
+          localStorage.setItem("comp_phone", responseUser.comp["Phone"]);
+          await setCompPhone(localStorage.getItem("comp_phone"));
+          
+          localStorage.setItem("comp_city", responseUser.comp["City"]);
+          await setCompCity(localStorage.getItem("comp_city"));
+
+          localStorage.setItem("comp_street", responseUser.comp["Street"]);
+          await setCompStreet(localStorage.getItem("comp_street"));
+
           sessionStorage.setItem("isAuthenticated", "true");
           await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"));
           //updateCompanyName(values.company_name);
@@ -90,7 +105,7 @@ const Form = ({
           const s = setUserControl(localStorage.getItem("user_control"));
           console.log("pppppppppppppppppppp", s);
           setLogMess(responseUser.message);
-          navigate(`/${v}/`);
+          navigate(`/${v}/PoS`);
         }
         setTimeout(() => {
           setLogMess("");

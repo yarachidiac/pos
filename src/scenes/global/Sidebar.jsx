@@ -134,13 +134,6 @@ const Item = ({
     }
   };
 
-  const handleDashboard = () => {
-    if (isNav) {
-      navigate(`/${v}/`);
-    } else {
-      setIsConfOpenDialog(true);
-    }
-  };
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -148,6 +141,21 @@ const Item = ({
     setIsAuthenticated(false);
   };
 
+  const handleInvHis = () => {
+    if (isNav) {
+      navigate(`/${v}/journal`);
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  };
+
+  const handleDailySales = () => {
+    if (isNav) {
+      navigate(`/${v}/Daily`);
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  };
   return (
     <MenuItem
       active={selected === title}
@@ -173,12 +181,14 @@ const Item = ({
           handleStation();
         } else if (title === "Kitchen") {
           handleKitchen();
-        } else if (title === "Dashboard") {
-          handleDashboard();
         } else if (title === "Currency") {
           handleCurrency();
         } else if (title === "Logout") {
           handleLogout();
+        } else if (title === "Invoices History") {
+          handleInvHis();
+        } else if (title === "Daily Sales") {
+          handleDailySales();
         }
       }}
       icon={icon}
@@ -375,14 +385,14 @@ const Sidebar = ({
           </MenuItem>
 
           <Box>
-            <Item
+            {/* <Item
               icon={<HomeOutlinedIcon />}
               title="Dashboard"
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
               v={v}
-            />
+            /> */}
             <Item
               icon={<PointOfSaleOutlinedIcon />}
               title="POS"
@@ -406,6 +416,28 @@ const Sidebar = ({
             <Item
               icon={<AssessmentOutlinedIcon />}
               title="Manage Groups"
+              selected={selected}
+              setSelected={setSelected}
+              setOpen={setOpen}
+              userControl={userControl}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
+            />
+            <Item
+              icon={<AssessmentOutlinedIcon />}
+              title="Invoices History"
+              selected={selected}
+              setSelected={setSelected}
+              setOpen={setOpen}
+              userControl={userControl}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
+            />
+            <Item
+              icon={<AssessmentOutlinedIcon />}
+              title="Daily Sales"
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}

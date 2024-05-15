@@ -54,6 +54,9 @@ function App() {
   const [invType, setInvType] = useState("");
   const [username, setUsername] = useState("");
   const [userControl, setUserControl] = useState("");
+  const [compPhone, setCompPhone] = useState("");
+  const [compCity, setCompCity] = useState("");
+  const [compStreet, setCompStreet] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
     const storedSelectedRow = localStorage.getItem("selectedRow");
@@ -89,13 +92,19 @@ function App() {
           const storedInvType = localStorage.getItem("user_invType");
           const storedUsername = localStorage.getItem("username");
           const storedUserControl = localStorage.getItem("user_control");
+          const storedCompPhone = localStorage.getItem("comp_phone");
+          const storedCompStreet = localStorage.getItem("comp_street");
+          const storedCompCity = localStorage.getItem("comp_city");
           console.log("ana bl Appp", storedCompanyName);
           setCompanyName(storedCompanyName);
           setBranch(storedBranch);
           setInvType(storedInvType);
           setUsername(storedUsername);
           setUserControl(storedUserControl);
-          console.log("men l app", userControl);
+          setCompCity(storedCompCity);
+          setCompPhone(storedCompPhone);
+          setCompStreet(storedCompStreet);
+          console.log("men l app", compCity);
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -135,6 +144,9 @@ function App() {
               setUsername={setUsername}
               userControl={userControl}
               setUserControl={setUserControl}
+              setCompPhone={setCompPhone}
+              setCompCity={setCompCity}
+              setCompStreet={setCompStreet}
               url={url}
               v={v}
             />
@@ -235,6 +247,9 @@ function App() {
                         filterValue={filterValue}
                         url={url}
                         v={v}
+                        compPhone={compPhone}
+                        compStreet={compStreet}
+                        compCity={compCity}
                       />
                     }
                   />
