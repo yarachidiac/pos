@@ -11,8 +11,12 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Keyboard from "./Keyboard";
+import KeyboardOutlinedIcon from "@mui/icons-material/KeyboardOutlined";
+import KeyboardIcon from "@mui/icons-material/Keyboard"; // Import the Keyboard icon
+import IconButton from "@mui/material/IconButton";
 
 const initialValues = {
   username: "",
@@ -46,7 +50,18 @@ const Form = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [logMess, setLogMess] = useState("");
+  const [activeField, setActiveField] = useState("");
   const navigate = useNavigate();
+  const [showKeyboard, setShowKeyboard] = useState(false);
+
+  const formikRef = useRef(null);
+
+  const handleKeyPress = (input) => {
+    const formik = formikRef.current;
+    if (formik && activeField) {
+      formik.setFieldValue(activeField, formik.values[activeField] + input);
+    }
+  };
 
   const handleFormSubmit = async (values) => {
     try {
@@ -118,6 +133,8 @@ const Form = ({
       console.error("Error during authentication", error);
     }
   };
+
+
   console.log("lllllllllllllllllllllllllllllll", logMess)
   return (
     <Grid container justifyContent="center" alignItems="center" height="100vh">
@@ -140,12 +157,13 @@ const Form = ({
               fontWeight: "bold",
               textAlign: "center",
               marginBottom: "1rem", // Add margin bottom for spacing
-              height:"10px",
+              height: "10px",
             }}
           >
             {logMess}
           </Typography>
           <Formik
+            innerRef={formikRef}
             onSubmit={handleFormSubmit}
             initialValues={initialValues}
             validationSchema={userSchema}
@@ -173,6 +191,10 @@ const Form = ({
                       error={!!touched.username && !!errors.username}
                       helperText={touched.username && errors.username}
                       sx={{ height: "64px" }}
+                      onFocus={() => {
+                        console.log("Active field set to: username");
+                        setActiveField("username");
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -188,6 +210,10 @@ const Form = ({
                       error={!!touched.password && !!errors.password}
                       helperText={touched.password && errors.password}
                       sx={{ height: "64px" }}
+                      onFocus={() => {
+                        console.log("Active field set to: password");
+                        setActiveField("password");
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -203,6 +229,10 @@ const Form = ({
                       error={!!touched.company_name && !!errors.company_name}
                       helperText={touched.company_name && errors.company_name}
                       sx={{ height: "64px" }}
+                      onFocus={() => {
+                        console.log("Active field set to: company");
+                        setActiveField("company_name");
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -222,6 +252,35 @@ const Form = ({
           </Formik>
         </Paper>
       </Grid>
+      {showKeyboard && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%", // Adjust as needed to position the keyboard vertically
+            left: "50%", // Adjust as needed to position the keyboard horizontally
+            transform: "translate(-50%, -50%)", // Center the keyboard
+            zIndex: 9999,
+          }}
+        >
+          <Keyboard onKeyPress={handleKeyPress} />
+        </Box>
+      )}
+      <IconButton
+        sx={{
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          width: "100px",
+          height: "100px",
+          borderRadius: 0,
+          backgroundColor: "#fff", // Background color for the button
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Box shadow for a raised effect
+        }}
+        onClick={() => setShowKeyboard(!showKeyboard)}
+      >
+        <KeyboardOutlinedIcon sx={{ fontSize: 100, color: "#333" }} />{" "}
+        {/* Adjust icon size and color */}
+      </IconButton>
     </Grid>
   );
 };
