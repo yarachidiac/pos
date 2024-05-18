@@ -255,6 +255,7 @@ const Form = ({
       {showKeyboard && (
         <Box
           sx={{
+            width: "80%",
             position: "absolute",
             top: "50%", // Adjust as needed to position the keyboard vertically
             left: "50%", // Adjust as needed to position the keyboard horizontally
@@ -262,7 +263,12 @@ const Form = ({
             zIndex: 9999,
           }}
         >
-          <Keyboard onKeyPress={handleKeyPress} />
+          <Keyboard
+            onKeyPress={handleKeyPress}
+            setShowKeyboard={setShowKeyboard}
+            showKeyboard={showKeyboard}
+            activeField={activeField}
+          />
         </Box>
       )}
       <IconButton
