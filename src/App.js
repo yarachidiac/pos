@@ -42,6 +42,8 @@ import DailySales from "./scenes/dashboard/DailySales";
 import Station from "./scenes/Station";
 import Kitchen from "./scenes/Kitchen";
 import Currency from "./scenes/Currency";
+import CashConfirm from "./scenes/CashOnHands/CashConf";
+import EndOfDay from "./scenes/EndOfDay/EndOfDay.jsx";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -76,8 +78,11 @@ function App() {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [filterValue, setFilterValue] = useState("");
+  const [openCash, setOpenCash] = useState(false);
+  const [openEOD, setOpenEOD] = useState(false);
+
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.112:8000";
+  const url = "http://192.168.16.113:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -130,6 +135,61 @@ function App() {
 
     setOpen(false);
   };
+
+  const handleConfirm = async () => {
+    try {
+      const currentDate = new Date();
+      const formattedTime = format(currentDate, "HH:mm:ss");
+      const formattedDate = format(currentDate, "dd/MM/yyyy");
+      const dateTime = `${formattedDate} ${formattedTime}`;
+      const apiUrl = `${url}/pos/userShiftClose/${companyName}`;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          formattedDate: formattedDate,
+          dateTime: dateTime,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  };
+
+  const handleCloseCash = () => {
+    setOpenCash(false);
+  };
+
+  const handleCloseEOD = () => {
+    setOpenEOD(false);
+  };
+
+  const handleConfirmEOD = async () => {
+    try {
+      const response = await fetch(`${url}/pos/resetOrderId/${companyName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ order_id: 1 }),
+      });
+      if (response.ok) {
+        const responseUser = await response.json();
+        console.log(responseUser.message);
+      } else {
+        // Handle authentication error
+        console.error("End of day failed");
+      }
+    } catch (error) {
+      console.error("Error during end of day", error);
+    }
+  };
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -174,6 +234,8 @@ function App() {
                   url={url}
                   setIsAuthenticated={setIsAuthenticated}
                   v={v}
+                  setOpenCash={setOpenCash}
+                  setOpenEOD={setOpenEOD}
                 />
               )}
               <main className="content">
@@ -380,6 +442,26 @@ function App() {
                     />
                   )}
                 </Routes>
+                <CashConfirm
+                  open={openCash}
+                  onCancel={handleCloseCash}
+                  onConfirm={handleConfirm}
+                  url={url}
+                  username={username}
+                  companyName={companyName}
+                  //rows={rows}
+                  // columns={columns}
+                />
+                <EndOfDay
+                  open={openEOD}
+                  onCancel={handleCloseEOD}
+                  onConfirm={handleConfirmEOD}
+                  url={url}
+                  username={username}
+                  companyName={companyName}
+                  //rows={rows}
+                  // columns={columns}
+                />
               </main>
             </>
           )}

@@ -177,7 +177,7 @@ const Form = ({
               handleSubmit,
             }) => (
               <form onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
+                <Grid container spacing={4}>
                   <Grid item xs={12}>
                     <TextField
                       fullWidth
@@ -189,11 +189,22 @@ const Form = ({
                       value={values.username}
                       name="username"
                       error={!!touched.username && !!errors.username}
-                      helperText={touched.username && errors.username}
+                      helperText={
+                        touched.username && errors.username ? (
+                          <span style={{ fontSize: "0.9rem" }}>
+                            {errors.username}
+                          </span>
+                        ) : null
+                      }
                       sx={{ height: "64px" }}
                       onFocus={() => {
                         console.log("Active field set to: username");
                         setActiveField("username");
+                      }}
+                      InputLabelProps={{ style: { fontSize: "1.2rem" } }}
+                      InputProps={{ style: { fontSize: "1.2rem" } }}
+                      onDoubleClick={() => {
+                        setShowKeyboard(true);
                       }}
                     />
                   </Grid>
@@ -208,11 +219,22 @@ const Form = ({
                       value={values.password}
                       name="password"
                       error={!!touched.password && !!errors.password}
-                      helperText={touched.password && errors.password}
+                      helperText={
+                        touched.username && errors.username ? (
+                          <span style={{ fontSize: "0.9rem" }}>
+                            {errors.username}
+                          </span>
+                        ) : null
+                      }
                       sx={{ height: "64px" }}
                       onFocus={() => {
                         console.log("Active field set to: password");
                         setActiveField("password");
+                      }}
+                      InputLabelProps={{ style: { fontSize: "1.2rem" } }}
+                      InputProps={{ style: { fontSize: "1.2rem" } }}
+                      onDoubleClick={() => {
+                        setShowKeyboard(true);
                       }}
                     />
                   </Grid>
@@ -227,11 +249,22 @@ const Form = ({
                       value={values.company_name}
                       name="company_name"
                       error={!!touched.company_name && !!errors.company_name}
-                      helperText={touched.company_name && errors.company_name}
+                      helperText={
+                        touched.username && errors.username ? (
+                          <span style={{ fontSize: "0.9rem" }}>
+                            {errors.username}
+                          </span>
+                        ) : null
+                      }
                       sx={{ height: "64px" }}
                       onFocus={() => {
                         console.log("Active field set to: company");
                         setActiveField("company_name");
+                      }}
+                      InputLabelProps={{ style: { fontSize: "1.2rem" } }}
+                      InputProps={{ style: { fontSize: "1.2rem" } }}
+                      onDoubleClick={() => {
+                        setShowKeyboard(true);
                       }}
                     />
                   </Grid>
@@ -241,7 +274,10 @@ const Form = ({
                       variant="contained"
                       color="primary"
                       fullWidth
-                      style={{ backgroundColor: colors.greenAccent[500] }}
+                      style={{
+                        backgroundColor: colors.greenAccent[500],
+                        fontSize: "1.2rem",
+                      }}
                     >
                       Login
                     </Button>
@@ -276,15 +312,19 @@ const Form = ({
           position: "absolute",
           top: "20px",
           right: "20px",
-          width: "100px",
+          width: "200px",
           height: "100px",
           borderRadius: 0,
-          backgroundColor: "#fff", // Background color for the button
-          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Box shadow for a raised effect
+          //backgroundColor: "#fff", // Background color for the button
+          // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)", // Box shadow for a raised effect
         }}
         onClick={() => setShowKeyboard(!showKeyboard)}
       >
-        <KeyboardOutlinedIcon sx={{ fontSize: 100, color: "#333" }} />{" "}
+        <img
+          src={`${process.env.PUBLIC_URL}/imkey13.png`}
+          alt="Keyboard Image"
+          style={{ width: "100%", height: "100%" }}
+        />
         {/* Adjust icon size and color */}
       </IconButton>
     </Grid>

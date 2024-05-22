@@ -30,7 +30,7 @@ import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOut
 import { useEffect } from 'react';
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NumericKeypad from './NumericKeybad';
-import { format } from "date-fns";
+import { format, lastDayOfDecade } from "date-fns";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
 import ModifierDialog from './ModifierDialaog';
 import printJS from "print-js";
@@ -565,7 +565,7 @@ const PoS = ({
       const currentDate = new Date();
       let formattedDate = format(currentDate, "dd/MM/yyyy");
       const realDate = format(currentDate, "dd/MM/yyyy");
-
+      //let orderId;
       // No need to format the time, use currentDate directly
       const compTimeRequest = await fetch(
         `${url}/pos/getCompTime/${companyName}`
@@ -604,8 +604,20 @@ const PoS = ({
           });
         
         }
-    
-
+        // else {
+        //   const lastOrderIdDate = await fetch(
+        //     `${url}/pos/getLastOrderIdDate/${companyName}`
+        //   );
+        //   if (lastOrderIdDate.ok) {
+        //     const lastDate = await lastOrderIdDate.json();
+        //     console.log("lastttt", lastDate);
+        //     if (realDate > lastDate) {
+        //       orderId = 1;
+        //     } else {
+        //       orderId = 0;
+        //     }
+        //   }
+        // }
       // Encode the formatted date
       const formattedTime = format(currentDate, "HH:mm:ss");
     
@@ -627,6 +639,8 @@ const PoS = ({
         realDate: realDate,
         accno: accno,
         qtyPrintKT: qtyPrintKT,
+        username:username
+        //orderId: orderId,
       };
       const response = await fetch(
         `${url}/pos/invoiceitem/${companyName}`,

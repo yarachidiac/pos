@@ -25,6 +25,8 @@ import { useNavigate } from "react-router-dom";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
+import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 const Item = ({
   title,
   to,
@@ -32,11 +34,15 @@ const Item = ({
   selected,
   setSelected,
   setOpen,
+  companyName,
   userControl,
   isNav,
   setIsConfOpenDialog,
   setIsAuthenticated,
   v,
+  url,
+  setOpenCash,
+  setOpenEOD,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -134,7 +140,6 @@ const Item = ({
     }
   };
 
-
   const handleLogout = () => {
     sessionStorage.clear();
     localStorage.clear();
@@ -156,6 +161,23 @@ const Item = ({
       setIsConfOpenDialog(true);
     }
   };
+
+  const handleCashOnHands = () => {
+    if (isNav) {
+      setOpenCash(true);
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  };
+
+  const handleEndOfDay = async () => {
+    if (isNav) {
+        setOpenEOD(true);    
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  };
+
   return (
     <MenuItem
       active={selected === title}
@@ -189,6 +211,10 @@ const Item = ({
           handleInvHis();
         } else if (title === "Daily Sales") {
           handleDailySales();
+        } else if (title === "Cash On Hands") {
+          handleCashOnHands();
+        } else if (title === "End Of Day") {
+          handleEndOfDay();
         }
       }}
       icon={icon}
@@ -261,12 +287,16 @@ const Sidebar = ({
   setIsConfOpenDialog,
   setIsAuthenticated,
   v,
+  url,
+  setOpenCash,
+  setOpenEOD,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   //const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
+  console.log("lll", companyName);
   console.log("isMobile from sidebar:", isMobile);
   console.log("isCollapsed from sidebar:", isCollapsed);
 
@@ -560,6 +590,29 @@ const Sidebar = ({
                 setSelected={setSelected}
               />
             </SubItem> */}
+            <Item
+              icon={<CurrencyExchangeOutlinedIcon />}
+              title="Cash On Hands"
+              selected={selected}
+              setSelected={setSelected}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
+              url={url}
+              setOpenCash={setOpenCash}
+            />
+            <Item
+              icon={<ScheduleOutlinedIcon />}
+              title="End Of Day"
+              selected={selected}
+              setSelected={setSelected}
+              isNav={isNav}
+              setIsConfOpenDialog={setIsConfOpenDialog}
+              v={v}
+              url={url}
+              companyName={companyName}
+              setOpenEOD={setOpenEOD}
+            />
             <SubItem
               title="Company Settings"
               icon={<StoreIcon />}

@@ -86,9 +86,9 @@ const Keyboard = ({
       "j",
       "k",
       "l",
-      ";",
-      "{",
-      "}",
+      capsLock ? ":" : ";",
+      capsLock ? "[" : "{",
+      capsLock ? "]" : "}",
       "z",
       "x",
       "c",
@@ -96,13 +96,14 @@ const Keyboard = ({
       "b",
       "n",
       "m",
-      ",",
+      capsLock ? "<" : ",",
+      capsLock ? ">" : ".",
       "&",
       "'",
-      "~",
+      capsLock ? "%" :"~",
       "CapsLock",
-      ":",
-      "/",
+      "!",
+      capsLock ? "?" : "/",
       "\\",
       " ",
       "*",
@@ -131,9 +132,9 @@ const Keyboard = ({
       "ت",
       "ن",
       "م",
-      ";",
-      "{",
-      "}",
+      "ك",
+      "ج",
+      "د",
       "ئ",
       "ء",
       "ؤ",
@@ -144,10 +145,8 @@ const Keyboard = ({
       "و",
       "ز",
       "ظ",
-      ",",
-      "&",
+      "ذ",
       ".",
-      "~",
       "CapsLock",
       ":",
       "/",
@@ -156,6 +155,7 @@ const Keyboard = ({
       "*",
       "@",
       ".com",
+      "List E-Mails Server",
     ];
 
     const keys = language === "english" ? englishKeys : arabicKeys;
@@ -170,7 +170,7 @@ const Keyboard = ({
               (
                 <Grid
                   item
-                  key={key}
+                  key={keyIndex}
                   xs={
                     key === " "
                       ? 4
@@ -185,9 +185,10 @@ const Keyboard = ({
                     <Button
                       size="large"
                       sx={{
-                        fontSize: "1.25rem",
+                        fontSize: "1.75rem",
+                        fontWeight: "300",
                         margin: "4px",
-                        height: "3rem",
+                        height: "3.5rem",
                         backgroundColor: "#f0f0f0",
                         color: "#333",
                         borderRadius: "8px",
@@ -209,14 +210,22 @@ const Keyboard = ({
                     <Select
                       value="List E-Mails Server"
                       onChange={handleSelectChange}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            zIndex:999,
+                           // position: "relative",
+                            
+                          },
+                        },
+                      }}
                       sx={{
-                        fontSize: "1.25rem",
-                        // margin: "4px",
-                        height: "3rem",
+                        width: "100%",
                         backgroundColor: "#f0f0f0",
                         color: "#333",
                         borderRadius: "8px",
-                        width:"100%"
+                       // fontSize: "1.25rem",
+                        //margin: "4px",
                       }}
                     >
                       <MenuItem value="@hotmail.com">@hotmail.com</MenuItem>
@@ -234,7 +243,7 @@ const Keyboard = ({
 
   const renderNumbersAndControls = () => (
     <Grid container spacing={1} justifyContent="center">
-      {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."].map(
+      {["7", "8", "9", "4", "5", "6", "1", "2", "3", "0", ".", "-"].map(
         (key, index) => (
           <Grid item key={key} xs={4}>
             <Button
@@ -313,8 +322,9 @@ const Keyboard = ({
           padding: "16px",
           backgroundColor: "#fafafa",
           width: "fit-content",
-          userSelect: "none",
+          //userSelect: "none",
           boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+          //zIndex: 9999,
         }}
       >
         <Grid
@@ -340,17 +350,18 @@ const Keyboard = ({
             <Button
               onClick={() => setLanguage("english")}
               sx={{
-                fontSize: "1rem",
+                fontSize: "1.1rem",
+                fontWeight: "bold",
                 padding: "8px 16px",
                 marginLeft: "16px",
                 color: language === "english" ? colors.primary[500] : "black",
                 backgroundColor:
                   language === "english"
                     ? colors.greenAccent[500]
-                    : colors.primary[500],
+                    : colors.whiteblack[100],
                 "&:hover": {
                   background: colors.greenAccent[500],
-                  color: colors.primary[500],
+                  color: colors.whiteblack[100],
                 },
               }}
             >
@@ -359,7 +370,8 @@ const Keyboard = ({
             <Button
               onClick={() => setLanguage("arabic")}
               sx={{
-                fontSize: "1rem",
+                fontSize: "1.1rem",
+                fontWeight: "bold",
                 padding: "8px 16px",
                 marginLeft: "16px",
                 color: language === "arabic" ? colors.primary[500] : "black",
@@ -393,7 +405,7 @@ const Keyboard = ({
           </Grid>
         </Grid>
         <Grid container spacing={1} alignItems="center" justifyContent="center">
-          <Grid item xs={10}>
+          <Grid item xs={8}>
             <TextField
               value={inputValue}
               fullWidth
@@ -414,6 +426,9 @@ const Keyboard = ({
                   },
                 },
               }}
+              inputProps={{
+                style: { textAlign: "center", fontSize: "1.5rem" }, // Center the text
+              }}
             />
           </Grid>
           <Grid item>
@@ -421,6 +436,8 @@ const Keyboard = ({
               color="primary"
               onClick={handleSaveInput}
               sx={{
+                borderRadius: "0", // Remove border radius to make it rectangular
+                padding: "15px 50px",
                 fontSize: "2rem",
                 backgroundColor: "#4caf50",
                 color: "#fff",
