@@ -15,6 +15,7 @@ import { tokens } from "../../theme";
 import { handleSave } from "./SaveHandler.jsx";
 import ClientDetails from "./ClientDetails.jsx";
 import ConfirmationDialog from "../team/ConfirmationDialog.jsx";
+import Keyboard from "../form/Keyboard.jsx";
 
 const ClientDetailsModal = ({
   isOpen,
@@ -27,6 +28,10 @@ const ClientDetailsModal = ({
   clientDetailsCopy,
   setClientDetailsCopy,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   console.log("mmmmmmmmmmmmmmmmmmm", clientDetails);
   const theme = useTheme();
@@ -127,6 +132,50 @@ const ClientDetailsModal = ({
     onClose();
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  const handleKeyPress = (input) => {
+    let updatedValue = input;
+
+    // Apply validation based on the field
+    if (
+      activeField === "AccDisc" ||
+      activeField === "VAT" ||
+      activeField === "AccPrice" ||
+      activeField === "Floor"
+    ) {
+      if (isNaN(updatedValue)) {
+        setValMessage(`${activeField} should be number`);
+        return;
+      } else {
+        setValMessage("");
+      }
+    } else if (activeField === "Tel") {
+      if (!/^\d+$/.test(updatedValue)) {
+        setValMessage("Telephone number should contain only digits");
+        return;
+      } else {
+        setValMessage("");
+      }
+    } else if (activeField === "Email") {
+      if (!updatedValue) {
+        setValMessage("");
+      } else if (!validateEmail(updatedValue)) {
+        setValMessage("Invalid email format");
+        return;
+      } else {
+        setValMessage("");
+      }
+    }
+    // Update the appropriate text field with the validated input
+    setClientDetailsCopy((prevClientDetailsCopy) => ({
+      ...prevClientDetailsCopy,
+      [activeField]: updatedValue,
+    }));
+  };
+
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box
@@ -177,8 +226,29 @@ const ClientDetailsModal = ({
             url={url}
             valMessage={valMessage}
             setValMessage={setValMessage}
+            activeField={activeField}
+            setActiveField={setActiveField}
+            showKeyboard={showKeyboard}
+            setShowKeyboard={setShowKeyboard}
             // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
           />
+          {showKeyboard && (<Box
+            sx={{
+              width: "80%",
+              position: "absolute",
+              top: "50%", // Adjust as needed to position the keyboard vertically
+              left: "50%", // Adjust as needed to position the keyboard horizontally
+              transform: "translate(-50%, -50%)", // Center the keyboard
+              zIndex: 9999,
+            }}>
+            <Keyboard
+              onKeyPress={handleKeyPress}
+              setShowKeyboard={setShowKeyboard}
+              showKeyboard={showKeyboard}
+              activeField={activeField}
+            />
+          </Box>
+          )}
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not
             onCancel={handleCancelClose} // Function to handle dialog closure (cancel)

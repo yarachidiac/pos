@@ -73,6 +73,8 @@ const PoS = ({
   url,
   v,
   compPhone, compCity, compStreet,
+  activeField, setActiveField, showKeyboard,
+  setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -1961,10 +1963,7 @@ const PoS = ({
               )}
           </TableContainer>
         )}
-        <Typography
-          variant="h5"
-          style={{  textAlign: "center" }}
-        >
+        <Typography variant="h5" style={{ textAlign: "center" }}>
           Thank you{username && `, you were served by ${username}`}
         </Typography>
       </Box>
@@ -1992,6 +1991,10 @@ const PoS = ({
         addTitle={addTitle}
         setAddTitle={setAddTitle}
         url={url}
+        activeField={activeField}
+        setActiveField={setActiveField}
+        showKeyboard={showKeyboard}
+        setShowKeyboard={setShowKeyboard}
       ></DelModal>
       {ingredCard && (
         <IngredDialog

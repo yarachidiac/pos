@@ -27,6 +27,10 @@ const GroupDetails = ({
   unsavedChanges,
   setUnsavedChanges,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -94,6 +98,12 @@ const GroupDetails = ({
                     pattern: "[0-9]*",
                     readOnly: true,
                   }}
+                  // onDoubleClick={() => {
+                  //   setShowKeyboard(true);
+                  // }}
+                  // onFocus={() => {
+                  //   setActiveField("GroupNo");
+                  // }}
                 />
               </TableCell>
             </TableRow>
@@ -113,6 +123,12 @@ const GroupDetails = ({
                   fullWidth
                   size="small"
                   variant="outlined"
+                  onDoubleClick={() => {
+                    setShowKeyboard(true);
+                  }}
+                  onFocus={() => {
+                    setActiveField("GroupName");
+                  }}
                 />
               </TableCell>
             </TableRow>

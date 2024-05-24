@@ -15,6 +15,7 @@ import { tokens } from "../../theme";
 import { handleSave } from "./SaveHandler.jsx";
 import ConfirmationDialog from "../team/ConfirmationDialog.jsx";
 import GroupDetails from "./GroupDetails.jsx";
+import Keyboard from "../form/Keyboard.jsx";
 
 const GroupDetailsModal = ({
   isOpen,
@@ -29,6 +30,10 @@ const GroupDetailsModal = ({
   groupDetailsCopy,
   setGroupDetailsCopy,
   url,
+  activeField,
+   setActiveField,
+   showKeyboard,
+   setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -115,6 +120,13 @@ const GroupDetailsModal = ({
     onClose();
   };
 
+   const handleKeyPress = (input) => {
+     setGroupDetailsCopy((prevClientDetailsCopy) => ({
+       ...prevClientDetailsCopy,
+       [activeField]: input,
+     }));
+   };
+
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box
@@ -124,7 +136,14 @@ const GroupDetailsModal = ({
           ...modalContainerStyle,
         }}
       >
-        <Box sx={{ display:"flex", justifyContent:"space-between", width:"100%", height:"20%"}}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+            height: "20%",
+          }}
+        >
           <Box sx={{ p: "2%" }}>
             <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
               {groupDetails.GroupName}
@@ -162,12 +181,34 @@ const GroupDetailsModal = ({
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
             url={url}
+            activeField={activeField}
+            setActiveField={setActiveField}
+            showKeyboard={showKeyboard}
+            setShowKeyboard={setShowKeyboard}
           />
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not
             onCancel={handleCancelClose} // Function to handle dialog closure (cancel)
             onConfirm={handleConfirmClose} // Function to handle confirmation
           />
+          {showKeyboard && (
+            <Box
+              sx={{
+                //width: "80%",
+                //top: "50%", // Adjust as needed to position the keyboard vertically
+                //left: "50%", // Adjust as needed to position the keyboard horizontally
+                //transform: "translate(-50%, -50%)", // Center the keyboard
+                //zIndex: 9999,
+              }}
+            >
+              <Keyboard
+                onKeyPress={handleKeyPress}
+                setShowKeyboard={setShowKeyboard}
+                showKeyboard={showKeyboard}
+                activeField={activeField}
+              />
+            </Box>
+          )}
         </Box>
         {/* Other modal content */}
       </Box>

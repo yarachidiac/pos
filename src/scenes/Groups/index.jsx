@@ -16,7 +16,11 @@ const Groups = ({
   setAddTitle,
   setOldItemNo,
   setNewItemNo,
-  url
+  url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -202,6 +206,10 @@ const Groups = ({
         groupDetailsCopy={groupDetailsCopy}
         setGroupDetailsCopy={setGroupDetailsCopy}
         url={url}
+        activeField={activeField}
+        setActiveField={setActiveField}
+        showKeyboard={showKeyboard}
+        setShowKeyboard={setShowKeyboard}
       />
       <Box
         m="0 auto"

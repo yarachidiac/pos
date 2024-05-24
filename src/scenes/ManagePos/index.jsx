@@ -17,6 +17,10 @@ const ManagePoS = ({
   setOldItemNo,
   setNewItemNo,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -204,6 +208,10 @@ const ManagePoS = ({
         itemDetailsCopy={itemDetailsCopy}
         setItemDetailsCopy={setItemDetailsCopy}
         url={url}
+        activeField={activeField}
+        setActiveField={setActiveField}
+        showKeyboard={showKeyboard}
+        setShowKeyboard={setShowKeyboard}
       />
       <Box
         m="0 auto"

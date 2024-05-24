@@ -18,6 +18,10 @@ const DelModal = ({
   addTitle,
   setAddTitle,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -100,30 +104,34 @@ const DelModal = ({
             display: "flex",
             height: "10%",
             mt: "1%",
-            ml:"2%"
+            ml: "2%",
           }}
         >
           <Box sx={{ width: "50%" }}>
             <Header title="Client" />
           </Box>
           <Box
-            sx={{
-              //width: "10%",
-            }}
+            sx={
+              {
+                //width: "10%",
+              }
+            }
           >
             <Button
               variant="contained"
               color="secondary"
               style={{ fontSize: "1.1rem" }}
-              onClick={()=>setSelectedRow(null)}
+              onClick={() => setSelectedRow(null)}
             >
               Clear
             </Button>
           </Box>
           <Box
-            sx={{
-             // width: "5%",
-            }}
+            sx={
+              {
+                // width: "5%",
+              }
+            }
           >
             <Button
               variant="contained"
@@ -136,7 +144,7 @@ const DelModal = ({
           </Box>
           <Box
             sx={{
-              mr:"2%"
+              mr: "2%",
             }}
           >
             <IconButton edge="end" color="inherit" onClick={handleClose}>
@@ -155,6 +163,10 @@ const DelModal = ({
           isDialogOpen={isDialogOpen}
           setIsDialogOpen={setIsDialogOpen}
           url={url}
+          activeField={activeField}
+          setActiveField={setActiveField}
+          showKeyboard={showKeyboard}
+          setShowKeyboard={setShowKeyboard}
         />
       </Box>
     </Modal>

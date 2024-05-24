@@ -10,17 +10,19 @@ const handleSave = async (
 ) => {
   try {
     
-    const data = itemDetailsCopy;
+  const data = itemDetailsCopy;
    const isImageSame =
-     itemDetails["Image"] &&
-     itemDetailsCopy["Image"] &&
-     itemDetails["Image"]["data"] === itemDetailsCopy["Image"]["data"];
+     itemDetails["Image"] === itemDetailsCopy["Image"];
 
+    console.log("ajbsjbkas", itemDetails["Image"]);
+        console.log("ccccccccccc", itemDetailsCopy["Image"]);
+
+    let existedImage;
    // If the image is the same, include the existedImage field with value 1
    if (isImageSame) {
-     data["existedImage"] = 1;
+     existedImage = 1;
    } else {
-     data["existedImage"] = 0;
+     existedImage = 0;
    }
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
@@ -30,7 +32,7 @@ const handleSave = async (
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ data, existedImage }),
       }
     );
     const responseData = await saveResponse.json();

@@ -33,6 +33,10 @@ const ItemDetails = ({
   unsavedChanges,
   setUnsavedChanges,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,valMessage, setValMessage
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -49,7 +53,6 @@ const ItemDetails = ({
     GroupNo: itemDetails.GroupNo,
     GroupName: itemDetails.GroupName,
   });
-  const [valMessage, setValMessage] = useState("");
   const handleValueUpdate = (field, updatedValue) => {
     if (
       field === "Tax" ||
@@ -97,7 +100,7 @@ const ItemDetails = ({
           ...prev,
           [field]: {
             name: file.name,
-            data: reader.result.split(",")[1], // Extracting base64 data
+            by: reader.result.split(",")[1], // Extracting base64 data
           },
           GroupNo: selectedGroup?.GroupNo || "",
         }));
@@ -227,6 +230,12 @@ const ItemDetails = ({
                 size="small"
                 variant="outlined"
                 inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                onDoubleClick={() => {
+                  setShowKeyboard(true);
+                }}
+                onFocus={() => {
+                  setActiveField(key);
+                }}
               />
             ) : key === "ItemNo" ? (
               <TextField
@@ -239,6 +248,12 @@ const ItemDetails = ({
                   inputMode: "numeric",
                   pattern: "[0-9]*",
                   readOnly: true,
+                }}
+                onDoubleClick={() => {
+                  setShowKeyboard(true);
+                }}
+                onFocus={() => {
+                  setActiveField(key);
                 }}
               />
             ) : key === "Active" ? (

@@ -44,15 +44,16 @@ const Form = ({
   v,
   setCompCity,
   setCompStreet,
-  setCompPhone
+  setCompPhone, 
+  activeField, setActiveField, showKeyboard, setShowKeyboard
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [logMess, setLogMess] = useState("");
-  const [activeField, setActiveField] = useState("");
+
   const navigate = useNavigate();
-  const [showKeyboard, setShowKeyboard] = useState(false);
+
 
   const formikRef = useRef(null);
 

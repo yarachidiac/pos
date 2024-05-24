@@ -83,9 +83,10 @@ function App() {
   const [openEOD, setOpenEOD] = useState(false);
   const [dialogCash, setDialogCash] = useState(false);
   const [responseCash, setResponseCash] = useState("");
-
+  const [showKeyboard, setShowKeyboard] = useState(false);
+  const [activeField, setActiveField] = useState("");
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.113:8000";
+  const url = "http://192.168.16.112:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -222,6 +223,10 @@ function App() {
               setCompStreet={setCompStreet}
               url={url}
               v={v}
+              activeField={activeField}
+              setActiveField={setActiveField}
+              showKeyboard={showKeyboard}
+              setShowKeyboard={setShowKeyboard}
             />
           ) : (
             <>
@@ -325,6 +330,10 @@ function App() {
                         compPhone={compPhone}
                         compStreet={compStreet}
                         compCity={compCity}
+                        activeField={activeField}
+                        setActiveField={setActiveField}
+                        showKeyboard={showKeyboard}
+                        setShowKeyboard={setShowKeyboard}
                       />
                     }
                   />
@@ -342,6 +351,10 @@ function App() {
                           setNewItemNo={setNewItemNo}
                           oldItemNo={oldItemNo}
                           url={url}
+                          activeField={activeField}
+                          setActiveField={setActiveField}
+                          showKeyboard={showKeyboard}
+                          setShowKeyboard={setShowKeyboard}
                         />
                       }
                     />
@@ -357,6 +370,10 @@ function App() {
                           selectedRow={selectedRow}
                           setSelectedRow={setSelectedRow}
                           url={url}
+                          // activeField={activeField}
+                          // setActiveField={setActiveField}
+                          // showKeyboard={showKeyboard}
+                          // setShowKeyboard={setShowKeyboard}
                         />
                       }
                     />
@@ -432,6 +449,10 @@ function App() {
                           setNewItemNo={setNewItemNo}
                           oldItemNo={oldItemNo}
                           url={url}
+                          activeField={activeField}
+                          setActiveField={setActiveField}
+                          showKeyboard={showKeyboard}
+                          setShowKeyboard={setShowKeyboard}
                         />
                       }
                     />

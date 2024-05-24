@@ -23,6 +23,10 @@ const ChartAcc = ({
   isDialogOpen,
   setIsDialogOpen,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   console.log("adedefaf", url)
   const theme = useTheme();
@@ -343,6 +347,10 @@ const ChartAcc = ({
         clientDetailsCopy={clientDetailsCopy}
         setClientDetailsCopy={setClientDetailsCopy}
         url={url}
+        activeField={activeField}
+        setActiveField={setActiveField}
+        showKeyboard={showKeyboard}
+        setShowKeyboard={setShowKeyboard}
       />
       <Box
         ml="2%"

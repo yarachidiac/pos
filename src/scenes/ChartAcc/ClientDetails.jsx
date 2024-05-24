@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
 import Checkbox from "@mui/material/Checkbox";
+import Keyboard from "../form/Keyboard.jsx";
 
 const ClientDetails = ({
   clientDetails,
@@ -28,7 +29,11 @@ const ClientDetails = ({
   clientDetailsCopy,
   setClientDetailsCopy,
   unsavedChanges,
-  setUnsavedChanges, url, valMessage, setValMessage
+  setUnsavedChanges, url, valMessage, setValMessage,
+  activeField,
+   setActiveField,
+   showKeyboard,
+    setShowKeyboard,
 }) => {
   console.log("cccccccccccccccccccccccc", clientDetails);
   // const [editableCells, setEditableCells] = useState([]);
@@ -92,9 +97,6 @@ const ClientDetails = ({
     }
   }, [clientDetailsCopy, clientDetails, unsavedChanges]);
 
-
-  console.log("groupppppppppppppppppp", clientDetailsCopy);
-  console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", clientDetailsCopy);
   const rows = Object.entries(clientDetailsCopy)
     .filter(([key]) => key !== "GroupNo")
     .map(([key, value], index) => (
@@ -184,10 +186,17 @@ const ClientDetails = ({
               <TextField
                 sx={{ width: "50%" }}
                 value={value}
-                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                  onChange={(e) => handleValueUpdate(key, e.target.value)}
+                  
                 // onBlur={() =>
                 //   setEditableCells((prev) => prev.filter((i) => i !== index))
                 // }
+                onDoubleClick={() => {
+                  setShowKeyboard(true);
+                }}
+                onFocus={() => {
+                  setActiveField(key);
+                }}
                 variant="outlined"
                 size="small"
               />
@@ -199,6 +208,12 @@ const ClientDetails = ({
               fullWidth
               variant="outlined"
               size="small"
+              onDoubleClick={() => {
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField("Email");
+              }}
             />
           ) : (
             <TextField
@@ -210,6 +225,12 @@ const ClientDetails = ({
               // }
               variant="outlined"
               size="small"
+              onDoubleClick={() => {
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField(key);
+              }}
             />
           )}
         </TableCell>
@@ -280,7 +301,7 @@ const ClientDetails = ({
                   setSuccessMessage,
                   setClientDetails,
                   valMessage,
-                  url,
+                  url
                 )
               }
             >

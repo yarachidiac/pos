@@ -29,7 +29,10 @@ const Topbar = ({
   setIsOpenDel,
   setFilterValue,
   url,
-  v,
+  v,activeField,
+                          setActiveField,
+                          showKeyboard,
+                          setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
