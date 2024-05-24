@@ -71,7 +71,7 @@ const EndOfDay = ({
     {
       field: "InvType",
       headerName: "InvType",
-      minWidth: 200,
+      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: 1,
@@ -81,30 +81,60 @@ const EndOfDay = ({
       headerName: "InvNo",
       flex: 1,
       cellClassName: "name-column--cell",
-      minWidth: 200,
+      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
     },
-    {
-      field: "OrderId",
-      headerName: "Account Name",
-      minWidth: 200,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: 1,
-    },
+
     {
       field: "Date",
       headerName: "Date",
       flex: 1,
       cellClassName: "name-column--cell",
-      minWidth: 200,
+      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
     },
     {
       field: "Time",
       headerName: "Time",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
+    {
+      field: "Disc",
+      headerName: "Disc",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 50,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
+    {
+      field: "Srv",
+      headerName: "Srv",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 50,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
+    {
+      field: "Branch",
+      headerName: "Branch",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 150,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+    },
+  
+    {
+      field: "CashOnHand",
+      headerName: "CashOnHand",
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,

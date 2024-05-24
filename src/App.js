@@ -44,6 +44,7 @@ import Kitchen from "./scenes/Kitchen";
 import Currency from "./scenes/Currency";
 import CashConfirm from "./scenes/CashOnHands/CashConf";
 import EndOfDay from "./scenes/EndOfDay/EndOfDay.jsx";
+import ResponseDialog from "./scenes/ResponseDialog.jsx";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -80,6 +81,8 @@ function App() {
   const [filterValue, setFilterValue] = useState("");
   const [openCash, setOpenCash] = useState(false);
   const [openEOD, setOpenEOD] = useState(false);
+  const [dialogCash, setDialogCash] = useState(false);
+  const [responseCash, setResponseCash] = useState("");
 
   //const url = "https://pssapi.net:444";
   const url = "http://192.168.16.113:8000";
@@ -156,6 +159,9 @@ function App() {
       });
       if (response.ok) {
         const data = await response.json();
+        setResponseCash(data.message);
+        setOpenCash(false);
+        setDialogCash(true);
       }
     } catch (error) {
       console.error("Error:", error.message);
@@ -180,8 +186,10 @@ function App() {
         body: JSON.stringify({ order_id: 1 }),
       });
       if (response.ok) {
-        const responseUser = await response.json();
-        console.log(responseUser.message);
+        const data = await response.json();
+        setResponseCash(data.message);
+        setOpenEOD(false);
+        setDialogCash(true);
       } else {
         // Handle authentication error
         console.error("End of day failed");
@@ -190,6 +198,11 @@ function App() {
       console.error("Error during end of day", error);
     }
   };
+
+  const closeCash = () => {
+    setDialogCash(false);
+  };
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -461,6 +474,11 @@ function App() {
                   companyName={companyName}
                   //rows={rows}
                   // columns={columns}
+                />
+                <ResponseDialog
+                  message={responseCash}
+                  isOpen={dialogCash}
+                  onClose={closeCash}
                 />
               </main>
             </>

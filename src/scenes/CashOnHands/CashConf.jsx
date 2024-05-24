@@ -8,6 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { useEffect, useState } from "react";
 import { height } from "@mui/system";
+import { format } from "date-fns";
 
 const CashConfirm = ({
   open,
@@ -36,9 +37,11 @@ const CashConfirm = ({
 
   useEffect(() => {
     const fetchData = async () => {
+      const currentDate = new Date();
+      const formattedDate = format(currentDate, "dd.MM.yyyy");
       try {
         const response = await fetch(
-          `${url}/pos/reportUserShift/${companyName}/${username}`
+          `${url}/pos/reportUserShift/${companyName}/${username}/${formattedDate}`
         );
         const data = await response.json();
         setRows(data);

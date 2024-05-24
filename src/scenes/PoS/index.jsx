@@ -1961,6 +1961,12 @@ const PoS = ({
               )}
           </TableContainer>
         )}
+        <Typography
+          variant="h5"
+          style={{  textAlign: "center" }}
+        >
+          Thank you{username && `, you were served by ${username}`}
+        </Typography>
       </Box>
       <ModifierDialog
         open={isModifierDialogOpen}
