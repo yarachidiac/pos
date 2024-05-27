@@ -22,6 +22,7 @@ import ConfirmationDialog from "./ConfirmationDialog";
 import { handleSave } from "./SaveHandler";
 import { margin } from "@mui/system";
 import Button from "@mui/material/Button";
+import Keyboard from "../form/Keyboard";
 
 const StockInventoryTable = ({ userDetails, }) => (
   <Box>
@@ -52,6 +53,10 @@ const UserDetailsModal = ({
   userDetailsCopy,
   setUserDetailsCopy,
   url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -61,8 +66,28 @@ const UserDetailsModal = ({
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
   const [valMessage, setValMessage] = useState("");
+
   console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetailsCopy);
-  console.log("ana url mn l userDetailsModal", url)
+  console.log("ana url mn l userDetailsModal", url);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleKeyPress = (input) => {
+    if (activeField === "email") {
+      if (!validateEmail(input)) {
+        setValMessage("Invalid email format");
+      } else {
+        setValMessage("");
+      }
+    }
+    setUserDetailsCopy((prevClientDetailsCopy) => ({
+      ...prevClientDetailsCopy,
+      [activeField]: input,
+    }));
+  };
 
   const getOptionLabel = (option) => {
     switch (option) {
@@ -83,7 +108,6 @@ const UserDetailsModal = ({
     }
   };
 
-  
   // const handleUserDetailsCopyChange = (newUserDetailsCopy) => {
   //   setUserDetailsCopyModel(newUserDetailsCopy);
   // };
@@ -91,7 +115,7 @@ const UserDetailsModal = ({
   console.log("frommmm userdetailllllllllllllllll", userDetails);
 
   console.log("bl modalllllllllllll detailllll", userDetails);
- 
+
   const modalStyle = {
     top: "50%",
     left: "50%",
@@ -161,7 +185,7 @@ const UserDetailsModal = ({
   //     fontSize: "1.1rem",
   //     fontWeight: "600",
   //   },
-   
+
   // };
 
   // const appbarContentStyle = {
@@ -174,12 +198,12 @@ const UserDetailsModal = ({
   //   //overflowX: "auto", // Enable horizontal scrolling
   // };
 
- const appbarContentStyle = {
-   display: "flex",
-   gap: "1px",
-   width: "100%",
-   //backgroundColor: colors.greenAccent[600],
- };
+  const appbarContentStyle = {
+    display: "flex",
+    gap: "1px",
+    width: "100%",
+    //backgroundColor: colors.greenAccent[600],
+  };
 
   const appBarStyle = {
     background: colors.whiteblack[100],
@@ -259,7 +283,7 @@ const UserDetailsModal = ({
   };
 
   const handleConfirmClose = async () => {
-        console.log("ekhrrrrrr", url);
+    console.log("ekhrrrrrr", url);
 
     handleSave(
       companyName,
@@ -271,7 +295,7 @@ const UserDetailsModal = ({
       valMessage,
       url
     );
-        console.log("ekhrrrrrr3333", url);
+    console.log("ekhrrrrrr3333", url);
 
     // Handle the save operation here
     // Once saved, set the state to indicate no unsaved changes
@@ -307,6 +331,10 @@ const UserDetailsModal = ({
             url={url}
             valMessage={valMessage}
             setValMessage={setValMessage}
+            activeField={activeField}
+            setActiveField={setActiveField}
+            showKeyboard={showKeyboard}
+            setShowKeyboard={setShowKeyboard}
           />
         );
       case "stock-inventory":
@@ -477,8 +505,8 @@ const UserDetailsModal = ({
                           selectedOption === option
                             ? colors.greenAccent[600]
                             : colors.grey[700],
-                        color: selectedOption === option ?
-                          colors.primary[500] : ""
+                        color:
+                          selectedOption === option ? colors.primary[500] : "",
                       }}
                     >
                       {getOptionLabel(option)}
@@ -506,6 +534,25 @@ const UserDetailsModal = ({
           />
         </Box>
         {/* Other modal content */}
+        {showKeyboard && (
+          <Box
+            sx={{
+              width: "80%",
+              top: "50%", // Adjust as needed to position the keyboard vertically
+              left: "50%", // Adjust as needed to position the keyboard horizontally
+              transform: "translate(-50%, -50%)", // Center the keyboard
+              zIndex: 9999,
+              position: "absolute",
+            }}
+          >
+            <Keyboard
+              onKeyPress={handleKeyPress}
+              setShowKeyboard={setShowKeyboard}
+              showKeyboard={showKeyboard}
+              activeField={activeField}
+            />
+          </Box>
+        )}
       </Box>
     </Modal>
   );

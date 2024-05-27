@@ -98,12 +98,7 @@ const GroupDetails = ({
                     pattern: "[0-9]*",
                     readOnly: true,
                   }}
-                  // onDoubleClick={() => {
-                  //   setShowKeyboard(true);
-                  // }}
-                  // onFocus={() => {
-                  //   setActiveField("GroupNo");
-                  // }}
+                  
                 />
               </TableCell>
             </TableRow>

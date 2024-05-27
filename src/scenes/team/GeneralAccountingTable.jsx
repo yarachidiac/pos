@@ -16,6 +16,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
 import Checkbox from "@mui/material/Checkbox";
+import Keyboard from "../form/Keyboard";
 
 const GeneralAccountingTable = ({
   userDetails,
@@ -31,6 +32,10 @@ const GeneralAccountingTable = ({
   url,
   valMessage,
   setValMessage,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
 }) => {
   console.log("fromm generallllllllllllllllllll", userDetails);
 
@@ -69,6 +74,7 @@ const GeneralAccountingTable = ({
       setUnsavedChanges(false);
     }
   }, [userDetailsCopy, userDetails, unsavedChanges]);
+
 
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
   const rows = Object.entries(userDetailsCopy).map(([key, value], index) => (
@@ -124,7 +130,6 @@ const GeneralAccountingTable = ({
         >
           {key === "username" ||
           key === "password" ||
-          key === "id" ||
           key === "SAType" ||
           key === "Branch" ? (
             <TextField
@@ -133,6 +138,12 @@ const GeneralAccountingTable = ({
               fullWidth
               variant="outlined"
               size="small"
+              onDoubleClick={() => {
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField(key);
+              }}
             />
           ) : key === "email" ? (
             <TextField
@@ -141,6 +152,23 @@ const GeneralAccountingTable = ({
               fullWidth
               variant="outlined"
               size="small"
+              onDoubleClick={() => {
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField("email");
+              }}
+            />
+          ) : key === "id" ? (
+            <TextField
+              value={value}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+              inputProps={{
+                readOnly: true,
+              }}
             />
           ) : (
             <div
@@ -250,6 +278,7 @@ const GeneralAccountingTable = ({
           </Box>
         )}
       </Box>
+      
     </Box>
   );
 };

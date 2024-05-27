@@ -20,17 +20,13 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const GeneralA = ({ companyName, url }) => {
+const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard, setShowKeyboard, companyDetails, setCompanyDetails, companyDetailsCopy, setCompanyDetailsCopy, error, setError}) => {
+  
   const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [companyDetails, setCompanyDetails] = useState({});
-  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
-    ...companyDetails,
-  });
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [curr, setCurr] = useState([]);
-  const [error, setError] = useState("");
 
 console.log(
   "ssssssssssssssssssssss",
@@ -52,7 +48,7 @@ console.log(
         ...prev,
         [field]: timeString,
       }));
-    } else if (field === "Phone" || field === "Rate") {
+    } else if (field === "Phone" || field === "Rate" || field === "VAT") {
       if (!isNaN(updatedValue)) {
         setCompanyDetailsCopy((prev) => ({
           ...prev,
@@ -197,7 +193,6 @@ console.log("copppppppp", companyDetailsCopy);
                   {cur.name}
                 </MenuItem>
               ))}
-
             </Select>
           ) : (
             <TextField
@@ -206,6 +201,12 @@ console.log("copppppppp", companyDetailsCopy);
               fullWidth
               variant="outlined"
               size="small"
+              onDoubleClick={() => {
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField(key);
+              }}
             />
           )}
         </div>

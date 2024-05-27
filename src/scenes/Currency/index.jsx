@@ -7,8 +7,10 @@ import { Button } from "@mui/material";
 import AddUserDialog from "../team/AddUserDialog";
 import { useState, useEffect } from "react";
 import CurrencyDetails from "./CurrencyDetails";
+import Keyboard from "../form/Keyboard";
 
-const Currency = ({ companyName, addTitle, setAddTitle, url}) => {
+const Currency = ({ companyName, addTitle, setAddTitle, url, activeField, setActiveField, showKeyboard,
+setShowKeyboard,}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,13 +43,13 @@ const Currency = ({ companyName, addTitle, setAddTitle, url}) => {
     setIsDialogOpen(true);
     };
     
-    
   useEffect(() => {
     const fetchCurrencyDetails = async () => {
       try {
         const response = await fetch(`${url}/pos/currency/${companyName}`);
         if (response.ok) {
           const data = await response.json();
+          console.log("akanfkenf", data);
             setCurrencyDetails(data);
             setCurrencyDetailsCopy(data);
         } else {
@@ -112,7 +114,16 @@ const Currency = ({ companyName, addTitle, setAddTitle, url}) => {
     const handleCloseDialog = () => {
       // Close the dialog when needed
       setIsDialogOpen(false);
-    };
+  };
+  
+  const handleKeyPress = (input) => {
+    const [field, index] = activeField.split("-");
+    setCurrencyDetailsCopy((prevDetails) =>
+      prevDetails.map((detail, i) =>
+        i === parseInt(index) ? { ...detail, [field]: input } : detail
+      )
+    );
+  };
 
   return (
     <Box
@@ -177,6 +188,10 @@ const Currency = ({ companyName, addTitle, setAddTitle, url}) => {
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
             url={url}
+            activeField={activeField}
+            setActiveField={setActiveField}
+            showKeyboard={showKeyboard}
+            setShowKeyboard={setShowKeyboard}
           ></CurrencyDetails>
           <AddUserDialog
             isOpen={isDialogOpen}
@@ -186,6 +201,25 @@ const Currency = ({ companyName, addTitle, setAddTitle, url}) => {
             title={addTitle}
           />
         </Box>
+        {showKeyboard && (
+          <Box
+            sx={{
+              width: "80%",
+              top: "50%", // Adjust as needed to position the keyboard vertically
+              left: "50%", // Adjust as needed to position the keyboard horizontally
+              transform: "translate(-50%, -50%)", // Center the keyboard
+              zIndex: 9999,
+              position: "absolute",
+            }}
+          >
+            <Keyboard
+              onKeyPress={handleKeyPress}
+              setShowKeyboard={setShowKeyboard}
+              showKeyboard={showKeyboard}
+              activeField={activeField}
+            />
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -15,7 +15,6 @@ import { tokens } from "../../theme";
 import { handleSave } from "./SaveHandler.jsx";
 import ConfirmationDialog from "../team/ConfirmationDialog.jsx";
 import GroupDetails from "./GroupDetails.jsx";
-import Keyboard from "../form/Keyboard.jsx";
 
 const GroupDetailsModal = ({
   isOpen,
@@ -120,13 +119,6 @@ const GroupDetailsModal = ({
     onClose();
   };
 
-   const handleKeyPress = (input) => {
-     setGroupDetailsCopy((prevClientDetailsCopy) => ({
-       ...prevClientDetailsCopy,
-       [activeField]: input,
-     }));
-   };
-
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box
@@ -191,24 +183,6 @@ const GroupDetailsModal = ({
             onCancel={handleCancelClose} // Function to handle dialog closure (cancel)
             onConfirm={handleConfirmClose} // Function to handle confirmation
           />
-          {showKeyboard && (
-            <Box
-              sx={{
-                //width: "80%",
-                //top: "50%", // Adjust as needed to position the keyboard vertically
-                //left: "50%", // Adjust as needed to position the keyboard horizontally
-                //transform: "translate(-50%, -50%)", // Center the keyboard
-                //zIndex: 9999,
-              }}
-            >
-              <Keyboard
-                onKeyPress={handleKeyPress}
-                setShowKeyboard={setShowKeyboard}
-                showKeyboard={showKeyboard}
-                activeField={activeField}
-              />
-            </Box>
-          )}
         </Box>
         {/* Other modal content */}
       </Box>

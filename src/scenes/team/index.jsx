@@ -11,7 +11,9 @@ import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 
-const Team = ({ companyName, addTitle, setAddTitle, url}) => {
+const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveField,showKeyboard,
+  setShowKeyboard, }) => {
+  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -225,7 +227,7 @@ const Team = ({ companyName, addTitle, setAddTitle, url}) => {
         height="15%"
         alignItems="center"
       >
-        <Box sx={{ width: "50%", ml:"2%" }}>
+        <Box sx={{ width: "50%", ml: "2%" }}>
           <Header title="Team" subtitle="Managing the Team Members" />
         </Box>
         <Box
@@ -258,6 +260,10 @@ const Team = ({ companyName, addTitle, setAddTitle, url}) => {
         userDetailsCopy={userDetailsCopy}
         setUserDetailsCopy={setUserDetailsCopy}
         url={url}
+        activeField={activeField}
+        setActiveField={setActiveField}
+        showKeyboard={showKeyboard}
+        setShowKeyboard={setShowKeyboard}
       />
       <Box
         ml="2%"

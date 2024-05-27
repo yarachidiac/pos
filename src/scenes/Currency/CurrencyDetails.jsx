@@ -95,13 +95,19 @@ export default function CurrencyDetails(props) {
             <Typography variant="h4">name</Typography>
           </TableCell>
           <TableCell>
-             <Box sx={{ width: "300px" }}>
+            <Box sx={{ width: "300px" }}>
               <TextField
                 fullWidth
                 value={detail.name}
                 onChange={(e) =>
                   handleValueUpdate(index, "name", e.target.value)
                 }
+                onDoubleClick={() => {
+                  props.setShowKeyboard(true);
+                }}
+                onFocus={() => {
+              props.setActiveField(`name-${index}`);
+                }}
               />
             </Box>
           </TableCell>
@@ -116,6 +122,12 @@ export default function CurrencyDetails(props) {
                 onChange={(e) =>
                   handleValueUpdate(index, "Code", e.target.value)
                 }
+                onDoubleClick={() => {
+                  props.setShowKeyboard(true);
+                }}
+                onFocus={() => {
+              props.setActiveField(`Code-${index}`);
+                }}
               />
             </Box>
           </TableCell>

@@ -86,7 +86,7 @@ function App() {
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [activeField, setActiveField] = useState("");
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.112:8000";
+  const url = "http://192.168.16.128:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -288,6 +288,10 @@ function App() {
                           addTitle={addTitle}
                           setAddTitle={setAddTitle}
                           url={url}
+                          activeField={activeField}
+                          setActiveField={setActiveField}
+                          showKeyboard={showKeyboard}
+                          setShowKeyboard={setShowKeyboard}
                         />
                       }
                     />
@@ -295,7 +299,16 @@ function App() {
                   {userControl === "Y" && (
                     <Route
                       path={`/${v}/CompanyManagement`}
-                      element={<Company companyName={companyName} url={url} />}
+                      element={
+                        <Company
+                          companyName={companyName}
+                          url={url}
+                          activeField={activeField}
+                          setActiveField={setActiveField}
+                          showKeyboard={showKeyboard}
+                          setShowKeyboard={setShowKeyboard}
+                        />
+                      }
                     />
                   )}
                   <Route
@@ -471,6 +484,10 @@ function App() {
                           setNewItemNo={setNewItemNo}
                           oldItemNo={oldItemNo}
                           url={url}
+                          activeField={activeField}
+                          setActiveField={setActiveField}
+                          showKeyboard={showKeyboard}
+                          setShowKeyboard={setShowKeyboard}
                         />
                       }
                     />

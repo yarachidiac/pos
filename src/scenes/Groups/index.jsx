@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import GroupDetailsModal from "./GroupDetailsModal";
+import Keyboard from "../form/Keyboard";
 
 const Groups = ({
   companyName,
@@ -36,6 +37,12 @@ const Groups = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
+  const handleKeyPress = (input) => {
+    setGroupDetailsCopy((prevClientDetailsCopy) => ({
+      ...prevClientDetailsCopy,
+      [activeField]: input,
+    }));
+  };
   useEffect(() => {
     // Read company_name from localStorage
     // const storedCompanyName = localStorage.getItem("company_name");
@@ -284,6 +291,27 @@ const Groups = ({
         successMess={successMess}
         title={addTitle}
       />
+      {showKeyboard && (
+        <Box
+          sx={
+            {
+              width: "80%",
+              top: "50%", // Adjust as needed to position the keyboard vertically
+              left: "50%", // Adjust as needed to position the keyboard horizontally
+              transform: "translate(-50%, -50%)", // Center the keyboard
+              zIndex: 9999,
+              position:"absolute",
+            }
+          }
+        >
+          <Keyboard
+            onKeyPress={handleKeyPress}
+            setShowKeyboard={setShowKeyboard}
+            showKeyboard={showKeyboard}
+            activeField={activeField}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

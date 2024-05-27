@@ -13,11 +13,18 @@ import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import GeneralA from "./GeneralA"
 import BackOffice from "./BackOffice";
+import Keyboard from "../form/Keyboard";
 
-const Company = ({ companyName, url }) => {
+const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
+  const [companyDetails, setCompanyDetails] = useState({});
+  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
+    ...companyDetails,
+  });
+  const [error, setError] = useState("");
+
 
   const getOptionLabel = (option) => {
     switch (option) {
@@ -103,7 +110,19 @@ const Company = ({ companyName, url }) => {
   const renderSelectedTable = () => {
     switch (selectedOption) {
       case "general":
-        return <GeneralA companyName={companyName} url={ url} />;
+        return (
+          <GeneralA
+            companyName={companyName}
+            url={url}
+            activeField={activeField}
+            setActiveField={setActiveField}
+            showKeyboard={showKeyboard}
+            setShowKeyboard={setShowKeyboard}
+            companyDetails={companyDetails} setCompanyDetails={setCompanyDetails}
+            companyDetailsCopy={companyDetailsCopy} setCompanyDetailsCopy={setCompanyDetailsCopy}
+            error={error} setError={setError}
+          />
+        );
       case "back-office":
         return <BackOffice />;
       // Add more cases for each option
@@ -112,6 +131,29 @@ const Company = ({ companyName, url }) => {
     }
   };
 
+  const handleKeyPress = (input) => {
+    if (
+      activeField === "Phone" ||
+      activeField === "Rate" ||
+      activeField === "VAT"
+    ) {
+      if (!isNaN(input)) {
+        setCompanyDetailsCopy((prev) => ({
+          ...prev,
+          [activeField]: input,
+        }));
+        setError("");
+      } else {
+        setError(`${activeField} must be a number.`);
+      }
+    } else {
+      setCompanyDetailsCopy((prev) => ({
+        ...prev,
+        [activeField]: input,
+      }));
+    }
+  };
+  
   return (
     <Box
       sx={{
@@ -193,6 +235,25 @@ const Company = ({ companyName, url }) => {
           {renderSelectedTable()}
         </Box>
       </Box>
+      {showKeyboard && (
+        <Box
+          sx={{
+            width: "80%",
+            top: "50%", // Adjust as needed to position the keyboard vertically
+            left: "50%", // Adjust as needed to position the keyboard horizontally
+            transform: "translate(-50%, -50%)", // Center the keyboard
+            zIndex: 9999,
+            position: "absolute",
+          }}
+        >
+          <Keyboard
+            onKeyPress={handleKeyPress}
+            setShowKeyboard={setShowKeyboard}
+            showKeyboard={showKeyboard}
+            activeField={activeField}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

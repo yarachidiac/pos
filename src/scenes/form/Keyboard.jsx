@@ -64,6 +64,16 @@ const Keyboard = ({
   };
   console.log("ana el capslock", capsLock);
 
+  const formatActiveField = (activeField) => {
+    if (activeField.includes("-")) {
+      const [field, index] = activeField.split("-");
+      return `${field.charAt(0).toUpperCase() + field.slice(1)} #${
+        parseInt(index) + 1
+      }`;
+    }
+    return activeField;
+  };
+
   const renderKeys = () => {
     const englishKeys = [
       "q",
@@ -342,7 +352,7 @@ const Keyboard = ({
               //   padding: "8px 16px",
               // }}
             >
-              Data Entry for {activeField}
+              Data Entry for {formatActiveField(activeField)}
             </Typography>
           </Grid>
 
