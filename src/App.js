@@ -1,5 +1,5 @@
 import { ColorModeContext, useMode } from "./theme";
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, Box } from "@mui/material";
 import Topbar from "./scenes/global/Topbar";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./scenes/dashboard";
@@ -45,6 +45,7 @@ import Currency from "./scenes/Currency";
 import CashConfirm from "./scenes/CashOnHands/CashConf";
 import EndOfDay from "./scenes/EndOfDay/EndOfDay.jsx";
 import ResponseDialog from "./scenes/ResponseDialog.jsx";
+import Keyboard from "./scenes/form/Keyboard.jsx";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -85,8 +86,34 @@ function App() {
   const [responseCash, setResponseCash] = useState("");
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [activeField, setActiveField] = useState("");
+  const [companyDetails, setCompanyDetails] = useState({});
+  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
+    ...companyDetails,
+  });
+  const [error, setError] = useState("");
+  const [currencyDetails, setCurrencyDetails] = useState([]);
+  const [currencyDetailsCopy, setCurrencyDetailsCopy] = useState([
+    ...currencyDetails,
+  ]);
+  const [userDetails, setUserDetails] = useState({});
+  const [userDetailsCopy, setUserDetailsCopy] = useState({ ...userDetails });
+  const [valMessage, setValMessage] = useState("");
+  const [itemDetails, setItemDetails] = useState({});
+  const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });
+  const [groupDetails, setGroupDetails] = useState({});
+  const [groupDetailsCopy, setGroupDetailsCopy] = useState({
+    ...groupDetails,
+  });
+  const [userName, setUserName] = useState("");
+  const [sectionName, setSectionName] = useState("");
+  const [sectionNo, setSectionNo] = useState("");
+  const [tableNo, setTableNo] = useState("");
+  const [tableWaiter, setTableWaiter] = useState("");
+  const [active, setActive] = useState("");
+  const [description, setDescription] = useState("");
+
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.128:8000";
+  const url = "http://192.168.16.113:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -204,6 +231,113 @@ function App() {
     setDialogCash(false);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleKeyPress = (input) => {
+    if (location.pathname === `/${v}/CompanyManagement`) {
+      if (
+        activeField === "Phone" ||
+        activeField === "Rate" ||
+        activeField === "VAT"
+      ) {
+        if (!isNaN(input)) {
+          setCompanyDetailsCopy((prev) => ({
+            ...prev,
+            [activeField]: input,
+          }));
+          setError("");
+        } else {
+          setError(`${activeField} must be a number.`);
+        }
+      } else {
+        setCompanyDetailsCopy((prev) => ({
+          ...prev,
+          [activeField]: input,
+        }));
+      }
+    } else if (location.pathname === `/${v}/Currency`) {
+      const [field, index] = activeField.split("-");
+      setCurrencyDetailsCopy((prevDetails) =>
+        prevDetails.map((detail, i) =>
+          i === parseInt(index) ? { ...detail, [field]: input } : detail
+        )
+      );
+    } else if (location.pathname === `/${v}/team`) {
+      if (activeField === "email") {
+        if (!validateEmail(input)) {
+          setValMessage("Invalid email format");
+        } else {
+          setValMessage("");
+        }
+      }
+      setUserDetailsCopy((prevClientDetailsCopy) => ({
+        ...prevClientDetailsCopy,
+        [activeField]: input,
+      }));
+    } else if (location.pathname === `/${v}/ManagePoS`) {
+      if (
+        activeField === "Tax" ||
+        activeField === "UPrice" ||
+        activeField === "Disc" ||
+        activeField === "Srv"
+      ) {
+        // Validate if the value is a number
+        if (isNaN(input)) {
+          setValMessage(`${activeField} must be a number`);
+          return;
+        }
+      } else if (
+        activeField === "KT1" ||
+        activeField === "KT2" ||
+        activeField === "KT3" ||
+        activeField === "KT4"
+      ) {
+        // Validate if the value has more than 2 characters
+        if (input.length > 2) {
+          setValMessage(`${activeField} must be at most 2 characters long`);
+          return;
+        }
+      }
+
+      setValMessage(""); // Clear validation message if no error
+
+      // Update the appropriate text field with the validated input
+      setItemDetailsCopy((prevClientDetailsCopy) => ({
+        ...prevClientDetailsCopy,
+        [activeField]: input,
+      }));
+    } else if (location.pathname === `/${v}/Groups`) {
+      setGroupDetailsCopy((prevClientDetailsCopy) => ({
+        ...prevClientDetailsCopy,
+        [activeField]: input,
+      }));
+    }
+    if (
+      activeField === "Add Item Number" ||
+      activeField === "Add Group Number"
+    ) {
+      if (!isNaN(input)) {
+        setValMessage("");
+        setUserName(input);
+      } else {
+        setValMessage("Number only allowed");
+      }
+    } else if (activeField === "Section No") {
+      setSectionNo(input);
+    } else if (activeField === "Section Name") {
+      setSectionName(input);
+    } else if (activeField === "Table No") {
+      setTableNo(input);
+    } else if (activeField === "Table Waiter") {
+      setTableWaiter(input);
+    } else if (activeField === "Description") {
+      setDescription(input);
+    }
+  };
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -292,6 +426,12 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
+                          userDetails={userDetails}
+                          setUserDetails={setUserDetails}
+                          userDetailsCopy={userDetailsCopy}
+                          setUserDetailsCopy={setUserDetailsCopy}
+                          valMessage={valMessage}
+                          setValMessage={setValMessage}
                         />
                       }
                     />
@@ -307,6 +447,12 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
+                          companyDetails={companyDetails}
+                          setCompanyDetails={setCompanyDetails}
+                          companyDetailsCopy={companyDetailsCopy}
+                          setCompanyDetailsCopy={setCompanyDetailsCopy}
+                          error={error}
+                          setError={setError}
                         />
                       }
                     />
@@ -368,6 +514,14 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
+                          itemDetails={itemDetails}
+                          setItemDetails={setItemDetails}
+                          itemDetailsCopy={itemDetailsCopy}
+                          setItemDetailsCopy={setItemDetailsCopy}
+                          valMessage={valMessage}
+                          setValMessage={setValMessage}
+                          userName={userName}
+                          setUserName={setUserName}
                         />
                       }
                     />
@@ -405,6 +559,12 @@ function App() {
                         url={url}
                         v={v}
                         userControl={userControl}
+                        setShowKeyboard={setShowKeyboard}
+                        setActiveField={setActiveField}
+                        sectionNo={sectionNo}
+                        setSectionNo={setSectionNo}
+                        sectionName={sectionName}
+                        setSectionName={setSectionName}
                       />
                     }
                   />
@@ -424,6 +584,16 @@ function App() {
                         url={url}
                         v={v}
                         userControl={userControl}
+                        tableNo={tableNo}
+                        setTableNo={setTableNo}
+                        active={active}
+                        setActive={setActive}
+                        description={description}
+                        setDescription={setDescription}
+                        tableWaiter={tableWaiter}
+                        setTableWaiter={setTableWaiter}
+                        setShowKeyboard={setShowKeyboard}
+                        setActiveField={setActiveField}
                       />
                     }
                   />
@@ -466,6 +636,14 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
+                          groupDetails={groupDetails}
+                          setGroupDetails={setGroupDetails}
+                          groupDetailsCopy={groupDetailsCopy}
+                          setGroupDetailsCopy={setGroupDetailsCopy}
+                          userName={userName}
+                          setUserName={setUserName}
+                          valMessage={valMessage}
+                          setValMessage={setValMessage}
                         />
                       }
                     />
@@ -488,6 +666,10 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
+                          currencyDetails={currencyDetails}
+                          setCurrencyDetails={setCurrencyDetails}
+                          currencyDetailsCopy={currencyDetailsCopy}
+                          setCurrencyDetailsCopy={setCurrencyDetailsCopy}
                         />
                       }
                     />
@@ -518,6 +700,25 @@ function App() {
                   isOpen={dialogCash}
                   onClose={closeCash}
                 />
+                {showKeyboard && (
+                  <Box
+                    sx={{
+                      width: "80%",
+                      top: "50%", // Adjust as needed to position the keyboard vertically
+                      left: "50%", // Adjust as needed to position the keyboard horizontally
+                      transform: "translate(-50%, -50%)", // Center the keyboard
+                      zIndex: 9999,
+                      position: "absolute",
+                    }}
+                  >
+                    <Keyboard
+                      onKeyPress={handleKeyPress}
+                      setShowKeyboard={setShowKeyboard}
+                      showKeyboard={showKeyboard}
+                      activeField={activeField}
+                    />
+                  </Box>
+                )}
               </main>
             </>
           )}

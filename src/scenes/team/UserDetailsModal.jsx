@@ -56,7 +56,7 @@ const UserDetailsModal = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard,
+  setShowKeyboard, valMessage, setValMessage,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -65,29 +65,9 @@ const UserDetailsModal = ({
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-  const [valMessage, setValMessage] = useState("");
 
   console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetailsCopy);
   console.log("ana url mn l userDetailsModal", url);
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleKeyPress = (input) => {
-    if (activeField === "email") {
-      if (!validateEmail(input)) {
-        setValMessage("Invalid email format");
-      } else {
-        setValMessage("");
-      }
-    }
-    setUserDetailsCopy((prevClientDetailsCopy) => ({
-      ...prevClientDetailsCopy,
-      [activeField]: input,
-    }));
-  };
 
   const getOptionLabel = (option) => {
     switch (option) {
@@ -533,26 +513,7 @@ const UserDetailsModal = ({
             onConfirm={handleConfirmClose} // Function to handle confirmation
           />
         </Box>
-        {/* Other modal content */}
-        {showKeyboard && (
-          <Box
-            sx={{
-              width: "80%",
-              top: "50%", // Adjust as needed to position the keyboard vertically
-              left: "50%", // Adjust as needed to position the keyboard horizontally
-              transform: "translate(-50%, -50%)", // Center the keyboard
-              zIndex: 9999,
-              position: "absolute",
-            }}
-          >
-            <Keyboard
-              onKeyPress={handleKeyPress}
-              setShowKeyboard={setShowKeyboard}
-              showKeyboard={showKeyboard}
-              activeField={activeField}
-            />
-          </Box>
-        )}
+        {/* Other modal content */}       
       </Box>
     </Modal>
   );

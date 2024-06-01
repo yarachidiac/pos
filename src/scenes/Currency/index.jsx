@@ -10,16 +10,11 @@ import CurrencyDetails from "./CurrencyDetails";
 import Keyboard from "../form/Keyboard";
 
 const Currency = ({ companyName, addTitle, setAddTitle, url, activeField, setActiveField, showKeyboard,
-setShowKeyboard,}) => {
+setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCurrencyDetailsCopy}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-  const [currencyDetails, setCurrencyDetails] = useState([]);
-  const [currencyDetailsCopy, setCurrencyDetailsCopy] = useState([
-    ...currencyDetails,
-  ]);
-
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [prList, setPrList] = useState([]);
 
@@ -115,16 +110,7 @@ setShowKeyboard,}) => {
       // Close the dialog when needed
       setIsDialogOpen(false);
   };
-  
-  const handleKeyPress = (input) => {
-    const [field, index] = activeField.split("-");
-    setCurrencyDetailsCopy((prevDetails) =>
-      prevDetails.map((detail, i) =>
-        i === parseInt(index) ? { ...detail, [field]: input } : detail
-      )
-    );
-  };
-
+ 
   return (
     <Box
       sx={{
@@ -200,26 +186,7 @@ setShowKeyboard,}) => {
             successMess={successMess}
             title={addTitle}
           />
-        </Box>
-        {showKeyboard && (
-          <Box
-            sx={{
-              width: "80%",
-              top: "50%", // Adjust as needed to position the keyboard vertically
-              left: "50%", // Adjust as needed to position the keyboard horizontally
-              transform: "translate(-50%, -50%)", // Center the keyboard
-              zIndex: 9999,
-              position: "absolute",
-            }}
-          >
-            <Keyboard
-              onKeyPress={handleKeyPress}
-              setShowKeyboard={setShowKeyboard}
-              showKeyboard={showKeyboard}
-              activeField={activeField}
-            />
-          </Box>
-        )}
+        </Box>   
       </Box>
     </Box>
   );

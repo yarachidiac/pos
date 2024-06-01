@@ -1,13 +1,15 @@
-import React from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import React, { useState, useEffect } from "react";
+import {
+  Modal,
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  Button,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
-import { useEffect, useState } from "react";
-import { height } from "@mui/system";
 import { format } from "date-fns";
 
 const CashConfirm = ({
@@ -21,6 +23,28 @@ const CashConfirm = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [rows, setRows] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("all");
+  const [filterUser, setFilterUser] = useState([]);
+  const [totalInv, setTotalInv] = useState("");
+  const [totalUser, setTotalUser] = useState("");
+
+  const handleChange = (event) => {
+    const selectedUser = event.target.value;
+    setSelectedOption(selectedUser);
+
+    if (selectedUser === "all") {
+      setRows(originalData); // Reset to full data if 'All' is selected
+      setTotalInv(calculateTotalFinal(totalUser));
+    } else {
+      const filteredData = originalData.filter(
+        (item) => item.User === selectedUser
+      );
+      const userShift = totalUser.find((shift) => shift.User === selectedUser);
+      setTotalInv(userShift ? userShift.totalFinal : 0);
+      setRows(filteredData); // Filter data based on the selected user
+    }
+  };
 
   const style = {
     position: "absolute",
@@ -40,11 +64,21 @@ const CashConfirm = ({
       const currentDate = new Date();
       const formattedDate = format(currentDate, "dd.MM.yyyy");
       try {
+        const calc = await fetch(
+          `${url}/pos/calculateUserShifts/${companyName}/${formattedDate}`
+        );
+        const invoices = await calc.json();
+        console.log("invoices", invoices);
+        setTotalUser(invoices);
+        setTotalInv(calculateTotalFinal(invoices));
         const response = await fetch(
-          `${url}/pos/reportUserShift/${companyName}/${username}/${formattedDate}`
+          `${url}/pos/reportUserShift/${companyName}/${formattedDate}`
         );
         const data = await response.json();
         setRows(data);
+        setOriginalData(data); // Store the original data
+        const uniqueUsers = [...new Set(data.map((item) => item.User))];
+        setFilterUser(uniqueUsers);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -53,7 +87,11 @@ const CashConfirm = ({
     if (open) {
       fetchData();
     }
-  }, [open]);
+  }, [open, url, companyName,]);
+
+  const calculateTotalFinal = (data) => {
+    return data.reduce((sum, item) => sum + item.totalFinal, 0);
+  };
 
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
@@ -65,7 +103,7 @@ const CashConfirm = ({
       headerName: "User",
       minWidth: 200,
       renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
+      headerClassName: "header-cell",
       flex: 1,
     },
     {
@@ -73,7 +111,7 @@ const CashConfirm = ({
       headerName: "InvType",
       minWidth: 200,
       renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
+      headerClassName: "header-cell",
       flex: 1,
     },
     {
@@ -83,14 +121,14 @@ const CashConfirm = ({
       cellClassName: "name-column--cell",
       minWidth: 200,
       renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
+      headerClassName: "header-cell",
     },
     {
       field: "OrderId",
       headerName: "Account Name",
       minWidth: 200,
       renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
+      headerClassName: "header-cell",
       flex: 1,
     },
     {
@@ -100,7 +138,7 @@ const CashConfirm = ({
       cellClassName: "name-column--cell",
       minWidth: 200,
       renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
+      headerClassName: "header-cell",
     },
     {
       field: "Time",
@@ -109,17 +147,43 @@ const CashConfirm = ({
       cellClassName: "name-column--cell",
       minWidth: 200,
       renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
+      headerClassName: "header-cell",
     },
   ];
 
   return (
     <Modal open={open} onClose={onCancel}>
       <Box sx={style}>
-        <Box sx={{ height: "8%" }}>
-          <Typography variant="h3" component="h1" sx={{ fontWeight: "500" }}>
-            Do you want to end your shift?
-          </Typography>
+        <Box
+          sx={{
+            height: "8%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Box sx={{ width: "50%" }}>
+            <Typography variant="h3" component="h1" sx={{ fontWeight: "500" }}>
+              Do you want to end your shift?
+            </Typography>
+            <Typography variant="h3" component="h1" sx={{ fontWeight: "500" }}>
+              {totalInv}
+            </Typography>
+          </Box>
+          <Box sx={{ width: "10%" }}>
+            <Select
+              value={selectedOption}
+              onChange={handleChange}
+              sx={{ width: "100%", textAlign: "center" }}
+            >
+              <MenuItem value="all">All</MenuItem>
+              {filterUser.map((user) => (
+                <MenuItem key={user} value={user}>
+                  {user}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
         </Box>
         <Box sx={{ height: "82%", width: "100%" }}>
           <DataGrid

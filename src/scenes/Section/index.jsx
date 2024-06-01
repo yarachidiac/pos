@@ -18,14 +18,13 @@ import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
 
-const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userControl}) => {
+const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userControl, setShowKeyboard, setActiveField, sectionNo, setSectionNo, sectionName, setSectionName}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
   const [sections, setSections] = useState([]);
-  const [sectionName, setSectionName] = useState("");
-  const [sectionNo, setSectionNo] = useState("");
+  
 
   const navigate = useNavigate();
   const handleOpenTables = (sectionNo) => {
@@ -163,17 +162,16 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
             display: "flex",
           }}
         >
-          {userControl ===
-            "Y" &&(
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ fontSize: "1.1rem" }}
-                onClick={() => handleAddSection("Add Section")}
-              >
-                Add
-              </Button>
-            )}
+          {userControl === "Y" && (
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ fontSize: "1.1rem" }}
+              onClick={() => handleAddSection("Add Section")}
+            >
+              Add
+            </Button>
+          )}
         </Box>
       </Box>
       <Container sx={{ height: "85%" }}>
@@ -216,28 +214,27 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
                   }}
                   onClick={() => handleOpenTables(section.SectionNo)}
                 />
-                {userControl ===
-                  "Y" && (
-                    <Button
-                      size="large"
-                      sx={{
-                        position: "absolute",
-                        bottom: 8,
-                        right: 8,
-                        backgroundColor: colors.greenAccent[500],
-                        color: colors.primary[500],
-                        zIndex: 1, // Ensure the Edit button is above the ButtonBase
-                      }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setSectionNo(section.SectionNo);
-                        setSectionName(section.Name);
-                        handleEditClick("Update Section");
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  )}
+                {userControl === "Y" && (
+                  <Button
+                    size="large"
+                    sx={{
+                      position: "absolute",
+                      bottom: 8,
+                      right: 8,
+                      backgroundColor: colors.greenAccent[500],
+                      color: colors.primary[500],
+                      zIndex: 1, // Ensure the Edit button is above the ButtonBase
+                    }}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setSectionNo(section.SectionNo);
+                      setSectionName(section.Name);
+                      handleEditClick("Update Section");
+                    }}
+                  >
+                    Edit
+                  </Button>
+                )}
               </Box>
             </Grid>
           ))}
@@ -254,6 +251,8 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
         sectionNo={sectionNo}
         setSectionName={setSectionName}
         setSectionNo={setSectionNo}
+        setShowKeyboard={setShowKeyboard}
+        setActiveField={setActiveField}
       />
     </Box>
   );

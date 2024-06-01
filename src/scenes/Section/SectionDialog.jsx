@@ -19,7 +19,7 @@ const SectionDialog = ({
   sectionName,
   sectionNo,
   setSectionName, 
-  setSectionNo
+  setSectionNo, setShowKeyboard, setActiveField
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -68,11 +68,23 @@ const SectionDialog = ({
           label="Section No"
           value={sectionNo}
           onChange={(e) => setSectionNo(e.target.value)}
+          onDoubleClick={() => {
+            setShowKeyboard(true);
+          }}
+          onFocus={() => {
+            setActiveField("Section No");
+          }}
         />
         <TextField
           label="Section Name"
           value={sectionName}
           onChange={(e) => setSectionName(e.target.value)}
+          onDoubleClick={() => {
+            setShowKeyboard(true);
+          }}
+          onFocus={() => {
+            setActiveField("Section Name");
+          }}
         />
         <Typography variant="body1">{successMess}</Typography>
       </DialogContent>

@@ -15,16 +15,10 @@ import GeneralA from "./GeneralA"
 import BackOffice from "./BackOffice";
 import Keyboard from "../form/Keyboard";
 
-const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, }) => {
+const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, companyDetails, setCompanyDetails, companyDetailsCopy, setCompanyDetailsCopy, error, setError }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
-  const [companyDetails, setCompanyDetails] = useState({});
-  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
-    ...companyDetails,
-  });
-  const [error, setError] = useState("");
-
 
   const getOptionLabel = (option) => {
     switch (option) {
@@ -130,29 +124,6 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
         return null;
     }
   };
-
-  const handleKeyPress = (input) => {
-    if (
-      activeField === "Phone" ||
-      activeField === "Rate" ||
-      activeField === "VAT"
-    ) {
-      if (!isNaN(input)) {
-        setCompanyDetailsCopy((prev) => ({
-          ...prev,
-          [activeField]: input,
-        }));
-        setError("");
-      } else {
-        setError(`${activeField} must be a number.`);
-      }
-    } else {
-      setCompanyDetailsCopy((prev) => ({
-        ...prev,
-        [activeField]: input,
-      }));
-    }
-  };
   
   return (
     <Box
@@ -234,26 +205,7 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
         >
           {renderSelectedTable()}
         </Box>
-      </Box>
-      {showKeyboard && (
-        <Box
-          sx={{
-            width: "80%",
-            top: "50%", // Adjust as needed to position the keyboard vertically
-            left: "50%", // Adjust as needed to position the keyboard horizontally
-            transform: "translate(-50%, -50%)", // Center the keyboard
-            zIndex: 9999,
-            position: "absolute",
-          }}
-        >
-          <Keyboard
-            onKeyPress={handleKeyPress}
-            setShowKeyboard={setShowKeyboard}
-            showKeyboard={showKeyboard}
-            activeField={activeField}
-          />
-        </Box>
-      )}
+      </Box>   
     </Box>
   );
 };

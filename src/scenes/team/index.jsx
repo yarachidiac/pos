@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 
 const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveField,showKeyboard,
-  setShowKeyboard, }) => {
+  setShowKeyboard, userDetails, setUserDetails, userDetailsCopy, setUserDetailsCopy, valMessage,  setValMessage }) => {
   
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -23,8 +23,6 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [userDetails, setUserDetails] = useState({});
-  const [userDetailsCopy, setUserDetailsCopy] = useState({...userDetails});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
@@ -264,6 +262,8 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
         setActiveField={setActiveField}
         showKeyboard={showKeyboard}
         setShowKeyboard={setShowKeyboard}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
       />
       <Box
         ml="2%"

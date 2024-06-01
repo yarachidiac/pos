@@ -324,7 +324,6 @@ const Keyboard = ({
   // );
 
   return (
-    <Draggable>
       <Box
         sx={{
           border: "2px solid #333",
@@ -472,7 +471,6 @@ const Keyboard = ({
           </Grid>
         </Box>
       </Box>
-    </Draggable>
   );
 };
 

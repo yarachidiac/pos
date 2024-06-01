@@ -34,14 +34,13 @@ const ItemDetailsModal = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
+  valMessage, setValMessage
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-  const [valMessage, setValMessage] = useState("");
-
 
   const modalStyle = {
     top: "50%",
@@ -126,40 +125,6 @@ const ItemDetailsModal = ({
     onClose();
   };
 
-  const handleKeyPress = (input) => {
-    if (
-      activeField === "Tax" ||
-      activeField === "UPrice" ||
-      activeField === "Disc" ||
-      activeField === "Srv"
-    ) {
-      // Validate if the value is a number
-      if (isNaN(input)) {
-        setValMessage(`${activeField} must be a number`);
-        return;
-      }
-    } else if (
-      activeField === "KT1" ||
-      activeField === "KT2" ||
-      activeField === "KT3" ||
-      activeField === "KT4"
-    ) {
-      // Validate if the value has more than 2 characters
-      if (input.length > 2) {
-        setValMessage(`${activeField} must be at most 2 characters long`);
-        return;
-      }
-    }
-
-    setValMessage(""); // Clear validation message if no error
-
-    // Update the appropriate text field with the validated input
-    setItemDetailsCopy((prevClientDetailsCopy) => ({
-      ...prevClientDetailsCopy,
-      [activeField]: input,
-    }));
-  };
-
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box
@@ -217,25 +182,6 @@ const ItemDetailsModal = ({
             valMessage={valMessage}
             setValMessage={setValMessage}
           />
-          {showKeyboard && (
-            <Box
-              sx={{
-                width: "80%",
-                position: "absolute",
-                top: "50%", // Adjust as needed to position the keyboard vertically
-                left: "50%", // Adjust as needed to position the keyboard horizontally
-                transform: "translate(-50%, -50%)", // Center the keyboard
-                zIndex: 9999,
-              }}
-            >
-              <Keyboard
-                onKeyPress={handleKeyPress}
-                setShowKeyboard={setShowKeyboard}
-                showKeyboard={showKeyboard}
-                activeField={activeField}
-              />
-            </Box>
-          )}
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not
             onCancel={handleCancelClose} // Function to handle dialog closure (cancel)

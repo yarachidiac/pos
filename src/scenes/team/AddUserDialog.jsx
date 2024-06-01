@@ -11,11 +11,9 @@ import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import { height } from "@mui/system";
 
-const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
-  const [userName, setUserName] = useState("");
+const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title, setShowKeyboard,setActiveField, userName, setUserName, valMessage, setValMessage }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [valMessage, setValMessage] = useState("");
 
   const handleChange = (e) => {
     const titleIncludesNumber = title.includes("Number");
@@ -24,7 +22,6 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
     } else {
       setValMessage("");
       setUserName(e.target.value);
-
     }
   };
 
@@ -64,13 +61,27 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title }) => {
             label={title.includes("Number") ? "Number" : "Name"}
             value={userName}
             onChange={handleChange}
+            onDoubleClick={() => {
+              setShowKeyboard(true);
+            }}
+            onFocus={() => {
+              setActiveField(title);
+            }}
           />
           {valMessage && (
             <Typography sx={{ height: "10%" }} variant="body1" color="error">
               {valMessage}
             </Typography>
           )}
-          <Typography sx={{ height: "20%", color:colors.greenAccent[500], fontSize:"1.4em", fontWeight:"bold" }} variant="body1">
+          <Typography
+            sx={{
+              height: "20%",
+              color: colors.greenAccent[500],
+              fontSize: "1.4em",
+              fontWeight: "bold",
+            }}
+            variant="body1"
+          >
             {successMess}
           </Typography>
         </Box>

@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import GroupDetailsModal from "./GroupDetailsModal";
-import Keyboard from "../form/Keyboard";
 
 const Groups = ({
   companyName,
@@ -21,7 +20,7 @@ const Groups = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard,
+  setShowKeyboard, groupDetails, setGroupDetails, groupDetailsCopy, setGroupDetailsCopy, userName, setUserName, valMessage, setValMessage
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -32,17 +31,9 @@ const Groups = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [groupDetails, setGroupDetails] = useState({});
-  const [groupDetailsCopy, setGroupDetailsCopy] = useState({ ...groupDetails });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
-  const handleKeyPress = (input) => {
-    setGroupDetailsCopy((prevClientDetailsCopy) => ({
-      ...prevClientDetailsCopy,
-      [activeField]: input,
-    }));
-  };
   useEffect(() => {
     // Read company_name from localStorage
     // const storedCompanyName = localStorage.getItem("company_name");
@@ -290,28 +281,13 @@ const Groups = ({
         onAdd={handleGroupDetailsChange}
         successMess={successMess}
         title={addTitle}
+        setShowKeyboard={setShowKeyboard}
+        setActiveField={setActiveField}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
+        userName={userName}
+        setUserName={setUserName}
       />
-      {showKeyboard && (
-        <Box
-          sx={
-            {
-              width: "80%",
-              top: "50%", // Adjust as needed to position the keyboard vertically
-              left: "50%", // Adjust as needed to position the keyboard horizontally
-              transform: "translate(-50%, -50%)", // Center the keyboard
-              zIndex: 9999,
-              position:"absolute",
-            }
-          }
-        >
-          <Keyboard
-            onKeyPress={handleKeyPress}
-            setShowKeyboard={setShowKeyboard}
-            showKeyboard={showKeyboard}
-            activeField={activeField}
-          />
-        </Box>
-      )}
     </Box>
   );
 };

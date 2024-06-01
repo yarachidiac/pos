@@ -20,7 +20,8 @@ const ManagePoS = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard,
+  setShowKeyboard, itemDetails, setItemDetails, itemDetailsCopy, setItemDetailsCopy, valMessage, setValMessage, 
+  userName, setUserName
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -31,8 +32,6 @@ const ManagePoS = ({
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [itemDetails, setItemDetails] = useState({});
-  const [itemDetailsCopy, setItemDetailsCopy] = useState({...itemDetails});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
 
@@ -212,6 +211,8 @@ const ManagePoS = ({
         setActiveField={setActiveField}
         showKeyboard={showKeyboard}
         setShowKeyboard={setShowKeyboard}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
       />
       <Box
         m="0 auto"
@@ -285,6 +286,12 @@ const ManagePoS = ({
         onAdd={handleItemDetailsChange}
         successMess={successMess}
         title={addTitle}
+        setShowKeyboard={setShowKeyboard}
+        setActiveField={setActiveField}
+        userName={userName}
+        setUserName={setUserName}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
       />
     </Box>
   );

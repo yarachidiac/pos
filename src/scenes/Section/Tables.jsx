@@ -27,16 +27,12 @@ const Tables = ({
   setMessage,
   url,
   v,
-  userControl
+  userControl, tableNo, setTableNo, active, setActive, description, setDescription, tableWaiter, setTableWaiter, setShowKeyboard, setActiveField
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-  const [tableNo, setTableNo] = useState("");
-  const [tableWaiter, setTableWaiter] = useState("");
-  const [active, setActive] = useState("");
-  const [description, setDescription] = useState("");
   const { sectionNo } = useParams();
   const [selectedTableId, setSelectedTableId] = useState("");
   const navigate = useNavigate();
@@ -347,6 +343,8 @@ const Tables = ({
         setActive={setActive}
         description={description}
         setDescription={setDescription}
+        setShowKeyboard={setShowKeyboard}
+        setActiveField={setActiveField}
       />
     </Box>
   );

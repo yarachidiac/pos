@@ -113,6 +113,8 @@ const PoS = ({
   const [allowDialog, setAllowDialog] = useState(false);
   const [qtyPrintKT, setQtyPrintKT] = useState(1);
   const [prRemark, setPrRemark] = useState("");
+  const [orderId, setOrderId] = useState();
+  const [invN, setInvN] = useState();
 
   const handleCloseAllow = () => {
     setAllowDialog(false);
@@ -142,85 +144,19 @@ const PoS = ({
   const handleConfKitchen = () => {
     setIsConfOpenDialog(false);
     handlePlace();
-
   };
 
   useEffect(() => {
-    if (closeTClicked) {
-      handlePlace();
-    }
+    const handleAsync = async () => {
+      if (closeTClicked) {
+        await handlePlace();
+        handlePrint();
+      }
+    };
+
+    handleAsync();
   }, [closeTClicked]);
 
- 
-  // const handleKitchen = async () => {
-  //   try {
-  //     const currentDate = new Date();
-  //     const formattedDate = format(currentDate, "dd/MM/yyyy");
-  //     const formattedTime = format(currentDate, "HH:mm:ss");
-  //     const requestBody = {
-  //       date: formattedDate,
-  //       time: formattedTime,
-  //       discValue: discValue,
-  //       srv: srv,
-  //       meals: selectedMeals,
-  //       branch: branch,
-  //       invType: invType,
-  //     };
-
-  //     const response = await fetch(
-  //       `http://192.168.16.113:8000/insertInv/${companyName}/${selectedTableId}/${username}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(requestBody),
-  //       }
-  //     );
-  //     let mess;
-  //     const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
-  //     console.log("handle kitchennnnn", unsentMeals);
-  //     if (response.ok) {
-  //       const groupkitchen = await fetch(
-  //         `http://192.168.16.113:8000/groupkitchen/${companyName}/${selectedTableId}/${username}`,
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify(unsentMeals),
-  //         }
-  //       );
-  //       if (groupkitchen.ok) {
-  //         const unprintedResponse = await groupkitchen.json();
-  //         console.log("ubbbbbbbbbbbb", unprintedResponse);
-  //         // Convert the JSON data to a string
-  //         const jsonString = JSON.stringify(unprintedResponse, null, 2);
-  //         // Use FileSaver to save the JSON data as a TXT file
-  //         const blob = new Blob([jsonString], { type: "application/json" });
-  //         FileSaver.saveAs(blob, "response-data.json");
-  //       }
-
-  //       setIsNav(true);
-  //       mess = await response.json();
-  //       setMessage(mess["invNo"]);
-  //       setSelectedMeals([]);
-  //       setSelectedModifiers([]);
-  //       setSrv(0);
-  //       setDiscValue(0);
-  //       navigate(`/PoS`);
-  //       setSelectedTop("Takeaway");
-  //       console.log("Insertion to kitchen successful");
-  //       setIsConfOpenDialog(false);
-  //     } else {
-  //       // Handle error response
-  //       console.error("Error inserting into kitchen:", response.statusText);
-  //     }
-  //   } catch (error) {
-  //     // Handle network errors or other exceptions
-  //     console.error("Error inserting into kitchen:", error);
-  //   }
-  // };
 
   const handlePrint = () => {
     if (allowPrintInv === "Y") {
@@ -561,6 +497,23 @@ const PoS = ({
     setSelectedMeals(updatedSelectedMeals);
   };
 
+  useEffect(() => {
+    console.log("cccccccccuuuuuuuuuuuuu", closeTClicked);
+    if (invN && orderId && (!selectedTableId)) {
+      handlePrint();
+      setSelectedModifiers([]);
+      setSelectedMeals([]);
+      setMealsCopy((prevMealsCopy) =>
+        prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
+      );
+      setFinalTotal(0);
+      setDiscValue(0);
+      setSrv(0);
+      setSelectedRow({})
+    } 
+    
+  }, [invN, orderId]);
+
   let placeOrderCount = 0;
   const handlePlace = async () => {
     try {
@@ -658,9 +611,10 @@ const PoS = ({
       // Check if the request was successful (status code 2xx)
       if (response.ok) {
         const responseData = await response.json();
-        if (responseData["message"] === "Invoice items added successfully") {
+        if (responseData["message"] === "Invoice items added successfully")  {
           if (allowPrintKT === "Y") {
-            // Convert the JSON data to a string
+            setInvN(responseData["invoiceDetails"]["InvNo"]);
+            setOrderId(responseData["invoiceDetails"]["OrderId"]);
             const jsonString = JSON.stringify(responseData, null, 2);
             // Use FileSaver to save the JSON data as a TXT file
             const blob = new Blob([jsonString], { type: "application/json" });
@@ -677,21 +631,22 @@ const PoS = ({
               }, 3000);
             }
           }
-          if (!selectedTableId) {
-            handlePrint();
-          }
+           
+          // if (!selectedTableId) {
+          //   handlePrint();
+          // }
         }
       }
         // Reset selectedMeals to an empty array
-        setSelectedModifiers([]);
-        setSelectedMeals([]);
-        setMealsCopy((prevMealsCopy) =>
-          prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
-        );
-        setFinalTotal(0);
-        setDiscValue(0);
-        setSrv(0);
-        setSelectedRow({});
+        // setSelectedModifiers([]);
+        // setSelectedMeals([]);
+        // setMealsCopy((prevMealsCopy) =>
+        //   prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
+        // );
+        // setFinalTotal(0);
+        // setDiscValue(0);
+        // setSrv(0);
+        // setSelectedRow({});
         navigate(`/${v}/PoS`);
         setSelectedTop("Takeaway");
         setIsNav(true);
@@ -770,7 +725,7 @@ const PoS = ({
       try {
         if (!location.search.includes("selectedTableId") && message) {
           const response = await fetch(
-            `${url}/pos/${companyName}/${message}`
+            `${url}/pos/resetUsedBy/${companyName}/${message}`
           );
           if (response.ok) {
             setSelectedMeals([]);
@@ -1810,29 +1765,35 @@ const PoS = ({
               <Table>
                 <TableBody>
                   <TableRow>
+                    <TableCell>InvNo {invN}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Order {orderId}</TableCell>
+                  </TableRow>
+                  <TableRow>
                     <TableCell>{companyName}</TableCell>
                   </TableRow>
                   {compCity && (
                     <TableRow>
-                      <TableCell>City:</TableCell>
+                      {/* <TableCell>City:</TableCell> */}
                       <TableCell>{compCity}</TableCell>
                     </TableRow>
                   )}
                   {compStreet && (
                     <TableRow>
-                      <TableCell>Street:</TableCell>
+                      {/* <TableCell>Street:</TableCell> */}
                       <TableCell>{compStreet}</TableCell>
                     </TableRow>
                   )}
                   {compPhone && (
                     <TableRow>
-                      <TableCell>Phone:</TableCell>
+                      {/* <TableCell>Phone:</TableCell> */}
                       <TableCell>{compPhone}</TableCell>
                     </TableRow>
                   )}
                   {branch && (
                     <TableRow>
-                      <TableCell>Branch:</TableCell>
+                      {/* <TableCell>Branch:</TableCell> */}
                       <TableCell>{branch}</TableCell>
                     </TableRow>
                   )}

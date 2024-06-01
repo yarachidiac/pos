@@ -24,7 +24,7 @@ const TableDialog = ({
   setTableNo,
   setTableWaiter,
   setActive,
-  setDescription
+  setDescription, setShowKeyboard, setActiveField
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -80,11 +80,23 @@ const TableDialog = ({
           label="Table No"
           value={tableNo}
           onChange={(e) => setTableNo(e.target.value)}
+          onDoubleClick={() => {
+            setShowKeyboard(true);
+          }}
+          onFocus={() => {
+            setActiveField("Table No");
+          }}
         />
         <TextField
           label="Table Waiter"
           value={tableWaiter}
           onChange={(e) => setTableWaiter(e.target.value)}
+          onDoubleClick={() => {
+            setShowKeyboard(true);
+          }}
+          onFocus={() => {
+            setActiveField("Table Waiter");
+          }}
         />
         <FormControl>
           <FormControlLabel
@@ -104,6 +116,12 @@ const TableDialog = ({
           rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          onDoubleClick={() => {
+            setShowKeyboard(true);
+          }}
+          onFocus={() => {
+            setActiveField("Description");
+          }}
         />
         <Typography variant="body1">{successMess}</Typography>
       </DialogContent>
