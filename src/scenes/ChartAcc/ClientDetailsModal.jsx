@@ -31,7 +31,7 @@ const ClientDetailsModal = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard,
+  setShowKeyboard, valMessage, setValMessage
 }) => {
   console.log("mmmmmmmmmmmmmmmmmmm", clientDetails);
   const theme = useTheme();
@@ -41,7 +41,6 @@ const ClientDetailsModal = ({
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
 
   const [unsavedChanges, setUnsavedChanges] = useState(false);
-  const [valMessage, setValMessage] = useState("");
 
   // if (!clientDetails) {
   //   return null;
@@ -230,25 +229,11 @@ const ClientDetailsModal = ({
             setActiveField={setActiveField}
             showKeyboard={showKeyboard}
             setShowKeyboard={setShowKeyboard}
+  
+
             // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
           />
-          {showKeyboard && (<Box
-            sx={{
-              width: "80%",
-              position: "absolute",
-              top: "50%", // Adjust as needed to position the keyboard vertically
-              left: "50%", // Adjust as needed to position the keyboard horizontally
-              transform: "translate(-50%, -50%)", // Center the keyboard
-              zIndex: 9999,
-            }}>
-            <Keyboard
-              onKeyPress={handleKeyPress}
-              setShowKeyboard={setShowKeyboard}
-              showKeyboard={showKeyboard}
-              activeField={activeField}
-            />
-          </Box>
-          )}
+          
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not
             onCancel={handleCancelClose} // Function to handle dialog closure (cancel)

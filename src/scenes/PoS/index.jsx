@@ -72,9 +72,9 @@ const PoS = ({
   filterValue,
   url,
   v,
-  compPhone, compCity, compStreet,
+  compPhone, compCity, compStreet, accno, 
   activeField, setActiveField, showKeyboard,
-  setShowKeyboard,
+  setShowKeyboard, valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -577,7 +577,7 @@ const PoS = ({
       const formattedTime = format(currentDate, "HH:mm:ss");
     
       // Encode the formatted date
-      const accno = selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
+      const delivery = selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
       const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
       const requestBody = {
         date: formattedDate,
@@ -592,9 +592,9 @@ const PoS = ({
         unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
         message: message,
         realDate: realDate,
-        accno: accno,
+        accno: delivery ? delivery : accno,
         qtyPrintKT: qtyPrintKT,
-        username:username
+        username: username,
         //orderId: orderId,
       };
       const response = await fetch(
@@ -1956,6 +1956,14 @@ const PoS = ({
         setActiveField={setActiveField}
         showKeyboard={showKeyboard}
         setShowKeyboard={setShowKeyboard}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
+        userName={userName}
+        setUserName={setUserName}
+        clientDetails={clientDetails}
+        setClientDetails={setClientDetails}
+        clientDetailsCopy={clientDetailsCopy}
+        setClientDetailsCopy={setClientDetailsCopy}
       ></DelModal>
       {ingredCard && (
         <IngredDialog

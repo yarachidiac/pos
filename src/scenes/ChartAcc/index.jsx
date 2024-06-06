@@ -27,6 +27,7 @@ const ChartAcc = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
+  valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy
 }) => {
   console.log("adedefaf", url)
   const theme = useTheme();
@@ -41,13 +42,9 @@ const ChartAcc = ({
   // });
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [clientDetails, setClientDetails] = useState({});
+  
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-  const [clientDetailsCopy, setClientDetailsCopy] = useState({
-    ...clientDetails,
-  });
-
   const storedSelectedRow = localStorage.getItem("selectedRow");
   console.log("ssssssssssssssssssss", storedSelectedRow);
   useEffect(() => {
@@ -351,6 +348,8 @@ const ChartAcc = ({
         setActiveField={setActiveField}
         showKeyboard={showKeyboard}
         setShowKeyboard={setShowKeyboard}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
       />
       <Box
         ml="2%"
@@ -448,6 +447,12 @@ const ChartAcc = ({
         onAdd={handleUserDetailsChange}
         successMess={successMess}
         title={addTitle}
+        setActiveField={setActiveField}
+        setShowKeyboard={setShowKeyboard}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
+        userName={userName}
+        setUserName={setUserName}
       />
     </Box>
   );

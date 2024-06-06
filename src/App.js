@@ -61,6 +61,7 @@ function App() {
   const [compPhone, setCompPhone] = useState("");
   const [compCity, setCompCity] = useState("");
   const [compStreet, setCompStreet] = useState("");
+  const [accno, setAccNo] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
     const storedSelectedRow = localStorage.getItem("selectedRow");
@@ -111,9 +112,15 @@ function App() {
   const [tableWaiter, setTableWaiter] = useState("");
   const [active, setActive] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedOption, setSelectedOption] = useState("all");
+  const [clientDetails, setClientDetails] = useState({});
+  const [clientDetailsCopy, setClientDetailsCopy] = useState({
+    ...clientDetails,
+  });
+  const [totalInv, setTotalInv] = useState("");
 
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.113:8000";
+  const url = "http://192.168.16.140:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -131,6 +138,7 @@ function App() {
           const storedCompPhone = localStorage.getItem("comp_phone");
           const storedCompStreet = localStorage.getItem("comp_street");
           const storedCompCity = localStorage.getItem("comp_city");
+          const storedAccNo = localStorage.getItem("acc_no");
           console.log("ana bl Appp", storedCompanyName);
           setCompanyName(storedCompanyName);
           setBranch(storedBranch);
@@ -140,6 +148,7 @@ function App() {
           setCompCity(storedCompCity);
           setCompPhone(storedCompPhone);
           setCompStreet(storedCompStreet);
+          setAccNo(storedAccNo);
           console.log("men l app", compCity);
           setIsAuthenticated(true);
         } else {
@@ -180,7 +189,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: username,
+          username: selectedOption,
           formattedDate: formattedDate,
           dateTime: dateTime,
         }),
@@ -190,6 +199,7 @@ function App() {
         setResponseCash(data.message);
         setOpenCash(false);
         setDialogCash(true);
+        setTotalInv("");
       }
     } catch (error) {
       console.error("Error:", error.message);
@@ -206,12 +216,20 @@ function App() {
 
   const handleConfirmEOD = async () => {
     try {
+      const currentDate = new Date();
+      const formattedTime = format(currentDate, "HH:mm:ss");
+      const formattedDate = format(currentDate, "dd/MM/yyyy");
+      const dateTime = `${formattedDate} ${formattedTime}`;
       const response = await fetch(`${url}/pos/resetOrderId/${companyName}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ order_id: 1 }),
+        body: JSON.stringify({
+          order_id: 1,
+          dateTime: dateTime,
+          date: formattedDate,
+        }),
       });
       if (response.ok) {
         const data = await response.json();
@@ -325,6 +343,8 @@ function App() {
       } else {
         setValMessage("Number only allowed");
       }
+    } else if (activeField === "Add Client") {
+      setUserName(input);
     } else if (activeField === "Section No") {
       setSectionNo(input);
     } else if (activeField === "Section Name") {
@@ -335,7 +355,40 @@ function App() {
       setTableWaiter(input);
     } else if (activeField === "Description") {
       setDescription(input);
+    } else if (
+      activeField === "AccDisc" ||
+      activeField === "VAT" ||
+      activeField === "AccPrice" ||
+      activeField === "Floor"
+    ) {
+      if (isNaN(input)) {
+        setValMessage(`${activeField} should be number`);
+        return;
+      } else {
+        setValMessage("");
+      }
+    } else if (activeField === "Tel") {
+      if (!/^\d+$/.test(input)) {
+        setValMessage("Telephone number should contain only digits");
+        return;
+      } else {
+        setValMessage("");
+      }
+    } else if (activeField === "Email") {
+      if (!input) {
+        setValMessage("");
+      } else if (!validateEmail(input)) {
+        setValMessage("Invalid email format");
+        return;
+      } else {
+        setValMessage("");
+      }
     }
+    // Update the appropriate text field with the validated input
+    setClientDetailsCopy((prevClientDetailsCopy) => ({
+      ...prevClientDetailsCopy,
+      [activeField]: input,
+    }));
   };
 
   return (
@@ -355,6 +408,7 @@ function App() {
               setCompPhone={setCompPhone}
               setCompCity={setCompCity}
               setCompStreet={setCompStreet}
+              setAccNo={setAccNo}
               url={url}
               v={v}
               activeField={activeField}
@@ -489,10 +543,19 @@ function App() {
                         compPhone={compPhone}
                         compStreet={compStreet}
                         compCity={compCity}
+                        accno={accno}
                         activeField={activeField}
                         setActiveField={setActiveField}
                         showKeyboard={showKeyboard}
                         setShowKeyboard={setShowKeyboard}
+                        valMessage={valMessage}
+                        setValMessage={setValMessage}
+                        userName={userName}
+                        setUserName={setUserName}
+                        clientDetails={clientDetails}
+                        setClientDetails={setClientDetails}
+                        clientDetailsCopy={clientDetailsCopy}
+                        setClientDetailsCopy={setClientDetailsCopy}
                       />
                     }
                   />
@@ -594,6 +657,7 @@ function App() {
                         setTableWaiter={setTableWaiter}
                         setShowKeyboard={setShowKeyboard}
                         setActiveField={setActiveField}
+                        accno={accno}
                       />
                     }
                   />
@@ -682,6 +746,10 @@ function App() {
                   url={url}
                   username={username}
                   companyName={companyName}
+                  selectedOption={selectedOption}
+                  setSelectedOption={setSelectedOption}
+                  totalInv={totalInv}
+                  setTotalInv={setTotalInv}
                   //rows={rows}
                   // columns={columns}
                 />

@@ -22,6 +22,7 @@ const DelModal = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
+  valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -167,6 +168,14 @@ const DelModal = ({
           setActiveField={setActiveField}
           showKeyboard={showKeyboard}
           setShowKeyboard={setShowKeyboard}
+          valMessage={valMessage}
+          setValMessage={setValMessage}
+          userName={userName}
+          setUserName={setUserName}
+          clientDetails={clientDetails}
+          setClientDetails={setClientDetails}
+          clientDetailsCopy={clientDetailsCopy}
+          setClientDetailsCopy={setClientDetailsCopy}
         />
       </Box>
     </Modal>

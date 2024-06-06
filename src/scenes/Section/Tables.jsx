@@ -27,7 +27,7 @@ const Tables = ({
   setMessage,
   url,
   v,
-  userControl, tableNo, setTableNo, active, setActive, description, setDescription, tableWaiter, setTableWaiter, setShowKeyboard, setActiveField
+  userControl, tableNo, setTableNo, active, setActive, description, setDescription, tableWaiter, setTableWaiter, setShowKeyboard, setActiveField, accno
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -168,7 +168,7 @@ const Tables = ({
           data.usedBy === ""
         ) {
           const reqOpen = await fetch(
-            `${url}/pos/openTable/${companyName}/${tableNo}/${username}`,
+            `${url}/pos/openTable/${companyName}/${tableNo}/${username}/${accno}`,
             {
               method: "POST",
             }

@@ -44,7 +44,7 @@ const Form = ({
   v,
   setCompCity,
   setCompStreet,
-  setCompPhone, 
+  setCompPhone, setAccNo,
   activeField, setActiveField, showKeyboard, setShowKeyboard
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -108,6 +108,9 @@ const Form = ({
 
           localStorage.setItem("comp_street", responseUser.comp["Street"]);
           await setCompStreet(localStorage.getItem("comp_street"));
+
+          localStorage.setItem("acc_no", responseUser.accno);
+          await setAccNo(localStorage.getItem("acc_no"));
 
           sessionStorage.setItem("isAuthenticated", "true");
           await setIsAuthenticated(sessionStorage.getItem("isAuthenticated"));
