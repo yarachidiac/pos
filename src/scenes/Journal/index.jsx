@@ -13,6 +13,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import InvDetailsModal from "./InvDetailsModal";
+import { format } from "path-browserify";
+import { format as dateFnsFormat } from "date-fns";
+import InvTotalDialog from "../InvTotalDialog";
 
 const Journal = ({ companyName, url}) => {
   const theme = useTheme();
@@ -27,22 +30,41 @@ const Journal = ({ companyName, url}) => {
   const [filteredData, setFilteredData] = useState([]);
   const [openInvDetailsModal, setOpenIvDetailsModal] = useState(false);
   const [selectedInv, setSelectedInv] = useState("");
+  const [grossTotal, setGrossTotal] = useState("");
+  const [totalQty, setTotalQty] = useState("");
+  const [srvValue, setSrvValue] = useState("");
+  const [discValue, setDiscValue] = useState("");
+  const [totalDiscount, setTotalDiscount] = useState("");
+  const [totalTax, setTotalTax] = useState("");
+  const [selectedInvType, setSelectedInvType] = useState("");
+  const [srv, setSrv] = useState("");
+  const [disc, setDisc] = useState("");
+  const [totalInv, setTotalInv] = useState("");
+  const [openTotalDetail, setOpenTotalDetail] = useState(false);
+  const [formattedStartDate, setFormattedStartDate] = useState("");
+  const [formattedEndDate, setFormattedEndDate] = useState("");
+  const [formattedStartTime, setFormattedStartTime] = useState("");
+  const [formattedEndTime, setFormattedEndTime] = useState("");
+
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
+    setFormattedStartDate(date.format("DD/MM/YYYY"));
   };
 
   const handleEndDateChange = (date) => {
     setEndDate(date);
+    setFormattedEndDate(date.format("DD/MM/YYYY"));
   };
 
   const handleStartTimeChange = (time) => {
-    console.log("tttttttttttttt", time);
     setStartTime(time);
+    setFormattedStartTime(time.format("HH:mm"));
   };
 
   const handleEndTimeChange = (time) => {
     setEndTime(time);
+    setFormattedEndTime(time.format("HH:mm"));
   };
 
   const handleRowClick = (params) => {
@@ -52,69 +74,138 @@ const Journal = ({ companyName, url}) => {
   };
 
   useEffect(() => {
-      console.log("innnnnnnnnnnnnnnnnnnnn", inv);
-      const filtered = inv.filter((row) => {
-        const rowDate = row.Date;
-        const rowTime = row.Time;
+    const currentDate = new Date();
+    const formattedTime = dateFnsFormat(currentDate, "HH:mm:ss");
+    const formattedDate = dateFnsFormat(currentDate, "dd/MM/yyyy");
+    const fetchHisFiltered = async () => {
+      console.log("afafaf", startDate);
+        const requestBody = {
+          currDate: formattedDate,
+          currTime: formattedTime,
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+          startTime: formattedStartTime,
+          endTime: formattedEndTime,
+        };
+        const response = await fetch(`${url}/pos/filterInvHis/${companyName}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
+        if (response.ok) {
+          const filteredData = await response.json();
+          setTotalInv(calculateTotalFinal(filteredData));
+          setFilteredData(filteredData);
+        }
+      }
+    
+    fetchHisFiltered();    //setFilteredData(filtered);
+  }, [startDate, endDate, startTime, endTime]);
 
-        if (rowDate || rowTime) {
-          // Check if rowDate is not null
-          const [day, month, year] = rowDate.split("/");
-          const [hour, min] = rowTime.split(":");
-          const startDateObject = new Date(startDate);
-          const endDateObject = new Date(endDate);
-          const startTimeObject = new Date(startTime);
-          const endTimeObject = new Date(endTime);
-          const startDateY = startDateObject.getFullYear();
-          const startDateM = startDateObject.getMonth() + 1;
-          const startDateD = startDateObject.getDate();
-          const endDateY = endDateObject.getFullYear();
-          const endDateM = endDateObject.getMonth() + 1;
-          const endDateD = endDateObject.getDate();
-          console.log("hhhhh", startTimeObject.getHours());
-          console.log("hhhhh", startTimeObject.getMinutes());
-          const startTimeH = startTimeObject.getHours();
-          const startTimeM = startTimeObject.getMinutes();
-          const endTimeH = endTimeObject.getHours();
-          const endTimeM = endTimeObject.getMinutes();
-          if (startDate !== null && endDate !== null && startTime == null && endTime == null) {
-            return (
-              (year > startDateY ||
-                (year == startDateY && month > startDateM) ||
-                (year == startDateY &&
-                  month == startDateM &&
-                  day >= startDateD)) &&
-              (year < endDateY ||
-                (year == endDateY && month < endDateM) ||
-                (year == endDateY && month == endDateM && day <= endDateD))
-            );
-          } else if (startTime!==null && endTime!==null && startDate == null && endDate == null) {
-            return (
-              (hour > startTimeH ||
-                (hour == startTimeH && min > startTimeM)) &&
-              (hour < endTimeH ||
-                (hour == endTimeH && min < endTimeM))
-            );
-          } else if(startTime!== null && endTime !== null && startDate!==null && endDate !==null){
-            return (
-              (year > startDateY ||
-                (year == startDateY && month > startDateM) ||
-                (year == startDateY &&
-                  month == startDateM &&
-                  day >= startDateD)) &&
-              (year < endDateY ||
-                (year == endDateY && month < endDateM) ||
-                (year == endDateY && month == endDateM && day <= endDateD)) &&
-              (hour > startTimeH || (hour == startTimeH && min > startTimeM)) &&
-              (hour < endTimeH || (hour == endTimeH && min < endTimeM))
-            );
-          }
-        } 
-      });
-      setFilteredData(filtered);
-  }, [startDate, endDate, startTime, endTime, inv]);
+  const renderTotalFinalCell = (params) => {
+    const value = parseFloat(params.value);
+    return (
+      <Typography>{!isNaN(value) ? value.toFixed(3) : params.value}</Typography>
+    );
+  };
+  // useEffect(() => {
+  //     console.log("innnnnnnnnnnnnnnnnnnnn", inv);
+  //     const filtered = inv.filter((row) => {
+  //       const rowDate = row.Date;
+  //       const rowTime = row.Time;
 
-console.log("Filterrrrrrrrrr", filteredData)
+  //       if (rowDate || rowTime) {
+  //         // Check if rowDate is not null
+  //         const [day, month, year] = rowDate.split("/");
+  //         const [hour, min] = rowTime.split(":");
+  //         const startDateObject = new Date(startDate);
+  //         const endDateObject = new Date(endDate);
+  //         const startTimeObject = new Date(startTime);
+  //         const endTimeObject = new Date(endTime);
+  //         const startDateY = startDateObject.getFullYear();
+  //         const startDateM = startDateObject.getMonth() + 1;
+  //         const startDateD = startDateObject.getDate();
+  //         const endDateY = endDateObject.getFullYear();
+  //         const endDateM = endDateObject.getMonth() + 1;
+  //         const endDateD = endDateObject.getDate();
+  //         console.log("hhhhh", startTimeObject.getHours());
+  //         console.log("hhhhh", startTimeObject.getMinutes());
+  //         const startTimeH = startTimeObject.getHours();
+  //         const startTimeM = startTimeObject.getMinutes();
+  //         const endTimeH = endTimeObject.getHours();
+  //         const endTimeM = endTimeObject.getMinutes();
+  //         if (startDate !== null && endDate !== null && startTime == null && endTime == null) {
+  //           return (
+  //             (year > startDateY ||
+  //               (year == startDateY && month > startDateM) ||
+  //               (year == startDateY &&
+  //                 month == startDateM &&
+  //                 day >= startDateD)) &&
+  //             (year < endDateY ||
+  //               (year == endDateY && month < endDateM) ||
+  //               (year == endDateY && month == endDateM && day <= endDateD))
+  //           );
+  //         } else if (startTime!==null && endTime!==null && startDate == null && endDate == null) {
+  //           return (
+  //             (hour > startTimeH ||
+  //               (hour == startTimeH && min > startTimeM)) &&
+  //             (hour < endTimeH ||
+  //               (hour == endTimeH && min < endTimeM))
+  //           );
+  //         } else if(startTime!== null && endTime !== null && startDate!==null && endDate !==null){
+  //           return (
+  //             (year > startDateY ||
+  //               (year == startDateY && month > startDateM) ||
+  //               (year == startDateY &&
+  //                 month == startDateM &&
+  //                 day >= startDateD)) &&
+  //             (year < endDateY ||
+  //               (year == endDateY && month < endDateM) ||
+  //               (year == endDateY && month == endDateM && day <= endDateD)) &&
+  //             (hour > startTimeH || (hour == startTimeH && min > startTimeM)) &&
+  //             (hour < endTimeH || (hour == endTimeH && min < endTimeM))
+  //           );
+  //         }
+  //       } 
+  //     });
+  //     setFilteredData(filtered);
+  // }, [startDate, endDate, startTime, endTime, inv]);
+
+  console.log("Filterrrrrrrrrr", filteredData)
+  const calculateTotalNumber = (data) => {
+    return data.reduce((sum, item) => sum + item.TotalInvoices, 0);
+  };
+  const calculateTotalFinal = (data) => {
+    return data.reduce((sum, item) => sum + item.totalFinal, 0);
+  };
+  const calculateGrossTotal = (data) => {
+    return data.reduce((sum, item) => sum + item.GrossTotal, 0);
+  };
+  const calculateTotalQty = (data) => {
+    return data.reduce((sum, item) => sum + item.TotalQty, 0);
+  };
+
+  const calculateTotalDiscount = (data) => {
+    return data.reduce((sum, item) => sum + item.TotalDiscount, 0);
+  };
+  const calculateDiscValue = (data) => {
+    return data.reduce((sum, item) => sum + item.discountValue, 0);
+  };
+  const calculateSrvValue = (data) => {
+    return data.reduce((sum, item) => sum + item.serviceValue, 0);
+  };
+  const calculateTotalTax = (data) => {
+    return data.reduce((sum, item) => sum + item.totalTax, 0);
+  };
+
+  const calculateTotalDisc = (data) => {
+    return data.reduce((sum, item) => sum + item.disc, 0);
+  };
+  const calculateTotalSrv = (data) => {
+    return data.reduce((sum, item) => sum + item.srv, 0);
+  };
 
   useEffect(() => {
       fetch(`${url}/pos/getInvHistory/${companyName}`)
@@ -124,6 +215,16 @@ console.log("Filterrrrrrrrrr", filteredData)
 
           if (Array.isArray(data)) {
             setInv(data);
+            //setNumInv(calculateTotalNumber(data));
+            setTotalInv(calculateTotalFinal(data));
+            setGrossTotal(calculateGrossTotal(data));
+            setTotalQty(calculateTotalQty(data));
+            setSrvValue(calculateSrvValue(data));
+            setDiscValue(calculateDiscValue(data));
+            setTotalDiscount(calculateTotalDiscount(data));
+            setTotalTax(calculateTotalTax(data));
+            setDisc(calculateTotalDisc(data));
+            setSrv(calculateTotalSrv(data));
           } else {
             console.error("Invalid data format received:", data);
           }
@@ -134,6 +235,10 @@ console.log("Filterrrrrrrrrr", filteredData)
 
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
+  };
+
+  const handleDoubleClick = () => {
+    setOpenTotalDetail(true);
   };
 
   const columns = [
@@ -154,7 +259,7 @@ console.log("Filterrrrrrrrrr", filteredData)
       minWidth: 100,
       flex: "1",
     },
-    
+
     {
       field: "Branch",
       headerName: "Branch",
@@ -207,6 +312,15 @@ console.log("Filterrrrrrrrrr", filteredData)
       minWidth: 100,
       flex: "1",
     },
+    {
+      field: "totalFinal",
+      headerName: "Total",
+      //flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 100,
+      renderCell: renderTotalFinalCell,
+      headerClassName: "header-cell",
+    },
   ];
 
   return (
@@ -224,44 +338,65 @@ console.log("Filterrrrrrrrrr", filteredData)
           width: "100%",
           display: "flex",
           flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-around",
+          width: "100%",
         }}
       >
         <Header title="Invoices History" />
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Start Date"
-              value={startDate}
-              onChange={handleStartDateChange}
-              sx={{ ml: "2%" }}
-            />
-            <DatePicker
-              label="End Date"
-              value={endDate}
-              onChange={handleEndDateChange}
-              sx={{ ml: "2%" }}
-            />
-            <TimePicker
-              label="Start Time"
-              value={startDate}
-              onChange={handleStartTimeChange}
-              sx={{ ml: "2%" }}
-            />
-            <TimePicker
-              label="End Time"
-              value={endDate}
-              onChange={handleEndTimeChange}
-              sx={{ ml: "2%" }}
-            />
-          </LocalizationProvider>
-          {/* <Button
+        <Button
+          component="h1"
+          variant="contained"
+          color="secondary"
+          style={{ fontSize: "1.1rem" }}
+          onDoubleClick={handleDoubleClick}
+        >
+          Total &nbsp;&nbsp;{Number(totalInv).toFixed(3)}
+        </Button>
+        <InvTotalDialog
+          openTotalDetail={openTotalDetail}
+          setOpenTotalDetail={setOpenTotalDetail}
+          totalQty={totalQty}
+          grossTotal={grossTotal}
+          srv={srv}
+          srvValue={srvValue}
+          disc={disc}
+          discValue={discValue}
+          totalDiscount={totalDiscount}
+          totalTax={totalTax}
+          totalInv={totalInv}
+        ></InvTotalDialog>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={handleStartDateChange}
+            format="DD/MM/YYYY"
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={handleEndDateChange}
+            format="DD/MM/YYYY"
+          />
+          <TimePicker
+            label="Start Time"
+            value={startDate}
+            onChange={handleStartTimeChange}
+          />
+          <TimePicker
+            label="End Time"
+            value={endDate}
+            onChange={handleEndTimeChange}
+          />
+        </LocalizationProvider>
+        {/* <Button
             variant="contained"
             color="primary"
             sx={{ height: "100%", ml: "2%" }}
           >
             Apply
           </Button> */}
-        </Box>
       </Box>
       <Box
         sx={{

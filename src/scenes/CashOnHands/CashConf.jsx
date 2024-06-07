@@ -13,6 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { format } from "date-fns";
 import COHDetails from "./COHDetails";
+import InvTotalDialog from "../InvTotalDialog";
 
 const CashConfirm = ({
   open,
@@ -47,9 +48,6 @@ const CashConfirm = ({
     setOpenTotalDetail(true);
   }
   
-  const handleCloseTotalDetails = () => {
-    setOpenTotalDetail(false);
-  }
 
   const handleRowClick = (params) => {
     setOpenCOHDetails(true);
@@ -324,103 +322,19 @@ const CashConfirm = ({
             >
               Total Invoices&nbsp;&nbsp;{Number(totalInv).toFixed(3)}
             </Button>
-            <Dialog open={openTotalDetail} onClose={handleCloseTotalDetails}>
-              <DialogTitle sx={{ fontSize: "1.8rem" }}>
-                Invoice Details
-              </DialogTitle>
-              <DialogContent>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Typography variant="h1">Total Qty:</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h1" align="right">
-                      {Number(totalQty).toFixed(3)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Typography variant="h1">Gross Total:</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h1" align="right">
-                      {Number(grossTotal).toFixed(3)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography variant="h1">Service:</Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="h1" align="right">
-                      {srv}%
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="h1" align="right">
-                      {Number(srvValue).toFixed(3)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography variant="h1">Discount</Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="h1" align="right">
-                      {disc}%
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="h1" align="right">
-                      {Number(discValue).toFixed(3)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Typography variant="h1">Total</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h1" align="right">
-                      {Number(totalDiscount).toFixed(3)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={4}>
-                    <Typography variant="h1">Tax</Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="h1" align="right">
-                      {`11%`}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="h1" align="right">
-                      {Number(totalTax).toFixed(3)}
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Typography variant="h1">Total</Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography variant="h1" align="right">
-                      {Number(totalInv).toFixed(3)}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </DialogContent>
-
-              <DialogActions>
-                <Button
-                  onClick={handleCloseTotalDetails}
-                  color="secondary"
-                  variant="contained"
-                  sx={{ fontSize: "1rem" }}
-                >
-                  Close
-                </Button>
-              </DialogActions>
-            </Dialog>
+            <InvTotalDialog
+              openTotalDetail={openTotalDetail}
+              setOpenTotalDetail={setOpenTotalDetail}
+              totalQty={totalQty}
+              grossTotal={grossTotal}
+              srv={srv}
+              srvValue={srvValue}
+              disc={disc}
+              discValue={discValue}
+              totalDiscount={totalDiscount}
+              totalTax={totalTax}
+              totalInv={totalInv}
+            ></InvTotalDialog>
             {/* <Typography variant="h3" component="h1" sx={{ fontWeight: "500" }}>
               Total Number {numInv}
             </Typography> */}

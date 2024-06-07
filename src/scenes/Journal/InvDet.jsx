@@ -153,6 +153,15 @@ const InvDet = ({ companyName, selectedInv, url }) => {
       minWidth: 100,
       flex: "1",
     },
+    {
+      field: "totalItem",
+      headerName: "Total",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell",
+    },
   ];
 
   return (
