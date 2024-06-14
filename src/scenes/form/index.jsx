@@ -45,7 +45,7 @@ const Form = ({
   setCompCity,
   setCompStreet,
   setCompPhone, setAccNo,
-  activeField, setActiveField, showKeyboard, setShowKeyboard
+  activeField, setActiveField, showKeyboard, setShowKeyboard, setCompTime
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -122,6 +122,8 @@ const Form = ({
             responseUser.user["user_control"]
           );
           const s = setUserControl(localStorage.getItem("user_control"));
+          localStorage.setItem("comp_time", responseUser.comp["EndTime"]);
+          await setCompTime(localStorage.getItem("comp_time"));
           console.log("pppppppppppppppppppp", s);
           setLogMess(responseUser.message);
           navigate(`/${v}/PoS`);

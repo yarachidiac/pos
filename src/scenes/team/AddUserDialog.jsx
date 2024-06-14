@@ -17,8 +17,14 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title, setShowKeyb
 
   const handleChange = (e) => {
     const titleIncludesNumber = title.includes("Number");
+    const titleIncludeGroup = title.includes("Group");
     if (titleIncludesNumber && isNaN(e.target.value)) {
-      setValMessage("Number only allowed");
+      if (titleIncludeGroup) {
+        setValMessage("");
+        setUserName(e.target.value);
+      } else {
+         setValMessage("Number only allowed");
+      }
     } else {
       setValMessage("");
       setUserName(e.target.value);

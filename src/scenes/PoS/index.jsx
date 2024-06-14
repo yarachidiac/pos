@@ -74,7 +74,7 @@ const PoS = ({
   v,
   compPhone, compCity, compStreet, accno, 
   activeField, setActiveField, showKeyboard,
-  setShowKeyboard, valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy
+  setShowKeyboard, valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy, compTime
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -115,6 +115,8 @@ const PoS = ({
   const [prRemark, setPrRemark] = useState("");
   const [orderId, setOrderId] = useState();
   const [invN, setInvN] = useState();
+  const [newcurrDate, setNewCurrDate] = useState("");
+  const [newcurrTime, setNewCurrTime] = useState("");
 
   const handleCloseAllow = () => {
     setAllowDialog(false);
@@ -281,7 +283,6 @@ const PoS = ({
   };
 
   useEffect(() => {
-    // Create a copy of meals with a unique identifier
     const copy = meals.map((meal, index) => ({
       ...meal,
       quantity: 1,
@@ -385,8 +386,6 @@ const PoS = ({
     );
     // Find the meal in mealsCopy
     const selectedMeal = mealsCopy.find((meal) => meal.ItemNo === mealId);
-
-    // Add the meal to selectedMeals with a new index
     setSelectedMeals((prevSelectedMeals) => [
       ...prevSelectedMeals,
       {
@@ -425,7 +424,7 @@ const PoS = ({
         `${url}/pos/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
-      setMeals(data); // Assuming your API response has a 'categories' property
+      setMeals(data); 
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
@@ -437,7 +436,7 @@ const PoS = ({
         `${url}/pos/allitems/${companyName}`
       );
       const data = await response.json();
-      setMeals(data); // Assuming your API response has a 'categories' property
+      setMeals(data);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
@@ -520,15 +519,13 @@ const PoS = ({
       const currentDate = new Date();
       let formattedDate = format(currentDate, "dd/MM/yyyy");
       const realDate = format(currentDate, "dd/MM/yyyy");
+      setNewCurrDate(realDate);
       //let orderId;
       // No need to format the time, use currentDate directly
-      const compTimeRequest = await fetch(
-        `${url}/pos/getCompTime/${companyName}`
-      );
-      if (compTimeRequest.ok) {
-        const compTimeResponse = await compTimeRequest.json();
-        const compTime = compTimeResponse.compTime; // Assuming this is your compTime value
-
+      // const compTimeRequest = await fetch(
+      //   `${url}/pos/getCompTime/${companyName}`
+      // );
+      if (compTime) {
         // Extract the time components from the compTime string
         const [hours, minutes, seconds] = compTime.split(":").map(Number);
 
@@ -574,7 +571,8 @@ const PoS = ({
         //   }
         // }
       // Encode the formatted date
-      const formattedTime = format(currentDate, "HH:mm:ss");
+        const formattedTime = format(currentDate, "HH:mm:ss");
+        setNewCurrTime(formattedTime);
     
       // Encode the formatted date
       const delivery = selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
@@ -616,7 +614,6 @@ const PoS = ({
             setInvN(responseData["invoiceDetails"]["InvNo"]);
             setOrderId(responseData["invoiceDetails"]["OrderId"]);
             const jsonString = JSON.stringify(responseData, null, 2);
-            // Use FileSaver to save the JSON data as a TXT file
             const blob = new Blob([jsonString], { type: "application/json" });
             FileSaver.saveAs(blob, "response-data.json");
 
@@ -1764,6 +1761,9 @@ const PoS = ({
             <TableContainer>
               <Table>
                 <TableBody>
+                  <TableRow>
+                    <TableCell>{newcurrDate}  { newcurrTime}</TableCell>
+                  </TableRow>
                   <TableRow>
                     <TableCell>InvNo {invN}</TableCell>
                   </TableRow>

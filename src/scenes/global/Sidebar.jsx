@@ -27,6 +27,8 @@ import PostAddOutlinedIcon from "@mui/icons-material/PostAddOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
+import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import ProductionQuantityLimitsOutlinedIcon from "@mui/icons-material/ProductionQuantityLimitsOutlined";
 const Item = ({
   title,
   to,
@@ -444,7 +446,7 @@ const Sidebar = ({
               v={v}
             />
             <Item
-              icon={<AssessmentOutlinedIcon />}
+              icon={<PostAddOutlinedIcon />}
               title="Manage Groups"
               selected={selected}
               setSelected={setSelected}
@@ -455,7 +457,7 @@ const Sidebar = ({
               v={v}
             />
             <Item
-              icon={<AssessmentOutlinedIcon />}
+              icon={<ReceiptOutlinedIcon />}
               title="Invoices History"
               selected={selected}
               setSelected={setSelected}

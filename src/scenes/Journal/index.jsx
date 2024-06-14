@@ -16,6 +16,7 @@ import InvDetailsModal from "./InvDetailsModal";
 import { format } from "path-browserify";
 import { format as dateFnsFormat } from "date-fns";
 import InvTotalDialog from "../InvTotalDialog";
+import DatagridTable from "../DatagridTable";
 
 const Journal = ({ companyName, url}) => {
   const theme = useTheme();
@@ -79,29 +80,37 @@ const Journal = ({ companyName, url}) => {
     const formattedDate = dateFnsFormat(currentDate, "dd/MM/yyyy");
     const fetchHisFiltered = async () => {
       console.log("afafaf", startDate);
-        const requestBody = {
-          currDate: formattedDate,
-          currTime: formattedTime,
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-          startTime: formattedStartTime,
-          endTime: formattedEndTime,
-        };
-        const response = await fetch(`${url}/pos/filterInvHis/${companyName}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        });
-        if (response.ok) {
-          const filteredData = await response.json();
-          setTotalInv(calculateTotalFinal(filteredData));
-          setFilteredData(filteredData);
-        }
+      const requestBody = {
+        currDate: formattedDate,
+        currTime: formattedTime,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        startTime: formattedStartTime,
+        endTime: formattedEndTime,
+      };
+      const response = await fetch(`${url}/pos/filterInvHis/${companyName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      if (response.ok) {
+        const filteredData = await response.json();
+        setTotalInv(calculateTotalFinal(filteredData));
+        setFilteredData(filteredData);
+        setGrossTotal(calculateGrossTotal(filteredData));
+        setTotalQty(calculateTotalQty(filteredData));
+        setSrvValue(calculateSrvValue(filteredData));
+        setDiscValue(calculateDiscValue(filteredData));
+        setTotalDiscount(calculateTotalDiscount(filteredData));
+        setTotalTax(calculateTotalTax(filteredData));
+        setDisc(calculateTotalDisc(filteredData));
+        setSrv(calculateTotalSrv(filteredData));
       }
+    }
+      fetchHisFiltered(); //setFilteredData(filtered);
     
-    fetchHisFiltered();    //setFilteredData(filtered);
   }, [startDate, endDate, startTime, endTime]);
 
   const renderTotalFinalCell = (params) => {
@@ -110,70 +119,7 @@ const Journal = ({ companyName, url}) => {
       <Typography>{!isNaN(value) ? value.toFixed(3) : params.value}</Typography>
     );
   };
-  // useEffect(() => {
-  //     console.log("innnnnnnnnnnnnnnnnnnnn", inv);
-  //     const filtered = inv.filter((row) => {
-  //       const rowDate = row.Date;
-  //       const rowTime = row.Time;
 
-  //       if (rowDate || rowTime) {
-  //         // Check if rowDate is not null
-  //         const [day, month, year] = rowDate.split("/");
-  //         const [hour, min] = rowTime.split(":");
-  //         const startDateObject = new Date(startDate);
-  //         const endDateObject = new Date(endDate);
-  //         const startTimeObject = new Date(startTime);
-  //         const endTimeObject = new Date(endTime);
-  //         const startDateY = startDateObject.getFullYear();
-  //         const startDateM = startDateObject.getMonth() + 1;
-  //         const startDateD = startDateObject.getDate();
-  //         const endDateY = endDateObject.getFullYear();
-  //         const endDateM = endDateObject.getMonth() + 1;
-  //         const endDateD = endDateObject.getDate();
-  //         console.log("hhhhh", startTimeObject.getHours());
-  //         console.log("hhhhh", startTimeObject.getMinutes());
-  //         const startTimeH = startTimeObject.getHours();
-  //         const startTimeM = startTimeObject.getMinutes();
-  //         const endTimeH = endTimeObject.getHours();
-  //         const endTimeM = endTimeObject.getMinutes();
-  //         if (startDate !== null && endDate !== null && startTime == null && endTime == null) {
-  //           return (
-  //             (year > startDateY ||
-  //               (year == startDateY && month > startDateM) ||
-  //               (year == startDateY &&
-  //                 month == startDateM &&
-  //                 day >= startDateD)) &&
-  //             (year < endDateY ||
-  //               (year == endDateY && month < endDateM) ||
-  //               (year == endDateY && month == endDateM && day <= endDateD))
-  //           );
-  //         } else if (startTime!==null && endTime!==null && startDate == null && endDate == null) {
-  //           return (
-  //             (hour > startTimeH ||
-  //               (hour == startTimeH && min > startTimeM)) &&
-  //             (hour < endTimeH ||
-  //               (hour == endTimeH && min < endTimeM))
-  //           );
-  //         } else if(startTime!== null && endTime !== null && startDate!==null && endDate !==null){
-  //           return (
-  //             (year > startDateY ||
-  //               (year == startDateY && month > startDateM) ||
-  //               (year == startDateY &&
-  //                 month == startDateM &&
-  //                 day >= startDateD)) &&
-  //             (year < endDateY ||
-  //               (year == endDateY && month < endDateM) ||
-  //               (year == endDateY && month == endDateM && day <= endDateD)) &&
-  //             (hour > startTimeH || (hour == startTimeH && min > startTimeM)) &&
-  //             (hour < endTimeH || (hour == endTimeH && min < endTimeM))
-  //           );
-  //         }
-  //       } 
-  //     });
-  //     setFilteredData(filtered);
-  // }, [startDate, endDate, startTime, endTime, inv]);
-
-  console.log("Filterrrrrrrrrr", filteredData)
   const calculateTotalNumber = (data) => {
     return data.reduce((sum, item) => sum + item.TotalInvoices, 0);
   };
@@ -207,31 +153,6 @@ const Journal = ({ companyName, url}) => {
     return data.reduce((sum, item) => sum + item.srv, 0);
   };
 
-  useEffect(() => {
-      fetch(`${url}/pos/getInvHistory/${companyName}`)
-        .then((response) => response.json())
-        .then((data) => {
-          // Ensure that data is an object with the 'initialState' property
-
-          if (Array.isArray(data)) {
-            setInv(data);
-            //setNumInv(calculateTotalNumber(data));
-            setTotalInv(calculateTotalFinal(data));
-            setGrossTotal(calculateGrossTotal(data));
-            setTotalQty(calculateTotalQty(data));
-            setSrvValue(calculateSrvValue(data));
-            setDiscValue(calculateDiscValue(data));
-            setTotalDiscount(calculateTotalDiscount(data));
-            setTotalTax(calculateTotalTax(data));
-            setDisc(calculateTotalDisc(data));
-            setSrv(calculateTotalSrv(data));
-          } else {
-            console.error("Invalid data format received:", data);
-          }
-        })
-        .catch((error) => console.error("Error fetching users", error));
-    
-  }, []);
 
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
@@ -334,7 +255,7 @@ const Journal = ({ companyName, url}) => {
     >
       <Box
         sx={{
-          height: "15%",
+          height: "10%",
           width: "100%",
           display: "flex",
           flexDirection: "row",
@@ -398,9 +319,15 @@ const Journal = ({ companyName, url}) => {
             Apply
           </Button> */}
       </Box>
-      <Box
+      <DatagridTable
+        setModalOpen={setOpenIvDetailsModal}
+        setSelectedRow={setSelectedInv}
+        rows={filteredData}
+        columns={columns}
+      ></DatagridTable>
+      {/* <Box
         sx={{
-          height: "80%",
+          height: "90%",
           width: "100%",
           // "& .MuiDataGrid-root": {
           //   border: "none",
@@ -439,15 +366,7 @@ const Journal = ({ companyName, url}) => {
       >
         <DataGrid
           style={{ height: "100%", width: "100%" }}
-          rows={
-            filteredData.length > 0 ||
-            startTime ||
-            endTime ||
-            startDate ||
-            endDate
-              ? filteredData
-              : inv
-          }
+          rows={filteredData}
           columns={columns}
           getRowId={(row) => row.InvNo}
           //autoHeight
@@ -465,7 +384,7 @@ const Journal = ({ companyName, url}) => {
           }}
           pagination // Add this line to enable pagination
         />
-      </Box>
+      </Box> */}
       <InvDetailsModal
         isOpen={openInvDetailsModal}
         setOpenIvDetailsModal={setOpenIvDetailsModal}

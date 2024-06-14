@@ -118,9 +118,10 @@ function App() {
     ...clientDetails,
   });
   const [totalInv, setTotalInv] = useState("");
+  const [compTime, setCompTime] = useState("");
 
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.140:8000";
+  const url = "http://192.168.16.116:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -139,6 +140,7 @@ function App() {
           const storedCompStreet = localStorage.getItem("comp_street");
           const storedCompCity = localStorage.getItem("comp_city");
           const storedAccNo = localStorage.getItem("acc_no");
+          const storedCompTime = localStorage.getItem("comp_time");
           console.log("ana bl Appp", storedCompanyName);
           setCompanyName(storedCompanyName);
           setBranch(storedBranch);
@@ -149,6 +151,7 @@ function App() {
           setCompPhone(storedCompPhone);
           setCompStreet(storedCompStreet);
           setAccNo(storedAccNo);
+          setCompTime(storedCompTime);
           console.log("men l app", compCity);
           setIsAuthenticated(true);
         } else {
@@ -290,6 +293,8 @@ function App() {
         } else {
           setValMessage("");
         }
+      } else if (activeField === "Add User") {
+        setUserName(input);
       }
       setUserDetailsCopy((prevClientDetailsCopy) => ({
         ...prevClientDetailsCopy,
@@ -415,6 +420,7 @@ function App() {
               setActiveField={setActiveField}
               showKeyboard={showKeyboard}
               setShowKeyboard={setShowKeyboard}
+              setCompTime={setCompTime}
             />
           ) : (
             <>
@@ -486,6 +492,8 @@ function App() {
                           setUserDetailsCopy={setUserDetailsCopy}
                           valMessage={valMessage}
                           setValMessage={setValMessage}
+                          userName={userName}
+                          setUserName={setUserName}
                         />
                       }
                     />
@@ -556,6 +564,7 @@ function App() {
                         setClientDetails={setClientDetails}
                         clientDetailsCopy={clientDetailsCopy}
                         setClientDetailsCopy={setClientDetailsCopy}
+                        compTime={compTime}
                       />
                     }
                   />

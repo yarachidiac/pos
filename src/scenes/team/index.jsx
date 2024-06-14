@@ -12,7 +12,7 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 
 const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveField,showKeyboard,
-  setShowKeyboard, userDetails, setUserDetails, userDetailsCopy, setUserDetailsCopy, valMessage,  setValMessage }) => {
+  setShowKeyboard, userDetails, setUserDetails, userDetailsCopy, setUserDetailsCopy, valMessage,  setValMessage, userName, setUserName }) => {
   
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -336,6 +336,12 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
         onAdd={handleUserDetailsChange}
         successMess={successMess}
         title={addTitle}
+        setActiveField={setActiveField}
+        setShowKeyboard={setShowKeyboard}
+        valMessage={valMessage}
+        setValMessage={setValMessage}
+        userName={userName}
+        setUserName={setUserName}
       />
     </Box>
   );
