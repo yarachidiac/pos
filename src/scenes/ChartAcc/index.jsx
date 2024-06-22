@@ -1,4 +1,12 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
@@ -12,6 +20,8 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import { Checkbox } from "@mui/material";
 import { json } from "react-router-dom";
+import ClearIcon from "@mui/icons-material/Clear";
+import DatagridTable from "../DatagridTable";
 
 const ChartAcc = ({
   companyName,
@@ -27,13 +37,21 @@ const ChartAcc = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
-  valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy
+  valMessage,
+  setValMessage,
+  userName,
+  setUserName,
+  clientDetails,
+  setClientDetails,
+  clientDetailsCopy,
+  setClientDetailsCopy,
+  searchClient,
+  setSearchClient,
 }) => {
-  console.log("adedefaf", url)
+  console.log("adedefaf", url);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
-
   //const [companyName, setCompanyName] = useState("");
   const [clients, setClients] = useState([]);
   // const [selectedRow, setSelectedRow] = useState(() => {
@@ -42,10 +60,12 @@ const ChartAcc = ({
   // });
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  
+
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
   const storedSelectedRow = localStorage.getItem("selectedRow");
+  const [filteredClients, setFilteredClients] = useState([...clients]);
+
   console.log("ssssssssssssssssssss", storedSelectedRow);
   useEffect(() => {
     console.log("stored companyyyyyy", companyName);
@@ -117,6 +137,7 @@ const ChartAcc = ({
         onClick={(event) => {
           setSelectedRow(row);
           setIsOpenDel(false);
+          setSearchClient("");
           event.stopPropagation();
         }}
       >
@@ -284,54 +305,84 @@ const ChartAcc = ({
     setIsDialogOpen(false);
   };
 
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearchClient(value);
+    if (value) {
+      const filtered = clients.filter((client) => {
+        return (
+          client.AccName.toLowerCase().includes(value.toLowerCase()) ||
+          client.Tel.toLowerCase().includes(value.toLowerCase()) ||
+          client.Address.toLowerCase().includes(value.toLowerCase()) ||
+          client.Building.toLowerCase().includes(value.toLowerCase())
+        );
+      });
+      setFilteredClients(filtered);
+    } else {
+      setFilteredClients(clients); // Reset to initial clients when search is empty
+    }
+  };
+
+  useEffect(() => {
+    if (searchClient) {
+      const filtered = clients.filter((client) => {
+        return (
+          client.AccName.toLowerCase().includes(searchClient.toLowerCase()) ||
+          client.Tel.toLowerCase().includes(searchClient.toLowerCase()) ||
+          client.Address.toLowerCase().includes(searchClient.toLowerCase()) ||
+          client.Building.toLowerCase().includes(searchClient.toLowerCase())
+        );
+      });
+      setFilteredClients(filtered);
+    } else {
+      setFilteredClients(clients); // Reset to initial clients when search is empty
+    }
+  }, [searchClient, clients]);
+
+  const handleClear = () => {
+    setSearchClient("");
+  };
+
   return (
     <Box
       sx={{
-        height: "100%",
+        height: "92%",
         width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "start",
       }}
     >
-      {/* <Box
-        justifyContent="space-between"
-        display="flex"
-        height="10%"
-        alignItems="center"
-      >
-        <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Client" />
-        </Box>
-        <Box
-          sx={{
-            width: "10%",
+      <Box width="95%" height="8%" display="flex" justifyContent="flex-end">
+        <TextField
+          label="Search"
+          variant="standard"
+          value={searchClient}
+          onChange={handleSearch}
+          onDoubleClick={() => {
+            setShowKeyboard(true);
           }}
-        >
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ fontSize: "1.1rem" }}
-            onClick={setSelectedRow(null)}
-          >
-            Clear
-          </Button>
-        </Box>
-        <Box
-          sx={{
-            width: "10%",
-            marginLeft: "auto",
-            justifyContent: "flex-end",
-            alignContent: "center",
+          onFocus={() => {
+            setActiveField("Search a client");
           }}
-        >
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ fontSize: "1.1rem" }}
-            onClick={() => handleAddUser("Add Client")}
-          >
-            Add
-          </Button>
-        </Box>
-      </Box> */}
+          InputLabelProps={{
+            style: { fontSize: 25, fontWeight: "bold" }, // Adjust the font size of the label
+          }}
+          InputProps={{
+            style: { fontSize: 18 },
+            endAdornment: (
+              <InputAdornment position="end">
+                {searchClient && (
+                  <IconButton onClick={handleClear}>
+                    <ClearIcon />
+                  </IconButton>
+                )}
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
       <ClientDetailsModal
         isOpen={isDetailsModalOpen}
         setIsDetailsModalOpen={setIsDetailsModalOpen}
@@ -351,96 +402,15 @@ const ChartAcc = ({
         valMessage={valMessage}
         setValMessage={setValMessage}
       />
-      <Box
-        ml="2%"
-        height="100%"
-        width="95%"
-        sx={{
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-toolbarContainer": {
-            height: "10%",
-            // backgroundColor: colors.grey[800],
-          },
-          "& .css-3be3ve-MuiFormControl-root-MuiTextField-root-MuiDataGrid-toolbarQuickFilter input":
-            {
-              color: colors.greenAccent[600],
-              height: "100%",
-              fontSize: "1.5rem",
-            },
-          "& .css-ptiqhd-MuiSvgIcon-root": {
-            fontSize: "2rem",
-          },
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%" }}
-          rows={clients}
-          columns={columns}
-          getRowId={(row) => row.AccNo}
-          onSelectionModelChange={(newSelection) => {
-            setSelectedRow(newSelection.selectedRow);
-          }}
-          selectionModel={selectedRow}
-          //autoHeight
-          {...(clients && clients.initialState)}
-          initialState={{
-            ...clients.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          // onSelectionModelChange={(newSelection) => {
-          //   // Set the selected row when the selection changes
-          //   setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
-          // }}
-          onRowClick={(params) => {
-            console.log("Params:", params);
-          }}
-          // selectionModel={[selectedRow]}
-          pagination // Add this line to enable pagination
-          disableColumnFilter
-          disableColumnSelector
-          disableDensitySelector
-          components={{ Toolbar: GridToolbar }}
-          componentsProps={{
-            toolbar: {
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 },
-            },
-          }}
-        />
-      </Box>
+      <DatagridTable
+        rows={searchClient ? filteredClients : clients}
+        columns={columns}
+        getRowId={(row) => row.AccNo}
+        // onSelectionModelChange={(newSelection) => {
+        //   setSelectedRow(newSelection.selectedRow);
+        // }}
+        //selectionModel={selectedRow}
+      ></DatagridTable>
       <AddUserDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}

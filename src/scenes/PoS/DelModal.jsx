@@ -22,13 +22,23 @@ const DelModal = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
-  valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy
+  valMessage,
+  setValMessage,
+  userName,
+  setUserName,
+  clientDetails,
+  setClientDetails,
+  clientDetailsCopy,
+  setClientDetailsCopy,
+  searchClient,
+  setSearchClient,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleClose = () => {
+    setSearchClient("");
     setIsOpenDel(false);
   };
 
@@ -40,11 +50,6 @@ const DelModal = ({
     //background: "#FFFEFC",
     //backgroundColor: "#fcfcfc",
     boxShadow: 24,
-    pt: 0, // Set top padding to 2
-    pr: 2, // Set right padding to 3
-    pb: 2, // Set bottom padding to 3
-    pl: 2, // Set left padding to 3
-    //width: "100%",
     minWidth: "90%",
     height: "100%", // Set a minimum height for smaller screens
     //maxHeight: "90%", // Set a maximum height for smaller screens
@@ -68,7 +73,7 @@ const DelModal = ({
   const iconButtonStyle = {
     // Other styles..
     width: "5%",
-    heigh:"5%",
+    heigh: "5%",
     display: "flex",
     color: colors.greenAccent[500],
     ...(window.innerWidth < 650
@@ -84,11 +89,11 @@ const DelModal = ({
     // Other styles...
   };
 
- const handleAddUser = (title) => {
-   setAddTitle(title);
-   // Open the modal when "Add" button is clicked
-   setIsDialogOpen(true);
- };
+  const handleAddUser = (title) => {
+    setAddTitle(title);
+    // Open the modal when "Add" button is clicked
+    setIsDialogOpen(true);
+  };
 
   return (
     <Modal open={isOpenDel} onClose={handleClose}>
@@ -101,22 +106,17 @@ const DelModal = ({
       >
         <Box
           sx={{
-            justifyContent: "space-between",
+            justifyContent: "space-around",
             display: "flex",
-            height: "10%",
-            mt: "1%",
-            ml: "2%",
+            height: "8%",
+            alignItems:"center"
           }}
         >
           <Box sx={{ width: "50%" }}>
             <Header title="Client" />
           </Box>
           <Box
-            sx={
-              {
-                //width: "10%",
-              }
-            }
+            
           >
             <Button
               variant="contained"
@@ -128,11 +128,7 @@ const DelModal = ({
             </Button>
           </Box>
           <Box
-            sx={
-              {
-                // width: "5%",
-              }
-            }
+           
           >
             <Button
               variant="contained"
@@ -144,9 +140,7 @@ const DelModal = ({
             </Button>
           </Box>
           <Box
-            sx={{
-              mr: "2%",
-            }}
+         
           >
             <IconButton edge="end" color="inherit" onClick={handleClose}>
               <CloseIcon />
@@ -176,6 +170,8 @@ const DelModal = ({
           setClientDetails={setClientDetails}
           clientDetailsCopy={clientDetailsCopy}
           setClientDetailsCopy={setClientDetailsCopy}
+          searchClient={searchClient}
+          setSearchClient={setSearchClient}
         />
       </Box>
     </Modal>

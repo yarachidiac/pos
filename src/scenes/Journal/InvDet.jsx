@@ -4,8 +4,9 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
+import DatagridTable from "../DatagridTable";
 
-const InvDet = ({ companyName, selectedInv, url }) => {
+const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -33,23 +34,6 @@ const InvDet = ({ companyName, selectedInv, url }) => {
 
   const columns = [
     {
-      field: "InvType",
-      headerName: "InvType",
-      minWidth: 100,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
-    {
-      field: "InvNo",
-      headerName: "InvNo",
-      cellClassName: "name-column--cell",
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
-      flex: "1",
-    },
-    {
       field: "ItemName",
       headerName: "Item",
       headerAlign: "left",
@@ -69,16 +53,7 @@ const InvDet = ({ companyName, selectedInv, url }) => {
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: "1",
     },
-    {
-      field: "Branch",
-      headerName: "Branch",
-      headerAlign: "left",
-      align: "left",
-      minWidth: 150,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
+
     {
       field: "Disc",
       headerName: "Disc",
@@ -168,81 +143,20 @@ const InvDet = ({ companyName, selectedInv, url }) => {
     <Box
       sx={{
         height: "100%",
-        width: "95%",
+        width: "100%",
+        display: "flex",
         flexDirection: "column",
-        ml: "2%",
+        alignItems: "center",
       }}
     >
-      <Box
-        sx={{
-          height: "10%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Header title="Invoices History" />
+      <Box>
+        <Header title={`${selectedInvType} ${selectedInv}`} />
       </Box>
-      <Box
-        sx={{
-          height: "90%",
-          width: "100%",
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
-
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%", width: "100%" }}
-          rows={invDet.map((row, index) => ({ ...row, id: index }))}
-          columns={columns}
-          getRowId={(row) => row.id}
-          //autoHeight
-          {...(inv && inv.initialState)}
-          initialState={{
-            ...inv.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          //   onSelectionModelChange={(newSelection) => {
-          //     // Set the selected row when the selection changes
-          //     setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
-          //   }}
-          //   selectionModel={[selectedRow]}
-          pagination // Add this line to enable pagination
-        />
-      </Box>
+      <DatagridTable
+        rows={invDet.map((row, index) => ({ ...row, id: index }))}
+        columns={columns}
+        getRowId={(row) => row.id}
+      />
     </Box>
   );
 };

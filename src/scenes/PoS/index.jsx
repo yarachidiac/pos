@@ -72,9 +72,25 @@ const PoS = ({
   filterValue,
   url,
   v,
-  compPhone, compCity, compStreet, accno, 
-  activeField, setActiveField, showKeyboard,
-  setShowKeyboard, valMessage, setValMessage, userName, setUserName, clientDetails, setClientDetails, clientDetailsCopy, setClientDetailsCopy, compTime
+  compPhone,
+  compCity,
+  compStreet,
+  accno,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
+  valMessage,
+  setValMessage,
+  userName,
+  setUserName,
+  clientDetails,
+  setClientDetails,
+  clientDetailsCopy,
+  setClientDetailsCopy,
+  compTime,
+  searchClient,
+  setSearchClient,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -158,7 +174,6 @@ const PoS = ({
 
     handleAsync();
   }, [closeTClicked]);
-
 
   const handlePrint = () => {
     if (allowPrintInv === "Y") {
@@ -302,31 +317,27 @@ const PoS = ({
 
   const fetchAllowPrint = async () => {
     try {
-      const response = await fetch(
-        `${url}/pos/getAllowPrint/${companyName}`
-      );
+      const response = await fetch(`${url}/pos/getAllowPrint/${companyName}`);
       const data = await response.json();
-      setDefaultPrinter(data["defaultPrinter"]); 
+      setDefaultPrinter(data["defaultPrinter"]);
       setAllowPrintKT(data["allowKT"]);
-      setAllowPrintInv(data["allowInv"])
+      setAllowPrintInv(data["allowInv"]);
       setQtyPrintKT(data["qtyPrintKT"]);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
   };
 
-  const fetchCur = async() => {
+  const fetchCur = async () => {
     try {
-      const response = await fetch(
-        `${url}/pos/getCurr/${companyName}`
-      );
+      const response = await fetch(`${url}/pos/getCurr/${companyName}`);
       const data = await response.json();
       setCurr(data["Code"]); // Assuming your API response has a 'categories' property
       setInfCom(data);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
-  }
+  };
 
   useEffect(() => {
     // Fetch items when selectedCategoryCode changes
@@ -357,9 +368,7 @@ const PoS = ({
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch(
-        `${url}/pos/categories/${companyName}`
-      );
+      const response = await fetch(`${url}/pos/categories/${companyName}`);
       const data = await response.json();
       setCategories(data); // Assuming your API response has a 'categories' property
     } catch (error) {
@@ -424,7 +433,7 @@ const PoS = ({
         `${url}/pos/categoriesitems/${companyName}/${selectedCategoryCode}`
       );
       const data = await response.json();
-      setMeals(data); 
+      setMeals(data);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
@@ -432,9 +441,7 @@ const PoS = ({
 
   const fetchAllItems = async () => {
     try {
-      const response = await fetch(
-        `${url}/pos/allitems/${companyName}`
-      );
+      const response = await fetch(`${url}/pos/allitems/${companyName}`);
       const data = await response.json();
       setMeals(data);
     } catch (error) {
@@ -498,7 +505,7 @@ const PoS = ({
 
   useEffect(() => {
     console.log("cccccccccuuuuuuuuuuuuu", closeTClicked);
-    if (invN && orderId && (!selectedTableId)) {
+    if (invN && orderId && !selectedTableId) {
       handlePrint();
       setSelectedModifiers([]);
       setSelectedMeals([]);
@@ -508,9 +515,8 @@ const PoS = ({
       setFinalTotal(0);
       setDiscValue(0);
       setSrv(0);
-      setSelectedRow({})
-    } 
-    
+      setSelectedRow({});
+    }
   }, [invN, orderId]);
 
   let placeOrderCount = 0;
@@ -554,7 +560,6 @@ const PoS = ({
             month: "2-digit",
             year: "numeric",
           });
-        
         }
         // else {
         //   const lastOrderIdDate = await fetch(
@@ -570,70 +575,70 @@ const PoS = ({
         //     }
         //   }
         // }
-      // Encode the formatted date
+        // Encode the formatted date
         const formattedTime = format(currentDate, "HH:mm:ss");
         setNewCurrTime(formattedTime);
-    
-      // Encode the formatted date
-      const delivery = selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
-      const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
-      const requestBody = {
-        date: formattedDate,
-        time: formattedTime,
-        discValue: discValue,
-        srv: srv,
-        meals: selectedMeals,
-        branch: branch,
-        invType: invType,
-        closeTClicked: closeTClicked,
-        tableNo: selectedTableId,
-        unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
-        message: message,
-        realDate: realDate,
-        accno: delivery ? delivery : accno,
-        qtyPrintKT: qtyPrintKT,
-        username: username,
-        //orderId: orderId,
-      };
-      const response = await fetch(
-        `${url}/pos/invoiceitem/${companyName}`,
-        {
+
+        // Encode the formatted date
+        const delivery =
+          selectedRow && selectedRow["AccNo"] ? selectedRow["AccNo"] : "";
+        const unsentMeals = selectedMeals.filter(
+          (meal) => meal.Printed !== "p"
+        );
+        const requestBody = {
+          date: formattedDate,
+          time: formattedTime,
+          discValue: discValue,
+          srv: srv,
+          meals: selectedMeals,
+          branch: branch,
+          invType: invType,
+          closeTClicked: closeTClicked,
+          tableNo: selectedTableId,
+          unsentMeals: unsentMeals ? unsentMeals : selectedMeals,
+          message: message,
+          realDate: realDate,
+          accno: delivery ? delivery : accno,
+          qtyPrintKT: qtyPrintKT,
+          username: username,
+          //orderId: orderId,
+        };
+        const response = await fetch(`${url}/pos/invoiceitem/${companyName}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestBody),
-        }
-      );
+        });
 
-      // Check if the request was successful (status code 2xx)
-      if (response.ok) {
-        const responseData = await response.json();
-        if (responseData["message"] === "Invoice items added successfully")  {
-          if (allowPrintKT === "Y") {
-            setInvN(responseData["invoiceDetails"]["InvNo"]);
-            setOrderId(responseData["invoiceDetails"]["OrderId"]);
-            const jsonString = JSON.stringify(responseData, null, 2);
-            const blob = new Blob([jsonString], { type: "application/json" });
-            FileSaver.saveAs(blob, "response-data.json");
+        // Check if the request was successful (status code 2xx)
+        if (response.ok) {
+          const responseData = await response.json();
+          if (responseData["message"] === "Invoice items added successfully") {
+            if (allowPrintKT === "Y") {
+              setInvN(responseData["invoiceDetails"]["InvNo"]);
+              setOrderId(responseData["invoiceDetails"]["OrderId"]);
+              const jsonString = JSON.stringify(responseData, null, 2);
+              const blob = new Blob([jsonString], { type: "application/json" });
+              FileSaver.saveAs(blob, "response-data.json");
 
-            // Increment the placeOrderCount
-            placeOrderCount++;
+              // Increment the placeOrderCount
+              placeOrderCount++;
 
-            // Check if the placeOrderCount reaches 3
-            if (placeOrderCount === 3) {
-              // Reload the page after 3 placing orders
-              setTimeout(() => {
-                window.location.reload();
-              }, 3000);
+              // Check if the placeOrderCount reaches 3
+              if (placeOrderCount === 3) {
+                // Reload the page after 3 placing orders
+                setTimeout(() => {
+                  window.location.reload();
+                }, 3000);
+              }
             }
+
+            // if (!selectedTableId) {
+            //   handlePrint();
+            // }
           }
-           
-          // if (!selectedTableId) {
-          //   handlePrint();
-          // }
         }
-      }
         // Reset selectedMeals to an empty array
         // setSelectedModifiers([]);
         // setSelectedMeals([]);
@@ -657,21 +662,15 @@ const PoS = ({
     }
   };
 
-  
-
   const grossTotal = parseFloat(calculateTotalDiscountedPrice());
   const serviceValue = (grossTotal * srv) / 100;
   const discountValue = ((grossTotal + serviceValue) * discValue) / 100;
   const totalDiscount = (grossTotal + serviceValue) * (1 - discValue / 100);
   let totalTax = 0;
-  if (
-    selectedMeals &&
-    selectedMeals.length > 0
-  ) {
+  if (selectedMeals && selectedMeals.length > 0) {
     const totalTaxSD =
-      parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100); 
-    const totall =
-      ((serviceValue * 11) / 100) * (1 - discValue / 100);
+      parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100);
+    const totall = ((serviceValue * 11) / 100) * (1 - discValue / 100);
     totalTax = totalTaxSD + totall;
   }
   const totalFinal = totalDiscount + totalTax;
@@ -704,11 +703,11 @@ const PoS = ({
           (meal) => meal.Printed !== "p"
         );
         //if (location.search.includes("selectedTableId")) {
-          if (unsentMeals.length > 0) {
-            setIsNav(false);
-          } else {
-            setIsNav(true);
-          }
+        if (unsentMeals.length > 0) {
+          setIsNav(false);
+        } else {
+          setIsNav(true);
+        }
         //}
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -744,11 +743,11 @@ const PoS = ({
     setNameCard(mealName);
     setIngredCard(mealIngred);
     setOpenIngred(true);
-  }
+  };
 
   const handleCloseCard = () => {
     setOpenIngred(false);
-  }
+  };
 
   const isIpadPro = useMediaQuery("(min-width: 900px) and (max-width: 1300px)");
 
@@ -1762,7 +1761,9 @@ const PoS = ({
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell>{newcurrDate}  { newcurrTime}</TableCell>
+                    <TableCell>
+                      {newcurrDate} {newcurrTime}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>InvNo {invN}</TableCell>
@@ -1964,6 +1965,8 @@ const PoS = ({
         setClientDetails={setClientDetails}
         clientDetailsCopy={clientDetailsCopy}
         setClientDetailsCopy={setClientDetailsCopy}
+        searchClient={searchClient}
+        setSearchClient={setSearchClient}
       ></DelModal>
       {ingredCard && (
         <IngredDialog

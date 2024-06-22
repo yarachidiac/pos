@@ -16,6 +16,7 @@ const InvDetailsModal = ({
   setSelectedInv,
   selectedInv,
   url,
+  selectedInvType,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -27,13 +28,9 @@ const InvDetailsModal = ({
     //background: "#FFFEFC",
     //backgroundColor: "#fcfcfc",
     boxShadow: 24,
-    pt: 0, // Set top padding to 2
-    pr: 2, // Set right padding to 3
-    pb: 2, // Set bottom padding to 3
-    pl: 2, // Set left padding to 3
     //width: "100%",
     minWidth: "90%",
-    minHeight: "100%", // Set a minimum height for smaller screens
+    height: "100%", // Set a minimum height for smaller screens
     //maxHeight: "90%", // Set a maximum height for smaller screens
     display: "flex",
     flexDirection: window.innerWidth < 650 ? "row" : "column",
@@ -83,35 +80,22 @@ const InvDetailsModal = ({
           ...modalContainerStyle,
         }}
       >
-        <Box display="flex" justifyContent="space-between">
-          {/* <Box sx={{ p: "2%" }}>
-            <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
-              {clientDetails.AccName}
-            </Typography>
-          </Box> */}
-          <Box>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleClose}
-              sx={iconButtonStyle}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
+        <Box sx={{ width: "5%", alignItems: "flex-end" }}>
+          <IconButton
+            color="inherit"
+            onClick={handleClose}
+            sx={iconButtonStyle}
+          >
+            <CloseIcon />
+          </IconButton>
         </Box>
 
-        <Box
-          sx={{
-            flexGrow: 1, // Allow the table to grow and take available space
-            width: window.innerWidth < 650 ? "60%" : "100%",
-            //maxHeight: "60%",
-            height: "500px",
-            //overflowY: "auto",
-          }}
-        >
-          <InvDet companyName={companyName} selectedInv={selectedInv} url={url } />
-        </Box>
+        <InvDet
+          companyName={companyName}
+          selectedInv={selectedInv}
+          url={url}
+          selectedInvType={selectedInvType}
+        />
         {/* Other modal content */}
       </Box>
     </Modal>

@@ -47,7 +47,6 @@ const Journal = ({ companyName, url}) => {
   const [formattedStartTime, setFormattedStartTime] = useState("");
   const [formattedEndTime, setFormattedEndTime] = useState("");
 
-
   const handleStartDateChange = (date) => {
     setStartDate(date);
     setFormattedStartDate(date.format("DD/MM/YYYY"));
@@ -71,7 +70,8 @@ const Journal = ({ companyName, url}) => {
   const handleRowClick = (params) => {
     setOpenIvDetailsModal(true);
     console.log("Ssssssssssssss", params.row.InvNo);
-    setSelectedInv(params.row.InvNo);
+    setSelectedInv(params.row.InvNo); 
+    setSelectedInvType(params.row.InvType)
   };
 
   useEffect(() => {
@@ -248,24 +248,27 @@ const Journal = ({ companyName, url}) => {
     <Box
       sx={{
         height: "100%",
-        width: "95%",
+        width: "100%",
         flexDirection: "column",
-        ml: "2%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <Box
         sx={{
-          height: "10%",
+          height: "8%",
           width: "100%",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-around",
-          width: "100%",
+          //width: "100%",
         }}
       >
-        <Header title="Invoices History" />
+        <Header sx={{ width: "20%" }} title="Inv History" />
         <Button
+          sx={{ width: "15%" }}
           component="h1"
           variant="contained"
           color="secondary"
@@ -289,23 +292,27 @@ const Journal = ({ companyName, url}) => {
         ></InvTotalDialog>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
+            sx={{ width: "15%" }}
             label="Start Date"
             value={startDate}
             onChange={handleStartDateChange}
             format="DD/MM/YYYY"
           />
           <DatePicker
+            sx={{ width: "15%" }}
             label="End Date"
             value={endDate}
             onChange={handleEndDateChange}
             format="DD/MM/YYYY"
           />
           <TimePicker
+            sx={{ width: "15%" }}
             label="Start Time"
             value={startDate}
             onChange={handleStartTimeChange}
           />
           <TimePicker
+            sx={{ width: "15%" }}
             label="End Time"
             value={endDate}
             onChange={handleEndTimeChange}
@@ -320,10 +327,10 @@ const Journal = ({ companyName, url}) => {
           </Button> */}
       </Box>
       <DatagridTable
-        setModalOpen={setOpenIvDetailsModal}
-        setSelectedRow={setSelectedInv}
+        handleRowClick={handleRowClick}
         rows={filteredData}
         columns={columns}
+        getRowId={(row) => row.InvNo}
       ></DatagridTable>
       {/* <Box
         sx={{
@@ -392,6 +399,7 @@ const Journal = ({ companyName, url}) => {
         setSelectedInv={setSelectedInv}
         selectedInv={selectedInv}
         url={url}
+        selectedInvType={selectedInvType}
       />
     </Box>
   );

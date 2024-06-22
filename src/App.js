@@ -46,6 +46,7 @@ import CashConfirm from "./scenes/CashOnHands/CashConf";
 import EndOfDay from "./scenes/EndOfDay/EndOfDay.jsx";
 import ResponseDialog from "./scenes/ResponseDialog.jsx";
 import Keyboard from "./scenes/form/Keyboard.jsx";
+import { useRef } from "react";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -119,9 +120,9 @@ function App() {
   });
   const [totalInv, setTotalInv] = useState("");
   const [compTime, setCompTime] = useState("");
-
+  const [searchClient, setSearchClient] = useState("");
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.116:8000";
+  const url = "http://192.168.16.110:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -360,6 +361,8 @@ function App() {
       setTableWaiter(input);
     } else if (activeField === "Description") {
       setDescription(input);
+    } else if (activeField === "Search a client") {
+      setSearchClient(input);
     } else if (
       activeField === "AccDisc" ||
       activeField === "VAT" ||
@@ -565,6 +568,8 @@ function App() {
                         clientDetailsCopy={clientDetailsCopy}
                         setClientDetailsCopy={setClientDetailsCopy}
                         compTime={compTime}
+                        searchClient={searchClient}
+                        setSearchClient={setSearchClient}
                       />
                     }
                   />

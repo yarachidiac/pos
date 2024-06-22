@@ -4,6 +4,7 @@ import DailySalesModal from "./DailySalesModal";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import DatagridTable from "../DatagridTable";
 
 const DailySales = ({ companyName, url }) => {
   const theme = useTheme();
@@ -102,82 +103,20 @@ const DailySales = ({ companyName, url }) => {
     <Box
       sx={{
         height: "100%",
-        width: "95%",
+        width: "100%",
+        display: "flex",
         flexDirection: "column",
-        ml: "2%",
       }}
     >
-      <Box
-        sx={{
-          height: "10%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
+      <Box>
         <Header title="Daily Sales" />
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}></Box>
       </Box>
-      <Box
-        sx={{
-          height: "85%",
-          width: "100%",
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
-
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%", width: "100%" }}
-          rows={daily}
-          columns={columns}
-          getRowId={(row) => row.ItemNo}
-          //autoHeight
-          {...(daily && daily.initialState)}
-          initialState={{
-            ...daily.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          onRowClick={(params) => {
-            console.log("Params:", params);
-
-            handleRowClick(params);
-          }}
-          pagination // Add this line to enable pagination
-        />
-      </Box>
+      <DatagridTable
+        rows={daily}
+        columns={columns}
+        getRowId={(row) => row.ItemNo}
+        handleRowClick={handleRowClick }
+      />
       <DailySalesModal
         isOpen={openSaleModal}
         setOpenSaleModal={setOpenSaleModal}

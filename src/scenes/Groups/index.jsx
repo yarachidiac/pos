@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import GroupDetailsModal from "./GroupDetailsModal";
+import DatagridTable from "../DatagridTable";
 
 const Groups = ({
   companyName,
@@ -27,7 +28,7 @@ const Groups = ({
   const [pageSize, setPageSize] = useState(10);
 
   //const [companyName, setCompanyName] = useState("");
-  const [groups, setGroups] = useState([]);
+  const [rows, setRows] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
@@ -49,7 +50,7 @@ const Groups = ({
           // Ensure that data is an object with the 'initialState' property
 
           if (Array.isArray(data)) {
-            setGroups(data);
+            setRows(data);
           } else {
             console.error("Invalid data format received:", data);
           }
@@ -160,6 +161,11 @@ const Groups = ({
   return (
     <Box
       sx={{
+        //ml:"2%",
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
         height: "100%",
         width: "100%",
       }}
@@ -167,20 +173,14 @@ const Groups = ({
       <Box
         justifyContent="space-between"
         display="flex"
-        height="15%"
+        height="8%"
         alignItems="center"
+        width="90%"
       >
-        <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Item Groups" subtitle="Managing Groups" />
+        <Box>
+          <Header title="Item Groups" />
         </Box>
-        <Box
-          sx={{
-            width: "10%",
-            marginLeft: "auto",
-            justifyContent: "flex-end",
-            alignContent: "center",
-          }}
-        >
+        <Box>
           <Button
             variant="contained"
             color="secondary"
@@ -196,8 +196,8 @@ const Groups = ({
         setIsDetailsModalOpen={setIsDetailsModalOpen}
         groupDetails={groupDetails}
         setGroupDetails={setGroupDetails}
-        groups={groups}
-        setGroups={setGroups}
+        groups={rows}
+        setGroups={setRows}
         companyName={companyName}
         setOldItemNo={setOldItemNo}
         setNewItemNo={setNewItemNo}
@@ -209,72 +209,12 @@ const Groups = ({
         showKeyboard={showKeyboard}
         setShowKeyboard={setShowKeyboard}
       />
-      <Box
-        m="0 auto"
-        height="80%"
-        width="90%"
-        sx={{
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
-
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%" }}
-          rows={groups}
-          columns={columns}
-          getRowId={(row) => row.GroupNo}
-          //autoHeight
-          {...(groups && groups.initialState)}
-          initialState={{
-            ...groups.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          onSelectionModelChange={(newSelection) => {
-            // Set the selected row when the selection changes
-            setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
-          }}
-          onRowClick={(params) => {
-            console.log("Params:", params);
-
-            handleRowClick(params);
-          }}
-          selectionModel={[selectedRow]}
-          pagination // Add this line to enable pagination
-        />
-      </Box>
+      <DatagridTable
+        rows={rows}
+        columns={columns}
+        getRowId={(row) => row.GroupNo}
+        handleRowClick={handleRowClick}
+      ></DatagridTable>
       <AddUserDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}

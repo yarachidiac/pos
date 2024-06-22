@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import ItemDetailsModal from "./ItemDetailsModal";
+import DatagridTable from "../DatagridTable";
 
 const ManagePoS = ({
   companyName,
@@ -163,6 +164,11 @@ const ManagePoS = ({
   return (
     <Box
       sx={{
+        display:"flex",
+        justifyContent: "center",
+        flexDirection:"column",
+        alignItems: "center",
+        //ml: "2%",
         height: "100%",
         width: "100%",
       }}
@@ -170,20 +176,14 @@ const ManagePoS = ({
       <Box
         justifyContent="space-between"
         display="flex"
-        height="15%"
+        height="8%"
         alignItems="center"
+        width="90%"
       >
-        <Box sx={{ width: "50%", m: "2%" }}>
-          <Header title="Items" subtitle="Managing Items" />
+        <Box>
+          <Header title="Manage Items" />
         </Box>
-        <Box
-          sx={{
-            width: "10%",
-            marginLeft: "auto",
-            justifyContent: "flex-end",
-            alignContent: "center",
-          }}
-        >
+        <Box>
           <Button
             variant="contained"
             color="secondary"
@@ -214,72 +214,12 @@ const ManagePoS = ({
         valMessage={valMessage}
         setValMessage={setValMessage}
       />
-      <Box
-        m="0 auto"
-        height="80%"
-        width="90%"
-        sx={{
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
-
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%" }}
-          rows={items}
-          columns={columns}
-          getRowId={(row) => row.ItemNo}
-          //autoHeight
-          {...(items && items.initialState)}
-          initialState={{
-            ...items.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          onSelectionModelChange={(newSelection) => {
-            // Set the selected row when the selection changes
-            setSelectedRow(newSelection.length > 0 ? newSelection[0] : null);
-          }}
-          onRowClick={(params) => {
-            console.log("Params:", params);
-
-            handleRowClick(params);
-          }}
-          selectionModel={[selectedRow]}
-          pagination // Add this line to enable pagination
-        />
-      </Box>
+      <DatagridTable
+        rows={items}
+        columns={columns}
+        handleRowClick={handleRowClick}
+        getRowId={(row) => row.ItemNo}
+      ></DatagridTable>
       <AddUserDialog
         isOpen={isDialogOpen}
         onClose={handleCloseDialog}
