@@ -4,6 +4,7 @@ import DailySalesModal from "./DailySalesModal";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { format as dateFnsFormat } from "date-fns";
 
 const DailySalesDetails = ({ companyName, selectedItem, url }) => {
   const theme = useTheme();
@@ -11,7 +12,9 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
   const [dailyDet, setDailyDet] = useState([]);
 
   useEffect(() => {
-    fetch(`${url}/pos/getDailySalesDetails/${companyName}/${selectedItem}`)
+    const currentDate = new Date();
+    const formattedDate = dateFnsFormat(currentDate, "dd.MM.yyyy");
+    fetch(`${url}/pos/getDailySalesDetails/${companyName}/${selectedItem}/${formattedDate}`)
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property
@@ -32,7 +35,7 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
   const columns = [
     {
       field: "InvType",
-      headerName: "Item No",
+      headerName: "InvType",
       minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
@@ -40,27 +43,10 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
     },
     {
       field: "InvNo",
-      headerName: "Item No",
+      headerName: "InvNo",
       minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
-    {
-      field: "ItemNo",
-      headerName: "Item No",
-      minWidth: 100,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
-    {
-      field: "ItemName",
-      headerName: "Item Name",
-      cellClassName: "name-column--cell",
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 300,
       flex: "1",
     },
     {
@@ -85,8 +71,8 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
       flex: "1",
     },
     {
-      field: "Tax",
-      headerName: "Tax",
+      field: "Srv",
+      headerName: "Srv",
       headerAlign: "left",
       align: "left",
       minWidth: 100,
@@ -94,7 +80,18 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 100,
       flex: "1",
-    },  
+    },
+    {
+      field: "totalFinal",
+      headerName: "Total",
+      headerAlign: "left",
+      align: "left",
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      minWidth: 100,
+      flex: "1",
+    },
   ];
 
   return (

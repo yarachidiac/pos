@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import DatagridTable from "../DatagridTable";
+import { format as dateFnsFormat } from "date-fns";
 
 const DailySales = ({ companyName, url }) => {
   const theme = useTheme();
@@ -19,7 +20,9 @@ const DailySales = ({ companyName, url }) => {
     }
 
   useEffect(() => {
-    fetch(`${url}/pos/allitemswithmod/${companyName}`)
+    const currentDate = new Date();
+    const formattedDate = dateFnsFormat(currentDate, "dd.MM.yyyy");
+    fetch(`${url}/pos/allitemswithmod/${companyName}/${formattedDate}`)
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property
@@ -88,8 +91,18 @@ const DailySales = ({ companyName, url }) => {
       flex: "1",
     },
     {
-      field: "Active",
-      headerName: "Active",
+      field: "TotalQty",
+      headerName: "Qty",
+      headerAlign: "left",
+      align: "left",
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      minWidth: 100,
+      flex: "1",
+    },
+    {
+      field: "TotalItem",
+      headerName: "Total",
       headerAlign: "left",
       align: "left",
       renderCell: renderTextCell,
@@ -106,9 +119,11 @@ const DailySales = ({ companyName, url }) => {
         width: "100%",
         display: "flex",
         flexDirection: "column",
+        // justifyContent: "center",
+        // alignItems:"center"
       }}
     >
-      <Box>
+      <Box sx={{alignItems:"flex-start"}}>
         <Header title="Daily Sales" />
       </Box>
       <DatagridTable

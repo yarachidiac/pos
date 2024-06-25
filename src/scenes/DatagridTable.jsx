@@ -15,12 +15,12 @@ export default function DatagridTable(props) {
   
   return (
     <Box
-      height="90%"
-      width="90%"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
       sx={{
+        height: "90%",
+        width: "90%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         "& .name-column--cell": {
           color: colors.greenAccent[300],
         },
