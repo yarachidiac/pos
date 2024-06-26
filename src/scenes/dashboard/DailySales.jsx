@@ -9,14 +9,16 @@ import { format as dateFnsFormat } from "date-fns";
 
 const DailySales = ({ companyName, url }) => {
   const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const [daily, setDaily] = useState([]);
-    const [selectedItem, setSelectedItem] = useState("");
-    const [openSaleModal, setOpenSaleModal] = useState(false);
+  const colors = tokens(theme.palette.mode);
+  const [daily, setDaily] = useState([]);
+  const [selectedItem, setSelectedItem] = useState("");
+  const [openSaleModal, setOpenSaleModal] = useState(false);
+  const [selectedName, setSelectedName] = useState("");
 
     const handleRowClick = (params) => {
         setOpenSaleModal(true);
-        setSelectedItem(params.row.ItemNo);
+      setSelectedItem(params.row.ItemNo);
+      setSelectedName(params.row.ItemName);
     }
 
   useEffect(() => {
@@ -119,8 +121,8 @@ const DailySales = ({ companyName, url }) => {
         width: "100%",
         display: "flex",
         flexDirection: "column",
-        // justifyContent: "center",
-        // alignItems:"center"
+        justifyContent: "center",
+         alignItems:"center"
       }}
     >
       <Box sx={{alignItems:"flex-start"}}>
@@ -139,6 +141,7 @@ const DailySales = ({ companyName, url }) => {
         setSelectedItem={setSelectedItem}
         selectedItem={selectedItem}
         url={url}
+        selectedName={selectedName}
       />
     </Box>
   );

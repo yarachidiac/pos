@@ -24,7 +24,7 @@ const TableDialog = ({
   setTableNo,
   setTableWaiter,
   setActive,
-  setDescription, setShowKeyboard, setActiveField
+  setDescription, setShowKeyboard, setActiveField, 
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);

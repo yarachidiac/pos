@@ -159,50 +159,49 @@ const PoS = ({
     setIsConfOpenDialog(false);
   };
 
-  const handleConfKitchen = () => {
+  const handleConfKitchen = async() => {
+    await handlePlace();
     setIsConfOpenDialog(false);
-    handlePlace();
   };
 
   useEffect(() => {
     const handleAsync = async () => {
       if (closeTClicked) {
         await handlePlace();
-        handlePrint();
       }
     };
-
     handleAsync();
   }, [closeTClicked]);
 
-  const handlePrint = () => {
-    if (allowPrintInv === "Y") {
-      console.log("ana bl print station", defaultPrinter);
-      printJS({
-        printable: "myPrintableContent",
-        type: "html",
-        targetStyles: ["*"],
-        documentTitle: "Receipt",
-        honorColor: true,
-        scanStyles: false,
-        // style: `
-        //   @media print {
-        //     @page {
-        //       marginLeft: 1mm;
-        //     }
-        //   }
-        // `,
-        header: null,
-        footer: null,
-        showModal: true,
-        onError: (error) => {
-          console.error("Printing error:", error);
-        },
-        onPrintDialogClose: () => {
-          console.log("Print dialog closed");
-        },
-        printerName: defaultPrinter,
-      });
+  const handlePrint = async() => {
+      if (allowPrintInv === "Y") {
+        console.log("ana bl print station", defaultPrinter);
+        printJS({
+          printable: "myPrintableContent",
+          type: "html",
+          targetStyles: ["*"],
+          documentTitle: "Receipt",
+          honorColor: true,
+          scanStyles: false,
+          // style: `
+          //   @media print {
+          //     @page {
+          //       marginLeft: 1mm;
+          //     }
+          //   }
+          // `,
+          header: null,
+          footer: null,
+          showModal: true,
+          onError: (error) => {
+            console.error("Printing error:", error);
+          },
+          onPrintDialogClose: () => {
+            console.log("Print dialog closed");
+          },
+          printerName: defaultPrinter,
+        });
+      
     } else {
       setAllowDialog(true);
       setPrRemark("print is not allowed");
@@ -505,18 +504,30 @@ const PoS = ({
 
   useEffect(() => {
     console.log("cccccccccuuuuuuuuuuuuu", closeTClicked);
-    if (invN && orderId && !selectedTableId) {
-      handlePrint();
-      setSelectedModifiers([]);
-      setSelectedMeals([]);
-      setMealsCopy((prevMealsCopy) =>
-        prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
-      );
-      setFinalTotal(0);
-      setDiscValue(0);
-      setSrv(0);
-      setSelectedRow({});
+    const handleCh = async () => { 
+     if (invN && orderId) {
+        if (!selectedTableId || (selectedTableId && closeTClicked)) {
+          await handlePrint();
+          console.log("ana 3melet print bl close");
+       } 
+       console.log("aadfaf", selectedMeals);
+       navigate(`/${v}/PoS`);
+       setSelectedTop("Takeaway");
+       setIsNav(true);
+       setIsConfOpenDialog(false);
+       setCloseTClicked(false);
+       setSelectedModifiers([]);
+       setSelectedMeals([]);
+       setMealsCopy((prevMealsCopy) =>
+         prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
+       );
+       setFinalTotal(0);
+       setDiscValue(0);
+       setSrv(0);
+       setSelectedRow({});
+      }
     }
+    handleCh();
   }, [invN, orderId]);
 
   let placeOrderCount = 0;
@@ -637,6 +648,12 @@ const PoS = ({
             // if (!selectedTableId) {
             //   handlePrint();
             // }
+          } else if (responseData["message"] === "Table closed") {
+            console.log("ana fetet hon");
+            setInvN(responseData["invoiceDetails"]["InvNo"]);
+            setOrderId(responseData["invoiceDetails"]["OrderId"]);
+            console.log("ana tahet", invN);
+            console.log("Ana", orderId);
           }
         }
         // Reset selectedMeals to an empty array
@@ -649,11 +666,11 @@ const PoS = ({
         // setDiscValue(0);
         // setSrv(0);
         // setSelectedRow({});
-        navigate(`/${v}/PoS`);
-        setSelectedTop("Takeaway");
-        setIsNav(true);
-        setIsConfOpenDialog(false);
-        setCloseTClicked(false);
+        // navigate(`/${v}/PoS`);
+        // setSelectedTop("Takeaway");
+        // setIsNav(true);
+        // setIsConfOpenDialog(false);
+        // setCloseTClicked(false);
       } else {
         console.error("Failed to place order:");
       }

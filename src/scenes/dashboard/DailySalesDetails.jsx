@@ -5,16 +5,44 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { format as dateFnsFormat } from "date-fns";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import DatagridTable from "../DatagridTable";
 
-const DailySalesDetails = ({ companyName, selectedItem, url }) => {
+const DailySalesDetails = ({
+  companyName,
+  selectedItem,
+  url,
+  handleClose,
+  selectedName,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [dailyDet, setDailyDet] = useState([]);
 
+  const iconButtonStyle = {
+    // Other styles...
+    display: "flex",
+    color: colors.greenAccent[500],
+    ...(window.innerWidth < 650
+      ? {
+          position: "absolute",
+          top: "8px",
+          right: "8px",
+        }
+      : {
+          position: "relative",
+        }),
+    marginLeft: "auto", // Push the button to the right
+    // Other styles...
+  };
+
   useEffect(() => {
     const currentDate = new Date();
     const formattedDate = dateFnsFormat(currentDate, "dd.MM.yyyy");
-    fetch(`${url}/pos/getDailySalesDetails/${companyName}/${selectedItem}/${formattedDate}`)
+    fetch(
+      `${url}/pos/getDailySalesDetails/${companyName}/${selectedItem}/${formattedDate}`
+    )
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property
@@ -98,79 +126,34 @@ const DailySalesDetails = ({ companyName, selectedItem, url }) => {
     <Box
       sx={{
         height: "100%",
-        width: "95%",
+        width: "100%",
+        display: "flex",
         flexDirection: "column",
-        ml: "2%",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Box
         sx={{
-          height: "10%",
-          width: "100%",
+          width: "90%",
           display: "flex",
           flexDirection: "row",
+          justifyContent: "space-around",
         }}
       >
-        <Header title="Daily Sales" />
-        <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}></Box>
+        <Header title={selectedName} />
+        <IconButton color="inherit" onClick={handleClose} sx={iconButtonStyle}>
+          <CloseIcon />
+        </IconButton>
       </Box>
-      <Box
-        sx={{
-          height: "90%",
-          width: "100%",
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
 
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%", width: "100%" }}
-          rows={dailyDet.map((item, index) => ({
-            id: index, // You need to provide a unique identifier for each row
-            ...item, // Spread the original item properties
-          }))}
-          columns={columns}
-          //autoHeight
-          {...(dailyDet && dailyDet.initialState)}
-          initialState={{
-            ...dailyDet.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          pagination // Add this line to enable pagination
-        />
-      </Box>
+      <DatagridTable
+        rows={dailyDet.map((item, index) => ({
+          id: index, // You need to provide a unique identifier for each row
+          ...item, // Spread the original item properties
+        }))}
+        columns={columns}
+      />
     </Box>
   );
 };
