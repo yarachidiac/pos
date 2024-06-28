@@ -24,7 +24,7 @@ const DailySales = ({ companyName, url }) => {
   useEffect(() => {
     const currentDate = new Date();
     const formattedDate = dateFnsFormat(currentDate, "dd.MM.yyyy");
-    fetch(`${url}/pos/allitemswithmod/${companyName}/${formattedDate}`)
+    fetch(`${url}/pos/getDailyItems/${companyName}/${formattedDate}`)
       .then((response) => response.json())
       .then((data) => {
         // Ensure that data is an object with the 'initialState' property

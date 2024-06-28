@@ -518,13 +518,15 @@ const PoS = ({
        setCloseTClicked(false);
        setSelectedModifiers([]);
        setSelectedMeals([]);
+       setSelectedRow(null);
        setMealsCopy((prevMealsCopy) =>
          prevMealsCopy.map((meal) => ({ ...meal, quantity: 1 }))
        );
        setFinalTotal(0);
        setDiscValue(0);
        setSrv(0);
-       setSelectedRow({});
+       console.log("ana seret hhhhhhhh", selectedRow);
+       
       }
     }
     handleCh();
@@ -596,6 +598,7 @@ const PoS = ({
         const unsentMeals = selectedMeals.filter(
           (meal) => meal.Printed !== "p"
         );
+        console.log("seleeee", selectedRow);
         const requestBody = {
           date: formattedDate,
           time: formattedTime,
@@ -612,7 +615,7 @@ const PoS = ({
           accno: delivery ? delivery : accno,
           qtyPrintKT: qtyPrintKT,
           username: username,
-          //orderId: orderId,
+          invKind: selectedTableId ? "table" : selectedRow ? "delivery" : "takeaway"
         };
         const response = await fetch(`${url}/pos/invoiceitem/${companyName}`, {
           method: "POST",

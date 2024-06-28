@@ -122,7 +122,7 @@ function App() {
   const [compTime, setCompTime] = useState("");
   const [searchClient, setSearchClient] = useState("");
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.110:8000";
+  const url = "http://192.168.16.129:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);

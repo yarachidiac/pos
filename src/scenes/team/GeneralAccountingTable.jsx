@@ -77,147 +77,147 @@ const GeneralAccountingTable = ({
 
 
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
-  const rows = Object.entries(userDetailsCopy).map(([key, value], index) => (
-    <TableRow
-      key={key}
-      style={{
-        width: window.innerWidth * 0.28,
-        display: "flex",
-        flexDirection: "row",
-        height: "100%",
-        //padding: '8px',
-        borderRadius: "4px",
-        border: "1px solid #ccc",
-        // justifyContent: "space-between",
-        // justifyItems: "space-between",
-        // alignItems: "space-between"
-      }}
-    >
-      <TableCell
+  const rows = Object.entries(userDetailsCopy)
+    .filter(([key]) => key !== "COH" && key !== "EOD")
+    .map(([key, value], index) => (
+      <TableRow
+        key={key}
         style={{
-          //minWidth: "80px",
-          width: "30%",
+          width: window.innerWidth * 0.28,
+          display: "flex",
+          flexDirection: "row",
           height: "100%",
-          whiteSpace: "pre-wrap", // Allow text wrapping
-          overflowWrap: "normal", // Do not break words
-          //overflowWrap: "break-word",
-          boxSizing: "border-box",
+          //padding: '8px',
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+          // justifyContent: "space-between",
+          // justifyItems: "space-between",
+          // alignItems: "space-between"
         }}
       >
-        <Box
-          sx={{
-            maxHeight: "100%",
-            width: "100%",
-            alignItems: "start", // Align text to the start (left)
-            justifyContent: "center",
-          }}
-        >
-          <Typography variant="h4">{key}</Typography>
-        </Box>
-      </TableCell>
-      <TableCell
-        style={{
-          width: "70%",
-          height: "100%",
-        }}
-      >
-        <div
+        <TableCell
           style={{
-            position: "relative",
+            //minWidth: "80px",
+            width: "30%",
             height: "100%",
-            width: "100%",
+            whiteSpace: "pre-wrap", // Allow text wrapping
+            overflowWrap: "normal", // Do not break words
+            //overflowWrap: "break-word",
+            boxSizing: "border-box",
           }}
         >
-          {key === "username" ||
-          key === "password" ||
-          key === "SAType" ||
-          key === "Branch" ? (
-            <TextField
-              value={value}
-              onChange={(e) => handleValueUpdate(key, e.target.value)}
-              fullWidth
-              variant="outlined"
-              size="small"
-              onDoubleClick={() => {
-                setShowKeyboard(true);
-              }}
-              onFocus={() => {
-                setActiveField(key);
-              }}
-            />
-          ) : key === "email" ? (
-            <TextField
-              value={value}
-              onChange={handleEmailChange}
-              fullWidth
-              variant="outlined"
-              size="small"
-              onDoubleClick={() => {
-                setShowKeyboard(true);
-              }}
-              onFocus={() => {
-                setActiveField("email");
-              }}
-            />
-          ) : key === "id" ? (
-            <TextField
-              value={value}
-              onChange={(e) => handleValueUpdate(key, e.target.value)}
-              fullWidth
-              variant="outlined"
-              size="small"
-              inputProps={{
-                readOnly: true,
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-around",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Checkbox
-                  checked={value === "Y"}
-                  onChange={() =>
-                    handleValueUpdate(key, value === "Y" ? "N" : "Y")
-                  }
-                />
-                <Typography variant="h4">Y</Typography>
-              </div>
+          <Box
+            sx={{
+              maxHeight: "100%",
+              width: "100%",
+              alignItems: "start", // Align text to the start (left)
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="h4">{key}</Typography>
+          </Box>
+        </TableCell>
+        <TableCell
+          style={{
+            width: "70%",
+            height: "100%",
+          }}
+        >
+          <Box
+            style={{
+              position: "relative",
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            {key === "username" ||
+            key === "password" ||
+            key === "SAType" ||
+            key === "Branch" ? (
+              <TextField
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                fullWidth
+                variant="outlined"
+                size="small"
+                onDoubleClick={() => {
+                  setShowKeyboard(true);
+                }}
+                onFocus={() => {
+                  setActiveField(key);
+                }}
+              />
+            ) : key === "email" ? (
+              <TextField
+                value={value}
+                onChange={handleEmailChange}
+                fullWidth
+                variant="outlined"
+                size="small"
+                onDoubleClick={() => {
+                  setShowKeyboard(true);
+                }}
+                onFocus={() => {
+                  setActiveField("email");
+                }}
+              />
+            ) : key === "id" ? (
+              <TextField
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                fullWidth
+                variant="outlined"
+                size="small"
+                inputProps={{
+                  readOnly: true,
+                }}
+              />
+            ) : (
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                }}
+              >
+                <Box style={{ display: "flex", alignItems: "center" }}>
+                  <Checkbox
+                    checked={value === "Y"}
+                    onChange={() =>
+                      handleValueUpdate(key, value === "Y" ? "N" : "Y")
+                    }
+                  />
+                  <Typography variant="h4">Y</Typography>
+                </Box>
 
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Checkbox
-                  checked={value === "N"}
-                  onChange={() =>
-                    handleValueUpdate(key, value === "N" ? "Y" : "N")
-                  }
-                />
-                <Typography variant="h4">N</Typography>
-              </div>
-            </div>
-          )}
-        </div>
-      </TableCell>
-    </TableRow>
-  ));
+                <Box style={{ display: "flex", alignItems: "center" }}>
+                  <Checkbox
+                    checked={value === "N"}
+                    onChange={() =>
+                      handleValueUpdate(key, value === "N" ? "Y" : "N")
+                    }
+                  />
+                  <Typography variant="h4">N</Typography>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </TableCell>
+      </TableRow>
+    ));
 
   return (
     <Box style={{ height: "100%" }}>
       <TableContainer style={{ height: "85%", overflowY: "auto" }}>
         <Table>
-          <TableBody>
-            <Box
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
-                gap: "5px",
-              }}
-            >
-              {rows}
-            </Box>
+          <TableBody
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
+              gap: "5px",
+            }}
+          >
+            {rows}
           </TableBody>
         </Table>
       </TableContainer>
@@ -278,7 +278,6 @@ const GeneralAccountingTable = ({
           </Box>
         )}
       </Box>
-      
     </Box>
   );
 };

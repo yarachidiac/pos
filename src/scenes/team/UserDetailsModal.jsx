@@ -23,6 +23,7 @@ import { handleSave } from "./SaveHandler";
 import { margin } from "@mui/system";
 import Button from "@mui/material/Button";
 import Keyboard from "../form/Keyboard";
+import SalesCondition from "./SalesConditions";
 
 const StockInventoryTable = ({ userDetails, }) => (
   <Box>
@@ -319,6 +320,21 @@ const UserDetailsModal = ({
         );
       case "stock-inventory":
         return <StockInventoryTable userDetails={userDetails} />;
+      case "sales":
+        return (
+          <SalesCondition
+            userDetails={userDetails}
+            setUserDetails={setUserDetails}
+            userDetailsCopy={userDetailsCopy}
+            setUserDetailsCopy={setUserDetailsCopy}
+            valMessage={valMessage}
+            setValMessage={setValMessage}
+            successMessage={successMessage}
+            setSuccessMessage={setSuccessMessage}
+            unsavedChanges={unsavedChanges}
+            setUnsavedChanges={setUnsavedChanges}
+          />
+        );
       // Add more cases for each option
       default:
         return null;
