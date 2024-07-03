@@ -17,6 +17,7 @@ import { format } from "path-browserify";
 import { format as dateFnsFormat } from "date-fns";
 import InvTotalDialog from "../InvTotalDialog";
 import DatagridTable from "../DatagridTable";
+import InvKindDialog from "../InvKindDialog";
 
 const Journal = ({ companyName, url}) => {
   const theme = useTheme();
@@ -46,6 +47,14 @@ const Journal = ({ companyName, url}) => {
   const [formattedEndDate, setFormattedEndDate] = useState("");
   const [formattedStartTime, setFormattedStartTime] = useState("");
   const [formattedEndTime, setFormattedEndTime] = useState("");
+  const [countDelivery, setCountDelivery] = useState("");
+  const [countTable, setCountTable] = useState("");
+  const [countTakeaway, setCountTakeaway] = useState("");
+  const [openInvKind, setOpenInvKind] = useState(false);
+
+  const handleDoubleClickInvKind = () => {
+    setOpenInvKind(true);
+  };
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -88,6 +97,40 @@ const Journal = ({ companyName, url}) => {
         startTime: formattedStartTime,
         endTime: formattedEndTime,
       };
+      const invKind = await fetch(`${url}/pos/getInvKind/${companyName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+      if (invKind.ok) {
+        const invKindResponse = await invKind.json();
+
+        let countDelivery = 0;
+        let countTakeaway = 0;
+        let countTable = 0;
+
+        invKindResponse.forEach((item) => {
+          switch (item.InvKind.toLowerCase()) {
+            case "delivery":
+              countDelivery = item.TotalInvoices;
+              break;
+            case "takeaway":
+              countTakeaway = item.TotalInvoices;
+              break;
+            case "table":
+              countTable = item.TotalInvoices;
+              break;
+            default:
+              break;
+          }
+        });
+
+        setCountDelivery(countDelivery);
+        setCountTakeaway(countTakeaway);
+        setCountTable(countTable);
+      }
       const response = await fetch(`${url}/pos/filterInvHis/${companyName}`, {
         method: "POST",
         headers: {
@@ -266,9 +309,9 @@ const Journal = ({ companyName, url}) => {
           //width: "100%",
         }}
       >
-        <Header sx={{ width: "20%" }} title="Inv History" />
+        <Header sx={{ width: "15%" }} title="Inv History" />
         <Button
-          sx={{ width: "15%" }}
+          sx={{ width: "13%" }}
           component="h1"
           variant="contained"
           color="secondary"
@@ -277,6 +320,17 @@ const Journal = ({ companyName, url}) => {
         >
           Total &nbsp;&nbsp;{Number(totalInv).toFixed(3)}
         </Button>
+        <Button
+          sx={{ width: "13%" }}
+          component="h1"
+          variant="contained"
+          color="secondary"
+          style={{ fontSize: "1.1rem" }}
+          onDoubleClick={handleDoubleClickInvKind}
+        >
+          InvKind
+        </Button>
+        <InvKindDialog openInvKind={openInvKind} countDelivery={countDelivery} countTable={countTable} countTakeaway={countTakeaway} setOpenInvKind={setOpenInvKind}></InvKindDialog>
         <InvTotalDialog
           openTotalDetail={openTotalDetail}
           setOpenTotalDetail={setOpenTotalDetail}
@@ -331,67 +385,7 @@ const Journal = ({ companyName, url}) => {
         rows={filteredData}
         columns={columns}
         getRowId={(row) => row.InvNo}
-      ></DatagridTable>
-      {/* <Box
-        sx={{
-          height: "90%",
-          width: "100%",
-          // "& .MuiDataGrid-root": {
-          //   border: "none",
-          // },
-          // "& .MuiDataGrid-cell": {
-          //   borderBottom: "none",
-          // },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-            borderBottom: "none",
-            fontSize: "900",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[500],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.greenAccent[500],
-            color: colors.primary[500],
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontSize: "20px",
-          },
-          "& .MuiToolbar-root.MuiTablePagination-toolbar": {
-            color: colors.primary[500],
-          },
-
-          // "& .MuiCheckbox-root": {
-          //   color: `${colors.greenAccent[200]} !important`,
-          // },
-        }}
-      >
-        <DataGrid
-          style={{ height: "100%", width: "100%" }}
-          rows={filteredData}
-          columns={columns}
-          getRowId={(row) => row.InvNo}
-          //autoHeight
-          {...(inv && inv.initialState)}
-          initialState={{
-            ...inv.initialState,
-            pagination: { paginationModel: { pageSize: 10 } },
-          }}
-          pageSizeOptions={[10, 20, 30]}
-          disableSelectionOnClick // Add this line to disable selection on click
-          onRowClick={(params) => {
-            console.log("Params:", params);
-
-            handleRowClick(params);
-          }}
-          pagination // Add this line to enable pagination
-        />
-      </Box> */}
+      ></DatagridTable>  
       <InvDetailsModal
         isOpen={openInvDetailsModal}
         setOpenIvDetailsModal={setOpenIvDetailsModal}

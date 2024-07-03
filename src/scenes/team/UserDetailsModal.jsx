@@ -265,7 +265,6 @@ const UserDetailsModal = ({
 
   const handleConfirmClose = async () => {
     console.log("ekhrrrrrr", url);
-
     handleSave(
       companyName,
       userDetails,
@@ -333,6 +332,9 @@ const UserDetailsModal = ({
             setSuccessMessage={setSuccessMessage}
             unsavedChanges={unsavedChanges}
             setUnsavedChanges={setUnsavedChanges}
+            setUsers={setUsers}
+            companyName={companyName}
+            url={url}
           />
         );
       // Add more cases for each option

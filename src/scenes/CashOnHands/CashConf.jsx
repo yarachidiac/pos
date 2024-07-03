@@ -21,7 +21,7 @@ const CashConfirm = ({
   onConfirm,
   url,
   username,
-  companyName, selectedOption, setSelectedOption, totalInv, setTotalInv
+  companyName, selectedOption, setSelectedOption, totalInv, setTotalInv, allowedUser, setAllowedUser
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -59,7 +59,7 @@ const CashConfirm = ({
     const selectedUser = event.target.value;
     setSelectedOption(selectedUser);
 
-    if (selectedUser === "all") {
+    if (selectedUser === "All") {
       setRows(originalData); // Reset to full data if 'All' is selected
       setTotalInv(calculateTotalFinal(totalUser));
       setNumInv(calculateTotalNumber(totalUser));
@@ -112,31 +112,44 @@ const CashConfirm = ({
     const fetchData = async () => {
       
       try {
-        const calc = await fetch(
-          `${url}/pos/calculateUserShifts/${companyName}/${formattedDate}`
-        );
-        const invoices = await calc.json();
-        console.log("invoices", invoices);
-        setTotalUser(invoices);
-        setNumInv(calculateTotalNumber(invoices));
-        setTotalInv(calculateTotalFinal(invoices));
-        setGrossTotal(calculateGrossTotal(invoices));
-        setTotalQty(calculateTotalQty(invoices));
-        setSrvValue(calculateSrvValue(invoices));
-        setDiscValue(calculateDiscValue(invoices));
-        setTotalDiscount(calculateTotalDiscount(invoices));
-        setTotalTax(calculateTotalTax(invoices));
-        setDisc(calculateTotalDisc(invoices));
-        setSrv(calculateTotalSrv(invoices));
-        const response = await fetch(
-          `${url}/pos/reportUserShift/${companyName}/${formattedDate}`
-        );
-        const data = await response.json();
-        setRows(data);
-        setOriginalData(data); // Store the original data
-        const uniqueUsers = [...new Set(data.map((item) => item.User))];
-        setFilterUser(uniqueUsers);
-        setSelectedOption("all");
+        const getCOHRead = await fetch(`${url}/pos/getCOHRead/${companyName}/${username}`);
+        const readResp = await getCOHRead.json();
+        console.log("read resp", readResp);
+        setAllowedUser(readResp);
+        setSelectedOption(allowedUser);
+        console.log("allowed user", allowedUser);
+         const calc = await fetch(
+           `${url}/pos/calculateUserShifts/${companyName}/${formattedDate}/${allowedUser}`
+         );
+         const invoices = await calc.json();
+         console.log("invoices", invoices);
+         setTotalUser(invoices);
+         setNumInv(calculateTotalNumber(invoices));
+         setTotalInv(calculateTotalFinal(invoices));
+         setGrossTotal(calculateGrossTotal(invoices));
+         setTotalQty(calculateTotalQty(invoices));
+         setSrvValue(calculateSrvValue(invoices));
+         setDiscValue(calculateDiscValue(invoices));
+         setTotalDiscount(calculateTotalDiscount(invoices));
+         setTotalTax(calculateTotalTax(invoices));
+         setDisc(calculateTotalDisc(invoices));
+         setSrv(calculateTotalSrv(invoices));
+         const response = await fetch(
+           `${url}/pos/reportUserShift/${companyName}/${formattedDate}/${allowedUser}`
+         );
+         const data = await response.json();
+         setRows(data);
+         setOriginalData(data); 
+         const uniqueUsers = [...new Set(data.map((item) => item.User))];
+        if (allowedUser === "All") {
+          setFilterUser(uniqueUsers);
+        } else {
+
+          const filteredUsers = uniqueUsers.filter((user) =>
+            allowedUser.includes(user)
+          );
+          setFilterUser(filteredUsers);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -145,7 +158,7 @@ const CashConfirm = ({
     if (open) {
       fetchData();
     }
-  }, [open, url, companyName,]);
+  }, [open, url, companyName, allowedUser]);
 
   const calculateTotalNumber = (data) => {
     return data.reduce((sum, item) => sum + item.TotalInvoices, 0);
@@ -346,7 +359,9 @@ const CashConfirm = ({
               onChange={handleChange}
               sx={{ width: "100%", textAlign: "center" }}
             >
-              <MenuItem value="all">All</MenuItem>
+              {allowedUser === "All" && <MenuItem value="All">
+                All
+              </MenuItem>}
               {filterUser.map((user) => (
                 <MenuItem key={user} value={user}>
                   {user}

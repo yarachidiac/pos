@@ -113,7 +113,6 @@ function App() {
   const [tableWaiter, setTableWaiter] = useState("");
   const [active, setActive] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedOption, setSelectedOption] = useState("all");
   const [clientDetails, setClientDetails] = useState({});
   const [clientDetailsCopy, setClientDetailsCopy] = useState({
     ...clientDetails,
@@ -121,8 +120,11 @@ function App() {
   const [totalInv, setTotalInv] = useState("");
   const [compTime, setCompTime] = useState("");
   const [searchClient, setSearchClient] = useState("");
+  const [allowedUser, setAllowedUser] = useState("");
+  const [selectedOption, setSelectedOption] = useState(allowedUser);
+
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.129:8000";
+  const url = "http://192.168.16.122:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -764,6 +766,8 @@ function App() {
                   setSelectedOption={setSelectedOption}
                   totalInv={totalInv}
                   setTotalInv={setTotalInv}
+                  allowedUser={allowedUser}
+                  setAllowedUser={setAllowedUser}
                   //rows={rows}
                   // columns={columns}
                 />

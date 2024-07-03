@@ -13,6 +13,8 @@ import {
   MenuItem,
   Button,
 } from "@mui/material";
+import { useState, useEffect } from "react";
+import { handleSave } from "./SaveHandler";
 
 export default function SalesCondition(props) {
 
@@ -23,7 +25,18 @@ export default function SalesCondition(props) {
       }));
     };
 
-    
+  useEffect(() => {
+    // Set the callback function in the parent component
+    if (
+      JSON.stringify(props.userDetailsCopy) !==
+      JSON.stringify(props.userDetails)
+    ) {
+      props.setUnsavedChanges(true);
+    } else {
+      props.setUnsavedChanges(false);
+    }
+  }, [props.userDetailsCopy, props.userDetails, props.unsavedChanges]);
+
   const relevantKeys = ["COH", "EOD"];
   const filteredDetails = Object.entries(props.userDetailsCopy).filter(([key]) =>
     relevantKeys.includes(key)
@@ -168,18 +181,18 @@ export default function SalesCondition(props) {
               style={{
                 fontSize: "1.1rem",
               }}
-              //   onClick={() =>
-              //     handleSave(
-              //       companyName,
-              //       userDetails,
-              //       userDetailsCopy,
-              //       setUsers,
-              //       setSuccessMessage,
-              //       setUserDetails,
-              //       valMessage,
-              //       url
-              //     )
-              //   }
+              onClick={() =>
+                handleSave(
+                  props.companyName,
+                  props.userDetails,
+                  props.userDetailsCopy,
+                  props.setUsers,
+                  props.setSuccessMessage,
+                  props.setUserDetails,
+                  props.valMessage,
+                  props.url
+                )
+              }
             >
               Save
             </Button>
