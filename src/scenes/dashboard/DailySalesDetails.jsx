@@ -64,7 +64,7 @@ const DailySalesDetails = ({
     {
       field: "InvType",
       headerName: "InvType",
-      minWidth: 150,
+      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: "1",
@@ -72,7 +72,7 @@ const DailySalesDetails = ({
     {
       field: "InvNo",
       headerName: "InvNo",
-      minWidth: 150,
+      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: "1",
@@ -84,7 +84,7 @@ const DailySalesDetails = ({
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
+      minWidth: 200,
       flex: "1",
     },
     {
@@ -92,10 +92,9 @@ const DailySalesDetails = ({
       headerName: "Disc",
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
+      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
       flex: "1",
     },
     {
@@ -103,10 +102,9 @@ const DailySalesDetails = ({
       headerName: "Srv",
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
+      minWidth: 200,
       flex: "1",
     },
     {
@@ -114,10 +112,9 @@ const DailySalesDetails = ({
       headerName: "Total",
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
+      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
       flex: "1",
     },
   ];

@@ -6,15 +6,19 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const ConfirmationDialog = ({ open, onCancel, onConfirm }) => {
    const theme = useTheme();
-   const colors = tokens(theme.palette.mode);
+  const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
   
   return (
     <Dialog open={open}>
-      <DialogTitle>Confirmation</DialogTitle>
-      <DialogContent>Do you want to save changes before closing?</DialogContent>
+      <DialogTitle>{t.Confirmation}</DialogTitle>
+      <DialogContent>{t.confirm}</DialogContent>
       <DialogActions>
         <Button
           variant="contained"
@@ -23,7 +27,7 @@ const ConfirmationDialog = ({ open, onCancel, onConfirm }) => {
           autoFocus
           style={{ fontSize: "0.9rem" }}
         >
-          Yes
+          {t.Yes}
         </Button>
         <Button
           variant="contained"
@@ -31,7 +35,7 @@ const ConfirmationDialog = ({ open, onCancel, onConfirm }) => {
           onClick={onCancel}
           style={{ fontSize: "0.9rem" }}
         >
-          No
+          {t.No}
         </Button>
       </DialogActions>
     </Dialog>

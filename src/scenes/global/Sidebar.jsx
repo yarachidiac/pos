@@ -45,6 +45,7 @@ const Item = ({
   url,
   setOpenCash,
   setOpenEOD,
+  username
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -173,8 +174,16 @@ const Item = ({
   };
 
   const handleEndOfDay = async () => {
+    const getEODPermission = await fetch(
+      `${url}/pos/getEODPermission/${companyName}/${username}`
+    );
+    const responseEODPer = await getEODPermission.json();
     if (isNav) {
-        setOpenEOD(true);    
+      if (responseEODPer === "Y") {
+        setOpenEOD(true);
+      } else {
+        setOpen(true);
+      }  
     } else {
       setIsConfOpenDialog(true);
     }
@@ -291,7 +300,7 @@ const Sidebar = ({
   v,
   url,
   setOpenCash,
-  setOpenEOD,
+  setOpenEOD, username
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -614,6 +623,8 @@ const Sidebar = ({
               url={url}
               companyName={companyName}
               setOpenEOD={setOpenEOD}
+              username={username}
+              setOpen={setOpen}
             />
             <SubItem
               title="Company Settings"

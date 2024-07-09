@@ -11,21 +11,47 @@ import UserDetailsModal from "./UserDetailsModal";
 import Button from "@mui/material/Button";
 import AddUserDialog from "./AddUserDialog";
 import DatagridTable from "../DatagridTable";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
-const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveField,showKeyboard,
-  setShowKeyboard, userDetails, setUserDetails, userDetailsCopy, setUserDetailsCopy, valMessage,  setValMessage, userName, setUserName }) => {
-  
+const Team = ({
+  companyName,
+  addTitle,
+  setAddTitle,
+  url,
+  activeField,
+  setActiveField,
+  showKeyboard,
+  setShowKeyboard,
+  // userDetails,
+  // setUserDetails,
+  // userDetailsCopy,
+  // setUserDetailsCopy,
+  valMessage,
+  setValMessage,
+  userName,
+  setUserName,
+  tickKey,
+  inputValue,
+  setInputValue,
+  setTickKey,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
 
   //const [companyName, setCompanyName] = useState("");
+  
   const [users, setUsers] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
+  const [userDetails, setUserDetails] = useState({});
+  const [userDetailsCopy, setUserDetailsCopy] = useState({ ...userDetails });
+  const { language } = useLanguage();
+  const t = translations[language];
 
   useEffect(() => {
     console.log("stored companyyyyyy", companyName);
@@ -114,7 +140,7 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
     },
     {
       field: "username",
-      headerName: "Username",
+      headerName: t.username,
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -123,7 +149,7 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
     },
     {
       field: "password",
-      headerName: "Password",
+      headerName: t.password,
       headerAlign: "left",
       align: "left",
       minWidth: 200,
@@ -232,17 +258,16 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
         width="90%"
       >
         <Box>
-          <Header title="Manage Team Members" />
+          <Header title={t.manage_team_members} />
         </Box>
-        <Box
-        >
+        <Box>
           <Button
             variant="contained"
             color="secondary"
             style={{ fontSize: "1.1rem" }}
             onClick={() => handleAddUser("Add User")}
           >
-            Add
+            {t.Add}
           </Button>
         </Box>
       </Box>
@@ -264,6 +289,10 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
         setShowKeyboard={setShowKeyboard}
         valMessage={valMessage}
         setValMessage={setValMessage}
+        tickKey={tickKey}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setTickKey={setTickKey}
       />
 
       <DatagridTable
@@ -283,6 +312,10 @@ const Team = ({ companyName, addTitle, setAddTitle, url, activeField,setActiveFi
         setValMessage={setValMessage}
         userName={userName}
         setUserName={setUserName}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        tickKey={tickKey}
+        setTickKey={setTickKey}
       />
     </Box>
   );

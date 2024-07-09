@@ -7,18 +7,18 @@ import Header from "../../components/Header";
 import { Button } from "@mui/material";
 import AddUserDialog from "../team/AddUserDialog";
 import { useState, useEffect } from "react";
-const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
+const Kitchen = ({ companyName, addTitle, setAddTitle, url, setActiveField, setShowKeyboard, kitchenDetails, setKitchenDetails, kitchenDetailsCopy, setKitchenDetailsCopy, valMessage, setValMessage, userName, setUserName}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-  const [kitchenDetails, setKitchenDetails] = useState([]);
-  const [kitchenDetailsCopy, setKitchenDetailsCopy] = useState([
-    ...kitchenDetails,
-  ]);
-
+  
     const [unsavedChanges, setUnsavedChanges] = useState(false);
-    const [prList, setPrList] = useState([]);
+  const [prList, setPrList] = useState([]);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const modalStyle = {
     background: colors.whiteblack[100],
@@ -36,7 +36,6 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
     
     const handleAddUser = (title) => {
     setAddTitle(title);
-    // Open the modal when "Add" button is clicked
     setIsDialogOpen(true);
     };
     
@@ -153,8 +152,9 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
             color="secondary"
             style={{ fontSize: "1.1rem" }}
             onClick={() => handleAddUser("Add Kitchen Number")}
+            
           >
-            Add
+            {t.Add}
           </Button>
         </Box>
       </Box>
@@ -190,6 +190,12 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url}) => {
             onAdd={handleKitchenDetailsChange}
             successMess={successMess}
             title={addTitle}
+            setActiveField={setActiveField}
+            setShowKeyboard={setShowKeyboard}
+            setValMessage={setValMessage}
+            valMessage={valMessage}
+            userName={userName}
+            setUserName={setUserName}
           />
         </Box>
       </Box>

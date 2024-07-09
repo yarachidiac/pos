@@ -34,7 +34,10 @@ const ItemDetailsModal = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
-  valMessage, setValMessage
+  valMessage, setValMessage, inputValue,
+        setInputValue,
+        tickKey,
+        setTickKey
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -181,6 +184,10 @@ const ItemDetailsModal = ({
             setShowKeyboard={setShowKeyboard}
             valMessage={valMessage}
             setValMessage={setValMessage}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            tickKey={tickKey}
+            setTickKey={setTickKey}
           />
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not

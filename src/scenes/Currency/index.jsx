@@ -10,7 +10,7 @@ import CurrencyDetails from "./CurrencyDetails";
 import Keyboard from "../form/Keyboard";
 
 const Currency = ({ companyName, addTitle, setAddTitle, url, activeField, setActiveField, showKeyboard,
-setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCurrencyDetailsCopy}) => {
+setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCurrencyDetailsCopy, userName, setUserName, valMessage, setValMessage}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -185,8 +185,14 @@ setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCu
             onAdd={handleCurrencyDetailsChange}
             successMess={successMess}
             title={addTitle}
+            setActiveField={setActiveField}
+            setShowKeyboard={setShowKeyboard}
+            setUserName={setUserName}
+            userName={userName}
+            valMessage={valMessage}
+            setValMessage={setValMessage}
           />
-        </Box>   
+        </Box>
       </Box>
     </Box>
   );

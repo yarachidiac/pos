@@ -21,8 +21,9 @@ const ManagePoS = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard, itemDetails, setItemDetails, itemDetailsCopy, setItemDetailsCopy, valMessage, setValMessage, 
-  userName, setUserName
+  setShowKeyboard, valMessage, setValMessage, 
+  userName, setUserName,
+  tickKey, setTickKey, inputValue, setInputValue
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -35,6 +36,9 @@ const ManagePoS = ({
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
+  const [itemDetails, setItemDetails] = useState({});
+  const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });
+  
 
   useEffect(() => {
     // Read company_name from localStorage
@@ -66,7 +70,7 @@ const ManagePoS = ({
     setItemDetails(params.row);
     setItemDetailsCopy(params.row)
   };
-
+  console.log("anaaaaaaaaaaaaa ", itemDetails);
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
   };
@@ -164,9 +168,9 @@ const ManagePoS = ({
   return (
     <Box
       sx={{
-        display:"flex",
+        display: "flex",
         justifyContent: "center",
-        flexDirection:"column",
+        flexDirection: "column",
         alignItems: "center",
         //ml: "2%",
         height: "100%",
@@ -213,6 +217,10 @@ const ManagePoS = ({
         setShowKeyboard={setShowKeyboard}
         valMessage={valMessage}
         setValMessage={setValMessage}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        tickKey={tickKey}
+        setTickKey={setTickKey}
       />
       <DatagridTable
         rows={items}
@@ -232,6 +240,10 @@ const ManagePoS = ({
         setUserName={setUserName}
         valMessage={valMessage}
         setValMessage={setValMessage}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        tickKey={tickKey}
+        setTickKey={setTickKey}
       />
     </Box>
   );

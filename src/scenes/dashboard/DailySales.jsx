@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import DatagridTable from "../DatagridTable";
 import { format as dateFnsFormat } from "date-fns";
+import Button from "@mui/material/Button";
 
 const DailySales = ({ companyName, url }) => {
   const theme = useTheme();
@@ -14,6 +15,7 @@ const DailySales = ({ companyName, url }) => {
   const [selectedItem, setSelectedItem] = useState("");
   const [openSaleModal, setOpenSaleModal] = useState(false);
   const [selectedName, setSelectedName] = useState("");
+  const [totalSum, setTotalSum] = useState("");
 
     const handleRowClick = (params) => {
         setOpenSaleModal(true);
@@ -30,7 +32,12 @@ const DailySales = ({ companyName, url }) => {
         // Ensure that data is an object with the 'initialState' property
 
         if (Array.isArray(data)) {
-          setDaily(data);
+          setDaily(data); 
+          const sum = data.reduce(
+            (acc, item) => acc + (item.TotalItem || 0),
+            0
+          );
+          setTotalSum(sum);
         } else {
           console.error("Invalid data format received:", data);
         }
@@ -46,7 +53,7 @@ const DailySales = ({ companyName, url }) => {
     {
       field: "ItemNo",
       headerName: "Item No",
-      minWidth: 100,
+      minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: "1",
@@ -67,7 +74,7 @@ const DailySales = ({ companyName, url }) => {
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
+      minWidth: 200,
       flex: "1",
     },
     {
@@ -75,10 +82,9 @@ const DailySales = ({ companyName, url }) => {
       headerName: "Disc",
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
+      minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
       flex: "1",
     },
     {
@@ -86,10 +92,9 @@ const DailySales = ({ companyName, url }) => {
       headerName: "Tax",
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
+      minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
       flex: "1",
     },
     {
@@ -99,7 +104,7 @@ const DailySales = ({ companyName, url }) => {
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
+      minWidth: 150,
       flex: "1",
     },
     {
@@ -109,7 +114,7 @@ const DailySales = ({ companyName, url }) => {
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 100,
+      minWidth: 200,
       flex: "1",
     },
   ];
@@ -122,17 +127,32 @@ const DailySales = ({ companyName, url }) => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-         alignItems:"center"
+        alignItems: "center",
       }}
     >
-      <Box sx={{alignItems:"flex-start"}}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "start",
+        }}
+      >
         <Header title="Daily Sales" />
+        <Button
+          component="h1"
+          variant="contained"
+          color="secondary"
+          style={{ fontSize: "1.1rem" }}
+          //onDoubleClick={handleDoubleClick}
+        >
+          Total  {totalSum}
+        </Button>
       </Box>
       <DatagridTable
         rows={daily}
         columns={columns}
         getRowId={(row) => row.ItemNo}
-        handleRowClick={handleRowClick }
+        handleRowClick={handleRowClick}
       />
       <DailySalesModal
         isOpen={openSaleModal}

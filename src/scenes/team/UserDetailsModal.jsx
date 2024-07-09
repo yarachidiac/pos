@@ -24,6 +24,8 @@ import { margin } from "@mui/system";
 import Button from "@mui/material/Button";
 import Keyboard from "../form/Keyboard";
 import SalesCondition from "./SalesConditions";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const StockInventoryTable = ({ userDetails, }) => (
   <Box>
@@ -57,7 +59,13 @@ const UserDetailsModal = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard, valMessage, setValMessage,
+  setShowKeyboard,
+  valMessage,
+  setValMessage,
+  tickKey,
+  inputValue,
+  setInputValue,
+  setTickKey,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -66,6 +74,8 @@ const UserDetailsModal = ({
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
+  const { language } = useLanguage();
+  const t = translations[language];
 
   console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", userDetailsCopy);
   console.log("ana url mn l userDetailsModal", url);
@@ -73,19 +83,19 @@ const UserDetailsModal = ({
   const getOptionLabel = (option) => {
     switch (option) {
       case "accounting":
-        return "Accounting";
+        return t.accounting;
       case "stock-inventory":
-        return "Stock Inventory";
+        return t.stockInventory;
       case "invoices":
-        return "Invoices & Types Conditions";
+        return t.invoices;
       case "sales":
-        return "Sales Invoices Conditions";
+        return t.sales;
       case "tables":
-        return "Tables-Dine In & Beauty";
+        return t.tables;
       case "other":
-        return "Other";
+        return t.other;
       default:
-        return option.charAt(0).toUpperCase() + option.slice(1);
+        return t.general;
     }
   };
 
@@ -315,6 +325,10 @@ const UserDetailsModal = ({
             setActiveField={setActiveField}
             showKeyboard={showKeyboard}
             setShowKeyboard={setShowKeyboard}
+            tickKey={tickKey}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            setTickKey={setTickKey}
           />
         );
       case "stock-inventory":
@@ -531,7 +545,7 @@ const UserDetailsModal = ({
             onConfirm={handleConfirmClose} // Function to handle confirmation
           />
         </Box>
-        {/* Other modal content */}       
+        {/* Other modal content */}
       </Box>
     </Modal>
   );

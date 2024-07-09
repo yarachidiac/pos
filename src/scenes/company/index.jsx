@@ -14,31 +14,21 @@ import Button from "@mui/material/Button";
 import GeneralA from "./GeneralA"
 import BackOffice from "./BackOffice";
 import Keyboard from "../form/Keyboard";
+import Language from "./Language";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
+
 
 const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, companyDetails, setCompanyDetails, companyDetailsCopy, setCompanyDetailsCopy, error, setError }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
-
+  const { language } = useLanguage();
   const getOptionLabel = (option) => {
-    switch (option) {
-      case "general":
-        return "General";
-      case "back-office":
-        return "Back Office";
-      case "Accounting-numbers":
-        return "Accouting Numbers";
-      case "accounting-options":
-        return "Accounting Options";
-      case "language":
-        return "Language";
-      case "pos-options":
-        return "PoS Options";
-      case "export-files":
-        return "Export Files";
-      default:
-        return option.charAt(0).toUpperCase() + option.slice(1);
-    }
+    return (
+      translations[language][option] ||
+      option.charAt(0).toUpperCase() + option.slice(1)
+    );
   };
 
   const modalStyle = {
@@ -119,6 +109,8 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
         );
       case "back-office":
         return <BackOffice />;
+      case "language":
+        return <Language/>
       // Add more cases for each option
       default:
         return null;
@@ -156,7 +148,7 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
                 "general",
                 "back-office",
                 "accounting-numbers",
-                "accouting-options",
+                "accounting-options",
                 "language",
                 "pos-options",
                 "export-files",

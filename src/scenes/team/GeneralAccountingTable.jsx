@@ -17,6 +17,8 @@ import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
 import Checkbox from "@mui/material/Checkbox";
 import Keyboard from "../form/Keyboard";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const GeneralAccountingTable = ({
   userDetails,
@@ -36,11 +38,17 @@ const GeneralAccountingTable = ({
   setActiveField,
   showKeyboard,
   setShowKeyboard,
+  tickKey,
+  inputValue,
+  setInputValue,
+  setTickKey,
 }) => {
   console.log("fromm generallllllllllllllllllll", userDetails);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,7 +56,7 @@ const GeneralAccountingTable = ({
   };
 
   const handleEmailChange = (e) => {
-    const email = e.target.value;
+    const email = typeof e === "object" ? e.target.value : e;
     if (!email) {
       setValMessage("");
     } else if (!validateEmail(email)) {
@@ -64,7 +72,21 @@ const GeneralAccountingTable = ({
       ...prev,
       [field]: updatedValue,
     }));
+    setInputValue("");
+    setTickKey(false);
   };
+
+  useEffect(() => {
+    console.log("valuee tabaa keyy tickkkk", tickKey);
+    if (tickKey) {
+      console.log("ana b l tickkey");
+      if (activeField === "email") {
+        handleEmailChange(inputValue);
+      } else {
+        handleValueUpdate(activeField, inputValue);
+      }
+    }
+  }, [tickKey]);
 
   useEffect(() => {
     // Set the callback function in the parent component
@@ -74,7 +96,6 @@ const GeneralAccountingTable = ({
       setUnsavedChanges(false);
     }
   }, [userDetailsCopy, userDetails, unsavedChanges]);
-
 
   console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
   const rows = Object.entries(userDetailsCopy)
@@ -114,7 +135,10 @@ const GeneralAccountingTable = ({
               justifyContent: "center",
             }}
           >
-            <Typography variant="h4">{key}</Typography>
+            <Typography variant="h4">
+              {" "}
+              {translations[language][key.toLowerCase()] || key}
+            </Typography>
           </Box>
         </TableCell>
         <TableCell
@@ -273,7 +297,7 @@ const GeneralAccountingTable = ({
                 )
               }
             >
-              Save
+              {t.save ? t.save.toLowerCase() : "save"}
             </Button>
           </Box>
         )}

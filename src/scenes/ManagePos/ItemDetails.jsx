@@ -36,13 +36,14 @@ const ItemDetails = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard,valMessage, setValMessage
+  setShowKeyboard,valMessage, setValMessage, inputValue,
+        setInputValue,
+        tickKey,
+        setTickKey
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-      console.log("urllllllllllll mn l itemdetails", url);
-
-
+  console.log("urllllllllllll mn l itemdetails", url);
   console.log("itemDetails", itemDetails)
   console.log("itemDetailsCopy",)
   const [groupNames, setGroupNames] = useState([]);
@@ -114,7 +115,17 @@ const ItemDetails = ({
         GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
       }));
     }
+    setInputValue("");
+    setTickKey(false);
+
   };
+
+  useEffect(() => {
+    console.log("valuee tabaa keyy tickkkk", tickKey);
+    if (tickKey) {
+        handleValueUpdate(activeField, inputValue);
+    }
+  }, [tickKey]);
 
   useEffect(() => {
     if (JSON.stringify(itemDetailsCopy) !== JSON.stringify(itemDetails)) {

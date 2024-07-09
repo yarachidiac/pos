@@ -18,13 +18,12 @@ const Keyboard = ({
   onKeyPress,
   setShowKeyboard,
   showKeyboard,
-  activeField,
+  activeField, inputValue, setInputValue, setTickKey
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [language, setLanguage] = useState("english");
   const [capsLock, setCapsLock] = useState(false);
-  const [inputValue, setInputValue] = useState("");
 
   const toggleLanguage = () => {
     setLanguage((prevLanguage) =>
@@ -54,9 +53,8 @@ const Keyboard = ({
   };
 
   const handleSaveInput = () => {
-    setInputValue("");
-    setShowKeyboard(!showKeyboard);
     onKeyPress(inputValue);
+    setShowKeyboard(!showKeyboard);
   };
 
   const handleCloseKeyboard = () => {

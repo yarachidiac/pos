@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
@@ -11,24 +11,43 @@ import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import { height } from "@mui/system";
 
-const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title, setShowKeyboard,setActiveField, userName, setUserName, valMessage, setValMessage }) => {
+const AddUserDialog = ({
+  isOpen,
+  onClose,
+  onAdd,
+  successMess,
+  title,
+  setShowKeyboard,
+  setActiveField,
+  userName,
+  setUserName,
+  valMessage,
+  setValMessage,
+  tickKey,
+  setTickKey,
+  inputValue,
+  setInputValue
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   const handleChange = (e) => {
+    const v = typeof e === "object" ? e.target.value : e;
     const titleIncludesNumber = title.includes("Number");
     const titleIncludeGroup = title.includes("Group");
-    if (titleIncludesNumber && isNaN(e.target.value)) {
+    if (titleIncludesNumber && isNaN(v)) {
       if (titleIncludeGroup) {
         setValMessage("");
-        setUserName(e.target.value);
+        setUserName(v);
       } else {
-         setValMessage("Number only allowed");
+        setValMessage("Number only allowed");
       }
     } else {
       setValMessage("");
-      setUserName(e.target.value);
+      setUserName(v);
     }
+    setTickKey(false);
+    setInputValue("");
   };
 
   const handleAddUser = () => {
@@ -37,7 +56,7 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title, setShowKeyb
     setValMessage("");
     setTimeout(() => {
       onClose();
-    }, 2000); 
+    }, 2000);
   };
 
   const handleCancel = () => {
@@ -46,6 +65,14 @@ const AddUserDialog = ({ isOpen, onClose, onAdd, successMess, title, setShowKeyb
     onClose();
   };
 
+  useEffect(() => {
+    console.log("valuee tabaa keyy tickkkk", tickKey);
+    if (tickKey) {
+      console.log("ana b l tickkey");
+      handleChange(inputValue);
+    }
+  }, [tickKey]);
+  
   return (
     <Dialog
       open={isOpen}

@@ -3,9 +3,13 @@ import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import StatSet from "./StatSet";
 import Header from "../../components/Header";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 const Station = ({ companyName, url }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
   // const [isDialogOpen, setIsDialogOpen] = useState(false);
   // const [successMess, setSuccessMess] = useState();
   // const [kitchenDetails, setKitchenDetails] = useState([]);
@@ -44,8 +48,8 @@ const Station = ({ companyName, url }) => {
           height: "10%",
         }}
       >
-        <Box sx={{pt:"2%", pl:"5%"}}>
-          <Header title="Station Settings" />
+        <Box sx={{ pt: "2%", pl: "5%" }}>
+          <Header title={t.stationSettings} />
         </Box>
       </Box>
       <Box
@@ -62,7 +66,7 @@ const Station = ({ companyName, url }) => {
             ...modalStyle,
           }}
         >
-          <StatSet companyName={companyName} url={url}/>
+          <StatSet companyName={companyName} url={url} />
         </Box>
       </Box>
     </Box>

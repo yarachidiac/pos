@@ -97,11 +97,9 @@ function App() {
   const [currencyDetailsCopy, setCurrencyDetailsCopy] = useState([
     ...currencyDetails,
   ]);
-  const [userDetails, setUserDetails] = useState({});
-  const [userDetailsCopy, setUserDetailsCopy] = useState({ ...userDetails });
+
   const [valMessage, setValMessage] = useState("");
-  const [itemDetails, setItemDetails] = useState({});
-  const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });
+
   const [groupDetails, setGroupDetails] = useState({});
   const [groupDetailsCopy, setGroupDetailsCopy] = useState({
     ...groupDetails,
@@ -122,9 +120,15 @@ function App() {
   const [searchClient, setSearchClient] = useState("");
   const [allowedUser, setAllowedUser] = useState("");
   const [selectedOption, setSelectedOption] = useState(allowedUser);
+  const [kitchenDetails, setKitchenDetails] = useState([]);
+  const [kitchenDetailsCopy, setKitchenDetailsCopy] = useState([
+    ...kitchenDetails,
+  ]);
 
+  const [tickKey, setTickKey] = useState(false);
+  const [inputValue, setInputValue] = useState("");
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.122:8000";
+  const url = "http://192.168.16.107:8000";
   const v = "pointofsale";
 
   console.log("filter mn l app", filterValue);
@@ -260,146 +264,164 @@ function App() {
     return emailRegex.test(email);
   };
 
-  const handleKeyPress = (input) => {
-    if (location.pathname === `/${v}/CompanyManagement`) {
-      if (
-        activeField === "Phone" ||
-        activeField === "Rate" ||
-        activeField === "VAT"
-      ) {
-        if (!isNaN(input)) {
-          setCompanyDetailsCopy((prev) => ({
-            ...prev,
-            [activeField]: input,
-          }));
-          setError("");
-        } else {
-          setError(`${activeField} must be a number.`);
-        }
-      } else {
-        setCompanyDetailsCopy((prev) => ({
-          ...prev,
-          [activeField]: input,
-        }));
-      }
-    } else if (location.pathname === `/${v}/Currency`) {
-      const [field, index] = activeField.split("-");
-      setCurrencyDetailsCopy((prevDetails) =>
-        prevDetails.map((detail, i) =>
-          i === parseInt(index) ? { ...detail, [field]: input } : detail
-        )
-      );
-    } else if (location.pathname === `/${v}/team`) {
-      if (activeField === "email") {
-        if (!validateEmail(input)) {
-          setValMessage("Invalid email format");
-        } else {
-          setValMessage("");
-        }
-      } else if (activeField === "Add User") {
-        setUserName(input);
-      }
-      setUserDetailsCopy((prevClientDetailsCopy) => ({
-        ...prevClientDetailsCopy,
-        [activeField]: input,
-      }));
-    } else if (location.pathname === `/${v}/ManagePoS`) {
-      if (
-        activeField === "Tax" ||
-        activeField === "UPrice" ||
-        activeField === "Disc" ||
-        activeField === "Srv"
-      ) {
-        // Validate if the value is a number
-        if (isNaN(input)) {
-          setValMessage(`${activeField} must be a number`);
-          return;
-        }
-      } else if (
-        activeField === "KT1" ||
-        activeField === "KT2" ||
-        activeField === "KT3" ||
-        activeField === "KT4"
-      ) {
-        // Validate if the value has more than 2 characters
-        if (input.length > 2) {
-          setValMessage(`${activeField} must be at most 2 characters long`);
-          return;
-        }
-      }
-
-      setValMessage(""); // Clear validation message if no error
-
-      // Update the appropriate text field with the validated input
-      setItemDetailsCopy((prevClientDetailsCopy) => ({
-        ...prevClientDetailsCopy,
-        [activeField]: input,
-      }));
-    } else if (location.pathname === `/${v}/Groups`) {
-      setGroupDetailsCopy((prevClientDetailsCopy) => ({
-        ...prevClientDetailsCopy,
-        [activeField]: input,
-      }));
-    }
-    if (
-      activeField === "Add Item Number" ||
-      activeField === "Add Group Number"
-    ) {
-      if (!isNaN(input)) {
-        setValMessage("");
-        setUserName(input);
-      } else {
-        setValMessage("Number only allowed");
-      }
-    } else if (activeField === "Add Client") {
-      setUserName(input);
-    } else if (activeField === "Section No") {
-      setSectionNo(input);
-    } else if (activeField === "Section Name") {
-      setSectionName(input);
-    } else if (activeField === "Table No") {
-      setTableNo(input);
-    } else if (activeField === "Table Waiter") {
-      setTableWaiter(input);
-    } else if (activeField === "Description") {
-      setDescription(input);
-    } else if (activeField === "Search a client") {
-      setSearchClient(input);
-    } else if (
-      activeField === "AccDisc" ||
-      activeField === "VAT" ||
-      activeField === "AccPrice" ||
-      activeField === "Floor"
-    ) {
-      if (isNaN(input)) {
-        setValMessage(`${activeField} should be number`);
-        return;
-      } else {
-        setValMessage("");
-      }
-    } else if (activeField === "Tel") {
-      if (!/^\d+$/.test(input)) {
-        setValMessage("Telephone number should contain only digits");
-        return;
-      } else {
-        setValMessage("");
-      }
-    } else if (activeField === "Email") {
-      if (!input) {
-        setValMessage("");
-      } else if (!validateEmail(input)) {
-        setValMessage("Invalid email format");
-        return;
-      } else {
-        setValMessage("");
-      }
-    }
-    // Update the appropriate text field with the validated input
-    setClientDetailsCopy((prevClientDetailsCopy) => ({
-      ...prevClientDetailsCopy,
-      [activeField]: input,
-    }));
+  const handleBoth = () => {
+    setTickKey(true);
   };
+  // const handleKeyPress = (input) => {
+  //   if (location.pathname === `/${v}/CompanyManagement`) {
+  //     if (
+  //       activeField === "Phone" ||
+  //       activeField === "Rate" ||
+  //       activeField === "VAT"
+  //     ) {
+  //       if (!isNaN(input)) {
+  //         setCompanyDetailsCopy((prev) => ({
+  //           ...prev,
+  //           [activeField]: input,
+  //         }));
+  //         setError("");
+  //       } else {
+  //         setError(`${activeField} must be a number.`);
+  //       }
+  //     } else {
+  //       setCompanyDetailsCopy((prev) => ({
+  //         ...prev,
+  //         [activeField]: input,
+  //       }));
+  //     }
+  //   } else if (location.pathname === `/${v}/Currency`) {
+  //     if (activeField === "Add Currency Number") {
+  //       if (!isNaN(input)) {
+  //         setValMessage("");
+  //         setUserName(input);
+  //       } else {
+  //         setValMessage("Number only allowed");
+  //       }
+  //     }
+  //     const [field, index] = activeField.split("-");
+  //     setCurrencyDetailsCopy((prevDetails) =>
+  //       prevDetails.map((detail, i) =>
+  //         i === parseInt(index) ? { ...detail, [field]: input } : detail
+  //       )
+  //     );
+  //   } else if (location.pathname === `/${v}/team`) {
+  //     if (activeField === "email") {
+  //       if (!validateEmail(input)) {
+  //         setValMessage("Invalid email format");
+  //       } else {
+  //         setValMessage("");
+  //       }
+  //     } else if (activeField === "Add User") {
+  //       setUserName(input);
+  //     }
+  //     setUserDetailsCopy((prevClientDetailsCopy) => ({
+  //       ...prevClientDetailsCopy,
+  //       [activeField]: input,
+  //     }));
+  //   } else if (location.pathname === `/${v}/ManagePoS`) {
+  //     if (
+  //       activeField === "Tax" ||
+  //       activeField === "UPrice" ||
+  //       activeField === "Disc" ||
+  //       activeField === "Srv"
+  //     ) {
+  //       // Validate if the value is a number
+  //       if (isNaN(input)) {
+  //         setValMessage(`${activeField} must be a number`);
+  //         return;
+  //       }
+  //     } else if (
+  //       activeField === "KT1" ||
+  //       activeField === "KT2" ||
+  //       activeField === "KT3" ||
+  //       activeField === "KT4"
+  //     ) {
+  //       // Validate if the value has more than 2 characters
+  //       if (input.length > 2) {
+  //         setValMessage(`${activeField} must be at most 2 characters long`);
+  //         return;
+  //       }
+  //     }
+
+  //     setValMessage(""); // Clear validation message if no error
+
+  //     // Update the appropriate text field with the validated input
+  //     setItemDetailsCopy((prevClientDetailsCopy) => ({
+  //       ...prevClientDetailsCopy,
+  //       [activeField]: input,
+  //     }));
+  //   } else if (location.pathname === `/${v}/Groups`) {
+  //     setGroupDetailsCopy((prevClientDetailsCopy) => ({
+  //       ...prevClientDetailsCopy,
+  //       [activeField]: input,
+  //     }));
+  //   } else if (location.pathname === `/${v}/Kitchen`) {
+  //     if (!isNaN(input)) {
+  //       setValMessage("");
+  //       setUserName(input);
+  //     } else {
+  //       setValMessage("Number only allowed");
+  //     }
+  //   }
+  //   if (
+  //     activeField === "Add Item Number" ||
+  //     activeField === "Add Group Number"
+  //   ) {
+  //     if (!isNaN(input)) {
+  //       setValMessage("");
+  //       setUserName(input);
+  //     } else {
+  //       setValMessage("Number only allowed");
+  //     }
+  //   } else if (activeField === "Add Client") {
+  //     setUserName(input);
+  //   } else if (activeField === "Section No") {
+  //     setSectionNo(input);
+  //   } else if (activeField === "Section Name") {
+  //     setSectionName(input);
+  //   } else if (activeField === "Table No") {
+  //     setTableNo(input);
+  //   } else if (activeField === "Table Waiter") {
+  //     setTableWaiter(input);
+  //   } else if (activeField === "Description") {
+  //     setDescription(input);
+  //   } else if (activeField === "Search a client") {
+  //     setSearchClient(input);
+  //   } else if (
+  //     activeField === "AccDisc" ||
+  //     activeField === "VAT" ||
+  //     activeField === "AccPrice" ||
+  //     activeField === "Floor"
+  //   ) {
+  //     if (isNaN(input)) {
+  //       setValMessage(`${activeField} should be number`);
+  //       return;
+  //     } else {
+  //       setValMessage("");
+  //     }
+  //   } else if (activeField === "Tel") {
+  //     if (!/^\d+$/.test(input)) {
+  //       setValMessage("Telephone number should contain only digits");
+  //       return;
+  //     } else {
+  //       setValMessage("");
+  //     }
+  //   } else if (activeField === "Email") {
+  //     if (!input) {
+  //       setValMessage("");
+  //     } else if (!validateEmail(input)) {
+  //       setValMessage("Invalid email format");
+  //       return;
+  //     } else {
+  //       setValMessage("");
+  //     }
+  //   }
+  //   // Update the appropriate text field with the validated input
+  //   setClientDetailsCopy((prevClientDetailsCopy) => ({
+  //     ...prevClientDetailsCopy,
+  //     [activeField]: input,
+  //   }));
+  // };
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -453,6 +475,7 @@ function App() {
                   v={v}
                   setOpenCash={setOpenCash}
                   setOpenEOD={setOpenEOD}
+                  username={username}
                 />
               )}
               <main className="content">
@@ -491,14 +514,18 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
-                          userDetails={userDetails}
-                          setUserDetails={setUserDetails}
-                          userDetailsCopy={userDetailsCopy}
-                          setUserDetailsCopy={setUserDetailsCopy}
+                          // userDetails={userDetails}
+                          // setUserDetails={setUserDetails}
+                          // userDetailsCopy={userDetailsCopy}
+                          // setUserDetailsCopy={setUserDetailsCopy}
                           valMessage={valMessage}
                           setValMessage={setValMessage}
                           userName={userName}
                           setUserName={setUserName}
+                          tickKey={tickKey}
+                          inputValue={inputValue}
+                          setInputValue={setInputValue}
+                          setTickKey={setTickKey}
                         />
                       }
                     />
@@ -593,14 +620,18 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
-                          itemDetails={itemDetails}
-                          setItemDetails={setItemDetails}
-                          itemDetailsCopy={itemDetailsCopy}
-                          setItemDetailsCopy={setItemDetailsCopy}
+                          // itemDetails={itemDetails}
+                          // setItemDetails={setItemDetails}
+                          // itemDetailsCopy={itemDetailsCopy}
+                          // setItemDetailsCopy={setItemDetailsCopy}
                           valMessage={valMessage}
                           setValMessage={setValMessage}
                           userName={userName}
                           setUserName={setUserName}
+                          tickKey={tickKey}
+                          inputValue={inputValue}
+                          setInputValue={setInputValue}
+                          setTickKey={setTickKey}
                         />
                       }
                     />
@@ -697,6 +728,16 @@ function App() {
                         addTitle={addTitle}
                         setAddTitle={setAddTitle}
                         url={url}
+                        setActiveField={setActiveField}
+                        setShowKeyboard={setShowKeyboard}
+                        kitchenDetails={kitchenDetails}
+                        setKitchenDetails={setKitchenDetails}
+                        kitchenDetailsCopy={kitchenDetailsCopy}
+                        setKitchenDetailsCopy={setKitchenDetailsCopy}
+                        valMessage={valMessage}
+                        setValMessage={setValMessage}
+                        userName={userName}
+                        setUserName={setUserName}
                       />
                     }
                   />
@@ -750,6 +791,10 @@ function App() {
                           setCurrencyDetails={setCurrencyDetails}
                           currencyDetailsCopy={currencyDetailsCopy}
                           setCurrencyDetailsCopy={setCurrencyDetailsCopy}
+                          userName={userName}
+                          setUserName={setUserName}
+                          valMessage={valMessage}
+                          setValMessage={setValMessage}
                         />
                       }
                     />
@@ -798,10 +843,13 @@ function App() {
                     }}
                   >
                     <Keyboard
-                      onKeyPress={handleKeyPress}
+                      onKeyPress={handleBoth}
                       setShowKeyboard={setShowKeyboard}
                       showKeyboard={showKeyboard}
                       activeField={activeField}
+                      inputValue={inputValue}
+                      setInputValue={setInputValue}
+                      setTickKey={setTickKey}
                     />
                   </Box>
                 )}

@@ -15,6 +15,8 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import { MenuItem } from "@mui/material";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 const StatSet = ({ companyName, url }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const theme = useTheme();
@@ -26,6 +28,8 @@ const StatSet = ({ companyName, url }) => {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const reportOptions = ["Report 1", "Report 2", "Report 3"]; // Example report options
   const [errorMess, setErrorMess] = useState("");
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleValueUpdate = (field, updatedValue) => {
     if (field === "QtyPrintInv" || field === "QtyPrintKT") {
@@ -123,7 +127,7 @@ const StatSet = ({ companyName, url }) => {
             justifyContent: "center",
           }}
         >
-          <Typography variant="h4">{key}</Typography>
+          <Typography variant="h4">{t[key]}</Typography>
         </Box>
       </TableCell>
 

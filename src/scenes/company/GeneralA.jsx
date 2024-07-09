@@ -19,6 +19,8 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard, setShowKeyboard, companyDetails, setCompanyDetails, companyDetailsCopy, setCompanyDetailsCopy, error, setError}) => {
   
@@ -27,6 +29,7 @@ const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard,
   const colors = tokens(theme.palette.mode);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [curr, setCurr] = useState([]);
+  const { language } = useLanguage();
 
 console.log(
   "ssssssssssssssssssssss",
@@ -154,7 +157,9 @@ console.log("copppppppp", companyDetailsCopy);
             justifyContent: "center",
           }}
         >
-          <Typography variant="h4">{key}</Typography>
+          <Typography variant="h4">
+            {translations[language][key.toLowerCase()] || key}
+          </Typography>
         </Box>
       </TableCell>
 
