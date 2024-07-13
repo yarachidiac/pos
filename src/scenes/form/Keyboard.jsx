@@ -32,7 +32,6 @@ const Keyboard = ({
   };
 
   const toggleCapsLock = () => {
-    console.log("ana fetett");
     setCapsLock((prevCapsLock) => !prevCapsLock);
   };
 
@@ -60,7 +59,6 @@ const Keyboard = ({
   const handleCloseKeyboard = () => {
     setShowKeyboard(!showKeyboard);
   };
-  console.log("ana el capslock", capsLock);
 
   const formatActiveField = (activeField) => {
     if (activeField.includes("-")) {
@@ -169,12 +167,10 @@ const Keyboard = ({
     const keys = language === "english" ? englishKeys : arabicKeys;
 
     return (
-      console.log("ana b aleb l render", capsLock),
       (
         <Grid container spacing={1} justifyContent="center">
           {keys.map(
             (key, keyIndex) => (
-              console.log("ana l upper", key.toUpperCase()),
               (
                 <Grid
                   item

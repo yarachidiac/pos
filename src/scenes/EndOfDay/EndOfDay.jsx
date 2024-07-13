@@ -9,6 +9,8 @@ import { tokens } from "../../theme";
 import { useEffect, useState } from "react";
 import { height } from "@mui/system";
 import { format } from "date-fns";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const EndOfDay = ({
   open,
@@ -21,6 +23,8 @@ const EndOfDay = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [rows, setRows] = useState([]);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const style = {
     position: "absolute",
@@ -62,7 +66,7 @@ const EndOfDay = ({
   const columns = [
     {
       field: "User",
-      headerName: "User",
+      headerName: t["User"],
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
@@ -70,7 +74,7 @@ const EndOfDay = ({
     },
     {
       field: "InvType",
-      headerName: "InvType",
+      headerName: t["InvType"],
       minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
@@ -78,7 +82,7 @@ const EndOfDay = ({
     },
     {
       field: "InvNo",
-      headerName: "InvNo",
+      headerName: t["InvNo"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -88,7 +92,7 @@ const EndOfDay = ({
 
     {
       field: "Date",
-      headerName: "Date",
+      headerName: t["Date"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -97,7 +101,7 @@ const EndOfDay = ({
     },
     {
       field: "Time",
-      headerName: "Time",
+      headerName: t["Time"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -106,7 +110,7 @@ const EndOfDay = ({
     },
     {
       field: "Disc",
-      headerName: "Disc",
+      headerName: t["Disc"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 50,
@@ -115,7 +119,7 @@ const EndOfDay = ({
     },
     {
       field: "Srv",
-      headerName: "Srv",
+      headerName: t["Srv"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 50,
@@ -124,7 +128,7 @@ const EndOfDay = ({
     },
     {
       field: "Branch",
-      headerName: "Branch",
+      headerName: t["Branch"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 150,
@@ -134,7 +138,7 @@ const EndOfDay = ({
   
     {
       field: "CashOnHand",
-      headerName: "CashOnHand",
+      headerName: t["COH"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -148,7 +152,7 @@ const EndOfDay = ({
       <Box sx={style}>
         <Box sx={{ height: "8%" }}>
           <Typography variant="h3" component="h1" sx={{ fontWeight: "500" }}>
-            Do you want to end your day?
+            {t["EndDay"]}
           </Typography>
         </Box>
         <Box sx={{ height: "82%", width: "100%" }}>
@@ -178,7 +182,7 @@ const EndOfDay = ({
             autoFocus
             style={{ fontSize: "0.9rem", marginRight: "8px" }}
           >
-            Yes
+            {t["Yes"]}
           </Button>
           <Button
             variant="contained"
@@ -186,7 +190,7 @@ const EndOfDay = ({
             onClick={onCancel}
             style={{ fontSize: "0.9rem" }}
           >
-            No
+            {t["No"]}
           </Button>
         </Box>
       </Box>

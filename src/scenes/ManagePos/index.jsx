@@ -10,6 +10,8 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import ItemDetailsModal from "./ItemDetailsModal";
 import DatagridTable from "../DatagridTable";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const ManagePoS = ({
   companyName,
@@ -37,15 +39,14 @@ const ManagePoS = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
   const [itemDetails, setItemDetails] = useState({});
-  const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });
-  
+  const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });  
+  const { language } = useLanguage();
+  const t = translations[language];
 
   useEffect(() => {
     // Read company_name from localStorage
     // const storedCompanyName = localStorage.getItem("company_name");
     // setCompanyName(storedCompanyName);
-
-    console.log("stored companyyyyyy", companyName);
 
     // Fetch users based on the company name
     if (companyName) {
@@ -53,7 +54,6 @@ const ManagePoS = ({
         .then((response) => response.json())
         .then((data) => {
           // Ensure that data is an object with the 'initialState' property
-          console.log("ssssssssssssss", data);
           if (Array.isArray(data)) {
             setItems(data);
           } else {
@@ -70,7 +70,6 @@ const ManagePoS = ({
     setItemDetails(params.row);
     setItemDetailsCopy(params.row)
   };
-  console.log("anaaaaaaaaaaaaa ", itemDetails);
   const renderTextCell = ({ value }) => {
     return <Typography variant="h4">{value}</Typography>;
   };
@@ -78,7 +77,7 @@ const ManagePoS = ({
   const columns = [
     {
       field: "ItemNo",
-      headerName: "Item No",
+      headerName: t["ItemNo"],
       headerAlign: "left",
       align: "left",
       minWidth: 100,
@@ -88,7 +87,7 @@ const ManagePoS = ({
     },
     {
       field: "ItemName",
-      headerName: "Item Name",
+      headerName: t["ItemName"],
       headerAlign: "left",
       align: "left",
       minWidth: 200,
@@ -98,7 +97,7 @@ const ManagePoS = ({
     },
     {
       field: "GroupName",
-      headerName: "Group Name",
+      headerName: t["GroupName"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -108,6 +107,7 @@ const ManagePoS = ({
   ];
 
   const handleAddItem = (title) => {
+    setValMessage("");
     setAddTitle(title);
     // Open the modal when "Add" button is clicked
     setIsDialogOpen(true);
@@ -115,7 +115,6 @@ const ManagePoS = ({
 
   const handleItemDetailsChange = async (newItemDetails) => {
     try {
-      console.log("newUserDetailssssssssss", newItemDetails.name);
       const apiUrl = `${url}/pos/additems/${companyName}/${newItemDetails.name}`;
 
       const response = await fetch(apiUrl, {
@@ -185,7 +184,7 @@ const ManagePoS = ({
         width="90%"
       >
         <Box>
-          <Header title="Manage Items" />
+          <Header title={t["manage_items"]} />
         </Box>
         <Box>
           <Button
@@ -194,7 +193,7 @@ const ManagePoS = ({
             style={{ fontSize: "1.1rem" }}
             onClick={() => handleAddItem("Add Item Number")}
           >
-            Add
+            {t["Add"]}
           </Button>
         </Box>
       </Box>
@@ -235,6 +234,7 @@ const ManagePoS = ({
         successMess={successMess}
         title={addTitle}
         setShowKeyboard={setShowKeyboard}
+        activeField={activeField}
         setActiveField={setActiveField}
         userName={userName}
         setUserName={setUserName}

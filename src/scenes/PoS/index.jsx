@@ -90,7 +90,10 @@ const PoS = ({
   setClientDetailsCopy,
   compTime,
   searchClient,
-  setSearchClient,
+  setSearchClient,tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -175,7 +178,6 @@ const PoS = ({
 
   const handlePrint = async() => {
       if (allowPrintInv === "Y") {
-        console.log("ana bl print station", defaultPrinter);
         printJS({
           printable: "myPrintableContent",
           type: "html",
@@ -290,7 +292,6 @@ const PoS = ({
     // Handle the submitted discount value
     if (numericKeypadType === "Discount") {
       setDiscValue(value);
-      console.log("Discount submitted:", value);
     } else if (numericKeypadType === "Service") {
       setSrv(value);
     }
@@ -503,14 +504,11 @@ const PoS = ({
   };
 
   useEffect(() => {
-    console.log("cccccccccuuuuuuuuuuuuu", closeTClicked);
     const handleCh = async () => { 
      if (invN && orderId) {
         if (!selectedTableId || (selectedTableId && closeTClicked)) {
           await handlePrint();
-          console.log("ana 3melet print bl close");
        } 
-       console.log("aadfaf", selectedMeals);
        navigate(`/${v}/PoS`);
        setSelectedTop("Takeaway");
        setIsNav(true);
@@ -525,7 +523,6 @@ const PoS = ({
        setFinalTotal(0);
        setDiscValue(0);
        setSrv(0);
-       console.log("ana seret hhhhhhhh", selectedRow);
        
       }
     }
@@ -598,7 +595,6 @@ const PoS = ({
         const unsentMeals = selectedMeals.filter(
           (meal) => meal.Printed !== "p"
         );
-        console.log("seleeee", selectedRow);
         const requestBody = {
           date: formattedDate,
           time: formattedTime,
@@ -652,11 +648,8 @@ const PoS = ({
             //   handlePrint();
             // }
           } else if (responseData["message"] === "Table closed") {
-            console.log("ana fetet hon");
             setInvN(responseData["invoiceDetails"]["InvNo"]);
             setOrderId(responseData["invoiceDetails"]["OrderId"]);
-            console.log("ana tahet", invN);
-            console.log("Ana", orderId);
           }
         }
         // Reset selectedMeals to an empty array
@@ -1987,6 +1980,10 @@ const PoS = ({
         setClientDetailsCopy={setClientDetailsCopy}
         searchClient={searchClient}
         setSearchClient={setSearchClient}
+        tickKey={tickKey}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setTickKey={setTickKey}
       ></DelModal>
       {ingredCard && (
         <IngredDialog

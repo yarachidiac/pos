@@ -17,13 +17,17 @@ import SectionDialog from "./SectionDialog";
 import { Link } from "react-router-dom";
 import Tables from "./Tables";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
-const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userControl, setShowKeyboard, setActiveField, sectionNo, setSectionNo, sectionName, setSectionName}) => {
+const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userControl, setShowKeyboard, setActiveField, sectionNo, setSectionNo, sectionName, setSectionName, setInputValue}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
   const [sections, setSections] = useState([]);
+  const { language } = useLanguage();
+  const t = translations[language];
   
 
   const navigate = useNavigate();
@@ -71,7 +75,6 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
   const onAdd = async (sectionInfo) => {
     try {
       if (addTitle === "Add Section") {
-        console.log("newwwwwwwww sectionnnnnn", sectionInfo);
         const apiUrl = `${url}/pos/addsections/${companyName}`;
 
         const response = await fetch(apiUrl, {
@@ -132,7 +135,6 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
     }
   };
 
-  console.log("ttttttttttttttttt", sections);
   return (
     <Box
       sx={{
@@ -151,7 +153,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
           ml: "3%",
         }}
       >
-        <Header title="Section" subtitle="Choose Title" />
+        <Header title={t["Sections"]} subtitle="Choose Title" />
 
         <Box
           sx={{
@@ -169,7 +171,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
               style={{ fontSize: "1.1rem" }}
               onClick={() => handleAddSection("Add Section")}
             >
-              Add
+              {t["Add"]}
             </Button>
           )}
         </Box>
@@ -232,7 +234,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
                       handleEditClick("Update Section");
                     }}
                   >
-                    Edit
+                    {t["Edit"]}
                   </Button>
                 )}
               </Box>
@@ -253,6 +255,7 @@ const Section = ({ addTitle, setAddTitle, companyName, message, url, v, userCont
         setSectionNo={setSectionNo}
         setShowKeyboard={setShowKeyboard}
         setActiveField={setActiveField}
+        setInputValue={setInputValue}
       />
     </Box>
   );

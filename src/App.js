@@ -47,6 +47,8 @@ import EndOfDay from "./scenes/EndOfDay/EndOfDay.jsx";
 import ResponseDialog from "./scenes/ResponseDialog.jsx";
 import Keyboard from "./scenes/form/Keyboard.jsx";
 import { useRef } from "react";
+import { setIn } from "formik";
+import Branch from "./scenes/team/Branch.jsx";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -128,10 +130,9 @@ function App() {
   const [tickKey, setTickKey] = useState(false);
   const [inputValue, setInputValue] = useState("");
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.107:8000";
+  const url = "http://192.168.16.120:8000";
   const v = "pointofsale";
 
-  console.log("filter mn l app", filterValue);
   useEffect(() => {
     const initializeAuthentication = async () => {
       try {
@@ -148,7 +149,6 @@ function App() {
           const storedCompCity = localStorage.getItem("comp_city");
           const storedAccNo = localStorage.getItem("acc_no");
           const storedCompTime = localStorage.getItem("comp_time");
-          console.log("ana bl Appp", storedCompanyName);
           setCompanyName(storedCompanyName);
           setBranch(storedBranch);
           setInvType(storedInvType);
@@ -159,7 +159,6 @@ function App() {
           setCompStreet(storedCompStreet);
           setAccNo(storedAccNo);
           setCompTime(storedCompTime);
-          console.log("men l app", compCity);
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -266,6 +265,47 @@ function App() {
 
   const handleBoth = () => {
     setTickKey(true);
+    if (activeField === "Add Currency Number") {
+      if (!isNaN(inputValue)) {
+        setValMessage("");
+        setUserName(inputValue);
+      } else {
+        setValMessage("Number only allowed");
+      }
+    } else if (activeField === "Add User") {
+      setUserName(inputValue);
+    } else if (
+      activeField === "Add Item Number" ||
+      activeField === "Add Group Number"
+    ) {
+      if (!isNaN(inputValue)) {
+        setValMessage("");
+        setUserName(inputValue);
+      } else {
+        setValMessage("Number only allowed");
+      }
+    } else if (activeField === "Add Client") {
+      setUserName(inputValue);
+    } else if (activeField === "Section No") {
+      setSectionNo(inputValue);
+    } else if (activeField === "Section Name") {
+      setSectionName(inputValue);
+    } else if (activeField === "Table No") {
+      setTableNo(inputValue);
+    } else if (activeField === "Table Waiter") {
+      setTableWaiter(inputValue);
+    } else if (activeField === "Description") {
+      setDescription(inputValue);
+    } else if (activeField === "Search a client") {
+      setSearchClient(inputValue);
+    } else if (location.pathname === `/${v}/Kitchen`) {
+      if (!isNaN(inputValue)) {
+        setValMessage("");
+        setUserName(inputValue);
+      } else {
+        setValMessage("Number only allowed");
+      }
+    }
   };
   // const handleKeyPress = (input) => {
   //   if (location.pathname === `/${v}/CompanyManagement`) {
@@ -495,6 +535,13 @@ function App() {
                   setIsOpenDel={setIsOpenDel}
                   setFilterValue={setFilterValue}
                   v={v}
+                  setActiveField={setActiveField}
+                  setShowKeyboard={setShowKeyboard}
+                  setInputValue={setInputValue}
+                  tickKey={tickKey}
+                  inputValue={inputValue}
+                  setTickKey={setTickKey}
+                  filterValue={filterValue}
                 />
                 <Routes>
                   <Route path={`/${v}/`} element={<Dashboard v={v} />} />
@@ -599,6 +646,10 @@ function App() {
                         compTime={compTime}
                         searchClient={searchClient}
                         setSearchClient={setSearchClient}
+                        tickKey={tickKey}
+                        inputValue={inputValue}
+                        setInputValue={setInputValue}
+                        setTickKey={setTickKey}
                       />
                     }
                   />
@@ -675,6 +726,7 @@ function App() {
                         setSectionNo={setSectionNo}
                         sectionName={sectionName}
                         setSectionName={setSectionName}
+                        setInputValue={setInputValue}
                       />
                     }
                   />
@@ -705,6 +757,7 @@ function App() {
                         setShowKeyboard={setShowKeyboard}
                         setActiveField={setActiveField}
                         accno={accno}
+                        setInputValue={setInputValue}
                       />
                     }
                   />
@@ -738,6 +791,7 @@ function App() {
                         setValMessage={setValMessage}
                         userName={userName}
                         setUserName={setUserName}
+                        setInputValue={setInputValue}
                       />
                     }
                   />
@@ -765,6 +819,10 @@ function App() {
                           setUserName={setUserName}
                           valMessage={valMessage}
                           setValMessage={setValMessage}
+                          tickKey={tickKey}
+                          inputValue={inputValue}
+                          setInputValue={setInputValue}
+                          setTickKey={setTickKey}
                         />
                       }
                     />
@@ -795,6 +853,31 @@ function App() {
                           setUserName={setUserName}
                           valMessage={valMessage}
                           setValMessage={setValMessage}
+                          setInputValue={setInputValue}
+                          tickKey={tickKey}
+                          inputValue={inputValue}
+                          setTickKey={setTickKey}
+                        />
+                      }
+                    />
+                  )}
+                  {userControl === "Y" && (
+                    <Route
+                      path={`/${v}/Branch`}
+                      element={
+                        <Branch
+                          companyName={companyName}
+                          url={url}
+                          addTitle={addTitle}
+                          setAddTitle={setAddTitle}
+                          activeField={activeField}
+                          setActiveField={setActiveField}
+                          showKeyboard={showKeyboard}
+                          setShowKeyboard={setShowKeyboard}
+                          error={error}
+                          setError={setError}
+                          userName={userName}
+                          setUserName={setUserName}
                         />
                       }
                     />

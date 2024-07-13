@@ -54,9 +54,6 @@ const Team = ({
   const t = translations[language];
 
   useEffect(() => {
-    console.log("stored companyyyyyy", companyName);
-    console.log("urll team", url);
-
     // Fetch users based on the company name
     if (companyName) {
       fetch(`${url}/pos/users/${companyName}`)
@@ -182,6 +179,7 @@ const Team = ({
   ];
 
   const handleAddUser = (title) => {
+    setTickKey(false);
     setAddTitle(title);
     // Open the modal when "Add" button is clicked
     setIsDialogOpen(true);
@@ -189,7 +187,6 @@ const Team = ({
 
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
-      console.log("newUserDetailssssssssss", newUserDetails.name);
       const apiUrl = `${url}/pos/addusers/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
@@ -293,6 +290,7 @@ const Team = ({
         inputValue={inputValue}
         setInputValue={setInputValue}
         setTickKey={setTickKey}
+        userName={userName}
       />
 
       <DatagridTable
@@ -306,6 +304,7 @@ const Team = ({
         onAdd={handleUserDetailsChange}
         successMess={successMess}
         title={addTitle}
+        activeField={activeField}
         setActiveField={setActiveField}
         setShowKeyboard={setShowKeyboard}
         valMessage={valMessage}

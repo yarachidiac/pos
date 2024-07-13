@@ -32,7 +32,10 @@ const GroupDetailsModal = ({
   activeField,
    setActiveField,
    showKeyboard,
-   setShowKeyboard,
+   setShowKeyboard,tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -177,6 +180,10 @@ const GroupDetailsModal = ({
             setActiveField={setActiveField}
             showKeyboard={showKeyboard}
             setShowKeyboard={setShowKeyboard}
+            tickKey={tickKey}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            setTickKey={setTickKey}
           />
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not

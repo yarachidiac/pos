@@ -8,15 +8,21 @@ import AddUserDialog from "../team/AddUserDialog";
 import { useState, useEffect } from "react";
 import CurrencyDetails from "./CurrencyDetails";
 import Keyboard from "../form/Keyboard";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const Currency = ({ companyName, addTitle, setAddTitle, url, activeField, setActiveField, showKeyboard,
-setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCurrencyDetailsCopy, userName, setUserName, valMessage, setValMessage}) => {
+setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCurrencyDetailsCopy, userName, setUserName, valMessage, setValMessage, setInputValue,tickKey,
+                          inputValue,
+                          setTickKey,}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [successMess, setSuccessMess] = useState();
-    const [unsavedChanges, setUnsavedChanges] = useState(false);
-    const [prList, setPrList] = useState([]);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
+  const [prList, setPrList] = useState([]);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const modalStyle = {
     background: colors.whiteblack[100],
@@ -44,7 +50,6 @@ setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCu
         const response = await fetch(`${url}/pos/currency/${companyName}`);
         if (response.ok) {
           const data = await response.json();
-          console.log("akanfkenf", data);
             setCurrencyDetails(data);
             setCurrencyDetailsCopy(data);
         } else {
@@ -59,7 +64,6 @@ setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCu
     
     const handleCurrencyDetailsChange = async (newKitchenDetails) => {
       try {
-        console.log("newUserDetailssssssssss", newKitchenDetails.name);
         const apiUrl = `${url}/pos/addCurrency/${companyName}`;
 
         const response = await fetch(apiUrl, {
@@ -147,7 +151,7 @@ setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCu
             style={{ fontSize: "1.1rem" }}
             onClick={() => handleAddUser("Add Currency Number")}
           >
-            Add
+           {t["Add"]}
           </Button>
         </Box>
       </Box>
@@ -178,6 +182,10 @@ setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCu
             setActiveField={setActiveField}
             showKeyboard={showKeyboard}
             setShowKeyboard={setShowKeyboard}
+            tickKey={tickKey}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            setTickKey={setTickKey}
           ></CurrencyDetails>
           <AddUserDialog
             isOpen={isDialogOpen}
@@ -191,6 +199,7 @@ setShowKeyboard, currencyDetails, setCurrencyDetails, currencyDetailsCopy, setCu
             userName={userName}
             valMessage={valMessage}
             setValMessage={setValMessage}
+            setInputValue={setInputValue}
           />
         </Box>
       </Box>

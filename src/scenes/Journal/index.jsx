@@ -18,6 +18,8 @@ import { format as dateFnsFormat } from "date-fns";
 import InvTotalDialog from "../InvTotalDialog";
 import DatagridTable from "../DatagridTable";
 import InvKindDialog from "../InvKindDialog";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const Journal = ({ companyName, url}) => {
   const theme = useTheme();
@@ -51,7 +53,9 @@ const Journal = ({ companyName, url}) => {
   const [countTable, setCountTable] = useState("");
   const [countTakeaway, setCountTakeaway] = useState("");
   const [openInvKind, setOpenInvKind] = useState(false);
-
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const handleDoubleClickInvKind = () => {
     setOpenInvKind(true);
   };
@@ -78,7 +82,6 @@ const Journal = ({ companyName, url}) => {
 
   const handleRowClick = (params) => {
     setOpenIvDetailsModal(true);
-    console.log("Ssssssssssssss", params.row.InvNo);
     setSelectedInv(params.row.InvNo); 
     setSelectedInvType(params.row.InvType)
   };
@@ -88,7 +91,6 @@ const Journal = ({ companyName, url}) => {
     const formattedTime = dateFnsFormat(currentDate, "HH:mm:ss");
     const formattedDate = dateFnsFormat(currentDate, "dd/MM/yyyy");
     const fetchHisFiltered = async () => {
-      console.log("afafaf", startDate);
       const requestBody = {
         currDate: formattedDate,
         currTime: formattedTime,
@@ -112,7 +114,7 @@ const Journal = ({ companyName, url}) => {
         let countTable = 0;
 
         invKindResponse.forEach((item) => {
-          switch (item.InvKind.toLowerCase()) {
+          switch (item.InvKind) {
             case "delivery":
               countDelivery = item.TotalInvoices;
               break;
@@ -208,7 +210,7 @@ const Journal = ({ companyName, url}) => {
   const columns = [
     {
       field: "InvType",
-      headerName: "InvType",
+      headerName: t["InvType"],
       minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
@@ -216,7 +218,7 @@ const Journal = ({ companyName, url}) => {
     },
     {
       field: "InvNo",
-      headerName: "InvNo",
+      headerName: t["InvNo"],
       cellClassName: "name-column--cell",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
@@ -226,7 +228,7 @@ const Journal = ({ companyName, url}) => {
 
     {
       field: "Branch",
-      headerName: "Branch",
+      headerName: t["Branch"],
       headerAlign: "left",
       align: "left",
       minWidth: 150,
@@ -236,17 +238,17 @@ const Journal = ({ companyName, url}) => {
     },
     {
       field: "Disc",
-      headerName: "Disc",
+      headerName: t["Disc"],
       headerAlign: "left",
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
       flex: "1",
     },
     {
       field: "Date",
-      headerName: "Date",
+      headerName: t["Date"],
       headerAlign: "left",
       align: "left",
       minWidth: 100,
@@ -257,7 +259,7 @@ const Journal = ({ companyName, url}) => {
     },
     {
       field: "Time",
-      headerName: "Time",
+      headerName: t["Time"],
       headerAlign: "left",
       align: "left",
       minWidth: 100,
@@ -268,7 +270,7 @@ const Journal = ({ companyName, url}) => {
     },
     {
       field: "RealDate",
-      headerName: "RealDate",
+      headerName: t["RealDate"],
       headerAlign: "left",
       align: "left",
       renderCell: renderTextCell,
@@ -278,7 +280,7 @@ const Journal = ({ companyName, url}) => {
     },
     {
       field: "totalFinal",
-      headerName: "Total",
+      headerName: t["Total"],
       //flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -309,7 +311,7 @@ const Journal = ({ companyName, url}) => {
           //width: "100%",
         }}
       >
-        <Header sx={{ width: "15%" }} title="Inv History" />
+        <Header sx={{ width: "15%" }} title={t["InvHistory"]} />
         <Button
           sx={{ width: "13%" }}
           component="h1"
@@ -318,7 +320,8 @@ const Journal = ({ companyName, url}) => {
           style={{ fontSize: "1.1rem" }}
           onDoubleClick={handleDoubleClick}
         >
-          Total &nbsp;&nbsp;{Number(totalInv).toFixed(3)}
+          {/* Total &nbsp;&nbsp; */}
+          {Number(totalInv).toFixed(3)}
         </Button>
         <Button
           sx={{ width: "13%" }}

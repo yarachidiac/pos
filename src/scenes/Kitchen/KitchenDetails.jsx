@@ -35,10 +35,6 @@ export default function KitchenDetails(props){
   });
 };
 
-
-    console.log("wwwwwwwwwwwwww", props.kitchenDetailsCopy);
-      console.log("ffffffffffffffffffff", props.kitchenDetails);
-
   const handleSave = async () => {
     const saveResponse = await fetch(
       `${props.url}/pos/updateKitchen/${props.companyName}`,
@@ -50,9 +46,7 @@ export default function KitchenDetails(props){
         body: JSON.stringify(props.kitchenDetailsCopy),
       }
     );
-    console.log("wwwwwwwwwwwwww", props.kitchenDetailsCopy);
       const mesData = await saveResponse.json();
-      console.log("ffffffffffffffffffff", props.kitchenDetails);
 
     if (saveResponse.ok) {
       props.setKitchenDetails(props.kitchenDetailsCopy);
@@ -73,21 +67,13 @@ export default function KitchenDetails(props){
 
       props.setUnsavedChanges(true);
     } else {
-      console.log(
-        "ana bl if compare",
-        JSON.stringify(props.kitchenDetailsCopy)
-      );
-      console.log("ana bl if compare", JSON.stringify(props.kitchenDetails));
-      console.log("ana bl else compare");
       props.setUnsavedChanges(false);
     }
   }, [props.kitchenDetailsCopy]);
-  console.log("uppppppppppppppppppppp", props.kitchenDetails);
-  console.log("copppppppp", props.kitchenDetailsCopy);
+
   const printerOptions = ["Printer 1", "Printer 2", "Printer 3"]; // Example printer options
   const reportOptions = ["Report 1", "Report 2", "Report 3"]; // Example report options
   const rows = props.kitchenDetailsCopy.map((detail, index) => (
-    console.log("hereeeeeeeeeee i am", detail.PrinterName),
     <TableRow key={index}>
       <TableCell>
         <Typography variant="h4">KT{detail.KT}</Typography>

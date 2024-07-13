@@ -10,6 +10,8 @@ import DialogActions from "@mui/material/DialogActions";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
 import { FormControl, FormControlLabel, Checkbox } from "@mui/material";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const TableDialog = ({
   isOpen,
@@ -24,10 +26,12 @@ const TableDialog = ({
   setTableNo,
   setTableWaiter,
   setActive,
-  setDescription, setShowKeyboard, setActiveField, 
+  setDescription, setShowKeyboard, setActiveField, setInputValue 
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleAdd = () => {
     // Perform any validation if needed
@@ -63,7 +67,7 @@ const TableDialog = ({
   return (
     <Dialog open={isOpen} onClose={onClose} maxHeight="100%">
       <DialogTitle>
-        <Typography variant="h1">{title}</Typography>
+        <Typography variant="h1">{t[title]}</Typography>
       </DialogTitle>
       <DialogContent
         sx={{
@@ -77,10 +81,11 @@ const TableDialog = ({
           autoFocus
           required
           margin="dense"
-          label="Table No"
+          label={t["Table No"]}
           value={tableNo}
           onChange={(e) => setTableNo(e.target.value)}
           onDoubleClick={() => {
+            setInputValue("");
             setShowKeyboard(true);
           }}
           onFocus={() => {
@@ -88,10 +93,11 @@ const TableDialog = ({
           }}
         />
         <TextField
-          label="Table Waiter"
+          label={t["Table Waiter"]}
           value={tableWaiter}
           onChange={(e) => setTableWaiter(e.target.value)}
           onDoubleClick={() => {
+            setInputValue("");
             setShowKeyboard(true);
           }}
           onFocus={() => {
@@ -107,16 +113,17 @@ const TableDialog = ({
                 color="primary"
               />
             }
-            label="Active"
+            label={t["Active"]}
           />
         </FormControl>
         <TextField
-          label="Description"
+          label={t["Description"]}
           multiline
           rows={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           onDoubleClick={() => {
+            setInputValue("");
             setShowKeyboard(true);
           }}
           onFocus={() => {
@@ -133,7 +140,7 @@ const TableDialog = ({
           onClick={handleCancel}
           style={{ fontSize: "0.9rem" }}
         >
-          Cancel
+          {t["Cancel"]}
         </Button>
         <Button
           variant="contained"
@@ -141,7 +148,7 @@ const TableDialog = ({
           onClick={handleAdd}
           style={{ fontSize: "0.9rem" }}
         >
-          {title === "Add Table" ? "Create" : "Update"}
+          {title === "Add Table" ? t["Create"] : t["Update"]}
         </Button>
       </DialogActions>
     </Dialog>

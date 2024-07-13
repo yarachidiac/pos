@@ -15,9 +15,12 @@ import {
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { handleSave } from "./SaveHandler";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 export default function SalesCondition(props) {
-
+  const { language } = useLanguage();
+  const t = translations[language];
     const handleValueUpdate = (field, updatedValue) => {
       props.setUserDetailsCopy((prev) => ({
         ...prev,
@@ -70,7 +73,7 @@ export default function SalesCondition(props) {
             justifyContent: "center",
           }}
         >
-          <Typography variant="h4">{key}</Typography>
+          <Typography variant="h4">{t[key]}</Typography>
         </Box>
       </TableCell>
       <TableCell

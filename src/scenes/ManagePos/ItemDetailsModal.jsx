@@ -44,7 +44,6 @@ const ItemDetailsModal = ({
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); // New state for success message
-
   const modalStyle = {
     top: "50%",
     left: "50%",

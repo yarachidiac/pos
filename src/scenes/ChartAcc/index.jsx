@@ -46,9 +46,11 @@ const ChartAcc = ({
   clientDetailsCopy,
   setClientDetailsCopy,
   searchClient,
-  setSearchClient,
+  setSearchClient,tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
-  console.log("adedefaf", url);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
@@ -66,9 +68,7 @@ const ChartAcc = ({
   const storedSelectedRow = localStorage.getItem("selectedRow");
   const [filteredClients, setFilteredClients] = useState([...clients]);
 
-  console.log("ssssssssssssssssssss", storedSelectedRow);
   useEffect(() => {
-    console.log("stored companyyyyyy", companyName);
 
     // Fetch users based on the company name
     if (companyName) {
@@ -98,9 +98,7 @@ const ChartAcc = ({
     setIsDetailsModalOpen(true);
     setClientDetails(params);
     setClientDetailsCopy(params);
-    console.log("pppppppppppppp", params);
   };
-  console.log("indddddddddddddd", clientDetails);
   useEffect(() => {
     // Compare clientDetails with selectedRow based on AccNo
     if (
@@ -124,9 +122,7 @@ const ChartAcc = ({
     return <Typography variant="h4">{value}</Typography>;
   };
 
-  console.log("Seeeeeeeeeeeeeeeeee", selectedRow);
   const renderCheckboxCell = ({ row }) => {
-    console.log("Rrrrrrrrrrrrrrrrrr", row); // Moved outside the return statement
     return (
       <Button
         // checked={selectedRow !== null && selectedRow["AccNo"] === row["AccNo"]}
@@ -149,9 +145,7 @@ const ChartAcc = ({
     );
   };
 
-  console.log("selectedRow", selectedRow);
   const renderProfile = ({ row }) => {
-    console.log("Rrrrrrrrrrrrrrrrrr", row); // Moved outside the return statement
     return (
       <Button
         onClick={(event) => {
@@ -255,7 +249,6 @@ const ChartAcc = ({
 
   const handleUserDetailsChange = async (newUserDetails) => {
     try {
-      console.log("newUserDetailssssssssss", newUserDetails.name);
       const apiUrl = `${url}/pos/addclients/${companyName}/${newUserDetails.name}`;
 
       const response = await fetch(apiUrl, {
@@ -361,6 +354,7 @@ const ChartAcc = ({
           value={searchClient}
           onChange={handleSearch}
           onDoubleClick={() => {
+            setInputValue("");
             setShowKeyboard(true);
           }}
           onFocus={() => {
@@ -401,6 +395,10 @@ const ChartAcc = ({
         setShowKeyboard={setShowKeyboard}
         valMessage={valMessage}
         setValMessage={setValMessage}
+        tickKey={tickKey}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setTickKey={setTickKey}
       />
       <DatagridTable
         rows={searchClient ? filteredClients : clients}
@@ -417,12 +415,17 @@ const ChartAcc = ({
         onAdd={handleUserDetailsChange}
         successMess={successMess}
         title={addTitle}
+        activeField={activeField}
         setActiveField={setActiveField}
         setShowKeyboard={setShowKeyboard}
         valMessage={valMessage}
         setValMessage={setValMessage}
         userName={userName}
         setUserName={setUserName}
+        tickKey={tickKey}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setTickKey={setTickKey}
       />
     </Box>
   );

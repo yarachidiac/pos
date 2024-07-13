@@ -31,7 +31,10 @@ const DelModal = ({
   clientDetailsCopy,
   setClientDetailsCopy,
   searchClient,
-  setSearchClient,
+  setSearchClient, tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -90,6 +93,8 @@ const DelModal = ({
   };
 
   const handleAddUser = (title) => {
+    setInputValue("");
+    setValMessage("");
     setAddTitle(title);
     // Open the modal when "Add" button is clicked
     setIsDialogOpen(true);
@@ -109,15 +114,13 @@ const DelModal = ({
             justifyContent: "space-around",
             display: "flex",
             height: "8%",
-            alignItems:"center"
+            alignItems: "center",
           }}
         >
           <Box sx={{ width: "50%" }}>
             <Header title="Client" />
           </Box>
-          <Box
-            
-          >
+          <Box>
             <Button
               variant="contained"
               color="secondary"
@@ -127,9 +130,7 @@ const DelModal = ({
               Clear
             </Button>
           </Box>
-          <Box
-           
-          >
+          <Box>
             <Button
               variant="contained"
               color="secondary"
@@ -139,9 +140,7 @@ const DelModal = ({
               Add
             </Button>
           </Box>
-          <Box
-         
-          >
+          <Box>
             <IconButton edge="end" color="inherit" onClick={handleClose}>
               <CloseIcon />
             </IconButton>
@@ -172,6 +171,10 @@ const DelModal = ({
           setClientDetailsCopy={setClientDetailsCopy}
           searchClient={searchClient}
           setSearchClient={setSearchClient}
+          tickKey={tickKey}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
+          setTickKey={setTickKey}
         />
       </Box>
     </Modal>

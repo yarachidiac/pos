@@ -18,6 +18,8 @@ import { tokens } from "../../theme";
 import { format } from "date-fns";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const COHDetails = ({
   open,
@@ -30,6 +32,8 @@ const COHDetails = ({
   const [COH, setCOH] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const style = {
     position: "absolute",
@@ -53,7 +57,6 @@ const COHDetails = ({
           `${url}/pos/COHDetails/${companyName}/${formattedDate}/${selectedItem}`
         );
         const data = await response.json();
-        console.log("adefef", data);
         const COHWithIds = data.map((item, index) => ({
           ...item,
           id: index + 1,
@@ -78,7 +81,7 @@ const COHDetails = ({
   const columns = [
     {
       field: "User",
-      headerName: "User",
+      headerName: t["User"],
       minWidth: 150,
       renderCell: renderTextCell,
       headerClassName: "header-cell",
@@ -86,7 +89,7 @@ const COHDetails = ({
     },
     {
       field: "ItemNo",
-      headerName: "ItemNo",
+      headerName: t["ItemNo"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -95,7 +98,7 @@ const COHDetails = ({
     },
     {
       field: "ItemName",
-      headerName: "ItemName",
+      headerName: t["ItemName"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 300,
@@ -104,7 +107,7 @@ const COHDetails = ({
     },
     {
       field: "Qty",
-      headerName: "Qty",
+      headerName: t["Qty"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -113,7 +116,7 @@ const COHDetails = ({
     },
     {
       field: "UPrice",
-      headerName: "UPrice",
+      headerName: t["UPrice"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -122,7 +125,7 @@ const COHDetails = ({
     },
     {
       field: "Disc",
-      headerName: "Disc",
+      headerName: t["Disc"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -131,7 +134,7 @@ const COHDetails = ({
     },
     {
       field: "Tax",
-      headerName: "Tax",
+      headerName: t["Tax"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -140,7 +143,7 @@ const COHDetails = ({
     },
     {
       field: "totalItem",
-      headerName: "Total",
+      headerName: t["Total"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,

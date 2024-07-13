@@ -43,12 +43,11 @@ const GeneralAccountingTable = ({
   setInputValue,
   setTickKey,
 }) => {
-  console.log("fromm generallllllllllllllllllll", userDetails);
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { language } = useLanguage();
   const t = translations[language];
+  const [err, setErr] = useState("");
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -58,11 +57,11 @@ const GeneralAccountingTable = ({
   const handleEmailChange = (e) => {
     const email = typeof e === "object" ? e.target.value : e;
     if (!email) {
-      setValMessage("");
+      setErr("");
     } else if (!validateEmail(email)) {
-      setValMessage("Invalid email format");
+      setErr("Invalid email format");
     } else {
-      setValMessage("");
+      setErr("");
     }
     handleValueUpdate("email", email);
   };
@@ -77,9 +76,8 @@ const GeneralAccountingTable = ({
   };
 
   useEffect(() => {
-    console.log("valuee tabaa keyy tickkkk", tickKey);
+
     if (tickKey) {
-      console.log("ana b l tickkey");
       if (activeField === "email") {
         handleEmailChange(inputValue);
       } else {
@@ -97,7 +95,6 @@ const GeneralAccountingTable = ({
     }
   }, [userDetailsCopy, userDetails, unsavedChanges]);
 
-  console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", userDetailsCopy);
   const rows = Object.entries(userDetailsCopy)
     .filter(([key]) => key !== "COH" && key !== "EOD")
     .map(([key, value], index) => (
@@ -164,7 +161,8 @@ const GeneralAccountingTable = ({
                 fullWidth
                 variant="outlined"
                 size="small"
-                onDoubleClick={() => {
+                  onDoubleClick={() => {
+                    setInputValue("");
                   setShowKeyboard(true);
                 }}
                 onFocus={() => {
@@ -246,7 +244,7 @@ const GeneralAccountingTable = ({
         </Table>
       </TableContainer>
       <Box sx={{ height: "5%", marginTop: "auto" }}>
-        {valMessage && (
+        {err && (
           <Typography
             variant="body1"
             color="error"
@@ -255,7 +253,7 @@ const GeneralAccountingTable = ({
               fontWeight: "bold",
             }}
           >
-            {valMessage}
+            {err}
           </Typography>
         )}
       </Box>
@@ -292,7 +290,7 @@ const GeneralAccountingTable = ({
                   setUsers,
                   setSuccessMessage,
                   setUserDetails,
-                  valMessage,
+                  err,
                   url
                 )
               }

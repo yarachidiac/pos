@@ -13,10 +13,6 @@ const handleSave = async (
   const data = itemDetailsCopy;
    const isImageSame =
      itemDetails["Image"] === itemDetailsCopy["Image"];
-
-    console.log("ajbsjbkas", itemDetails["Image"]);
-        console.log("ccccccccccc", itemDetailsCopy["Image"]);
-
     let existedImage;
    // If the image is the same, include the existedImage field with value 1
    if (isImageSame) {
@@ -36,7 +32,6 @@ const handleSave = async (
       }
     );
     const responseData = await saveResponse.json();
-    console.log("reeeeeeee", responseData);
 
     if (saveResponse.ok) {
       console.log("Save response:", responseData);

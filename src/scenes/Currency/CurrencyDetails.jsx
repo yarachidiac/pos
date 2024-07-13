@@ -32,10 +32,9 @@ export default function CurrencyDetails(props) {
       });
       return updatedDetails;
     });
+    props.setTickKey(false);
   };
 
-  console.log("wwwwwwwwwwwwww", props.currencyDetailsCopy);
-  console.log("ffffffffffffffffffff", props.currencyDetails);
 
   const handleSave = async () => {
     const saveResponse = await fetch(
@@ -48,9 +47,7 @@ export default function CurrencyDetails(props) {
         body: JSON.stringify(props.currencyDetailsCopy),
       }
     );
-    console.log("wwwwwwwwwwwwww", props.currencyDetailsCopy);
     const mesData = await saveResponse.json();
-    console.log("ffffffffffffffffffff", props.currencyDetails);
 
     if (saveResponse.ok) {
       props.setCurrencyDetails(props.currencyDetailsCopy);
@@ -59,33 +56,28 @@ export default function CurrencyDetails(props) {
   };
 
   useEffect(() => {
+    if (props.tickKey) {
+      const [field, index] = props.activeField.split("-");
+      handleValueUpdate(parseInt(index, 10), field, props.inputValue);
+  }  
+  }, [props.tickKey]);
+
+  useEffect(() => {
     if (
       JSON.stringify(props.currencyDetailsCopy) !==
       JSON.stringify(props.currencyDetails)
     ) {
-      console.log(
-        "ana bl if compare",
-        JSON.stringify(props.currencyDetailsCopy)
-      );
-      console.log("ana bl if compare", JSON.stringify(props.currencyDetails));
+      
 
       props.setUnsavedChanges(true);
     } else {
-      console.log(
-        "ana bl if compare",
-        JSON.stringify(props.currencyDetailsCopy)
-      );
-      console.log("ana bl if compare", JSON.stringify(props.currencyDetails));
-      console.log("ana bl else compare");
+      
       props.setUnsavedChanges(false);
     }
   }, [props.currencyDetailsCopy]);
-  console.log("uppppppppppppppppppppp", props.currencyDetails);
-  console.log("copppppppp", props.currencyDetailsCopy);
 
   const rows = props.currencyDetailsCopy.map(
     (detail, index) => (
-      console.log("hereeeeeeeeeee i am", detail.name),
       (
         <TableRow key={index}>
           <TableCell>
@@ -103,6 +95,7 @@ export default function CurrencyDetails(props) {
                   handleValueUpdate(index, "name", e.target.value)
                 }
                 onDoubleClick={() => {
+                  props.setInputValue("");
                   props.setShowKeyboard(true);
                 }}
                 onFocus={() => {
@@ -123,6 +116,7 @@ export default function CurrencyDetails(props) {
                   handleValueUpdate(index, "Code", e.target.value)
                 }
                 onDoubleClick={() => {
+                  props.setInputValue("");
                   props.setShowKeyboard(true);
                 }}
                 onFocus={() => {

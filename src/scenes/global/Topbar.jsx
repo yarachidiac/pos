@@ -13,6 +13,8 @@ import { useRefresh } from "../RefreshContex";
 import { useNavigate, useLocation } from "react-router-dom";
 import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
 import { width } from "@mui/system";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 const Topbar = ({
   isCollapsed,
   isMobile,
@@ -32,15 +34,16 @@ const Topbar = ({
   v,activeField,
                           setActiveField,
                           showKeyboard,
-                          setShowKeyboard,
+                          setShowKeyboard, setInputValue, tickKey, setTickKey, inputValue, filterValue
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const [secOrTab, setSecOrTable] = useState(`/${v}/Sections`);
   const location = useLocation();
-  console.log("isMobile from topbarr:", isMobile);
-  console.log("isCollapsed from topbarr:", isCollapsed);
+  const { language } = useLanguage();
+  const t = translations[language];
+ 
   // const handleResize = () => {
   //   setIsMobile(window.innerWidth <= 768);
   //   if (window.innerWidth > 768) {
@@ -57,8 +60,6 @@ const Topbar = ({
 
   const handleMenuToggle = () => {
     setIsCollapsed(!isCollapsed);
-    console.log("isMobile from topbarr:", isMobile);
-    console.log("isCollapsed from topbarr:", isCollapsed);
   };
 
   // useEffect(() => {
@@ -102,7 +103,6 @@ const Topbar = ({
     }
   };
 
-  console.log("selecteddd topp", selectedTop);
   useEffect(() => {
     const getLen = async () => {
       try {
@@ -131,6 +131,13 @@ const Topbar = ({
     getLen();
   }, []);
 
+  useEffect(() => {
+    if (tickKey) {
+      setFilterValue(inputValue);
+      setTickKey(false);
+    }
+  }, [tickKey]);
+  
   return (
     <>
       {(currentRoute == `/${v}/PoS` ||
@@ -182,6 +189,14 @@ const Topbar = ({
                   sx={{ ml: 2, flex: 1 }}
                   placeholder="Search"
                   onChange={(e) => setFilterValue(e.target.value)}
+                  onDoubleClick={() => {
+                    setInputValue("");
+                    setShowKeyboard(true);
+                  }}
+                  onFocus={() => {
+                    setActiveField("Search PoS");
+                  }}
+                  value={filterValue}
                 />
                 <IconButton type="button" sx={{ p: 1 }}>
                   <SearchIcon />
@@ -214,7 +229,7 @@ const Topbar = ({
                     },
                   }}
                 >
-                  Take Away
+                  {t["TakeAway"]}
                 </Button>
               )}
               {/* Delivery button */}
@@ -237,7 +252,7 @@ const Topbar = ({
                           : "black",
                     }}
                   >
-                    Delivery
+                    {t["Delivery"]}
                   </Button>
                 )}
               {(currentRoute === `/${v}/PoS` ||
@@ -263,7 +278,7 @@ const Topbar = ({
                     },
                   }}
                 >
-                  Tables
+                  {t["Tables"]}
                 </Button>
               )}
             </Box>

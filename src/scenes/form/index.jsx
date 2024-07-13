@@ -79,9 +79,6 @@ const Form = ({
           company_name: values.company_name,
         }),
       });
-      console.log("here the valuessss:", values);
-
-      console.log("here the valuessss:", JSON.stringify(values));
 
       if (response.ok) {
         const responseUser = await response.json();
@@ -89,8 +86,6 @@ const Form = ({
           setLogMess(responseUser.message);
           
         } else {
-          console.log("kkkkkkkkkkkkkkk", responseUser.comp);
-          console.log("heyyyyyyyyyy", responseUser.user);
           localStorage.setItem("company_name", values.company_name);
           await setCompanyName(localStorage.getItem("company_name"));
 
@@ -124,7 +119,6 @@ const Form = ({
           const s = setUserControl(localStorage.getItem("user_control"));
           localStorage.setItem("comp_time", responseUser.comp["EndTime"]);
           await setCompTime(localStorage.getItem("comp_time"));
-          console.log("pppppppppppppppppppp", s);
           setLogMess(responseUser.message);
           navigate(`/${v}/PoS`);
         }
@@ -141,7 +135,6 @@ const Form = ({
   };
 
 
-  console.log("lllllllllllllllllllllllllllllll", logMess)
   return (
     <Grid container justifyContent="center" alignItems="center" height="100vh">
       <Grid item xs={12} sm={8} md={6} lg={4}>
@@ -204,7 +197,6 @@ const Form = ({
                       }
                       sx={{ height: "64px" }}
                       onFocus={() => {
-                        console.log("Active field set to: username");
                         setActiveField("username");
                       }}
                       InputLabelProps={{ style: { fontSize: "1.2rem" } }}
@@ -234,7 +226,6 @@ const Form = ({
                       }
                       sx={{ height: "64px" }}
                       onFocus={() => {
-                        console.log("Active field set to: password");
                         setActiveField("password");
                       }}
                       InputLabelProps={{ style: { fontSize: "1.2rem" } }}

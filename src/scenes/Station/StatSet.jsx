@@ -102,10 +102,10 @@ const StatSet = ({ companyName, url }) => {
     <TableRow
       key={key}
       style={{
-        width: window.innerWidth * 0.28,
+        //width: window.innerWidth * 0.28,
         display: "flex",
         flexDirection: "row",
-        height: window.innerHeight * 0.1,
+        //height: window.innerHeight * 0.1,
         borderRadius: "4px",
         border: "1px solid #ccc",
       }}

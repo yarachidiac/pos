@@ -29,6 +29,8 @@ import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOu
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import ProductionQuantityLimitsOutlinedIcon from "@mui/icons-material/ProductionQuantityLimitsOutlined";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 const Item = ({
   title,
   to,
@@ -50,6 +52,8 @@ const Item = ({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleManagePoS = () => {
     // console.log("ggggggggggggggggg", isNav)
@@ -142,6 +146,18 @@ const Item = ({
       }
     }
   };
+  
+  const handleBranch = () => {
+    if (userControl === "N") {
+      setOpen(true);
+    } else {
+      if (isNav) {
+        navigate(`/${v}/Branch`);
+      } else {
+        setIsConfOpenDialog(true);
+      }
+    }
+  };
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -196,36 +212,38 @@ const Item = ({
         color: colors.grey[100],
       }}
       onClick={() => {
-        if (title === "Manage POS") {
+        if (title === t["Manage POS"]) {
           handleManagePoS();
-        } else if (title === "POS") {
+        } else if (title === t["POS"]) {
           if (isNav) {
             navigate(`/${v}/PoS`);
           } else {
             setIsConfOpenDialog(true);
           }
-        } else if (title === "Manage Groups") {
+        } else if (title === t["Manage Groups"]) {
           handleManageGroups();
-        } else if (title === "Company Management") {
+        } else if (title === t["Company Management"]) {
           handleComp();
-        } else if (title === "User Settings") {
+        } else if (title === t["User Settings"]) {
           handleUser();
-        } else if (title === "Station Settings") {
+        } else if (title === t["Station Settings"]) {
           handleStation();
-        } else if (title === "Kitchen") {
+        } else if (title === t["Kitchen"]) {
           handleKitchen();
-        } else if (title === "Currency") {
+        } else if (title === t["Currency"]) {
           handleCurrency();
-        } else if (title === "Logout") {
+        } else if (title === t["Logout"]) {
           handleLogout();
-        } else if (title === "Invoices History") {
+        } else if (title === t["Invoices History"]) {
           handleInvHis();
-        } else if (title === "Daily Sales") {
+        } else if (title === t["Daily Sales"]) {
           handleDailySales();
-        } else if (title === "Cash On Hands") {
+        } else if (title === t["Cash On Hands"]) {
           handleCashOnHands();
-        } else if (title === "End Of Day") {
+        } else if (title === t["End Of Day"]) {
           handleEndOfDay();
+        } else if (title === t["Branch"]) {
+          handleBranch();
         }
       }}
       icon={icon}
@@ -306,10 +324,8 @@ const Sidebar = ({
   const colors = tokens(theme.palette.mode);
   //const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-
-  console.log("lll", companyName);
-  console.log("isMobile from sidebar:", isMobile);
-  console.log("isCollapsed from sidebar:", isCollapsed);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleSubItemClick = (menuItem) => {
     if (isCollapsed) {
@@ -436,7 +452,7 @@ const Sidebar = ({
             /> */}
             <Item
               icon={<PointOfSaleOutlinedIcon />}
-              title="POS"
+              title={t["POS"]}
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
@@ -445,7 +461,7 @@ const Sidebar = ({
             />
             <Item
               icon={<PostAddOutlinedIcon />}
-              title="Manage POS"
+              title={t["Manage POS"]}
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}
@@ -456,7 +472,7 @@ const Sidebar = ({
             />
             <Item
               icon={<PostAddOutlinedIcon />}
-              title="Manage Groups"
+              title={t["Manage Groups"]}
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}
@@ -467,7 +483,7 @@ const Sidebar = ({
             />
             <Item
               icon={<ReceiptOutlinedIcon />}
-              title="Invoices History"
+              title={t["Invoices History"]}
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}
@@ -478,7 +494,7 @@ const Sidebar = ({
             />
             <Item
               icon={<AssessmentOutlinedIcon />}
-              title="Daily Sales"
+              title={t["Daily Sales"]}
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}
@@ -603,7 +619,7 @@ const Sidebar = ({
             </SubItem> */}
             <Item
               icon={<CurrencyExchangeOutlinedIcon />}
-              title="Cash On Hands"
+              title={t["Cash On Hands"]}
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
@@ -614,7 +630,7 @@ const Sidebar = ({
             />
             <Item
               icon={<ScheduleOutlinedIcon />}
-              title="End Of Day"
+              title={t["End Of Day"]}
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
@@ -627,7 +643,7 @@ const Sidebar = ({
               setOpen={setOpen}
             />
             <SubItem
-              title="Company Settings"
+              title={t["Company Settings"]}
               icon={<StoreIcon />}
               isCollapsed={isCollapsed}
               handleSubItemClick={handleSubItemClick}
@@ -639,7 +655,7 @@ const Sidebar = ({
               setIsConfOpenDialog={setIsConfOpenDialog}
             >
               <Item
-                title="Company Management"
+                title={t["Company Management"]}
                 to="/CompanyManagement"
                 selected={selected}
                 setSelected={setSelected}
@@ -650,7 +666,7 @@ const Sidebar = ({
                 v={v}
               />
               <Item
-                title="Station Settings"
+                title={t["Station Settings"]}
                 to="/Station"
                 selected={selected}
                 setSelected={setSelected}
@@ -661,7 +677,7 @@ const Sidebar = ({
                 v={v}
               />
               <Item
-                title="User Settings"
+                title={t["User Settings"]}
                 to="/team"
                 selected={selected}
                 setSelected={setSelected}
@@ -672,8 +688,19 @@ const Sidebar = ({
                 v={v}
               />
               <Item
-                title="Kitchen"
+                title={t["Kitchen"]}
                 to="/Kitchen"
+                selected={selected}
+                setSelected={setSelected}
+                setOpen={setOpen}
+                userControl={userControl}
+                isNav={isNav}
+                setIsConfOpenDialog={setIsConfOpenDialog}
+                v={v}
+              />
+              <Item
+                title={t["Branch"]}
+                to="/Branch"
                 selected={selected}
                 setSelected={setSelected}
                 setOpen={setOpen}
@@ -697,7 +724,7 @@ const Sidebar = ({
                   setSelected={setSelected}
                 /> */}
               <Item
-                title="Currency"
+                title={t["Currency"]}
                 to="/Currency"
                 selected={selected}
                 setSelected={setSelected}
@@ -710,7 +737,7 @@ const Sidebar = ({
             </SubItem>
             <Item
               icon={<LogoutOutlinedIcon />}
-              title="Logout"
+              title={t["Logout"]}
               setIsAuthenticated={setIsAuthenticated}
             />
           </Box>

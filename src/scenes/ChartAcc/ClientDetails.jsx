@@ -33,14 +33,17 @@ const ClientDetails = ({
   activeField,
    setActiveField,
    showKeyboard,
-    setShowKeyboard,
+    setShowKeyboard,tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
-  console.log("cccccccccccccccccccccccc", clientDetails);
   // const [editableCells, setEditableCells] = useState([]);
   //const [successMessage, setSuccessMessage] = useState(""); // New state for success message
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [err, setErr] = useState("");
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,13 +51,13 @@ const ClientDetails = ({
   };
 
   const handleEmailChange = (e) => {
-    const email = e.target.value;
+    const email = typeof e === "object" ? e.target.value : e;
     if (!email) {
-      setValMessage("");
+      setErr("");
     } else if (!validateEmail(email)) {
-      setValMessage("Invalid email format");
+      setErr("Invalid email format");
     } else {
-      setValMessage("");
+      setErr("");
     }
     handleValueUpdate("Email", email);
   };
@@ -67,29 +70,43 @@ const ClientDetails = ({
       field === "Floor"
     ) {
       if (isNaN(updatedValue)) {
-        setValMessage(`${field} should be number`);
+        setErr(`${field} should be number`);
+        setInputValue("");
+        setTickKey(false);
         return;
       } else {
-        setValMessage("");
+        setErr("");
       }
+
     } else if (field === "Tel") {
       if (!/^\d+$/.test(updatedValue)) {
-        setValMessage("Telephone number should contain only digits");
+        setErr("Telephone number should contain only digits");
+        setInputValue("");
+        setTickKey(false);
         return;
       } else {
-        setValMessage("");
+        setErr("");
       }
     }
     setClientDetailsCopy((prev) => ({
       ...prev,
       [field]: updatedValue,
     }));
+
+    setTickKey(false);
   };
 
 
   useEffect(() => {
-    console.log("copppppppppppppppppppp", JSON.stringify(clientDetailsCopy));
-    console.log("ddddddddddddddddddddddddddddd", JSON.stringify(clientDetails));
+    if (tickKey) {
+      if (activeField === "email") {
+        handleEmailChange(inputValue);
+      }
+      handleValueUpdate(activeField, inputValue);
+    }
+  }, [tickKey]);
+
+  useEffect(() => {
     if (JSON.stringify(clientDetailsCopy) != JSON.stringify(clientDetails)) {
       setUnsavedChanges(true);
     } else {
@@ -192,6 +209,7 @@ const ClientDetails = ({
                 //   setEditableCells((prev) => prev.filter((i) => i !== index))
                 // }
                 onDoubleClick={() => {
+                  setInputValue("");
                   setShowKeyboard(true);
                 }}
                 onFocus={() => {
@@ -208,7 +226,9 @@ const ClientDetails = ({
               fullWidth
               variant="outlined"
               size="small"
-              onDoubleClick={() => {
+                  onDoubleClick={() => {
+                                  setInputValue("");
+
                 setShowKeyboard(true);
               }}
               onFocus={() => {
@@ -226,6 +246,7 @@ const ClientDetails = ({
               variant="outlined"
               size="small"
               onDoubleClick={() => {
+                setInputValue("");
                 setShowKeyboard(true);
               }}
               onFocus={() => {
@@ -254,7 +275,7 @@ const ClientDetails = ({
         </Table>
       </TableContainer>
       <Box sx={{ height: "5%" }}>
-        {valMessage && (
+        {err && (
           <Typography
             variant="body1"
             color="error"
@@ -263,7 +284,7 @@ const ClientDetails = ({
               fontWeight: "bold",
             }}
           >
-            {valMessage}
+            {err}
           </Typography>
         )}
       </Box>
@@ -300,7 +321,7 @@ const ClientDetails = ({
                   clientDetailsCopy,
                   setSuccessMessage,
                   setClientDetails,
-                  valMessage,
+                  err,
                   url
                 )
               }

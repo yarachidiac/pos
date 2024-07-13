@@ -17,6 +17,7 @@ import Keyboard from "../form/Keyboard";
 import Language from "./Language";
 import { useLanguage } from "../LanguageContext";
 import translations from "../translations";
+import { maxWidth } from "@mui/system";
 
 
 const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, companyDetails, setCompanyDetails, companyDetailsCopy, setCompanyDetailsCopy, error, setError }) => {
@@ -32,14 +33,14 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
   };
 
   const modalStyle = {
-    pl:"1%",
+    //pl:"1%",
     background: colors.whiteblack[100],
     boxShadow: 24,
-    minWidth: "90%",
-    maxHeight: "90%",
+    maxWidth: "90%",
+    height: "80%",
     display: "flex",
     flexDirection: window.innerWidth < 650 ? "row" : "column",
-    justifyContent: "center",
+    //justifyContent: "center",
   };
 
   const modalContainerStyle = {
@@ -61,8 +62,11 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
 
   const appbarContentStyle = {
     display: "flex",
-    gap: "1px",
+    //gap: "1px",
     width: "100%",
+    height: "100%",
+    justifyContent: "space-between",
+
     //backgroundColor: colors.greenAccent[600],
   };
 
@@ -71,19 +75,20 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
     //background: "#fcfcfc",
     //background: "#F8FBF8",
     borderRadius: "0px",
-    height: "30%",
-    width: "100%",
+    height: "15%",
+    minWidth: "100%",
     display: "flex",
-    justifyContent: "space-between",
+    //justifyContent: "center",
     alignItems: "center", // Center the content vertically
     padding: "0px", // Remove padding
   };
 
   const listItemStyle = {
-    width: "100%",
-    flex: "1",
+    width: "99%",
+    height:"100%",
+   // flex: "1",
     display: "flex",
-    justifyContent: "center",
+    //justifyContent: "center",
     alignItems: "center", // Center the content vertically
   };
 
@@ -134,15 +139,8 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
           ...modalContainerStyle,
         }}
       >
-        <Box display="flex" justifyContent="space-between">
-          {/* <Box sx={{ p: "2%" }}>
-            <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
-              {userDetails.username}
-            </Typography>
-          </Box> */}
-        </Box>
         <Box sx={appBarStyle}>
-          <Toolbar sx={{ width: "100%" }}>
+          <Toolbar sx={{width:"100%", height:"100%"}}>
             <List sx={appbarContentStyle}>
               {[
                 "general",
@@ -186,18 +184,8 @@ const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, s
             </List>
           </Toolbar>
         </Box>
-        <Box
-          sx={{
-            flexGrow: 1, // Allow the table to grow and take available space
-            width: window.innerWidth < 650 ? "60%" : "100%",
-            //maxHeight: "60%",
-            height: "500px",
-            //overflowY: "auto",
-          }}
-        >
-          {renderSelectedTable()}
-        </Box>
-      </Box>   
+        <Box sx={{height:"85%", width:"100%"}}>{renderSelectedTable()}</Box>
+      </Box>
     </Box>
   );
 };

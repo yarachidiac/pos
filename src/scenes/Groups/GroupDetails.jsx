@@ -11,6 +11,8 @@ import TextField from "@mui/material/TextField";
 import { useTheme } from "@mui/material/styles";
 import { tokens } from "../../theme";
 import { handleSave } from "./SaveHandler.jsx";
+import { useLanguage } from "../LanguageContext.js";
+import translations from "../translations.js";
 
 const GroupDetails = ({
   groupDetails,
@@ -30,10 +32,15 @@ const GroupDetails = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard,
+  setShowKeyboard,tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const tableContainerStyle = {
     height: "80%",
@@ -46,6 +53,7 @@ const GroupDetails = ({
         ...prev,
         [field]: updatedValue,
       }));
+      setTickKey(false);
     } else if (field === "Image") {
       const file = updatedValue.target.files[0];
       setGroupDetailsCopy((prev) => ({
@@ -55,6 +63,12 @@ const GroupDetails = ({
     }
   };
 
+  useEffect(() => {
+    if (tickKey) {
+      handleValueUpdate(activeField, inputValue);
+    }
+  }, [tickKey]);
+  
   useEffect(() => {
     if (JSON.stringify(groupDetailsCopy) !== JSON.stringify(groupDetails)) {
       setUnsavedChanges(true);
@@ -83,7 +97,7 @@ const GroupDetails = ({
             <TableRow>
               <TableCell>
                 <Box>
-                  <Typography variant="h4">GroupNo</Typography>
+                  <Typography variant="h4">{t["GroupNo"]}</Typography>
                 </Box>
               </TableCell>
               <TableCell>
@@ -98,7 +112,6 @@ const GroupDetails = ({
                     pattern: "[0-9]*",
                     readOnly: true,
                   }}
-                  
                 />
               </TableCell>
             </TableRow>
@@ -106,7 +119,7 @@ const GroupDetails = ({
             <TableRow>
               <TableCell>
                 <Box>
-                  <Typography variant="h4">GroupName</Typography>
+                  <Typography variant="h4">{t["GroupName"]}</Typography>
                 </Box>
               </TableCell>
               <TableCell>
@@ -119,6 +132,7 @@ const GroupDetails = ({
                   size="small"
                   variant="outlined"
                   onDoubleClick={() => {
+                    setInputValue("");
                     setShowKeyboard(true);
                   }}
                   onFocus={() => {
@@ -131,7 +145,7 @@ const GroupDetails = ({
             <TableRow>
               <TableCell>
                 <Box>
-                  <Typography variant="h4">Image</Typography>
+                  <Typography variant="h4">{t["Image"]}</Typography>
                 </Box>
               </TableCell>
               <TableCell>

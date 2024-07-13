@@ -31,10 +31,6 @@ const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard,
   const [curr, setCurr] = useState([]);
   const { language } = useLanguage();
 
-console.log(
-  "ssssssssssssssssssssss",
-  dayjs("2022-03-13T03:00:00").format("hh:mm A")
-);
   const handleValueUpdate = (field, updatedValue) => {
     if (field === "EndTime") {
       const date = new Date(updatedValue);
@@ -46,7 +42,6 @@ console.log(
 
       // Construct the time string in "HH:mm:ss" format
       const timeString = `${hours}:${minutes}:${seconds}`;
-      console.log("Time:", timeString); // Output: Time: 02:35:00
       setCompanyDetailsCopy((prev) => ({
         ...prev,
         [field]: timeString,
@@ -111,7 +106,6 @@ console.log(
         body: JSON.stringify(companyDetailsCopy),
       }
     );
-    console.log("wwwwwwwwwwwwww",companyDetailsCopy);
     const mesData = await saveResponse.json();
 
     if (saveResponse.ok) {
@@ -126,16 +120,14 @@ console.log(
       setUnsavedChanges(false);
     }
   }, [companyDetailsCopy]);
-console.log("uppppppppppppppppppppp", companyDetails);
-console.log("copppppppp", companyDetailsCopy);
   const rows = Object.keys(companyDetailsCopy).map((key, index) => (
     <TableRow
       key={key}
       style={{
-        width: window.innerWidth * 0.28,
+        //width: window.innerWidth * 0.28,
         display: "flex",
         flexDirection: "row",
-        height: window.innerHeight * 0.1,
+       // height: window.innerHeight * 0.1,
         borderRadius: "4px",
         border: "1px solid #ccc",
       }}
@@ -158,7 +150,7 @@ console.log("copppppppp", companyDetailsCopy);
           }}
         >
           <Typography variant="h4">
-            {translations[language][key.toLowerCase()] || key}
+            {translations[language][key] || key}
           </Typography>
         </Box>
       </TableCell>

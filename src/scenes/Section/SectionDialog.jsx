@@ -9,6 +9,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { tokens } from "../../theme";
 import { useTheme } from "@mui/material/styles";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const SectionDialog = ({
   isOpen,
@@ -19,10 +21,12 @@ const SectionDialog = ({
   sectionName,
   sectionNo,
   setSectionName, 
-  setSectionNo, setShowKeyboard, setActiveField
+  setSectionNo, setShowKeyboard, setActiveField, setInputValue
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleAdd = () => {
     // Perform any validation if needed
@@ -51,7 +55,7 @@ const SectionDialog = ({
   return (
     <Dialog open={isOpen} onClose={onClose} maxHeight="100%">
       <DialogTitle>
-        <Typography variant="h1">{title}</Typography>
+        <Typography variant="h1">{t[title]}</Typography>
       </DialogTitle>
       <DialogContent
         sx={{
@@ -65,10 +69,11 @@ const SectionDialog = ({
           autoFocus
           required
           margin="dense"
-          label="Section No"
+          label={t["Section No"]}
           value={sectionNo}
           onChange={(e) => setSectionNo(e.target.value)}
           onDoubleClick={() => {
+            setInputValue("");
             setShowKeyboard(true);
           }}
           onFocus={() => {
@@ -76,10 +81,11 @@ const SectionDialog = ({
           }}
         />
         <TextField
-          label="Section Name"
+          label={t["Section Name"]}
           value={sectionName}
           onChange={(e) => setSectionName(e.target.value)}
           onDoubleClick={() => {
+            setInputValue("");
             setShowKeyboard(true);
           }}
           onFocus={() => {
@@ -96,7 +102,7 @@ const SectionDialog = ({
           onClick={handleCancel}
           style={{ fontSize: "0.9rem" }}
         >
-          Cancel
+          {t["Cancel"]}
         </Button>
         <Button
           variant="contained"
@@ -104,7 +110,7 @@ const SectionDialog = ({
           onClick={handleAdd}
           style={{ fontSize: "0.9rem" }}
         >
-          {title === "Add Section" ? "Create" : "Update"}
+          {title === "Add Section" ? t["Create"] : t["Update"]}
         </Button>
       </DialogActions>
     </Dialog>

@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { TableChart } from "@mui/icons-material";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const Tables = ({
   addTitle,
@@ -27,7 +29,19 @@ const Tables = ({
   setMessage,
   url,
   v,
-  userControl, tableNo, setTableNo, active, setActive, description, setDescription, tableWaiter, setTableWaiter, setShowKeyboard, setActiveField, accno
+  userControl,
+  tableNo,
+  setTableNo,
+  active,
+  setActive,
+  description,
+  setDescription,
+  tableWaiter,
+  setTableWaiter,
+  setShowKeyboard,
+  setActiveField,
+  accno,
+  setInputValue,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -38,8 +52,9 @@ const Tables = ({
   const navigate = useNavigate();
   const [tables, setTables] = useState([]);
   const [tablesChanged, setTablesChanged] = useState(false);
+  const { language } = useLanguage(); 
+  const t = translations[language];
 
-  console.log("section no in tablesssss", sectionNo);
   const fetchData = async () => {
     try {
       const response = await fetch(
@@ -62,9 +77,6 @@ const Tables = ({
     fetchData(); // Check for changes whenever tables changes
   }, []);
 
-  console.log("tableee flagggggggggg", tablesChanged);
-  console.log("tablesssssssss", tables);
-
   const handleAddSection = (title) => {
     setAddTitle(title);
     // Open the modal when "Add" button is clicked
@@ -82,12 +94,10 @@ const Tables = ({
     setIsDialogOpen(true);
     // Handle edit action here
   };
-  console.log("Edit clicked for:", tableNo);
 
   const onAdd = async (sectionInfo) => {
     try {
       if (addTitle === "Add Table") {
-        console.log("newwwwwwwww sectionnnnnn", sectionInfo);
         const apiUrl = `${url}/pos/addtables/${companyName}/${sectionNo}`;
 
         const response = await fetch(apiUrl, {
@@ -151,7 +161,6 @@ const Tables = ({
 
   const handleOpenPOS = async (tableNo) => {
     try {
-      console.log("fetit tfatish");
       const response = await fetch(
         `${url}/pos/chooseAccess/${companyName}/${tableNo}/${username}`
       );
@@ -175,7 +184,6 @@ const Tables = ({
           );
           if (reqOpen.ok) {
             const res = await reqOpen.json();
-            console.log("bl open table", res);
             setMessage(res.message);
           }
           navigate(`/${v}/PoS?selectedTableId=${tableNo}`);
@@ -208,7 +216,7 @@ const Tables = ({
           ml: "3%",
         }}
       >
-        <Header title="Table" subtitle="Choose Table" />
+        <Header title={t["Tables"]} subtitle="Choose Table" />
         <Box
           sx={{
             height: "80px",
@@ -219,17 +227,16 @@ const Tables = ({
             display: "flex",
           }}
         >
-          {userControl ===
-            "Y" && (
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ fontSize: "1.1rem" }}
-                onClick={() => handleAddSection("Add Table")}
-              >
-                Add
-              </Button>
-            )}
+          {userControl === "Y" && (
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ fontSize: "1.1rem" }}
+              onClick={() => handleAddSection("Add Table")}
+            >
+              {t["Add"]}
+            </Button>
+          )}
         </Box>
       </Box>
       <Container sx={{ height: "85%", width: "100%" }}>
@@ -245,7 +252,7 @@ const Tables = ({
           }}
         >
           {tables.map((table) => (
-            <Grid key={table.TableNo} item xs={12} sm={6} md={4} lg={3} >
+            <Grid key={table.TableNo} item xs={12} sm={6} md={4} lg={3}>
               <Box
                 position="relative"
                 width="100%"
@@ -300,30 +307,28 @@ const Tables = ({
                   }}
                   onClick={() => handleOpenPOS(table.TableNo)}
                 />
-                {userControl ===
-                  "Y" && (
-                    <Button
-                      size="large"
-                      sx={{
-                        position: "absolute",
-                        bottom: 8,
-                        right: 8,
-                        backgroundColor: colors.greenAccent[500],
-                        color: colors.primary[500],
-                        zIndex: 1, // Ensure the Edit button is above the ButtonBase
-                      }}
-                      onClick={() => {
-                        console.log("honnnnnnnnnnnnnn", table.TableNo);
-                        setTableNo(table.TableNo);
-                        setTableWaiter(table.TableWaiter);
-                        setActive(table.Active);
-                        setDescription(table.Description);
-                        handleEditClick("Update Table", table.TableNo);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  )}
+                {userControl === "Y" && (
+                  <Button
+                    size="large"
+                    sx={{
+                      position: "absolute",
+                      bottom: 8,
+                      right: 8,
+                      backgroundColor: colors.greenAccent[500],
+                      color: colors.primary[500],
+                      zIndex: 1, // Ensure the Edit button is above the ButtonBase
+                    }}
+                    onClick={() => {
+                      setTableNo(table.TableNo);
+                      setTableWaiter(table.TableWaiter);
+                      setActive(table.Active);
+                      setDescription(table.Description);
+                      handleEditClick("Update Table", table.TableNo);
+                    }}
+                  >
+                    {t["Edit"]}
+                  </Button>
+                )}
               </Box>
             </Grid>
           ))}
@@ -345,6 +350,7 @@ const Tables = ({
         setDescription={setDescription}
         setShowKeyboard={setShowKeyboard}
         setActiveField={setActiveField}
+        setInputValue={setInputValue}
       />
     </Box>
   );

@@ -16,6 +16,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { textAlign } from "@mui/system";
 import Checkbox from "@mui/material/Checkbox";
+import { setIn } from "formik";
+import { useLanguage } from "../LanguageContext.js";
+import translations from "../translations.js";
 
 const ItemDetails = ({
   itemDetails,
@@ -43,10 +46,11 @@ const ItemDetails = ({
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  console.log("urllllllllllll mn l itemdetails", url);
-  console.log("itemDetails", itemDetails)
-  console.log("itemDetailsCopy",)
+  const { language } = useLanguage();
+  const t = translations[language];
+
   const [groupNames, setGroupNames] = useState([]);
+  const [err, setErr] = useState("");
   const [selectedGroupName, setSelectedGroupName] = useState(
     itemDetails.GroupName
   );
@@ -63,7 +67,9 @@ const ItemDetails = ({
     ) {
       // Validate if the value is a number
       if (isNaN(updatedValue)) {
-        setValMessage(`${field} must be a number`);
+        setErr(`${field} ${t["errorMessage"]["number"]}`);
+         setInputValue("");
+         setTickKey(false);
         return;
       }
     } else if (
@@ -74,12 +80,13 @@ const ItemDetails = ({
     ) {
       // Validate if the value has more than 2 characters
       if (updatedValue.length > 2) {
-        setValMessage(`${field} must be at most 2 characters long`);
+        setErr(`${field} ${t["errorMessage"]["maxLength"]}`);
+        setInputValue("");
+        setTickKey(false);
         return;
       }
     }
-
-    setValMessage(""); // Clear validation message if no error
+    setErr(""); // Clear validation message if no error
 
     if (field === "GroupName") {
       // For Select component
@@ -92,7 +99,6 @@ const ItemDetails = ({
       setSelectedGroup(updatedValue); // Also update the selected group object
     } else if (field === "Image") {
       const file = updatedValue.target.files[0];
-      console.log("in handlee file ", file);
 
       // Read the file as base64 and set it in the state
       const reader = new FileReader();
@@ -114,14 +120,13 @@ const ItemDetails = ({
         [field]: updatedValue,
         GroupNo: selectedGroup?.GroupNo || "", // Set the GroupNo from the selectedGroup
       }));
+   
     }
-    setInputValue("");
-    setTickKey(false);
-
+        //setInputValue("");
+        //setTickKey(false);
   };
 
   useEffect(() => {
-    console.log("valuee tabaa keyy tickkkk", tickKey);
     if (tickKey) {
         handleValueUpdate(activeField, inputValue);
     }
@@ -146,7 +151,6 @@ const ItemDetails = ({
           throw new Error("Error fetching groupItems");
         }
         const data = await response.json();
-        console.log("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaa", data);
         setGroupNames([...data]); // Assuming data is an array of objects with groupName and groupNo
       } catch (error) {
         console.error(error);
@@ -157,20 +161,19 @@ const ItemDetails = ({
   }, []);
 
   useEffect(() => {
-    if (valMessage) {
+    if (err) {
       const timeout = setTimeout(() => {
-        setValMessage("");
+        setErr("");
       }, 2000); // Adjust the duration as needed (in milliseconds)
       return () => clearTimeout(timeout);
     }
-  }, [valMessage]);
+  }, [err]);
 
   // Trigger handleSave when userDetailsCopy changes
   // useEffect(() => {
   //   handleSave();
   // }, [userDetailsCopy]);
-  console.log("groupppppppppppppppppp", itemDetailsCopy);
-  console.log("copyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", itemDetailsCopy);
+
   const rows = Object.entries(itemDetailsCopy)
     .filter(([key]) => key !== "GroupNo")
     .map(([key, value], index) => (
@@ -208,7 +211,7 @@ const ItemDetails = ({
               justifyContent: "center",
             }}
           >
-            <Typography variant="h4">{key}</Typography>
+            <Typography variant="h4">{t[key] || key}</Typography>
           </Box>
         </TableCell>
 
@@ -241,7 +244,9 @@ const ItemDetails = ({
                 size="small"
                 variant="outlined"
                 inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-                onDoubleClick={() => {
+                  onDoubleClick={() => {
+                    setInputValue("");
+                    setTickKey(false);
                   setShowKeyboard(true);
                 }}
                 onFocus={() => {
@@ -260,7 +265,10 @@ const ItemDetails = ({
                   pattern: "[0-9]*",
                   readOnly: true,
                 }}
-                onDoubleClick={() => {
+                  onDoubleClick={() => {
+                            setTickKey(false);
+
+                  setInputValue("");
                   setShowKeyboard(true);
                 }}
                 onFocus={() => {
@@ -372,7 +380,7 @@ const ItemDetails = ({
         </Table>
       </TableContainer>
       <Box sx={{height:"5%"}}>
-        {valMessage && (
+        {err && (
           <Typography
             variant="h1"
             color="error"
@@ -380,7 +388,7 @@ const ItemDetails = ({
               fontWeight: "bold",
             }}
           >
-            {valMessage}
+            {err}
           </Typography>
         )}
       </Box>

@@ -60,8 +60,6 @@ const handleChooseModifier = (modifier) => {
         },
       ];
 
-      console.log("After adding new item:", newModifiersArray);
-
       return newModifiersArray;
     }
 
@@ -82,8 +80,6 @@ const handleChooseModifier = (modifier) => {
         : item
     );
 
-    console.log("After updating existing item:", updatedModifiersArray);
-
     return updatedModifiersArray;
   });
 };
@@ -91,7 +87,6 @@ const handleChooseModifier = (modifier) => {
 
 const handleConfirmSelection = () => {
   // console.log("selectedd Modifierssssssssssssssss", selectedModifiers);
-  console.log("selected mealll for modifyyy", selectedMealForModify);
 
   // Pass the flattened array of selected modifiers to the parent component
   handleAddMod();

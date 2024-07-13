@@ -31,9 +31,11 @@ const ClientDetailsModal = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard, valMessage, setValMessage
+  setShowKeyboard, valMessage, setValMessage, tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
-  console.log("mmmmmmmmmmmmmmmmmmm", clientDetails);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   // const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -131,50 +133,6 @@ const ClientDetailsModal = ({
     onClose();
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-  const handleKeyPress = (input) => {
-    let updatedValue = input;
-
-    // Apply validation based on the field
-    if (
-      activeField === "AccDisc" ||
-      activeField === "VAT" ||
-      activeField === "AccPrice" ||
-      activeField === "Floor"
-    ) {
-      if (isNaN(updatedValue)) {
-        setValMessage(`${activeField} should be number`);
-        return;
-      } else {
-        setValMessage("");
-      }
-    } else if (activeField === "Tel") {
-      if (!/^\d+$/.test(updatedValue)) {
-        setValMessage("Telephone number should contain only digits");
-        return;
-      } else {
-        setValMessage("");
-      }
-    } else if (activeField === "Email") {
-      if (!updatedValue) {
-        setValMessage("");
-      } else if (!validateEmail(updatedValue)) {
-        setValMessage("Invalid email format");
-        return;
-      } else {
-        setValMessage("");
-      }
-    }
-    // Update the appropriate text field with the validated input
-    setClientDetailsCopy((prevClientDetailsCopy) => ({
-      ...prevClientDetailsCopy,
-      [activeField]: updatedValue,
-    }));
-  };
-
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box
@@ -229,11 +187,14 @@ const ClientDetailsModal = ({
             setActiveField={setActiveField}
             showKeyboard={showKeyboard}
             setShowKeyboard={setShowKeyboard}
-  
+            tickKey={tickKey}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            setTickKey={setTickKey}
 
             // handleUserDetailsCopyChange={handleUserDetailsCopyChange}
           />
-          
+
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not
             onCancel={handleCancelClose} // Function to handle dialog closure (cancel)

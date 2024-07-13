@@ -14,6 +14,8 @@ import { tokens } from "../../theme";
 import { format } from "date-fns";
 import COHDetails from "./COHDetails";
 import InvTotalDialog from "../InvTotalDialog";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const CashConfirm = ({
   open,
@@ -43,6 +45,8 @@ const CashConfirm = ({
   const [selectedInvType, setSelectedInvType] = useState("");
   const [srv, setSrv] = useState("");
   const [disc, setDisc] = useState("");
+  const { language } = useLanguage();
+  const t = translations[language];
 
   const handleDoubleClick = () => {
     setOpenTotalDetail(true);
@@ -114,15 +118,12 @@ const CashConfirm = ({
       try {
         const getCOHRead = await fetch(`${url}/pos/getCOHRead/${companyName}/${username}`);
         const readResp = await getCOHRead.json();
-        console.log("read resp", readResp);
         setAllowedUser(readResp);
         setSelectedOption(allowedUser);
-        console.log("allowed user", allowedUser);
          const calc = await fetch(
            `${url}/pos/calculateUserShifts/${companyName}/${formattedDate}/${allowedUser}`
          );
          const invoices = await calc.json();
-         console.log("invoices", invoices);
          setTotalUser(invoices);
          setNumInv(calculateTotalNumber(invoices));
          setTotalInv(calculateTotalFinal(invoices));
@@ -206,7 +207,7 @@ const CashConfirm = ({
   const columns = [
     {
       field: "User",
-      headerName: "User",
+      headerName: t["User"],
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell",
@@ -214,7 +215,7 @@ const CashConfirm = ({
     },
     {
       field: "InvType",
-      headerName: "InvType",
+      headerName: t["InvType"],
       minWidth: 200,
       renderCell: renderTextCell,
       headerClassName: "header-cell",
@@ -222,7 +223,7 @@ const CashConfirm = ({
     },
     {
       field: "InvNo",
-      headerName: "InvNo",
+      headerName: t["InvNo"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -231,7 +232,7 @@ const CashConfirm = ({
     },
     {
       field: "AccountNo",
-      headerName: "AccountNo",
+      headerName: t["AccountNo"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -240,7 +241,7 @@ const CashConfirm = ({
     },
     {
       field: "Time",
-      headerName: "Time",
+      headerName: t["Time"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -249,7 +250,7 @@ const CashConfirm = ({
     },
     {
       field: "totalFinal",
-      headerName: "Total",
+      headerName: t["Total"],
       //flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,
@@ -292,7 +293,7 @@ const CashConfirm = ({
               component="h1"
               sx={{ fontWeight: "500", width: "30%" }}
             >
-              Do you want to end your shift?
+              {t["EndShift"]}
             </Typography>
             <Box
               sx={{
@@ -312,7 +313,7 @@ const CashConfirm = ({
                   marginRight: "10px",
                 }}
               >
-                Yes
+                {t["Yes"]}
               </Button>
               <Button
                 variant="contained"
@@ -320,7 +321,7 @@ const CashConfirm = ({
                 onClick={onCancel}
                 style={{ fontSize: "1.1rem" }}
               >
-                No
+                {t["No"]}
               </Button>
             </Box>
             <Typography variant="h3" component="h1" sx={{ fontWeight: "500" }}>
@@ -412,7 +413,6 @@ const CashConfirm = ({
             }}
             pageSizeOptions={[10, 20, 30]}
             onRowClick={(params) => {
-              console.log("Params:", params);
               handleRowClick(params);
             }}
           />

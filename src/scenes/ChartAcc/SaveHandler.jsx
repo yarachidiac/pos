@@ -9,7 +9,6 @@ const handleSave = async (
 ) => {
   try {
     const data = clientDetailsCopy;
-    console.log("iddddddddddddddd", clientDetails);
 
     // Send a POST request to save all edited fields
     if (valMessage !== "Invalid email format") {

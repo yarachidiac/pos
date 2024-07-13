@@ -9,8 +9,6 @@ const handleSave = async (
 ) => {
   try {
     const data = groupDetailsCopy;
-    console.log("iddddddddddddddd", groupDetailsCopy.GroupNo);
-    console.log("itemmmmmmmmmmmmmmmmmmmmNOOOOO", groupDetails);
     // Send a POST request to save all edited fields
     const saveResponse = await fetch(
       `${url}/pos/updateGroups/${companyName}/${groupDetails.GroupNo}`,
@@ -33,13 +31,9 @@ const handleSave = async (
         "GroupNo already exists. Please choose another GroupNo."
       ) {
           // If save is successful, update userDetails to match userDetailsCopy
-          console.log("gggggggggggggggggggggggg");
           setGroupDetails(groupDetailsCopy);
-          
       }
-      console.log("wwwwwwww2");
         setSuccessMessage(responseData.message);
-        console.log("wwwwwwww3");
       setTimeout(() => {
         setSuccessMessage("");
       }, 2000);

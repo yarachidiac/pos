@@ -10,6 +10,8 @@ import Button from "@mui/material/Button";
 import AddUserDialog from "../team/AddUserDialog";
 import GroupDetailsModal from "./GroupDetailsModal";
 import DatagridTable from "../DatagridTable";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const Groups = ({
   companyName,
@@ -21,11 +23,16 @@ const Groups = ({
   activeField,
   setActiveField,
   showKeyboard,
-  setShowKeyboard, groupDetails, setGroupDetails, groupDetailsCopy, setGroupDetailsCopy, userName, setUserName, valMessage, setValMessage
+  setShowKeyboard, groupDetails, setGroupDetails, groupDetailsCopy, setGroupDetailsCopy, userName, setUserName, valMessage, setValMessage,tickKey,
+                          inputValue,
+                          setInputValue,
+                          setTickKey,
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [pageSize, setPageSize] = useState(10);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   //const [companyName, setCompanyName] = useState("");
   const [rows, setRows] = useState([]);
@@ -39,9 +46,6 @@ const Groups = ({
     // Read company_name from localStorage
     // const storedCompanyName = localStorage.getItem("company_name");
     // setCompanyName(storedCompanyName);
-
-    console.log("stored companyyyyyy", companyName);
-
     // Fetch users based on the company name
     if (companyName) {
       fetch(`${url}/pos/groupitems/${companyName}`)
@@ -73,7 +77,7 @@ const Groups = ({
   const columns = [
     {
       field: "GroupNo",
-      headerName: "Group No",
+      headerName: t["GroupNo"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 200,
@@ -82,7 +86,7 @@ const Groups = ({
     },
     {
       field: "GroupName",
-      headerName: "Group Name",
+      headerName: t["GroupName"],
       headerAlign: "left",
       align: "left",
       minWidth: 300,
@@ -91,7 +95,7 @@ const Groups = ({
     },
     {
       field: "Image",
-      headerName: "Image",
+      headerName: t["Image"],
       headerAlign: "left",
       align: "left",
       minWidth: 200,
@@ -108,7 +112,6 @@ const Groups = ({
 
   const handleGroupDetailsChange = async (newGroupDetails) => {
     try {
-      console.log("newUserDetailssssssssss", newGroupDetails.name);
       const apiUrl = `${url}/pos/addgroup/${companyName}/${newGroupDetails.name}`;
 
       const response = await fetch(apiUrl, {
@@ -178,7 +181,7 @@ const Groups = ({
         width="90%"
       >
         <Box>
-          <Header title="Item Groups" />
+          <Header title={t["manage_item_group"]} />
         </Box>
         <Box>
           <Button
@@ -187,7 +190,7 @@ const Groups = ({
             style={{ fontSize: "1.1rem" }}
             onClick={() => handleAddItem("Add Group Number")}
           >
-            Add
+            {t["Add"]}
           </Button>
         </Box>
       </Box>
@@ -208,6 +211,10 @@ const Groups = ({
         setActiveField={setActiveField}
         showKeyboard={showKeyboard}
         setShowKeyboard={setShowKeyboard}
+        tickKey={tickKey}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setTickKey={setTickKey}
       />
       <DatagridTable
         rows={rows}
@@ -227,6 +234,11 @@ const Groups = ({
         setValMessage={setValMessage}
         userName={userName}
         setUserName={setUserName}
+        activeField={activeField}
+        tickKey={tickKey}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        setTickKey={setTickKey}
       />
     </Box>
   );

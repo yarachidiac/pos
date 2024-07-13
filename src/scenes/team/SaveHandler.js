@@ -9,11 +9,9 @@ const handleSave = async (
   url
 ) => {
   try {
-    console.log("khrassss mn l confirm user", url);
     // Check if there is a validation message
     if (!valMessage) {
       const data = userDetailsCopy;
-      console.log("iddddddddddddddd", userDetails);
 
       // Send a POST request to save all edited fields
       const saveResponse = await fetch(

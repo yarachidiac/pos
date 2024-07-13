@@ -9,7 +9,7 @@ import AddUserDialog from "../team/AddUserDialog";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../LanguageContext";
 import translations from "../translations";
-const Kitchen = ({ companyName, addTitle, setAddTitle, url, setActiveField, setShowKeyboard, kitchenDetails, setKitchenDetails, kitchenDetailsCopy, setKitchenDetailsCopy, valMessage, setValMessage, userName, setUserName}) => {
+const Kitchen = ({ companyName, addTitle, setAddTitle, url, setActiveField, setShowKeyboard, kitchenDetails, setKitchenDetails, kitchenDetailsCopy, setKitchenDetailsCopy, valMessage, setValMessage, userName, setUserName, setInputValue}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -196,6 +196,7 @@ const Kitchen = ({ companyName, addTitle, setAddTitle, url, setActiveField, setS
             valMessage={valMessage}
             userName={userName}
             setUserName={setUserName}
+            setInputValue={setInputValue}
           />
         </Box>
       </Box>

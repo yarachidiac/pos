@@ -5,6 +5,8 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import DatagridTable from "../DatagridTable";
+import { useLanguage } from "../LanguageContext";
+import translations from "../translations";
 
 const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
   const theme = useTheme();
@@ -13,6 +15,8 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
   const [inv, setInv] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [invDet, setInvDet] = useState([]);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   useEffect(() => {
     fetch(`${url}/pos/getInvHistoryDetails/${companyName}/${selectedInv}`)
@@ -35,7 +39,7 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
   const columns = [
     {
       field: "ItemName",
-      headerName: "Item",
+      headerName: t["ItemName"],
       headerAlign: "left",
       align: "left",
       minWidth: 200,
@@ -45,7 +49,7 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
     },
     {
       field: "GroupName",
-      headerName: "Group",
+      headerName: t["GroupName"],
       headerAlign: "left",
       align: "left",
       minWidth: 100,
@@ -56,30 +60,29 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
 
     {
       field: "Disc",
-      headerName: "Disc",
+      headerName: t["Disc"],
       headerAlign: "left",
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
       flex: "1",
     },
     {
       field: "Tax",
-      headerName: "Tax",
+      headerName: t["Tax"],
       headerAlign: "left",
       align: "left",
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
       flex: "1",
     },
     {
       field: "UPrice",
-      headerName: "UPrice",
+      headerName: t["UPrice"],
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 100,
@@ -87,21 +90,19 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
     },
     {
       field: "Qty",
-      headerName: "Qty",
+      headerName: t["Qty"],
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
-      minWidth: 50,
+      minWidth: 100,
       flex: "1",
     },
     {
       field: "Date",
-      headerName: "Date",
+      headerName: t["Date"],
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 100,
@@ -109,10 +110,9 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
     },
     {
       field: "Time",
-      headerName: "Time",
+      headerName: t["Time"],
       headerAlign: "left",
       align: "left",
-      minWidth: 100,
       renderCell: renderTextCell,
       headerClassName: "header-cell", // Apply the custom style to the header
       minWidth: 100,
@@ -120,7 +120,7 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
     },
     {
       field: "RealDate",
-      headerName: "RealDate",
+      headerName: t["RealDate"],
       headerAlign: "left",
       align: "left",
       renderCell: renderTextCell,
@@ -130,7 +130,7 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
     },
     {
       field: "totalItem",
-      headerName: "Total",
+      headerName: t["Total"],
       flex: 1,
       cellClassName: "name-column--cell",
       minWidth: 100,

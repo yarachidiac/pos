@@ -32,7 +32,7 @@ const AddUserDialog = ({
   const colors = tokens(theme.palette.mode);
 
   const handleChange = (e) => {
-    const v = typeof e === "object" ? e.target.value : e;
+    const v = e.target.value;
     const titleIncludesNumber = title.includes("Number");
     const titleIncludeGroup = title.includes("Group");
     if (titleIncludesNumber && isNaN(v)) {
@@ -46,8 +46,6 @@ const AddUserDialog = ({
       setValMessage("");
       setUserName(v);
     }
-    setTickKey(false);
-    setInputValue("");
   };
 
   const handleAddUser = () => {
@@ -65,13 +63,11 @@ const AddUserDialog = ({
     onClose();
   };
 
-  useEffect(() => {
-    console.log("valuee tabaa keyy tickkkk", tickKey);
-    if (tickKey) {
-      console.log("ana b l tickkey");
-      handleChange(inputValue);
-    }
-  }, [tickKey]);
+  // useEffect(() => {
+  //   if (tickKey) {
+  //     handleChange(inputValue);
+  //   }
+  // }, [tickKey]);
   
   return (
     <Dialog
@@ -95,6 +91,7 @@ const AddUserDialog = ({
             value={userName}
             onChange={handleChange}
             onDoubleClick={() => {
+              setInputValue("");
               setShowKeyboard(true);
             }}
             onFocus={() => {
