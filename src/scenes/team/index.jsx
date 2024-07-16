@@ -35,6 +35,7 @@ const Team = ({
   inputValue,
   setInputValue,
   setTickKey,
+                      
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -50,6 +51,7 @@ const Team = ({
   const [successMess, setSuccessMess] = useState();
   const [userDetails, setUserDetails] = useState({});
   const [userDetailsCopy, setUserDetailsCopy] = useState({ ...userDetails });
+  const [branches, setBranches] = useState([]);
   const { language } = useLanguage();
   const t = translations[language];
 
@@ -68,6 +70,16 @@ const Team = ({
           }
         })
         .catch((error) => console.error("Error fetching users", error));
+      fetch(`${url}/pos/branch/${companyName}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            setBranches(data);
+          } else {
+            console.error("Invalid data format received:", data);
+          }
+        })
+        .catch((error) => console.error("Error fetching branches", error));
     }
   }, [userDetails]);
 
@@ -291,6 +303,8 @@ const Team = ({
         setInputValue={setInputValue}
         setTickKey={setTickKey}
         userName={userName}
+        branches={branches}
+     
       />
 
       <DatagridTable

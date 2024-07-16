@@ -20,11 +20,15 @@ import translations from "../translations";
 import { maxWidth } from "@mui/system";
 
 
-const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, companyDetails, setCompanyDetails, companyDetailsCopy, setCompanyDetailsCopy, error, setError }) => {
+const Company = ({ companyName, url,activeField, setActiveField, showKeyboard, setShowKeyboard, error, setError }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [selectedOption, setSelectedOption] = useState("general");
   const { language } = useLanguage();
+   const [companyDetails, setCompanyDetails] = useState({});
+   const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
+     ...companyDetails,
+   });
   const getOptionLabel = (option) => {
     return (
       translations[language][option] ||

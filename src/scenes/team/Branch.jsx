@@ -66,8 +66,12 @@ const Branch = ({
         const response = await fetch(`${url}/pos/branch/${companyName}`);
         if (response.ok) {
           const data = await response.json();
-          setBranchDetails(data);
-          setBranchDetailsCopy(data);
+          if (Array.isArray(data)) {
+            setBranchDetails(data);
+            setBranchDetailsCopy(data);
+          } else {
+            console.error("Invalid data format received:", data);
+          }
         } else {
           console.error("Failed to fetch company details");
         }
@@ -80,7 +84,7 @@ const Branch = ({
 
   const handleBranchDetailsChange = async (newBranchDetails) => {
     try {
-      const apiUrl = `${url}/pos/addBranch/${companyName}`;
+      const apiUrl = `${url}/pos/addBranch/${companyName}/${newBranchDetails.name}`;
 
       const response = await fetch(apiUrl, {
         method: "POST",

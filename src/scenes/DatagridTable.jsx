@@ -7,16 +7,18 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import { useTheme } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 
 export default function DatagridTable(props) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  
+  const location = useLocation();
+
   return (
     <Box
       sx={{
-        height: "90%",
+        height: (location.pathname.includes("/journal")) ? "83%" : "90%",
         width: "90%",
         display: "flex",
         alignItems: "center",

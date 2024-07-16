@@ -90,10 +90,7 @@ function App() {
   const [responseCash, setResponseCash] = useState("");
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [activeField, setActiveField] = useState("");
-  const [companyDetails, setCompanyDetails] = useState({});
-  const [companyDetailsCopy, setCompanyDetailsCopy] = useState({
-    ...companyDetails,
-  });
+
   const [error, setError] = useState("");
   const [currencyDetails, setCurrencyDetails] = useState([]);
   const [currencyDetailsCopy, setCurrencyDetailsCopy] = useState([
@@ -129,8 +126,9 @@ function App() {
 
   const [tickKey, setTickKey] = useState(false);
   const [inputValue, setInputValue] = useState("");
+
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.120:8000";
+  const url = "http://192.168.16.126:8000";
   const v = "pointofsale";
 
   useEffect(() => {
@@ -265,7 +263,13 @@ function App() {
 
   const handleBoth = () => {
     setTickKey(true);
-    if (activeField === "Add Currency Number") {
+    if (
+      activeField === "Add Currency Number" ||
+      activeField === "Add Branch Number" ||
+      activeField === "Add Item Number" ||
+      activeField === "Add Group Number" ||
+      location.pathname === `/${v}/Kitchen`
+    ) {
       if (!isNaN(inputValue)) {
         setValMessage("");
         setUserName(inputValue);
@@ -274,16 +278,6 @@ function App() {
       }
     } else if (activeField === "Add User") {
       setUserName(inputValue);
-    } else if (
-      activeField === "Add Item Number" ||
-      activeField === "Add Group Number"
-    ) {
-      if (!isNaN(inputValue)) {
-        setValMessage("");
-        setUserName(inputValue);
-      } else {
-        setValMessage("Number only allowed");
-      }
     } else if (activeField === "Add Client") {
       setUserName(inputValue);
     } else if (activeField === "Section No") {
@@ -298,13 +292,6 @@ function App() {
       setDescription(inputValue);
     } else if (activeField === "Search a client") {
       setSearchClient(inputValue);
-    } else if (location.pathname === `/${v}/Kitchen`) {
-      if (!isNaN(inputValue)) {
-        setValMessage("");
-        setUserName(inputValue);
-      } else {
-        setValMessage("Number only allowed");
-      }
     }
   };
   // const handleKeyPress = (input) => {
@@ -588,10 +575,6 @@ function App() {
                           setActiveField={setActiveField}
                           showKeyboard={showKeyboard}
                           setShowKeyboard={setShowKeyboard}
-                          companyDetails={companyDetails}
-                          setCompanyDetails={setCompanyDetails}
-                          companyDetailsCopy={companyDetailsCopy}
-                          setCompanyDetailsCopy={setCompanyDetailsCopy}
                           error={error}
                           setError={setError}
                         />
@@ -878,6 +861,12 @@ function App() {
                           setError={setError}
                           userName={userName}
                           setUserName={setUserName}
+                          setInputValue={setInputValue}
+                          tickKey={tickKey}
+                          inputValue={inputValue}
+                          setTickKey={setTickKey}
+                          valMessage={valMessage}
+                          setValMessage={setValMessage}
                         />
                       }
                     />

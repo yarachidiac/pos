@@ -21,7 +21,7 @@ const translations = {
     accounting: "Accounting",
     stockInventory: "Stock Inventory",
     invoices: "Invoices & Types Conditions",
-    sales: "Sales Invoices Conditions",
+    sales: "Sales Conditions",
     tables: "Tables-Dine In & Beauty",
     other: "Other",
     username: "Username",

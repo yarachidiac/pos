@@ -14,10 +14,46 @@ import { tokens } from "../../theme";
 export default function BranchDetails(props) {
   const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    console.log("poppppp", props.branchDetailsCopy);
+  console.log("poppppp", props.branchDetailsCopy);
+  const [err, setErr] = useState("");
+  const [activeCode, setActiveCode] = useState("");
 
   const [successMessage, setSuccessMessage] = useState("");
 
+  const handleValueUpdate = (field, updatedValue, code) => {
+    // Check if the code is a valid number
+    if (field === "Code" && isNaN(updatedValue)) {
+      setErr("Code should be a number");
+      return;
+    }
+
+    // Check if the code is unique
+    const isUniqueCode = props.branchDetailsCopy.every(
+      (detail) => detail.Code === code || detail.Code !== updatedValue
+    );
+    if (!isUniqueCode) {
+      setErr("Code must be unique");
+      return;
+    }
+
+    // Update the branch details
+    props.setBranchDetailsCopy((prev) => {
+      const updatedDetails = prev.map((detail) => {
+        if (detail.Code === code) {
+          return {
+            ...detail,
+            [field]: updatedValue,
+          };
+        }
+        return detail;
+      });
+      return updatedDetails;
+    });
+
+    setErr(""); // Clear any previous error messages
+    props.setTickKey(false);
+
+  };
 
   const handleSave = async () => {
     const saveResponse = await fetch(
@@ -40,8 +76,8 @@ export default function BranchDetails(props) {
 
   useEffect(() => {
     if (props.tickKey) {
-      const [field, index] = props.activeField.split("-");
-    //   handleValueUpdate(parseInt(index, 10), field, props.inputValue);
+      console.log("acccccccccccccc", activeCode);
+        handleValueUpdate(props.activeField, props.inputValue, activeCode);
     }
   }, [props.tickKey]);
 
@@ -56,32 +92,48 @@ export default function BranchDetails(props) {
     }
   }, [props.branchDetailsCopy]);
 
-  const rows = props.branchDetailsCopy.map((item, index) =>
-    Object.entries(item).map(([key, value]) => (
-      <TableRow key={key}>
-        <TableCell>
-          <Typography variant="h4">{key}</Typography>
-        </TableCell>
-        <TableCell>
-          <Box sx={{ width: "300px" }}>
-            <TextField
-              fullWidth
-              value={value}
-              // onChange={(e) => handleValueUpdate(index, "Code", e.target.value)}
-              onDoubleClick={() => {
-                props.setInputValue("");
-                props.setShowKeyboard(true);
-              }}
-              onFocus={() => {
-                props.setActiveField(key);
-              }}
-            />
-          </Box>
-        </TableCell>
-      </TableRow>
-    ))
-  );
-
+  const rows = props.branchDetailsCopy.map((item, index) => (
+    <TableRow key={item.Code}>
+      <TableCell>
+          <Typography variant="h4">Code:</Typography>
+          <TextField
+            fullWidth
+            value={item.Code}
+            onChange={(e) =>
+              handleValueUpdate("Code", e.target.value, item.Code)
+            }
+            onDoubleClick={() => {
+              setActiveCode(item.Code);
+              props.setInputValue("");
+              props.setShowKeyboard(true);
+            }}
+            onFocus={() => {
+              props.setActiveField("Code");
+              setActiveCode(item.Code);
+            }}
+          />
+      </TableCell>
+      <TableCell>
+          <Typography variant="h4">Description:</Typography>
+          <TextField
+            fullWidth
+            value={item.Description}
+            onChange={(e) =>
+              handleValueUpdate("Description", e.target.value, item.Code)
+            }
+            onDoubleClick={() => {
+              setActiveCode(item.Code);
+              props.setInputValue("");
+              props.setShowKeyboard(true);
+            }}
+            onFocus={() => {
+              props.setActiveField("Description");
+              setActiveCode(item.Code);
+            }}
+          />
+      </TableCell>
+    </TableRow>
+  ));
   return (
     <Box style={{ height: "100%" }}>
       <TableContainer style={{ height: "90%", overflowY: "auto" }}>
@@ -100,9 +152,9 @@ export default function BranchDetails(props) {
         }}
       >
         <Box sx={{ width: "90%" }}>
-          {successMessage && (
+          {(successMessage || err )&& (
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>
-              {successMessage}
+              {successMessage} {err}
             </Typography>
           )}
         </Box>

@@ -41,7 +41,7 @@ const GeneralAccountingTable = ({
   tickKey,
   inputValue,
   setInputValue,
-  setTickKey,
+  setTickKey, branches
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -95,16 +95,18 @@ const GeneralAccountingTable = ({
     }
   }, [userDetailsCopy, userDetails, unsavedChanges]);
 
+  console.log("user detailss copyy", userDetailsCopy);
+
   const rows = Object.entries(userDetailsCopy)
     .filter(([key]) => key !== "COH" && key !== "EOD")
     .map(([key, value], index) => (
       <TableRow
         key={key}
         style={{
-          width: window.innerWidth * 0.28,
           display: "flex",
           flexDirection: "row",
           height: "100%",
+          width:"100%",
           //padding: '8px',
           borderRadius: "4px",
           border: "1px solid #ccc",
@@ -124,19 +126,10 @@ const GeneralAccountingTable = ({
             boxSizing: "border-box",
           }}
         >
-          <Box
-            sx={{
-              maxHeight: "100%",
-              width: "100%",
-              alignItems: "start", // Align text to the start (left)
-              justifyContent: "center",
-            }}
-          >
+         
             <Typography variant="h4">
-              {" "}
               {translations[language][key.toLowerCase()] || key}
             </Typography>
-          </Box>
         </TableCell>
         <TableCell
           style={{
@@ -144,31 +137,43 @@ const GeneralAccountingTable = ({
             height: "100%",
           }}
         >
-          <Box
-            style={{
-              position: "relative",
-              height: "100%",
-              width: "100%",
-            }}
-          >
+         
             {key === "username" ||
             key === "password" ||
-            key === "SAType" ||
-            key === "Branch" ? (
+            key === "SAType" 
+             ? (
               <TextField
                 value={value}
                 onChange={(e) => handleValueUpdate(key, e.target.value)}
                 fullWidth
                 variant="outlined"
                 size="small"
-                  onDoubleClick={() => {
-                    setInputValue("");
+                onDoubleClick={() => {
+                  setInputValue("");
                   setShowKeyboard(true);
                 }}
                 onFocus={() => {
                   setActiveField(key);
                 }}
               />
+              ) : key === "Branch" ? (
+                <Box
+           
+          >
+                <Select
+                  style={{ width: "100%" }}
+                value={value}
+                onChange={(e) => handleValueUpdate(key, e.target.value)}
+                variant="outlined"
+                size="small"
+              >
+                {branches.map((branch) => (
+                  <MenuItem key={branch.code} value={branch.Code}>
+                    {branch.Description}
+                  </MenuItem>
+                ))}
+                  </Select>
+                  </Box>
             ) : key === "email" ? (
               <TextField
                 value={value}
@@ -223,27 +228,26 @@ const GeneralAccountingTable = ({
                 </Box>
               </Box>
             )}
-          </Box>
         </TableCell>
       </TableRow>
     ));
 
   return (
     <Box style={{ height: "100%" }}>
-      <TableContainer style={{ height: "85%", overflowY: "auto" }}>
+      <TableContainer style={{ height: "90%", overflowY: "auto" }}>
         <Table>
           <TableBody
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)", // Adjust the number of columns
-              gap: "5px",
+              //gap: "5px",
             }}
           >
             {rows}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ height: "5%", marginTop: "auto" }}>
+      {/* <Box sx={{ height: "5%", marginTop: "auto" }}>
         {err && (
           <Typography
             variant="body1"
@@ -256,7 +260,7 @@ const GeneralAccountingTable = ({
             {err}
           </Typography>
         )}
-      </Box>
+      </Box> */}
       <Box
         sx={{
           height: "10%",
@@ -266,6 +270,18 @@ const GeneralAccountingTable = ({
           flexDirection: "row",
         }}
       >
+        {err && (
+          <Typography
+            variant="body1"
+            color="error"
+            style={{
+              fontSize: "1.1rem",
+              fontWeight: "bold",
+            }}
+          >
+            {err}
+          </Typography>
+        )}
         {successMessage && (
           <Box sx={{ width: "95%", marginTop: "auto" }}>
             <Typography variant="h3" style={{ color: colors.greenAccent[500] }}>

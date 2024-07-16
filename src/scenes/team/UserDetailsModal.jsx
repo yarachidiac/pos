@@ -65,7 +65,8 @@ const UserDetailsModal = ({
   tickKey,
   inputValue,
   setInputValue,
-  setTickKey,
+  setTickKey, branches
+
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -115,7 +116,7 @@ const UserDetailsModal = ({
     pl: 2, // Set left padding to 3
     //width: "100%",
     minWidth: "90%",
-    minHeight: "90%", // Set a minimum height for smaller screens
+    height: "90%", // Set a minimum height for smaller screens
     //maxHeight: "90%", // Set a maximum height for smaller screens
     display: "flex",
     flexDirection: window.innerWidth < 650 ? "row" : "column",
@@ -321,7 +322,8 @@ const UserDetailsModal = ({
             tickKey={tickKey}
             inputValue={inputValue}
             setInputValue={setInputValue}
-            setTickKey={setTickKey}
+            setTickKey={setTickKey} branches={branches}
+           
           />
         );
       case "stock-inventory":
@@ -359,8 +361,8 @@ const UserDetailsModal = ({
           ...modalContainerStyle,
         }}
       >
-        <Box display="flex" justifyContent="space-between">
-          <Box sx={{ p: "2%" }}>
+        <Box display="flex" justifyContent="space-between" height="10%" alignItems="center">
+          <Box sx={{ }}>
             <Typography variant="h3" style={{ fontWeight: "1.1rem" }}>
               {userDetails.username}
             </Typography>
@@ -376,106 +378,6 @@ const UserDetailsModal = ({
             </IconButton>
           </Box>
         </Box>
-        {/* Drawer Container */}
-        {window.innerWidth <= 650 ? (
-          <Box sx={drawerContainerStyle}>
-            <Drawer
-              variant="permanent"
-              anchor="left"
-              open={isDrawerOpen}
-              onClose={() => setIsDrawerOpen(false)}
-            >
-              <List sx={{ drawerListStyle }}>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("general")}
-                  sx={{
-                    color:
-                      selectedOption === "general"
-                        ? "secondary"
-                        : colors.grey[100],
-                  }}
-                  variant="contained"
-                >
-                  <ListItemText primary="General" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("accounting")}
-                  sx={{
-                    color:
-                      selectedOption === "accounting"
-                        ? colors.greenAccent[400]
-                        : colors.grey[100],
-                  }}
-                >
-                  <ListItemText primary="Accounting" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("stock-inventory")}
-                  sx={{
-                    color:
-                      selectedOption === "stock-inventory"
-                        ? colors.greenAccent[400]
-                        : colors.grey[100],
-                  }}
-                >
-                  <ListItemText primary="Stock Inventory" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("invoices")}
-                  sx={{
-                    color:
-                      selectedOption === "invoices"
-                        ? colors.greenAccent[400]
-                        : colors.grey[100],
-                  }}
-                >
-                  <ListItemText primary="Invoices & Types Conditions" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("sales")}
-                  sx={{
-                    color:
-                      selectedOption === "sales"
-                        ? colors.greenAccent[400]
-                        : colors.grey[100],
-                  }}
-                >
-                  <ListItemText primary="Sales Invoices Conditions" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("tables")}
-                  sx={{
-                    color:
-                      selectedOption === "tables"
-                        ? colors.greenAccent[400]
-                        : colors.grey[100],
-                  }}
-                >
-                  <ListItemText primary="Tables-Dine In & Beauty" />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => handleOptionChange("other")}
-                  sx={{
-                    color:
-                      selectedOption === "other"
-                        ? colors.greenAccent[400]
-                        : colors.grey[100],
-                  }}
-                >
-                  <ListItemText primary="Other" />
-                </ListItem>
-                {/* Add more list items for each route */}
-              </List>
-            </Drawer>
-          </Box>
-        ) : (
           <Box sx={appBarStyle}>
             <Toolbar sx={{ width: "100%", height: "100%" }}>
               <List sx={appbarContentStyle}>
@@ -521,8 +423,8 @@ const UserDetailsModal = ({
               </List>
             </Toolbar>
           </Box>
-        )}
-        <Box sx={{ height: "85%", width: "100%" }}>
+        
+        <Box sx={{ height: "75%", width: "100%" }}>
           {renderSelectedTable()}
           <ConfirmationDialog
             open={showConfirmation} // Controls whether the dialog is open or not

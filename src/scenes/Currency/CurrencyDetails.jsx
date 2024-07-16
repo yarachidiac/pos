@@ -37,6 +37,7 @@ export default function CurrencyDetails(props) {
 
 
   const handleSave = async () => {
+    console.log("currency", JSON.stringify(props.currencyDetailsCopy));
     const saveResponse = await fetch(
       `${props.url}/pos/updateCurrency/${props.companyName}`,
       {

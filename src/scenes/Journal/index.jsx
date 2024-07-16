@@ -1,4 +1,4 @@
-import { Box, TextField, Typography, useTheme } from "@mui/material";
+import { Box, Select, TextField, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
@@ -55,6 +55,9 @@ const Journal = ({ companyName, url}) => {
   const [openInvKind, setOpenInvKind] = useState(false);
   const { language } = useLanguage();
   const t = translations[language];
+  const [branchData, setBranchData] = useState([]);
+  const [usersData, setUsersData] = useState([]);
+  const [invTypeData, setInvTypeData] = useState([]);
   
   const handleDoubleClickInvKind = () => {
     setOpenInvKind(true);
@@ -85,6 +88,22 @@ const Journal = ({ companyName, url}) => {
     setSelectedInv(params.row.InvNo); 
     setSelectedInvType(params.row.InvType)
   };
+
+  useEffect(() => {
+    const fetchBUS = async () => {
+      const branchResponse = await fetch(
+            `${url}/pos/branch/${companyName}`
+      );
+      if (branchResponse.ok) {
+        const br = branchResponse.json();
+        setBranchData(br);
+      }
+
+      const userResponse = await fetch(`${url}/pos/user/${companyName}`);
+
+    }
+    fetchBUS();
+  },[]);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -302,7 +321,7 @@ const Journal = ({ companyName, url}) => {
     >
       <Box
         sx={{
-          height: "8%",
+          height: "15%",
           width: "100%",
           display: "flex",
           flexDirection: "row",
@@ -312,28 +331,36 @@ const Journal = ({ companyName, url}) => {
         }}
       >
         <Header sx={{ width: "15%" }} title={t["InvHistory"]} />
-        <Button
-          sx={{ width: "13%" }}
-          component="h1"
-          variant="contained"
-          color="secondary"
-          style={{ fontSize: "1.1rem" }}
-          onDoubleClick={handleDoubleClick}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "13%",
+            alignItems: "space-around",
+            height:"100%"
+          }}
         >
-          {/* Total &nbsp;&nbsp; */}
-          {Number(totalInv).toFixed(3)}
-        </Button>
-        <Button
-          sx={{ width: "13%" }}
-          component="h1"
-          variant="contained"
-          color="secondary"
-          style={{ fontSize: "1.1rem" }}
-          onDoubleClick={handleDoubleClickInvKind}
-        >
-          InvKind
-        </Button>
-        <InvKindDialog openInvKind={openInvKind} countDelivery={countDelivery} countTable={countTable} countTakeaway={countTakeaway} setOpenInvKind={setOpenInvKind}></InvKindDialog>
+          <Button
+            component="h1"
+            variant="contained"
+            color="secondary"
+            style={{ fontSize: "1.1rem" }}
+            onDoubleClick={handleDoubleClick}
+          >
+            {/* Total &nbsp;&nbsp; */}
+            {Number(totalInv).toFixed(3)}
+          </Button>
+          <Button
+            component="h1"
+            variant="contained"
+            color="secondary"
+            style={{ fontSize: "1.1rem" }}
+            onDoubleClick={handleDoubleClickInvKind}
+          >
+            InvKind
+          </Button>
+        </Box>
+
         <InvTotalDialog
           openTotalDetail={openTotalDetail}
           setOpenTotalDetail={setOpenTotalDetail}
@@ -347,34 +374,55 @@ const Journal = ({ companyName, url}) => {
           totalTax={totalTax}
           totalInv={totalInv}
         ></InvTotalDialog>
+        <InvKindDialog
+          openInvKind={openInvKind}
+          countDelivery={countDelivery}
+          countTable={countTable}
+          countTakeaway={countTakeaway}
+          setOpenInvKind={setOpenInvKind}
+        ></InvKindDialog>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            sx={{ width: "15%" }}
-            label="Start Date"
-            value={startDate}
-            onChange={handleStartDateChange}
-            format="DD/MM/YYYY"
-          />
-          <DatePicker
-            sx={{ width: "15%" }}
-            label="End Date"
-            value={endDate}
-            onChange={handleEndDateChange}
-            format="DD/MM/YYYY"
-          />
-          <TimePicker
-            sx={{ width: "15%" }}
-            label="Start Time"
-            value={startDate}
-            onChange={handleStartTimeChange}
-          />
-          <TimePicker
-            sx={{ width: "15%" }}
-            label="End Time"
-            value={endDate}
-            onChange={handleEndTimeChange}
-          />
+          <Box sx={{ display: "flex", flexDirection: "row", width: "30%" }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <DatePicker
+                // sx={{ width: "15%" }}
+                label="Start Date"
+                value={startDate}
+                onChange={handleStartDateChange}
+                format="DD/MM/YYYY"
+              />
+              <DatePicker
+                //sx={{ width: "15%" }}
+                label="End Date"
+                value={endDate}
+                onChange={handleEndDateChange}
+                format="DD/MM/YYYY"
+              />
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <TimePicker
+                // sx={{ width: "15%" }}
+                label="Start Time"
+                value={startDate}
+                onChange={handleStartTimeChange}
+              />
+              <TimePicker
+                //  sx={{ width: "15%" }}
+                label="End Time"
+                value={endDate}
+                onChange={handleEndTimeChange}
+              />
+            </Box>
+          </Box>
         </LocalizationProvider>
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Select>
+            
+          </Select>
+          <Select>
+          
+          </Select> 
+        </Box>
         {/* <Button
             variant="contained"
             color="primary"
@@ -388,7 +436,7 @@ const Journal = ({ companyName, url}) => {
         rows={filteredData}
         columns={columns}
         getRowId={(row) => row.InvNo}
-      ></DatagridTable>  
+      ></DatagridTable>
       <InvDetailsModal
         isOpen={openInvDetailsModal}
         setOpenIvDetailsModal={setOpenIvDetailsModal}
