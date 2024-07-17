@@ -30,6 +30,8 @@
     "escpos": "^3.0.0-alpha.6",
     "file-saver": "^2.0.5",
     "formik": "^2.4.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "path-browserify": "^1.0.1",
     "print-js": "^1.6.0",
     "qrcode.react": "^3.1.0",

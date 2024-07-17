@@ -109,7 +109,7 @@ const translations = {
     POS: "PoS",
     "Manage POS": "Manage POS",
     "Manage Groups": "Manage Groups",
-    "Invoices History": "Invoices History",
+    "Invoices History": "Inv History",
     "Daily Sales": "Daily Sales",
     "Cash On Hands": "Cash On Hands",
     "End Of Day": "End Of Day",
@@ -120,7 +120,6 @@ const translations = {
     Kitchen: "Kitchen",
     Currency: "Currency",
     Logout: "Logout",
-    Branch: "Branch",
   },
   ar: {
     general: "عام",
@@ -245,7 +244,6 @@ const translations = {
     User: "مستخدم",
     EndShift: "هل ترغب في إنهاء وقت عملك؟",
     EndDay: "هل ترغب في إنهاء يومك؟",
-    Branch: "",
   },
 };
 

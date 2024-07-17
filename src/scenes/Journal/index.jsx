@@ -1,4 +1,4 @@
-import { Box, Select, TextField, Typography, useTheme } from "@mui/material";
+import { Box, MenuItem, Select, TextField, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
@@ -20,6 +20,8 @@ import DatagridTable from "../DatagridTable";
 import InvKindDialog from "../InvKindDialog";
 import { useLanguage } from "../LanguageContext";
 import translations from "../translations";
+import "jspdf-autotable";
+import jsPDF from "jspdf";
 
 const Journal = ({ companyName, url}) => {
   const theme = useTheme();
@@ -58,7 +60,22 @@ const Journal = ({ companyName, url}) => {
   const [branchData, setBranchData] = useState([]);
   const [usersData, setUsersData] = useState([]);
   const [invTypeData, setInvTypeData] = useState([]);
+  const [selectedOptionBranch, setSelectedOptionBranch] = useState("Branches");
+  const [selectedOptionUser, setSelectedOptionUser] = useState("Users");
+  const [selectedOptionSA, setSelectedOptionSA] = useState("InvType");
+
+  const handleBranchUpdate = (updatedValue) => {
+    setSelectedOptionBranch(updatedValue);
+  }
   
+  const handleUserUpdate = (updatedValue) => {
+    setSelectedOptionUser(updatedValue)
+  }
+
+  const handleSAUpdate = (updatedValue) => {
+    setSelectedOptionSA(updatedValue);
+  };
+
   const handleDoubleClickInvKind = () => {
     setOpenInvKind(true);
   };
@@ -95,11 +112,21 @@ const Journal = ({ companyName, url}) => {
             `${url}/pos/branch/${companyName}`
       );
       if (branchResponse.ok) {
-        const br = branchResponse.json();
+        const br = await branchResponse.json();
         setBranchData(br);
       }
 
-      const userResponse = await fetch(`${url}/pos/user/${companyName}`);
+      const userResponse = await fetch(`${url}/pos/users/${companyName}`);
+      if (userResponse.ok) {
+        const user = await userResponse.json();
+        setUsersData(user);
+      }
+
+      const invType = await fetch(`${url}/pos/distInvType/${companyName}`)
+      if (invType.ok) {
+        const invT = await invType.json();
+        setInvTypeData(invT);
+      }
 
     }
     fetchBUS();
@@ -117,6 +144,9 @@ const Journal = ({ companyName, url}) => {
         endDate: formattedEndDate,
         startTime: formattedStartTime,
         endTime: formattedEndTime,
+        selectedOptionBranch: selectedOptionBranch,
+        selectedOptionUser: selectedOptionUser,
+        selectedOptionSA: selectedOptionSA
       };
       const invKind = await fetch(`${url}/pos/getInvKind/${companyName}`, {
         method: "POST",
@@ -175,7 +205,61 @@ const Journal = ({ companyName, url}) => {
     }
       fetchHisFiltered(); //setFilteredData(filtered);
     
-  }, [startDate, endDate, startTime, endTime]);
+  }, [startDate, endDate, startTime, endTime, selectedOptionBranch, selectedOptionSA, selectedOptionUser]);
+
+  const handleDownloadPDF = () => {
+    // Initialize jsPDF
+    const doc = new jsPDF();
+
+    // Define columns for the table
+    const columns = [
+      { header: "User", dataKey: "User" },
+      { header: "Invoice Type", dataKey: "InvType" },
+      { header: "Invoice Number", dataKey: "InvNo" },
+      { header: "Branch", dataKey: "Branch" },
+      { header: "Disc", dataKey: "Disc" },
+      { header: "Date", dataKey: "Date" },
+      { header: "Real Date", dataKey: "RealDate" },
+      { header: "Time", dataKey: "Time" },
+      { header: "Total", dataKey: "totalFinal" },
+    ];
+
+    // Extract data from filteredData state
+    const data = filteredData.map((item) => ({
+      User: item.User,
+      InvType: item.InvType,
+      InvNo: item.InvNo,
+      Branch: item.Branch,
+      Disc: item.Disc,
+      Date: item.Date,
+      RealDate: item.RealDate,
+      Time: item.Time,
+      //GrossTotal: item.GrossTotal.toFixed(3),
+      //TotalQty: item.TotalQty,
+      Srv: item.Srv,
+      Disc: item.Disc,
+      //TotalDiscount: item.TotalDiscount.toFixed(3),
+      //TotalTax: item.TotalTax.toFixed(3),
+      totalFinal: Number(item.totalFinal).toFixed(3),
+    }));
+
+    // Set title and styling for the PDF document
+    const title = `Filtered Invoice History (${formattedStartDate} - ${formattedEndDate})`;
+    doc.setFontSize(20);
+    doc.text(title, 14, 20);
+
+    // Generate PDF table using autoTable plugin
+    doc.autoTable({
+      columns,
+      body: data,
+      startY: 30, // Position from top (y-axis)
+    });
+
+    // Save the PDF file
+    doc.save(
+      `Filtered_Invoice_History_${formattedStartDate}_${formattedEndDate}.pdf`
+    );
+  };
 
   const renderTotalFinalCell = (params) => {
     const value = parseFloat(params.value);
@@ -227,6 +311,14 @@ const Journal = ({ companyName, url}) => {
   };
 
   const columns = [
+    {
+      field: "User",
+      headerName: t["User"],
+      minWidth: 100,
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      flex: "1",
+    },
     {
       field: "InvType",
       headerName: t["InvType"],
@@ -330,14 +422,14 @@ const Journal = ({ companyName, url}) => {
           //width: "100%",
         }}
       >
-        <Header sx={{ width: "15%" }} title={t["InvHistory"]} />
+        <Header sx={{ width: "15%" }} title={t["Invoices History"]} />
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            width: "13%",
+            width: "15%",
             alignItems: "space-around",
-            height:"100%"
+            height: "100%",
           }}
         >
           <Button
@@ -415,21 +507,53 @@ const Journal = ({ companyName, url}) => {
             </Box>
           </Box>
         </LocalizationProvider>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Select>
-            
-          </Select>
-          <Select>
-          
-          </Select> 
-        </Box>
-        {/* <Button
-            variant="contained"
-            color="primary"
-            sx={{ height: "100%", ml: "2%" }}
+        <Box sx={{ display: "flex", flexDirection: "column", width: "15%" }}>
+          <Select
+            value={selectedOptionBranch}
+            onChange={(e) => handleBranchUpdate(e.target.value)}
           >
-            Apply
-          </Button> */}
+            <MenuItem value="Branches">Branches</MenuItem>
+
+            {branchData.map((branch) => (
+              <MenuItem key={branch.Code} value={branch.Code}>
+                {branch.Description}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
+            value={selectedOptionUser}
+            onChange={(e) => handleUserUpdate(e.target.value)}
+          >
+            <MenuItem value="Users">Users</MenuItem>
+            {usersData.map((user) => (
+              <MenuItem key={user.id} value={user.username}>
+                {user.username}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+        <Box sx={{ display: "flex", flexDirection: "column", width: "15%" }}>
+          <Select
+            value={selectedOptionSA}
+            onChange={(e) => handleSAUpdate(e.target.value)}
+          >
+            <MenuItem value="InvType">InvType</MenuItem>
+            {invTypeData.map((sa) => (
+              <MenuItem key={sa.SAType} value={sa.SAType}>
+                {sa.SAType}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button
+            component="h1"
+            variant="contained"
+            color="secondary"
+            style={{ fontSize: "1.1rem" }}
+            onClick={handleDownloadPDF}
+          >
+            Print
+          </Button>
+        </Box>
       </Box>
       <DatagridTable
         handleRowClick={handleRowClick}
