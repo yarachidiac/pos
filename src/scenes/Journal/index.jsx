@@ -63,6 +63,7 @@ const Journal = ({ companyName, url}) => {
   const [selectedOptionBranch, setSelectedOptionBranch] = useState("Branches");
   const [selectedOptionUser, setSelectedOptionUser] = useState("Users");
   const [selectedOptionSA, setSelectedOptionSA] = useState("InvType");
+  const [vat, setVat] = useState("");
 
   const handleBranchUpdate = (updatedValue) => {
     setSelectedOptionBranch(updatedValue);
@@ -358,6 +359,16 @@ const Journal = ({ companyName, url}) => {
       flex: "1",
     },
     {
+      field: "Srv",
+      headerName: "Srv",
+      headerAlign: "left",
+      align: "left",
+      renderCell: renderTextCell,
+      headerClassName: "header-cell", // Apply the custom style to the header
+      minWidth: 100,
+      flex: "1",
+    },
+    {
       field: "Date",
       headerName: t["Date"],
       headerAlign: "left",
@@ -413,7 +424,7 @@ const Journal = ({ companyName, url}) => {
     >
       <Box
         sx={{
-          height: "15%",
+          height: "16%",
           width: "100%",
           display: "flex",
           flexDirection: "row",
@@ -428,7 +439,7 @@ const Journal = ({ companyName, url}) => {
             display: "flex",
             flexDirection: "column",
             width: "15%",
-            alignItems: "space-around",
+            justifyContent: "space-around",
             height: "100%",
           }}
         >
@@ -474,24 +485,45 @@ const Journal = ({ companyName, url}) => {
           setOpenInvKind={setOpenInvKind}
         ></InvKindDialog>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Box sx={{ display: "flex", flexDirection: "row", width: "30%" }}>
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: "30%",
+              height: "100%",
+              alignContent: "space-around",
+              gap: 2,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+                height: "100%",
+              }}
+            >
               <DatePicker
-                // sx={{ width: "15%" }}
                 label="Start Date"
                 value={startDate}
                 onChange={handleStartDateChange}
                 format="DD/MM/YYYY"
               />
               <DatePicker
-                //sx={{ width: "15%" }}
                 label="End Date"
                 value={endDate}
                 onChange={handleEndDateChange}
                 format="DD/MM/YYYY"
               />
             </Box>
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-around",
+                height: "100%",
+              }}
+            >
               <TimePicker
                 // sx={{ width: "15%" }}
                 label="Start Time"
@@ -507,7 +539,7 @@ const Journal = ({ companyName, url}) => {
             </Box>
           </Box>
         </LocalizationProvider>
-        <Box sx={{ display: "flex", flexDirection: "column", width: "15%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", width: "15%", }}>
           <Select
             value={selectedOptionBranch}
             onChange={(e) => handleBranchUpdate(e.target.value)}
@@ -532,7 +564,15 @@ const Journal = ({ companyName, url}) => {
             ))}
           </Select>
         </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", width: "15%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            width: "15%",
+            justifyContent: "space-around",
+            height: "100%",
+          }}
+        >
           <Select
             value={selectedOptionSA}
             onChange={(e) => handleSAUpdate(e.target.value)}

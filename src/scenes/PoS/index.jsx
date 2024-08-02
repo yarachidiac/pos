@@ -46,6 +46,7 @@ import { useMediaQuery } from "@mui/material";
 import ButtonBase from "@mui/material/ButtonBase";
 import IngredDialog from './IngredDialog';
 import AllowDialog from './AllowDialog';
+import { display } from '@mui/system';
   
 const PoS = ({
   companyName,
@@ -93,7 +94,7 @@ const PoS = ({
   setSearchClient,tickKey,
                           inputValue,
                           setInputValue,
-                          setTickKey,
+                          setTickKey, branchDes
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -136,6 +137,7 @@ const PoS = ({
   const [invN, setInvN] = useState();
   const [newcurrDate, setNewCurrDate] = useState("");
   const [newcurrTime, setNewCurrTime] = useState("");
+  const [vat, setVat] = useState("");
 
   const handleCloseAllow = () => {
     setAllowDialog(false);
@@ -313,7 +315,20 @@ const PoS = ({
     fetchCur();
 
     fetchAllowPrint();
+
+    fetchVAT();
   }, []);
+
+  const fetchVAT = async () => {
+    try {
+      const response = await fetch(`${url}/pos/getVAT/${companyName}`);
+      const data = await response.json();
+      setVat(data["VAT"]);
+    } catch (error) {
+      console.error("Error fetching categoriesitems:", error);
+    }
+  }
+
 
   const fetchAllowPrint = async () => {
     try {
@@ -611,7 +626,7 @@ const PoS = ({
           accno: delivery ? delivery : accno,
           qtyPrintKT: qtyPrintKT,
           username: username,
-          invKind: selectedTableId ? "table" : selectedRow ? "delivery" : "takeaway"
+          invKind: selectedTableId ? "TABLE" : selectedRow ? "DELIVERY" : "TAKEAWAY"
         };
         const response = await fetch(`${url}/pos/invoiceitem/${companyName}`, {
           method: "POST",
@@ -683,7 +698,7 @@ const PoS = ({
   if (selectedMeals && selectedMeals.length > 0) {
     const totalTaxSD =
       parseFloat(calculateTotalTax()) * (1 + srv / 100) * (1 - discValue / 100);
-    const totall = ((serviceValue * 11) / 100) * (1 - discValue / 100);
+    const totall = ((serviceValue * vat) / 100) * (1 - discValue / 100);
     totalTax = totalTaxSD + totall;
   }
   const totalFinal = totalDiscount + totalTax;
@@ -765,59 +780,92 @@ const PoS = ({
   const isIpadPro = useMediaQuery("(min-width: 900px) and (max-width: 1300px)");
 
   const getItemListTable = () => {
+    const styles = {
+      container: {
+        height: "100%",
+        width:"100%"
+       // margin: "16px",
+        //padding: "16px",
+        //border: "1px solid #ddd",
+        //borderRadius: "4px",
+        //backgroundColor: "#f9f9f9",
+      },
+      header: {
+        display: "flex",
+        justifyContent: "space-between",
+        //borderBottom: "2px solid #3f51b5",
+        //paddingBottom: "8px",
+       // marginBottom: "8px",
+        //color: "#3f51b5",
+        fontWeight: "bold",
+      },
+      row: {
+        display: "flex",
+        justifyContent: "space-between",
+        //borderBottom: "1px solid #ddd",
+       // padding: "8px 0",
+      },
+      // cell: {
+      //   flex: "1",
+      //   textAlign: "right",
+      // },
+      // descriptionCell: {
+      //   flex: "2",
+      //   textAlign: "left",
+      // },
+      modifierRow: {
+        display: "flex",
+        justifyContent: "space-between",
+       // padding: "4px 0",
+       // backgroundColor: "#f5f5f5",
+      },
+      modifierCell: {
+        flex: "1",
+      },
+    };
+
     return (
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Qty</TableCell>
-              <TableCell>Description</TableCell>
-              {/* <TableCell>Price</TableCell> */}
-              <TableCell>Total</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {selectedMeals.map((selectedMeal, index) => (
-              <React.Fragment key={index}>
-                {/* Meal row */}
-                <TableRow>
-                  <TableCell>{selectedMeal.quantity}</TableCell>
-                  <TableCell>{selectedMeal.ItemName}</TableCell>
-                  {/* <TableCell>
-                    {(
-                      selectedMeal.UPrice -
-                      (selectedMeal.UPrice * selectedMeal.Disc) / 100
-                    ).toFixed(2)}{" "}
-                  </TableCell> */}
-                  <TableCell>
-                    {(
-                      (selectedMeal.UPrice -
-                        (selectedMeal.UPrice * selectedMeal.Disc) / 100) *
-                      selectedMeal.quantity
-                    ).toFixed(2)}{" "}
-                  </TableCell>
-                  {/* <TableCell>
-                    {curr}
-                  </TableCell> */}
-                </TableRow>
-                {/* Modifier rows */}
-                {selectedMeal.chosenModifiers &&
-                  selectedMeal.chosenModifiers.map(
-                    (modifier, modifierIndex) => (
-                      <TableRow key={`${index}-${modifierIndex}`}>
-                        <TableCell></TableCell> {/* Empty cell for spacing */}
-                        <TableCell colSpan={2}>
-                          {modifier.ItemName}
-                        </TableCell>{" "}
-                        {/* Span the next two cells for modifier name */}
-                      </TableRow>
-                    )
-                  )}
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.cell}>Qty</div>
+          <div style={styles.descriptionCell}>Description</div>
+          <div style={styles.cell}>Total</div>
+        </div>
+        <div>
+          {selectedMeals.map((selectedMeal, index) => (
+            <React.Fragment key={index}>
+              {/* Meal row */}
+              <div style={styles.row}>
+                <div style={styles.cell}>{selectedMeal.quantity}</div>
+                <div style={styles.descriptionCell}>
+                  {selectedMeal.ItemName}
+                </div>
+                <div style={styles.cell}>
+                  {(
+                    (selectedMeal.UPrice -
+                      (selectedMeal.UPrice * selectedMeal.Disc) / 100) *
+                    selectedMeal.quantity
+                  ).toFixed(2)}
+                </div>
+              </div>
+              {/* Modifier rows */}
+              {selectedMeal.chosenModifiers &&
+                selectedMeal.chosenModifiers.map((modifier, modifierIndex) => (
+                  <div
+                    key={`${index}-${modifierIndex}`}
+                    style={styles.modifierRow}
+                  >
+                    <div style={styles.modifierCell}></div>
+                    <div style={styles.descriptionCell}>
+                      {modifier.ItemName}
+                    </div>
+                    <div style={styles.modifierCell}></div>
+                  </div>
+                ))}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
     );
   };
 
@@ -1718,7 +1766,7 @@ const PoS = ({
                 <Typography variant="h4" sx={{ width: "50%" }}>
                   Tax
                 </Typography>
-                <Typography variant="h4">{`11%`}</Typography>
+                <Typography variant="h4">{vat}%</Typography>
                 <Typography variant="h4">
                   {totalTax.toFixed(2)} {curr}
                 </Typography>
@@ -1768,176 +1816,180 @@ const PoS = ({
         </Box>
       </Box>
       <Box id="myPrintableContent" sx={{ display: "none" }}>
-        <div>
-          <div>
-            <TableContainer>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      {newcurrDate} {newcurrTime}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>InvNo {invN}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Order {orderId}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>{companyName}</TableCell>
-                  </TableRow>
-                  {compCity && (
-                    <TableRow>
-                      {/* <TableCell>City:</TableCell> */}
-                      <TableCell>{compCity}</TableCell>
-                    </TableRow>
-                  )}
-                  {compStreet && (
-                    <TableRow>
-                      {/* <TableCell>Street:</TableCell> */}
-                      <TableCell>{compStreet}</TableCell>
-                    </TableRow>
-                  )}
-                  {compPhone && (
-                    <TableRow>
-                      {/* <TableCell>Phone:</TableCell> */}
-                      <TableCell>{compPhone}</TableCell>
-                    </TableRow>
-                  )}
-                  {branch && (
-                    <TableRow>
-                      {/* <TableCell>Branch:</TableCell> */}
-                      <TableCell>{branch}</TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-          {getItemListTable()}
-        </div>
         <div
           style={{
-            //fontFamily: "Arial, sans-serif",
-            backgroundColor: "#f7f7f7",
-            // padding: "20px",
-            borderRadius: "10px",
+            textAlign: "center",
+            width: "100%",
+            fontFamily: "Arial, sans-serif",
           }}
         >
-          <Typography variant="h3">Payment Summary</Typography>
-          <TableContainer
-            style={{
-              backgroundColor: "white",
-              borderRadius: "10px",
-              overflow: "hidden",
-            }}
-          >
-            <Table>
-              <TableBody>
-                <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-                  <TableCell>Gross Total:</TableCell>
-                  <TableCell colSpan={3}>
-                    {grossTotal} {curr}
-                  </TableCell>
-                </TableRow>
-                {srv !== 0 && (
-                  <TableRow>
-                    <TableCell>Service:</TableCell>
-                    <TableCell>{srv}%</TableCell>
-                    <TableCell>{serviceValue.toFixed(2)}</TableCell>
-                    <TableCell>{curr}</TableCell>
-                  </TableRow>
-                )}
-                {discValue !== 0 && (
-                  <TableRow>
-                    <TableCell>Discount:</TableCell>
-                    <TableCell>{discValue}%</TableCell>
-                    <TableCell>{discountValue.toFixed(2)}</TableCell>
-                    <TableCell>{curr}</TableCell>
-                  </TableRow>
-                )}
-                {totalDiscount !== 0 && (discValue !== 0 || srv !== 0) && (
-                  <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-                    <TableCell>Total:</TableCell>
-                    <TableCell colSpan={3}>
-                      {totalDiscount.toFixed(2)} {curr}
-                    </TableCell>
-                  </TableRow>
-                )}
-                {totalTax !== 0 && (
-                  <TableRow>
-                    <TableCell>Tax:</TableCell>
-                    <TableCell>11%</TableCell>
-                    <TableCell>{totalTax.toFixed(2)}</TableCell>
-                    <TableCell>{curr}</TableCell>
-                  </TableRow>
-                )}
-                <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-                  <TableCell>Total:</TableCell>
-                  <TableCell colSpan={3}>
-                    {infCom.KD === "/"
-                      ? (finalTotal / infCom.Rate).toLocaleString() + " USD"
-                      : (finalTotal * infCom.Rate).toLocaleString() + " LBP"}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {/* Company Information */}
+          <div style={{ marginBottom: "20px" }}>
+            <div style={{ fontWeight: "bold", fontSize: "20px" }}>
+              {companyName}
+            </div>
+            <div style={{ marginBottom: "5px" }}>Order {orderId}</div>
+
+            {compPhone && <div style={{ marginTop: "5px" }}>{compPhone}</div>}
+            <div style={{ marginTop: "5px" }}>
+              {compStreet && compStreet}
+              {compStreet && compCity && ", "}
+              {compCity && compCity}
+              {branchDes && <span> {branchDes}</span>}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginBottom: "5px",
+                }}
+              >
+                <div style={{ marginRight: "10px" }}>InvNo {invN}</div>
+                <div>
+                  {newcurrDate} {newcurrTime}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Invoice Information */}
+        </div>
+
+        {getItemListTable()}
+        <div>
+          <div style={{ fontWeight: "bold" }}>Payment Summary</div>
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>Gross Total:</div>
+              <div>
+                {grossTotal} {curr}
+              </div>
+            </div>
+            {srv !== 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>Service:</div>
+                <div>{srv}%</div>
+                <div>
+                  {serviceValue.toFixed(2)} {curr}
+                </div>
+              </div>
+            )}
+            {discValue !== 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>Discount:</div>
+                <div>{discValue}%</div>
+                <div>{discountValue.toFixed(2)}</div>
+                <div>{curr}</div>
+              </div>
+            )}
+            {totalDiscount !== 0 && (discValue !== 0 || srv !== 0) && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>Total:</div>
+                <div>
+                  {totalDiscount.toFixed(2)} {curr}
+                </div>
+              </div>
+            )}
+            {totalTax !== 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>Tax:</div>
+                <div>{vat}%</div>
+                <div>
+                  {totalTax.toFixed(2)}
+                  {curr}
+                </div>
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <div>Total:</div>
+              <div>
+                {infCom.KD === "/"
+                  ? (finalTotal / infCom.Rate).toLocaleString() + " USD"
+                  : (finalTotal * infCom.Rate).toLocaleString() + " LBP"}
+              </div>
+            </div>
+          </div>
         </div>
 
         {selectedRow && Object.keys(selectedRow).length > 0 && (
-          <TableContainer>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <Typography variant="h3">Client Address</Typography>
-                  </TableCell>
-                </TableRow>
-                {selectedRow["AccName"] !== "" && (
-                  <TableRow>
-                    <TableCell>Name:</TableCell>
-                    <TableCell>{selectedRow["AccName"]}</TableCell>
-                  </TableRow>
-                )}
-                {selectedRow["Tel"] !== "" && selectedRow["Tel"] !== null && (
-                  <TableRow>
-                    <TableCell>Tel:</TableCell>
-                    <TableCell>{selectedRow["Tel"]}</TableCell>
-                  </TableRow>
-                )}
-                {selectedRow["Address"] !== "" &&
-                  selectedRow["Address"] !== null && (
-                    <TableRow>
-                      <TableCell>Address:</TableCell>
-                      <TableCell>{selectedRow["Address"]}</TableCell>
-                    </TableRow>
-                  )}
-                {selectedRow["Building"] !== "" &&
-                  selectedRow["Building"] !== null && (
-                    <TableRow>
-                      <TableCell>Building:</TableCell>
-                      <TableCell>{selectedRow["Building"]}</TableCell>
-                    </TableRow>
-                  )}
-                {selectedRow["Street"] !== "" &&
-                  selectedRow["Street"] !== null && (
-                    <TableRow>
-                      <TableCell>Street:</TableCell>
-                      <TableCell>{selectedRow["Street"]}</TableCell>
-                    </TableRow>
-                  )}
-              </TableBody>
-            </Table>
+          <div>
+            <div style={{ fontWeight: "bold" }}>Client Address</div>
+            {selectedRow["AccName"] !== "" && (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>Name:</div>
+                <div>{selectedRow["AccName"]}</div>
+              </div>
+            )}
+            {selectedRow["Tel"] !== "" && selectedRow["Tel"] !== null && (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>Tel:</div>
+                <div>{selectedRow["Tel"]}</div>
+              </div>
+            )}
+            {selectedRow["Address"] !== "" &&
+              selectedRow["Address"] !== null && (
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div>Address:</div>
+                  <div>{selectedRow["Address"]}</div>
+                </div>
+              )}
+            {selectedRow["Building"] !== "" &&
+              selectedRow["Building"] !== null && (
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div>Building:</div>
+                  <div>{selectedRow["Building"]}</div>
+                </div>
+              )}
+            {selectedRow["Street"] !== "" && selectedRow["Street"] !== null && (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>Street:</div>
+                <div>{selectedRow["Street"]}</div>
+              </div>
+            )}
             {selectedRow["GAddress"] !== "" &&
               selectedRow["GAddress"] !== null && (
-                <QRCode
-                  value={`https://www.google.com/maps/place/${selectedRow["GAddress"]}`}
-                />
+                <div style={{ textAlign: "center", marginTop: "20px" }}>
+                  <QRCode
+                    value={`https://www.google.com/maps/place/${selectedRow["GAddress"]}`}
+                  />
+                </div>
               )}
-          </TableContainer>
+          </div>
         )}
+
         <Typography variant="h5" style={{ textAlign: "center" }}>
           Thank you{username && `, you were served by ${username}`}
         </Typography>

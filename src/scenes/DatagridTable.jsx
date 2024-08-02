@@ -18,7 +18,7 @@ export default function DatagridTable(props) {
   return (
     <Box
       sx={{
-        height: (location.pathname.includes("/journal")) ? "83%" : "90%",
+        height: (location.pathname.includes("/journal")) ? "82%" : "90%",
         width: "90%",
         display: "flex",
         alignItems: "center",

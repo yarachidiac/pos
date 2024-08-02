@@ -131,13 +131,7 @@ const Topbar = ({
     getLen();
   }, []);
 
-  useEffect(() => {
-    if (tickKey) {
-      setFilterValue(inputValue);
-      setTickKey(false);
-    }
-  }, [tickKey]);
-  
+
   return (
     <>
       {(currentRoute == `/${v}/PoS` ||

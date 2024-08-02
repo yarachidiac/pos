@@ -45,7 +45,7 @@ const Form = ({
   setCompCity,
   setCompStreet,
   setCompPhone, setAccNo,
-  activeField, setActiveField, showKeyboard, setShowKeyboard, setCompTime
+  activeField, setActiveField, showKeyboard, setShowKeyboard, setCompTime, setBranchDes
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -89,8 +89,11 @@ const Form = ({
           localStorage.setItem("company_name", values.company_name);
           await setCompanyName(localStorage.getItem("company_name"));
 
-          localStorage.setItem("user_branch", responseUser.user["Branch"]);
+          localStorage.setItem("user_branch", responseUser.user["Code"]);
           await setBranch(localStorage.getItem("user_branch"));
+
+          localStorage.setItem("branch_description", responseUser.user["Description"]);
+          await setBranchDes(localStorage.getItem("branch_description"));
 
           localStorage.setItem("user_invType", responseUser.user["SAType"]);
           await setInvType(localStorage.getItem("user_invType"));

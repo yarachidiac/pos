@@ -47,16 +47,16 @@ const InvDet = ({ companyName, selectedInv, url, selectedInvType }) => {
       headerClassName: "header-cell", // Apply the custom style to the header
       flex: "1",
     },
-    {
-      field: "GroupName",
-      headerName: t["GroupName"],
-      headerAlign: "left",
-      align: "left",
-      minWidth: 100,
-      renderCell: renderTextCell,
-      headerClassName: "header-cell", // Apply the custom style to the header
-      flex: "1",
-    },
+    // {
+    //   field: "GroupName",
+    //   headerName: t["GroupName"],
+    //   headerAlign: "left",
+    //   align: "left",
+    //   minWidth: 100,
+    //   renderCell: renderTextCell,
+    //   headerClassName: "header-cell", // Apply the custom style to the header
+    //   flex: "1",
+    // },
 
     {
       field: "Disc",

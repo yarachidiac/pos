@@ -64,6 +64,7 @@ function App() {
   const [compPhone, setCompPhone] = useState("");
   const [compCity, setCompCity] = useState("");
   const [compStreet, setCompStreet] = useState("");
+  const [branchDes, setBranchDes] = useState("");
   const [accno, setAccNo] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
@@ -128,7 +129,7 @@ function App() {
   const [inputValue, setInputValue] = useState("");
 
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.134:8000";
+  const url = "http://192.168.16.135:8000";
   const v = "pointofsale";
 
   useEffect(() => {
@@ -147,6 +148,7 @@ function App() {
           const storedCompCity = localStorage.getItem("comp_city");
           const storedAccNo = localStorage.getItem("acc_no");
           const storedCompTime = localStorage.getItem("comp_time");
+          const storedBranchDes = localStorage.getItem("branch_description");
           setCompanyName(storedCompanyName);
           setBranch(storedBranch);
           setInvType(storedInvType);
@@ -157,6 +159,7 @@ function App() {
           setCompStreet(storedCompStreet);
           setAccNo(storedAccNo);
           setCompTime(storedCompTime);
+          setBranchDes(storedBranchDes);
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
@@ -292,6 +295,8 @@ function App() {
       setDescription(inputValue);
     } else if (activeField === "Search a client") {
       setSearchClient(inputValue);
+    } else if (activeField === "Search PoS") {
+      setFilterValue(inputValue);
     }
   };
   // const handleKeyPress = (input) => {
@@ -475,6 +480,7 @@ function App() {
               showKeyboard={showKeyboard}
               setShowKeyboard={setShowKeyboard}
               setCompTime={setCompTime}
+              setBranchDes={setBranchDes}
             />
           ) : (
             <>
@@ -633,6 +639,7 @@ function App() {
                         inputValue={inputValue}
                         setInputValue={setInputValue}
                         setTickKey={setTickKey}
+                        branchDes={branchDes}
                       />
                     }
                   />

@@ -212,15 +212,15 @@ const Item = ({
         color: colors.grey[100],
       }}
       onClick={() => {
-        if (title === t["Manage POS"]) {
+        if (title === t["Manage Items"]) {
           handleManagePoS();
-        } else if (title === t["POS"]) {
+        } else if (title === t["POS Screen"]) {
           if (isNav) {
             navigate(`/${v}/PoS`);
           } else {
             setIsConfOpenDialog(true);
           }
-        } else if (title === t["Manage Groups"]) {
+        } else if (title === t["Manage Group Item"]) {
           handleManageGroups();
         } else if (title === t["Company Management"]) {
           handleComp();
@@ -452,7 +452,7 @@ const Sidebar = ({
             /> */}
             <Item
               icon={<PointOfSaleOutlinedIcon />}
-              title={t["POS"]}
+              title={t["POS Screen"]}
               selected={selected}
               setSelected={setSelected}
               isNav={isNav}
@@ -461,7 +461,7 @@ const Sidebar = ({
             />
             <Item
               icon={<PostAddOutlinedIcon />}
-              title={t["Manage POS"]}
+              title={t["Manage Items"]}
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}
@@ -472,7 +472,7 @@ const Sidebar = ({
             />
             <Item
               icon={<PostAddOutlinedIcon />}
-              title={t["Manage Groups"]}
+              title={t["Manage Group Item"]}
               selected={selected}
               setSelected={setSelected}
               setOpen={setOpen}

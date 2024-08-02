@@ -96,6 +96,7 @@ const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard,
   }, []);
 
   const handleSave = async () => {
+    console.log("ccompaaaaaaaaaaaaaaaa", companyDetailsCopy);
     const saveResponse = await fetch(
       `${url}/pos/updateCompany/${companyName}`,
       {
