@@ -191,10 +191,10 @@ const CashConfirm = ({
   };
 
   const calculateTotalDisc = (data) => {
-    return data.reduce((sum, item) => sum + item.disc, 0);
+    return data.reduce((sum, item) => sum + item.ee, 0);
   };
   const calculateTotalSrv = (data) => {
-    return data.reduce((sum, item) => sum + item.srv, 0);
+    return data.reduce((sum, item) => sum + item.dd, 0);
   };
 
   const renderTotalFinalCell = (params) => {

@@ -45,7 +45,7 @@ const Form = ({
   setCompCity,
   setCompStreet,
   setCompPhone, setAccNo,
-  activeField, setActiveField, showKeyboard, setShowKeyboard, setCompTime, setBranchDes
+  activeField, setActiveField, showKeyboard, setShowKeyboard, setCompTime, setBranchDes, setAllowRecall
 }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
@@ -97,6 +97,9 @@ const Form = ({
 
           localStorage.setItem("user_invType", responseUser.user["SAType"]);
           await setInvType(localStorage.getItem("user_invType"));
+
+          localStorage.setItem("user_recall", responseUser.user["RecallInv"]);
+          await setAllowRecall(localStorage.getItem("user_recall"));
 
           localStorage.setItem("comp_phone", responseUser.comp["Phone"]);
           await setCompPhone(localStorage.getItem("comp_phone"));

@@ -106,7 +106,7 @@ const GeneralAccountingTable = ({
           display: "flex",
           flexDirection: "row",
           height: "100%",
-          width:"100%",
+          width: "100%",
           //padding: '8px',
           borderRadius: "4px",
           border: "1px solid #ccc",
@@ -126,10 +126,9 @@ const GeneralAccountingTable = ({
             boxSizing: "border-box",
           }}
         >
-         
-            <Typography variant="h4">
-              {translations[language][key.toLowerCase()] || key}
-            </Typography>
+          <Typography variant="h4">
+            {translations[language][key.toLowerCase()] || key}
+          </Typography>
         </TableCell>
         <TableCell
           style={{
@@ -137,97 +136,91 @@ const GeneralAccountingTable = ({
             height: "100%",
           }}
         >
-         
-            {key === "username" ||
-            key === "password" ||
-            key === "SAType" 
-             ? (
-              <TextField
-                value={value}
-                onChange={(e) => handleValueUpdate(key, e.target.value)}
-                fullWidth
-                variant="outlined"
-                size="small"
-                onDoubleClick={() => {
-                  setInputValue("");
-                  setShowKeyboard(true);
-                }}
-                onFocus={() => {
-                  setActiveField(key);
-                }}
-              />
-              ) : key === "Branch" ? (
-                <Box
-           
-          >
-                <Select
-                  style={{ width: "100%" }}
+          {key === "username" || key === "password" || key === "SAType" ? (
+            <TextField
+              value={value}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+              onDoubleClick={() => {
+                setInputValue("");
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField(key);
+              }}
+            />
+          ) : key === "Branch" ? (
+            <Box>
+              <Select
+                style={{ width: "100%" }}
                 value={value}
                 onChange={(e) => handleValueUpdate(key, e.target.value)}
                 variant="outlined"
                 size="small"
               >
                 {branches.map((branch) => (
-                  <MenuItem key={branch.code} value={branch.Code}>
-                    {branch.Description}
+                  <MenuItem key={branch.Code} value={branch.Code}>
+                    {branch.Code}- {branch.Description}
                   </MenuItem>
                 ))}
-                  </Select>
-                  </Box>
-            ) : key === "email" ? (
-              <TextField
-                value={value}
-                onChange={handleEmailChange}
-                fullWidth
-                variant="outlined"
-                size="small"
-                onDoubleClick={() => {
-                  setShowKeyboard(true);
-                }}
-                onFocus={() => {
-                  setActiveField("email");
-                }}
-              />
-            ) : key === "id" ? (
-              <TextField
-                value={value}
-                onChange={(e) => handleValueUpdate(key, e.target.value)}
-                fullWidth
-                variant="outlined"
-                size="small"
-                inputProps={{
-                  readOnly: true,
-                }}
-              />
-            ) : (
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                }}
-              >
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  <Checkbox
-                    checked={value === "Y"}
-                    onChange={() =>
-                      handleValueUpdate(key, value === "Y" ? "N" : "Y")
-                    }
-                  />
-                  <Typography variant="h4">Y</Typography>
-                </Box>
-
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  <Checkbox
-                    checked={value === "N"}
-                    onChange={() =>
-                      handleValueUpdate(key, value === "N" ? "Y" : "N")
-                    }
-                  />
-                  <Typography variant="h4">N</Typography>
-                </Box>
+              </Select>
+            </Box>
+          ) : key === "email" ? (
+            <TextField
+              value={value}
+              onChange={handleEmailChange}
+              fullWidth
+              variant="outlined"
+              size="small"
+              onDoubleClick={() => {
+                setShowKeyboard(true);
+              }}
+              onFocus={() => {
+                setActiveField("email");
+              }}
+            />
+          ) : key === "id" ? (
+            <TextField
+              value={value}
+              onChange={(e) => handleValueUpdate(key, e.target.value)}
+              fullWidth
+              variant="outlined"
+              size="small"
+              inputProps={{
+                readOnly: true,
+              }}
+            />
+          ) : (
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={value === "Y"}
+                  onChange={() =>
+                    handleValueUpdate(key, value === "Y" ? "N" : "Y")
+                  }
+                />
+                <Typography variant="h4">Y</Typography>
               </Box>
-            )}
+
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={value === "N"}
+                  onChange={() =>
+                    handleValueUpdate(key, value === "N" ? "Y" : "N")
+                  }
+                />
+                <Typography variant="h4">N</Typography>
+              </Box>
+            </Box>
+          )}
         </TableCell>
       </TableRow>
     ));

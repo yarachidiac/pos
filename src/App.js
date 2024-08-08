@@ -65,6 +65,7 @@ function App() {
   const [compCity, setCompCity] = useState("");
   const [compStreet, setCompStreet] = useState("");
   const [branchDes, setBranchDes] = useState("");
+  const [allowRecall, setAllowRecall] = useState("");
   const [accno, setAccNo] = useState("");
   const [addTitle, setAddTitle] = useState("Add User");
   const [selectedRow, setSelectedRow] = useState(() => {
@@ -118,6 +119,7 @@ function App() {
   const [totalInv, setTotalInv] = useState("");
   const [compTime, setCompTime] = useState("");
   const [searchClient, setSearchClient] = useState("");
+  const [searchItem, setSearchItem] = useState("");
   const [allowedUser, setAllowedUser] = useState("");
   const [selectedOption, setSelectedOption] = useState(allowedUser);
   const [kitchenDetails, setKitchenDetails] = useState([]);
@@ -129,7 +131,7 @@ function App() {
   const [inputValue, setInputValue] = useState("");
 
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.135:8000";
+  const url = "http://192.168.16.111:8000";
   const v = "pointofsale";
 
   useEffect(() => {
@@ -149,9 +151,11 @@ function App() {
           const storedAccNo = localStorage.getItem("acc_no");
           const storedCompTime = localStorage.getItem("comp_time");
           const storedBranchDes = localStorage.getItem("branch_description");
+          const storedRecall = localStorage.getItem("user_recall");
           setCompanyName(storedCompanyName);
           setBranch(storedBranch);
           setInvType(storedInvType);
+          setAllowRecall(storedRecall);
           setUsername(storedUsername);
           setUserControl(storedUserControl);
           setCompCity(storedCompCity);
@@ -481,6 +485,7 @@ function App() {
               setShowKeyboard={setShowKeyboard}
               setCompTime={setCompTime}
               setBranchDes={setBranchDes}
+              setAllowRecall={setAllowRecall}
             />
           ) : (
             <>
@@ -640,6 +645,7 @@ function App() {
                         setInputValue={setInputValue}
                         setTickKey={setTickKey}
                         branchDes={branchDes}
+                        allowRecall={allowRecall}
                       />
                     }
                   />
@@ -673,6 +679,8 @@ function App() {
                           inputValue={inputValue}
                           setInputValue={setInputValue}
                           setTickKey={setTickKey}
+                          searchItem={searchItem}
+                          setSearchItem={setSearchItem}
                         />
                       }
                     />

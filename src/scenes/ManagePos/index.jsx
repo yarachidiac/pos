@@ -1,4 +1,11 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
@@ -12,6 +19,7 @@ import ItemDetailsModal from "./ItemDetailsModal";
 import DatagridTable from "../DatagridTable";
 import { useLanguage } from "../LanguageContext";
 import translations from "../translations";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const ManagePoS = ({
   companyName,
@@ -25,7 +33,7 @@ const ManagePoS = ({
   showKeyboard,
   setShowKeyboard, valMessage, setValMessage, 
   userName, setUserName,
-  tickKey, setTickKey, inputValue, setInputValue
+  tickKey, setTickKey, inputValue, setInputValue, searchItem, setSearchItem
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,6 +48,7 @@ const ManagePoS = ({
   const [successMess, setSuccessMess] = useState();
   const [itemDetails, setItemDetails] = useState({});
   const [itemDetailsCopy, setItemDetailsCopy] = useState({ ...itemDetails });  
+  const [filteredItems, setFilteredItems] = useState([...items]);
   const { language } = useLanguage();
   const t = translations[language];
 
@@ -164,6 +173,38 @@ const ManagePoS = ({
     setIsDialogOpen(false);
   };
 
+   const handleSearchItem = (event) => {
+     const value = event.target.value;
+     setSearchItem(value);
+
+  };
+  
+
+  useEffect(() => {
+    if (searchItem) {
+      const filtered = items.filter((item) => {
+        // Ensure the properties exist and are strings before calling includes
+        const itemNo = item.ItemNo || "";
+        const itemName = item.ItemName || "";
+        const groupName = item.GroupName || "";
+
+        return (
+          itemNo.includes(searchItem) ||
+          itemName.toLowerCase().includes(searchItem.toLowerCase()) ||
+          groupName.toLowerCase().includes(searchItem.toLowerCase())
+        );
+      });
+      setFilteredItems(filtered);
+    } else {
+      setFilteredItems(items); // Reset to initial items when search is empty
+    }
+  }, [searchItem, items]);
+
+
+  const handleClear = () => {
+    setSearchItem("");
+  };
+
   return (
     <Box
       sx={{
@@ -185,6 +226,36 @@ const ManagePoS = ({
       >
         <Box>
           <Header title={t["manage_items"]} />
+        </Box>
+        <Box>
+          <TextField
+            label="Search"
+            variant="standard"
+            value={searchItem}
+            onChange={handleSearchItem}
+            onDoubleClick={() => {
+              setInputValue("");
+              setShowKeyboard(true);
+            }}
+            onFocus={() => {
+              setActiveField("Search a client");
+            }}
+            InputLabelProps={{
+              style: { fontSize: 25, fontWeight: "bold" }, // Adjust the font size of the label
+            }}
+            InputProps={{
+              style: { fontSize: 18 },
+              endAdornment: (
+                <InputAdornment position="end">
+                  {searchItem && (
+                    <IconButton onClick={handleClear}>
+                      <ClearIcon />
+                    </IconButton>
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
         </Box>
         <Box>
           <Button
@@ -222,7 +293,7 @@ const ManagePoS = ({
         setTickKey={setTickKey}
       />
       <DatagridTable
-        rows={items}
+        rows={searchItem ? filteredItems : items}
         columns={columns}
         handleRowClick={handleRowClick}
         getRowId={(row) => row.ItemNo}

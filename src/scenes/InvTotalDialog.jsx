@@ -36,29 +36,29 @@ export default function InvTotalDialog(props) {
             </Typography>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Typography variant="h1">Service:</Typography>
           </Grid>
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <Typography variant="h1" align="right">
               {props.srv}%
             </Typography>
-          </Grid>
-          <Grid item xs={4}>
+          </Grid> */}
+          <Grid item xs={6}>
             <Typography variant="h1" align="right">
               {Number(props.srvValue).toFixed(3)}
             </Typography>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Typography variant="h1">Discount</Typography>
           </Grid>
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <Typography variant="h1" align="right">
               {props.disc}%
             </Typography>
-          </Grid>
-          <Grid item xs={4}>
+          </Grid> */}
+          <Grid item xs={6}>
             <Typography variant="h1" align="right">
               {Number(props.discValue).toFixed(3)}
             </Typography>
@@ -73,15 +73,15 @@ export default function InvTotalDialog(props) {
             </Typography>
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <Typography variant="h1">Tax</Typography>
           </Grid>
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <Typography variant="h1" align="right">
               {`11%`}
             </Typography>
-          </Grid>
-          <Grid item xs={4}>
+          </Grid> */}
+          <Grid item xs={6}>
             <Typography variant="h1" align="right">
               {Number(props.totalTax).toFixed(3)}
             </Typography>

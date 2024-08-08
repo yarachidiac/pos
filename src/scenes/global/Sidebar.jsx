@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
+import { Box, IconButton, Typography, useTheme, Tooltip } from "@mui/material";
 import { Link, redirect } from "react-router-dom";
 import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -47,7 +47,7 @@ const Item = ({
   url,
   setOpenCash,
   setOpenEOD,
-  username
+  username, isCollapsed
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -205,54 +205,63 @@ const Item = ({
     }
   };
 
-  return (
+  const handleClick = () => {
+    if (title === t["Manage Items"]) {
+      handleManagePoS();
+    } else if (title === t["POS Screen"]) {
+      if (isNav) {
+        navigate(`/${v}/PoS`);
+      } else {
+        setIsConfOpenDialog(true);
+      }
+    } else if (title === t["Manage Group Item"]) {
+      handleManageGroups();
+    } else if (title === t["Company Management"]) {
+      handleComp();
+    } else if (title === t["User Settings"]) {
+      handleUser();
+    } else if (title === t["Station Settings"]) {
+      handleStation();
+    } else if (title === t["Kitchen"]) {
+      handleKitchen();
+    } else if (title === t["Currency"]) {
+      handleCurrency();
+    } else if (title === t["Logout"]) {
+      handleLogout();
+    } else if (title === t["Invoices History"]) {
+      handleInvHis();
+    } else if (title === t["Daily Sales"]) {
+      handleDailySales();
+    } else if (title === t["Cash On Hands"]) {
+      handleCashOnHands();
+    } else if (title === t["End Of Day"]) {
+      handleEndOfDay();
+    } else if (title === t["Branch"]) {
+      handleBranch();
+    }
+  };
+
+  const menuItem = (
     <MenuItem
       active={selected === title}
       style={{
         color: colors.grey[100],
       }}
-      onClick={() => {
-        if (title === t["Manage Items"]) {
-          handleManagePoS();
-        } else if (title === t["POS Screen"]) {
-          if (isNav) {
-            navigate(`/${v}/PoS`);
-          } else {
-            setIsConfOpenDialog(true);
-          }
-        } else if (title === t["Manage Group Item"]) {
-          handleManageGroups();
-        } else if (title === t["Company Management"]) {
-          handleComp();
-        } else if (title === t["User Settings"]) {
-          handleUser();
-        } else if (title === t["Station Settings"]) {
-          handleStation();
-        } else if (title === t["Kitchen"]) {
-          handleKitchen();
-        } else if (title === t["Currency"]) {
-          handleCurrency();
-        } else if (title === t["Logout"]) {
-          handleLogout();
-        } else if (title === t["Invoices History"]) {
-          handleInvHis();
-        } else if (title === t["Daily Sales"]) {
-          handleDailySales();
-        } else if (title === t["Cash On Hands"]) {
-          handleCashOnHands();
-        } else if (title === t["End Of Day"]) {
-          handleEndOfDay();
-        } else if (title === t["Branch"]) {
-          handleBranch();
-        }
-      }}
+      onClick={handleClick}
       icon={icon}
     >
       <Box width="200px">
         <Typography>{title}</Typography>
       </Box>
-      {/* <Link to={to} /> */}
     </MenuItem>
+  );
+
+  return isCollapsed ? (
+    <Tooltip title={title} arrow>
+      {menuItem}
+    </Tooltip>
+  ) : (
+    menuItem
   );
 };
 
@@ -272,7 +281,7 @@ const SubItem = ({
   };
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  return (
+  const subMenuContent = (
     <SubMenu
       onClick={handleItemClick}
       title={
@@ -284,12 +293,11 @@ const SubItem = ({
       style={{
         color: colors.grey[100],
       }}
-      // isopen={false}
     >
       {React.Children.map(children, (child) =>
         React.cloneElement(child, {
           selected: child.props.title === selected,
-          setSelected: setSelected, // Pass setSelected to the Item components
+          setSelected: setSelected,
           onClick: () => handleSubItemClick(child.props.title),
         })
       )}
@@ -301,6 +309,14 @@ const SubItem = ({
         `}
       </style>
     </SubMenu>
+  );
+
+  return isCollapsed ? (
+    <Tooltip title={title} arrow>
+      {subMenuContent}
+    </Tooltip>
+  ) : (
+    subMenuContent
   );
 };
 
@@ -458,6 +474,7 @@ const Sidebar = ({
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
               v={v}
+              isCollapsed={isCollapsed}
             />
             <Item
               icon={<PostAddOutlinedIcon />}
@@ -469,6 +486,7 @@ const Sidebar = ({
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
               v={v}
+              isCollapsed={isCollapsed}
             />
             <Item
               icon={<PostAddOutlinedIcon />}
@@ -480,6 +498,7 @@ const Sidebar = ({
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
               v={v}
+              isCollapsed={isCollapsed}
             />
             <Item
               icon={<ReceiptOutlinedIcon />}
@@ -491,6 +510,7 @@ const Sidebar = ({
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
               v={v}
+              isCollapsed={isCollapsed}
             />
             <Item
               icon={<AssessmentOutlinedIcon />}
@@ -502,6 +522,7 @@ const Sidebar = ({
               isNav={isNav}
               setIsConfOpenDialog={setIsConfOpenDialog}
               v={v}
+              isCollapsed={isCollapsed}
             />
             {/* <SubItem
               title="Inventory Management"
@@ -627,6 +648,7 @@ const Sidebar = ({
               v={v}
               url={url}
               setOpenCash={setOpenCash}
+              isCollapsed={isCollapsed}
             />
             <Item
               icon={<ScheduleOutlinedIcon />}
@@ -641,6 +663,7 @@ const Sidebar = ({
               setOpenEOD={setOpenEOD}
               username={username}
               setOpen={setOpen}
+              isCollapsed={isCollapsed}
             />
             <SubItem
               title={t["Company Settings"]}
@@ -664,6 +687,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
                 v={v}
+                isCollapsed={isCollapsed}
               />
               <Item
                 title={t["Station Settings"]}
@@ -675,6 +699,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
                 v={v}
+                isCollapsed={isCollapsed}
               />
               <Item
                 title={t["User Settings"]}
@@ -686,6 +711,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
                 v={v}
+                isCollapsed={isCollapsed}
               />
               <Item
                 title={t["Kitchen"]}
@@ -697,6 +723,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
                 v={v}
+                isCollapsed={isCollapsed}
               />
               <Item
                 title={t["Branch"]}
@@ -708,6 +735,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
                 v={v}
+                isCollapsed={isCollapsed}
               />
               {/* <SubItem
                 title="General Information"
@@ -732,6 +760,7 @@ const Sidebar = ({
                 isNav={isNav}
                 setIsConfOpenDialog={setIsConfOpenDialog}
                 v={v}
+                isCollapsed={isCollapsed}
               />
               {/* </SubItem> */}
             </SubItem>
@@ -739,6 +768,7 @@ const Sidebar = ({
               icon={<LogoutOutlinedIcon />}
               title={t["Logout"]}
               setIsAuthenticated={setIsAuthenticated}
+              isCollapsed={isCollapsed}
             />
           </Box>
         </Menu>

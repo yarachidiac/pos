@@ -17,7 +17,8 @@ import {
 } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
-
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import FastfoodIcon from "@mui/icons-material/Fastfood";
 import LocalCafeIcon from "@mui/icons-material/LocalCafe";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -47,6 +48,7 @@ import ButtonBase from "@mui/material/ButtonBase";
 import IngredDialog from './IngredDialog';
 import AllowDialog from './AllowDialog';
 import { display } from '@mui/system';
+import RecallDialog from './RecallDialog';
   
 const PoS = ({
   companyName,
@@ -94,7 +96,7 @@ const PoS = ({
   setSearchClient,tickKey,
                           inputValue,
                           setInputValue,
-                          setTickKey, branchDes
+                          setTickKey, branchDes, allowRecall
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -138,6 +140,95 @@ const PoS = ({
   const [newcurrDate, setNewCurrDate] = useState("");
   const [newcurrTime, setNewCurrTime] = useState("");
   const [vat, setVat] = useState("");
+  const [openRecall, setOpenRecall] = useState(false);
+  const [invRecall, setInvRecall] = useState("");
+  const [recallType, setRecallType] = useState(invType);
+  const [renewInv, setRenewInv] = useState(false);
+  // const [selectedButtons, setSelectedButtons] = useState({
+  //   receipt: allowPrintInv,
+  //   kt: allowPrintKT,
+  // });
+
+  // const handleToggle = (buttonName) => async() => {
+  //   setSelectedButtons((prevState) => ({
+  //     ...prevState,
+  //     [buttonName]: 'Y' ? "N" : "Y", // Toggle the state
+  //   }));
+  //   setAllowPrintKT(p);
+  //   setAllowPrintInv(selectedButtons["receipt"]);
+  // };
+
+  //console.log("Selecet", selectedButtons);
+    console.log("allowww printt ktt", allowPrintKT);
+  console.log("allow printttt reeeeeeeee", allowPrintInv);
+
+  const handleCloseRecall = () => {
+    setOpenRecall(false);
+  }
+
+  const handleRecall = () => {
+    if (allowRecall === "Y") {
+      setOpenRecall(true);
+    } else {
+      setAllowDialog(true);
+      setPrRemark("You have no permission to recall an invoice");
+    }
+  }
+
+  const handleSubmitRecall = async() => {
+    try {
+          const response = await fetch(
+            `${url}/pos/getRecallInv/${companyName}/${invRecall}/${invType}`
+          );
+          const data = await response.json();
+          if (data.inv_list) {
+            setSelectedMeals(data.inv_list);
+            setMessage(data.invNo);
+            setSrv(data.srv);
+            setDiscValue(data.disc);
+            setOpenRecall(false);
+            setRecallType(data.invType);
+            setRenewInv(true);
+          } else {
+            setRecallType(invType);
+            setAllowDialog(true);
+            setPrRemark(data.message);
+          }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+  const handleToggle = async (buttonName) => {
+    let newStatus;
+    if (buttonName === "kt") {
+      newStatus = allowPrintKT === "Y" ? "N" : "Y";
+      setAllowPrintKT(newStatus);
+    } else if (buttonName === "receipt") {
+      newStatus = allowPrintInv === "Y" ? "N" : "Y";
+      setAllowPrintInv(newStatus);
+    }
+
+    try {
+      const changePrint = await fetch(`${url}/pos/updatePrint/${companyName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          allowPrintInv: buttonName === "receipt" ? newStatus : allowPrintInv,
+          allowPrintKT: buttonName === "kt" ? newStatus : allowPrintKT,
+        }),
+      });
+      if (changePrint.ok) {
+        console.log("Print updated successfully");
+      } else {
+        console.error("Failed to update print settings");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
 
   const handleCloseAllow = () => {
     setAllowDialog(false);
@@ -178,8 +269,41 @@ const PoS = ({
     handleAsync();
   }, [closeTClicked]);
 
+  const handleP = () => {
+    const unsentMeals = selectedMeals.filter((meal) => meal.Printed !== "p");
+    if (unsentMeals.length > 0) {
+      setAllowDialog(true);
+      setPrRemark("You need to place order first")
+    } else {
+      printJS({
+        printable: "myPrintableContent",
+        type: "html",
+        targetStyles: ["*"],
+        documentTitle: "Receipt",
+        honorColor: true,
+        scanStyles: false,
+        // style: `
+        //   @media print {
+        //     @page {
+        //       marginLeft: 1mm;
+        //     }
+        //   }
+        // `,
+        header: null,
+        footer: null,
+        showModal: true,
+        onError: (error) => {
+          console.error("Printing error:", error);
+        },
+        onPrintDialogClose: () => {
+          console.log("Print dialog closed");
+        },
+        printerName: defaultPrinter,
+      });
+    }
+  }
   const handlePrint = async() => {
-      if (allowPrintInv === "Y") {
+    if (allowPrintInv === "Y") {
         printJS({
           printable: "myPrintableContent",
           type: "html",
@@ -206,10 +330,7 @@ const PoS = ({
           printerName: defaultPrinter,
         });
       
-    } else {
-      setAllowDialog(true);
-      setPrRemark("print is not allowed");
-    }
+    } 
   };
 
   const { refreshNeeded, resetRefresh } = useRefresh();
@@ -338,6 +459,10 @@ const PoS = ({
       setAllowPrintKT(data["allowKT"]);
       setAllowPrintInv(data["allowInv"]);
       setQtyPrintKT(data["qtyPrintKT"]);
+      // setSelectedButtons({
+      //     receipt: data["allowInv"],
+      //     kt: data["allowKT"]
+      //   });
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
     }
@@ -526,6 +651,7 @@ const PoS = ({
        } 
        navigate(`/${v}/PoS`);
        setSelectedTop("Takeaway");
+       if(allowPrintKT)
        setIsNav(true);
        setIsConfOpenDialog(false);
        setCloseTClicked(false);
@@ -626,7 +752,9 @@ const PoS = ({
           accno: delivery ? delivery : accno,
           qtyPrintKT: qtyPrintKT,
           username: username,
-          invKind: selectedTableId ? "TABLE" : selectedRow ? "DELIVERY" : "TAKEAWAY"
+          invKind: selectedTableId ? "TABLE" : selectedRow ? "DELIVERY" : "TAKEAWAY",
+          vat: vat, 
+          renewInv: renewInv
         };
         const response = await fetch(`${url}/pos/invoiceitem/${companyName}`, {
           method: "POST",
@@ -640,9 +768,10 @@ const PoS = ({
         if (response.ok) {
           const responseData = await response.json();
           if (responseData["message"] === "Invoice items added successfully") {
+            setRenewInv(false);
+            setInvN(responseData["invoiceDetails"]["InvNo"]);
+            setOrderId(responseData["invoiceDetails"]["OrderId"]);
             if (allowPrintKT === "Y") {
-              setInvN(responseData["invoiceDetails"]["InvNo"]);
-              setOrderId(responseData["invoiceDetails"]["OrderId"]);
               const jsonString = JSON.stringify(responseData, null, 2);
               const blob = new Blob([jsonString], { type: "application/json" });
               FileSaver.saveAs(blob, "response-data.json");
@@ -887,72 +1016,53 @@ const PoS = ({
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-around",
-            // marginBottom: "3%",
-            height: "10%",
+            flexWrap: "wrap", // Allow wrapping to a new line if needed
+            overflowX: "auto", // Enable horizontal scrolling
             width: "100%",
-            overflowX: "auto",
+            height: "16%",
+            alignItems: "center",
           }}
         >
-          <Box sx={{ flex: "0 0 auto", minWidth: "10%", height: "100%" }}>
+          <Button
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1rem",
+              backgroundColor:
+                selectedCategory === "All"
+                  ? colors.greenAccent[500]
+                  : colors.primary[500],
+              color: selectedCategory === "All" ? colors.primary[500] : "black",
+              marginRight: "10px",
+              marginBottom: "10px", // Add margin-bottom for spacing when wrapped
+            }}
+            onClick={() => handleCategoryClick("All")}
+          >
+            All
+          </Button>
+          {categories.map((category) => (
             <Button
-              style={{
+              key={category.GroupNo}
+              sx={{
                 fontWeight: "bold",
                 fontSize: "1rem",
-
                 backgroundColor:
-                  selectedCategory === "All"
+                  selectedCategory === category.GroupName
                     ? colors.greenAccent[500]
                     : colors.primary[500],
                 color:
-                  selectedCategory === "All" ? colors.primary[500] : "black",
-                //borderRadius: "20px",
+                  selectedCategory === category.GroupName
+                    ? colors.primary[500]
+                    : "black",
+                marginRight: "10px",
+                marginBottom: "10px", // Add margin-bottom for spacing when wrapped
               }}
-              onClick={() => handleCategoryClick("All")}
+              onClick={() => handleCategoryClick(category)}
             >
-              {/* <Avatar
-                alt="Image"
-                src="/path/to/image.jpg"
-                sx={{ width: 40, height: 40 }} // Customize the size as needed
-              /> */}
-              All
+              {category.GroupName}
             </Button>
-          </Box>
-
-          {categories.map((category) => (
-            <Box
-              key={category.GroupNo}
-              sx={{
-                flex: "0 0 auto", // Allow item to shrink if necessary
-                minWidth: "20%", // Ensure each category button has 20% width
-                marginLeft: "5%",
-                height: "100%",
-              }}
-            >
-              <Button
-                key={category.GroupNo}
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1rem",
-                  backgroundColor:
-                    selectedCategory === category.GroupName
-                      ? colors.greenAccent[500]
-                      : colors.primary[500],
-                  color:
-                    selectedCategory === category.GroupName
-                      ? colors.primary[500]
-                      : "black",
-                  width: "100%",
-                }}
-                // startIcon={<LocalCafeIcon />}
-                onClick={() => handleCategoryClick(category)}
-              >
-                {category.GroupName}
-              </Button>
-            </Box>
           ))}
         </Box>
+
         {/* Cards in Grid Layout */}
         <Box sx={{ overflowY: "auto", height: "90%", width: "100%" }}>
           <Grid
@@ -1397,7 +1507,8 @@ const PoS = ({
                 paddingTop: "10px",
               }}
             >
-              Order Summary {selectedRow && selectedRow["AccName"]}{" "}
+              Order Summary {selectedRow && selectedRow["AccName"]} {recallType}
+              {"-"}
               {message && message}{" "}
               {selectedTableId && `Table: ${selectedTableId}`}{" "}
               {selectedMeals.length > 0 && (
@@ -1659,10 +1770,64 @@ const PoS = ({
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={{ borderRadius: "20px", width: "50%" }}
-                  onClick={handlePrint}
+                  sx={{ borderRadius: "20px", width: "15%" }}
+                  onClick={handleP}
                 >
                   Print
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: "20px", width: "15%" }}
+                  onClick={handleRecall}
+                >
+                  Recall
+                </Button>
+                <Button
+                  selected={allowPrintInv}
+                  onClick={() => handleToggle("receipt")}
+                  aria-label="print receipt"
+                  sx={{
+                    fontWeight: allowPrintInv === "Y" ? "bold" : "normal",
+                    color: allowPrintInv === "Y" ? "white" : "black",
+                    backgroundColor:
+                      allowPrintInv === "Y"
+                        ? colors.greenAccent[500]
+                        : "lightgray",
+                    "&:hover": {
+                      backgroundColor:
+                        allowPrintInv === "Y"
+                          ? colors.greenAccent[500]
+                          : "lightgray",
+                    },
+                    width: "15%",
+                    borderRadius: "20px",
+                  }}
+                >
+                  {allowPrintInv === "Y" ? "Inv On" : "Inv Off"}
+                </Button>
+                <Button
+                  selected={allowPrintKT}
+                  onClick={() => handleToggle("kt")}
+                  aria-label="print kt"
+                  sx={{
+                    fontWeight: allowPrintKT === "Y" ? "bold" : "normal",
+                    color: allowPrintKT === "Y" ? "white" : "black",
+                    backgroundColor:
+                      allowPrintKT === "Y"
+                        ? colors.greenAccent[500]
+                        : "lightgray",
+                    "&:hover": {
+                      backgroundColor:
+                        allowPrintKT === "Y"
+                          ? colors.greenAccent[500]
+                          : "lightgray",
+                    },
+                    width: "15%",
+                    borderRadius: "20px",
+                  }}
+                >
+                  {allowPrintKT === "Y" ? "KT On" : "KT Off"}
                 </Button>
                 {/* <Typography variant="h4" fontWeight="bold">
                   Payment Summary
@@ -1671,7 +1836,7 @@ const PoS = ({
                   <Button
                     variant="contained"
                     color="secondary"
-                    sx={{ borderRadius: "20px", width: "50%" }}
+                    sx={{ borderRadius: "20px", width: "25%" }}
                     onClick={() => {
                       setCloseTClicked(true);
                     }}
@@ -2045,6 +2210,12 @@ const PoS = ({
           ingredCard={ingredCard}
         ></IngredDialog>
       )}
+      <RecallDialog
+        open={openRecall}
+        onCancel={handleCloseRecall}
+        onSubmit={handleSubmitRecall}
+        setInvRecall={setInvRecall}
+      ></RecallDialog>
       <AllowDialog
         open={allowDialog}
         onCancel={handleCloseAllow}

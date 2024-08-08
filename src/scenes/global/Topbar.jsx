@@ -140,7 +140,8 @@ const Topbar = ({
         <Box
           sx={{
             width: currentRoute === `/${v}/PoS` ? "60%" : "100%",
-            height: "8%",
+            //height: "8%",
+            height: "50px",
             display: "flex",
             justifyContent: "space-around",
           }}

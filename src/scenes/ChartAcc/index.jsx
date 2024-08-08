@@ -300,20 +300,7 @@ const ChartAcc = ({
 
   const handleSearch = (event) => {
     const value = event.target.value;
-    setSearchClient(value);
-    if (value) {
-      const filtered = clients.filter((client) => {
-        return (
-          client.AccName.toLowerCase().includes(value.toLowerCase()) ||
-          client.Tel.toLowerCase().includes(value.toLowerCase()) ||
-          client.Address.toLowerCase().includes(value.toLowerCase()) ||
-          client.Building.toLowerCase().includes(value.toLowerCase())
-        );
-      });
-      setFilteredClients(filtered);
-    } else {
-      setFilteredClients(clients); // Reset to initial clients when search is empty
-    }
+    setSearchClient(value);  
   };
 
   useEffect(() => {

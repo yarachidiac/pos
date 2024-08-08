@@ -165,13 +165,13 @@ const Journal = ({ companyName, url}) => {
 
         invKindResponse.forEach((item) => {
           switch (item.InvKind) {
-            case "delivery":
+            case "DELIVERY":
               countDelivery = item.TotalInvoices;
               break;
-            case "takeaway":
+            case "TAKEAWAY":
               countTakeaway = item.TotalInvoices;
               break;
-            case "table":
+            case "TABLE":
               countTable = item.TotalInvoices;
               break;
             default:
@@ -296,10 +296,10 @@ const Journal = ({ companyName, url}) => {
   };
 
   const calculateTotalDisc = (data) => {
-    return data.reduce((sum, item) => sum + item.disc, 0);
+    return data.reduce((sum, item) => sum + item.Disc, 0);
   };
   const calculateTotalSrv = (data) => {
-    return data.reduce((sum, item) => sum + item.srv, 0);
+    return data.reduce((sum, item) => sum + item.Srv, 0);
   };
 
 
