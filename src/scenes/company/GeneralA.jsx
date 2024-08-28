@@ -128,7 +128,7 @@ const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard,
         //width: window.innerWidth * 0.28,
         display: "flex",
         flexDirection: "row",
-       // height: window.innerHeight * 0.1,
+        // height: window.innerHeight * 0.1,
         borderRadius: "4px",
         border: "1px solid #ccc",
       }}
@@ -192,6 +192,40 @@ const GeneralA = ({ companyName, url, activeField, setActiveField, showKeyboard,
                 </MenuItem>
               ))}
             </Select>
+          ) : key === "Pay" ? (
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={companyDetailsCopy[key]==="Y"}
+                  onChange={() =>
+                    handleValueUpdate(
+                      key,
+                      companyDetailsCopy[key] === "Y" ? "N" : "Y"
+                    )
+                  }
+                />
+                <Typography variant="h4">Y</Typography>
+              </Box>
+
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <Checkbox
+                  checked={companyDetailsCopy[key] ==="N"}
+                  onChange={() =>
+                    handleValueUpdate(
+                      key,
+                      companyDetailsCopy[key] === "N" ? "Y" : "N"
+                    )
+                  }
+                />
+                <Typography variant="h4">N</Typography>
+              </Box>
+            </Box>
           ) : (
             <TextField
               value={companyDetailsCopy[key]}

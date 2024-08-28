@@ -15,6 +15,8 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from "@mui/material/Avatar";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -49,6 +51,7 @@ import IngredDialog from './IngredDialog';
 import AllowDialog from './AllowDialog';
 import { display } from '@mui/system';
 import RecallDialog from './RecallDialog';
+import PaymentDialog from './PaymentDialog';
   
 const PoS = ({
   companyName,
@@ -137,13 +140,35 @@ const PoS = ({
   const [prRemark, setPrRemark] = useState("");
   const [orderId, setOrderId] = useState();
   const [invN, setInvN] = useState();
-  const [newcurrDate, setNewCurrDate] = useState("");
-  const [newcurrTime, setNewCurrTime] = useState("");
+  //const [newcurrDate, setNewCurrDate] = useState("");
+  //const [newcurrTime, setNewCurrTime] = useState("");
   const [vat, setVat] = useState("");
   const [openRecall, setOpenRecall] = useState(false);
   const [invRecall, setInvRecall] = useState("");
   const [recallType, setRecallType] = useState(invType);
   const [renewInv, setRenewInv] = useState(false);
+  const currentDate = new Date();
+  let formattedDate = format(currentDate, "dd/MM/yyyy");
+  const formattedTime = format(currentDate, "HH:mm:ss");
+  const [recallDate, setRecallDate] = useState(formattedDate);
+  const [recallTime, setRecallTime] = useState(formattedTime);
+  const [payDialog, setPayDialog] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [currency, setCurrency] = useState("USD");
+  const [payInUSD, setPayInUSD] = useState(0);
+  const [payInLBP, setPayInLBP] = useState(0);
+  const [payOutUSD, setPayOutUSD] = useState(0);
+  const [payOutLBP, setPayOutLBP] = useState(0);
+  const [payInUSDVISA, setPayInUSDVISA] = useState(0);
+  const [payInLBPVISA, setPayInLBPVISA] = useState(0);
+  const [payInUSDVISA1, setPayInUSDVISA1] = useState(0);
+  const [payInLBPVISA1, setPayInLBPVISA1] = useState(0);
+  const [payInUSDVISA2, setPayInUSDVISA2] = useState(0);
+  const [payInLBPVISA2, setPayInLBPVISA2] = useState(0);
+  const [payInUSDVISA3, setPayInUSDVISA3] = useState(0);
+  const [payInLBPVISA3, setPayInLBPVISA3] = useState(0);
+  const [selectedAmounts, setSelectedAmounts] = useState([]);
+
   // const [selectedButtons, setSelectedButtons] = useState({
   //   receipt: allowPrintInv,
   //   kt: allowPrintKT,
@@ -160,20 +185,125 @@ const PoS = ({
 
   //console.log("Selecet", selectedButtons);
     console.log("allowww printt ktt", allowPrintKT);
-  console.log("allow printttt reeeeeeeee", allowPrintInv);
+   console.log("allow printttt reeeeeeeee", allowPrintInv);
+  console.log("selected MEALSSSSS", selectedMeals)
 
   const handleCloseRecall = () => {
     setOpenRecall(false);
   }
 
-  const handleRecall = () => {
-    if (allowRecall === "Y") {
-      setOpenRecall(true);
-    } else {
-      setAllowDialog(true);
-      setPrRemark("You have no permission to recall an invoice");
-    }
+  const handleClosePay = () => {
+    setPayDialog(false);
   }
+  const handlePayCheck = () => {
+    setPayDialog(true);
+  }
+
+  const handleRecall = () => {
+    if (isNav) {
+      if (allowRecall === "Y") {
+        setOpenRecall(true);
+      } else {
+        setAllowDialog(true);
+        setPrRemark("You have no permission to recall an invoice");
+      }
+    } else {
+      setIsConfOpenDialog(true);
+    } 
+  }
+
+  const handleBack = async () => {
+    if (isNav) { 
+          try {
+            const response = await fetch(
+              `${url}/pos/getBackInv/${companyName}/${recallType}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ message: message }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (data.inv_list) {
+              setSelectedMeals(data.inv_list);
+              setMessage(data.invNo);
+              console.log("aaaaaaaaaaaaaaa", data.inf);
+              setSrv(data.inf.Srv);
+              setDiscValue(data.inf.Disc);
+              setOpenRecall(false);
+              setRecallType(data.invType);
+              setRecallDate(data.recallDate);
+              setRecallTime(data.recallTime);
+              setRenewInv(true);
+              // Add the selected amount to the list
+              setSelectedAmounts(
+                () =>
+                  data.payDetailList
+                    .map((payDetail) => ({
+                      payType: payDetail.PayType,
+                      currency: payDetail.Currency,
+                      amount: payDetail.Amount,
+                      paymentMethod: payDetail.PaymentMethod,
+                    }))
+                    .filter(Boolean) // This filters out any false or undefined values
+              );
+
+            } else {
+              //setRecallType(invType);
+              setAllowDialog(true);
+              setPrRemark(data.message);
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+    } else {
+      setIsConfOpenDialog(true);
+    }
+
+  };
+
+  const handleNext = async () => {
+    if (isNav) {
+      try {
+        const response = await fetch(
+          `${url}/pos/getNextInv/${companyName}/${recallType}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: message }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.inv_list) {
+          setSelectedMeals(data.inv_list);
+          setMessage(data.invNo);
+          setSrv(data.srv);
+          setDiscValue(data.disc);
+          setOpenRecall(false);
+          setRecallType(data.invType);
+          setRenewInv(true);
+          setRecallDate(data.recallDate);
+          setRecallTime(data.recallTime);
+        } else {
+          //setRecallType(invType);
+          setAllowDialog(true);
+          setPrRemark(data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  };
 
   const handleSubmitRecall = async() => {
     try {
@@ -199,6 +329,24 @@ const PoS = ({
       }
     };
   
+  const handleNewInv = () => {
+    if (isNav) {
+      setSelectedMeals([]);
+      setFinalTotal(0);
+      setDiscValue(0);
+      setSrv(0);
+      setRenewInv(false);
+      setSelectedModifiers([]);
+      setRenewInv(false);
+      setRecallType(invType);
+      setMessage("");
+      setRecallDate(formattedDate);
+      setRecallTime(formattedTime);
+    } else {
+      setIsConfOpenDialog(true);
+    }
+  }
+
   const handleToggle = async (buttonName) => {
     let newStatus;
     if (buttonName === "kt") {
@@ -262,7 +410,7 @@ const PoS = ({
 
   useEffect(() => {
     const handleAsync = async () => {
-      if (closeTClicked) {
+      if (closeTClicked && infCom.Pay === "N") {
         await handlePlace();
       }
     };
@@ -473,6 +621,7 @@ const PoS = ({
       const response = await fetch(`${url}/pos/getCurr/${companyName}`);
       const data = await response.json();
       setCurr(data["Code"]); // Assuming your API response has a 'categories' property
+      console.log("currency data", data);
       setInfCom(data);
     } catch (error) {
       console.error("Error fetching categoriesitems:", error);
@@ -676,7 +825,7 @@ const PoS = ({
       const currentDate = new Date();
       let formattedDate = format(currentDate, "dd/MM/yyyy");
       const realDate = format(currentDate, "dd/MM/yyyy");
-      setNewCurrDate(realDate);
+      //setNewCurrDate(realDate);
       //let orderId;
       // No need to format the time, use currentDate directly
       // const compTimeRequest = await fetch(
@@ -728,7 +877,7 @@ const PoS = ({
         // }
         // Encode the formatted date
         const formattedTime = format(currentDate, "HH:mm:ss");
-        setNewCurrTime(formattedTime);
+        //setNewCurrTime(formattedTime);
 
         // Encode the formatted date
         const delivery =
@@ -752,9 +901,14 @@ const PoS = ({
           accno: delivery ? delivery : accno,
           qtyPrintKT: qtyPrintKT,
           username: username,
-          invKind: selectedTableId ? "TABLE" : selectedRow ? "DELIVERY" : "TAKEAWAY",
-          vat: vat, 
-          renewInv: renewInv
+          invKind: selectedTableId
+            ? "TABLE"
+            : selectedRow
+            ? "DELIVERY"
+            : "TAKEAWAY",
+          vat: vat,
+          renewInv: renewInv,
+          selectedAmounts: selectedAmounts
         };
         const response = await fetch(`${url}/pos/invoiceitem/${companyName}`, {
           method: "POST",
@@ -771,6 +925,19 @@ const PoS = ({
             setRenewInv(false);
             setInvN(responseData["invoiceDetails"]["InvNo"]);
             setOrderId(responseData["invoiceDetails"]["OrderId"]);
+            setRecallType(invType);
+            setPaymentMethod("Cash");
+            setPayInLBP(0);
+            setPayOutLBP(0);
+            setPayInUSD(0);
+            setPayOutUSD(0);
+            setPayInUSDVISA1(0);
+            setPayInUSDVISA2(0);
+            setPayInUSDVISA3(0);
+            setPayInLBPVISA1(0);
+            setPayInLBPVISA2(0);
+            setPayInLBPVISA3(0);
+            setSelectedAmounts([]);
             if (allowPrintKT === "Y") {
               const jsonString = JSON.stringify(responseData, null, 2);
               const blob = new Blob([jsonString], { type: "application/json" });
@@ -908,6 +1075,7 @@ const PoS = ({
 
   const isIpadPro = useMediaQuery("(min-width: 900px) and (max-width: 1300px)");
 
+  console.log("infffff com", infCom);
   const getItemListTable = () => {
     const styles = {
       container: {
@@ -1498,23 +1666,44 @@ const PoS = ({
       >
         <Box sx={{ height: "60%", backgroundColor: colors.primary[500] }}>
           {/* Order Summary Box */}
-          <Box sx={{ height: "10%" }}>
-            <Typography
-              variant="h4"
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "10%",
+              width: "100%",
+            }}
+          >
+            <Box
               sx={{
+                display: "flex",
+
+                justifyContent: "space-between",
                 fontWeight: "bold",
-                paddingLeft: "15px",
-                paddingTop: "10px",
+                //paddingLeft: "15px",
+                flexDirection: "row",
               }}
             >
-              Order Summary {selectedRow && selectedRow["AccName"]} {recallType}
-              {"-"}
-              {message && message}{" "}
-              {selectedTableId && `Table: ${selectedTableId}`}{" "}
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {selectedRow && selectedRow["AccName"]} {recallType}
+                {"-"}
+                {message && message}
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {selectedTableId && `Table: ${selectedTableId}`}
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {recallDate}
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {recallTime}
+              </Typography>
               {selectedMeals.length > 0 && (
-                <span> Selected {selectedMeals.length}</span>
+                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                  L: {selectedMeals.length}
+                </Typography>
               )}
-            </Typography>
+            </Box>
             <Box borderBottom="1px solid #ccc" my={1}></Box>
           </Box>
 
@@ -1779,9 +1968,25 @@ const PoS = ({
                   variant="contained"
                   color="secondary"
                   sx={{ borderRadius: "20px", width: "15%" }}
+                  onClick={handleBack}
+                >
+                  <ArrowBackIcon />
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: "20px", width: "15%" }}
                   onClick={handleRecall}
                 >
                   Recall
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: "20px", width: "15%" }}
+                  onClick={handleNext}
+                >
+                  <ArrowForwardIcon />
                 </Button>
                 <Button
                   selected={allowPrintInv}
@@ -1838,7 +2043,19 @@ const PoS = ({
                     color="secondary"
                     sx={{ borderRadius: "20px", width: "25%" }}
                     onClick={() => {
-                      setCloseTClicked(true);
+                      const unsentMeals = selectedMeals.filter(
+                        (meal) => meal.Printed !== "p"
+                      );
+                      if (unsentMeals.length > 0) {
+                        setAllowDialog(true);
+                        setPrRemark("You need to place order first");
+                      } else {
+                        if (infCom.Pay === "Y") {
+                           handlePayCheck();
+                        }
+                        setCloseTClicked(true);
+                      }
+                      // : handlePayCheck();
                     }}
                   >
                     Close Table
@@ -1966,14 +2183,34 @@ const PoS = ({
                 onSubmit={handleSubmit}
                 type={numericKeypadType}
               />
-              <Box sx={{ height: "15%" }}>
+              <Box
+                sx={{
+                  height: "15%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={{ borderRadius: "20px", width: "100%", height: "100%" }}
-                  onClick={() => handlePlace()}
+                  sx={{ borderRadius: "20px", width: "70%", height: "100%" }}
+                  onClick={() => {
+                    infCom.Pay === "Y" &&
+                    !location.search.includes("selectedTableId")
+                      ? handlePayCheck()
+                      : handlePlace();
+                  }}
                 >
                   Place Order
+                </Button>{" "}
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ borderRadius: "20px", width: "20%", height: "100%" }}
+                  onClick={() => handleNewInv()}
+                >
+                  New
                 </Button>
               </Box>
             </CardContent>
@@ -2010,7 +2247,7 @@ const PoS = ({
               >
                 <div style={{ marginRight: "10px" }}>InvNo {invN}</div>
                 <div>
-                  {newcurrDate} {newcurrTime}
+                  {recallDate} {recallTime}
                 </div>
               </div>
             </div>
@@ -2096,6 +2333,7 @@ const PoS = ({
               }}
             >
               <div>Total:</div>
+              {/* <div>{finalTotal}</div> */}
               <div>
                 {infCom.KD === "/"
                   ? (finalTotal / infCom.Rate).toLocaleString() + " USD"
@@ -2221,6 +2459,47 @@ const PoS = ({
         onCancel={handleCloseAllow}
         nameCard={prRemark}
       ></AllowDialog>
+      <PaymentDialog
+        setPayDialog={setPayDialog}
+        open={payDialog}
+        onClose={handleClosePay}
+        finalTotal={finalTotal}
+        infCom={infCom}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        payInLBP={payInLBP}
+        setPayInLBP={setPayInLBP}
+        setPayOutLBP={setPayOutLBP}
+        payOutLBP={payOutLBP}
+        payInUSD={payInUSD}
+        setPayInUSD={setPayInUSD}
+        payOutUSD={payOutUSD}
+        setPayOutUSD={setPayOutUSD}
+        payInUSDVISA1={payInUSDVISA1}
+        setPayInUSDVISA1={setPayInUSDVISA1}
+        payInLBPVISA1={payInLBPVISA1}
+        setPayInLBPVISA1={setPayInLBPVISA1}
+        payInUSDVISA2={payInUSDVISA2}
+        setPayInUSDVISA2={setPayInUSDVISA2}
+        payInLBPVISA2={payInLBPVISA2}
+        setPayInLBPVISA2={setPayInLBPVISA2}
+        payInUSDVISA3={payInUSDVISA3}
+        setPayInUSDVISA3={setPayInUSDVISA3}
+        payInLBPVISA3={payInLBPVISA3}
+        setPayInLBPVISA3={setPayInLBPVISA3}
+        currency={currency}
+        setCurrency={setCurrency}
+        onClick={handlePlace}
+        payInLBPVISA={payInLBPVISA}
+        setPayInLBPVISA={setPayInLBPVISA}
+        payInUSDVISA={payInUSDVISA}
+        setPayInUSDVISA={setPayInUSDVISA}
+        setCloseTClicked={setCloseTClicked}
+        companyName={companyName}
+        url={url}
+        selectedAmounts={selectedAmounts}
+        setSelectedAmounts={setSelectedAmounts}
+      ></PaymentDialog>
     </>
   );
 };

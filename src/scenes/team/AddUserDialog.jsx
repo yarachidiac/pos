@@ -85,6 +85,7 @@ const AddUserDialog = ({
           {/* Display validation message */}
 
           <TextField
+          
             sx={{ height: "70%" }}
             margin="dense"
             label={title.includes("Number") ? "Number" : "Name"}

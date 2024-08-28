@@ -131,7 +131,7 @@ function App() {
   const [inputValue, setInputValue] = useState("");
 
   //const url = "https://pssapi.net:444";
-  const url = "http://192.168.16.111:8000";
+  const url = "http://192.168.16.123:8000";
   const v = "pointofsale";
 
   useEffect(() => {
