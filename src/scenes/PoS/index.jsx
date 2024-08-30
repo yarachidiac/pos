@@ -161,13 +161,8 @@ const PoS = ({
   const [payOutLBP, setPayOutLBP] = useState(0);
   const [payInUSDVISA, setPayInUSDVISA] = useState(0);
   const [payInLBPVISA, setPayInLBPVISA] = useState(0);
-  const [payInUSDVISA1, setPayInUSDVISA1] = useState(0);
-  const [payInLBPVISA1, setPayInLBPVISA1] = useState(0);
-  const [payInUSDVISA2, setPayInUSDVISA2] = useState(0);
-  const [payInLBPVISA2, setPayInLBPVISA2] = useState(0);
-  const [payInUSDVISA3, setPayInUSDVISA3] = useState(0);
-  const [payInLBPVISA3, setPayInLBPVISA3] = useState(0);
   const [selectedAmounts, setSelectedAmounts] = useState([]);
+  const [amountValue, setAmountValue] = useState(0);
 
   // const [selectedButtons, setSelectedButtons] = useState({
   //   receipt: allowPrintInv,
@@ -240,6 +235,97 @@ const PoS = ({
               setRecallTime(data.recallTime);
               setRenewInv(true);
               // Add the selected amount to the list
+              setPayInUSD(() => {
+                let totalAmount = 0;
+
+                data.payDetailList.forEach((payDetail) => {
+                  if (
+                    payDetail.PaymentMethod === "Cash" &&
+                    payDetail.PayType === "PayIn" &&
+                    payDetail.Currency === "USD"
+                  ) {
+                    totalAmount += Number(payDetail.Amount);
+                  }
+                });
+
+                return Number(totalAmount);
+              });
+              setPayOutUSD(() => {
+                let totalAmount = 0;
+
+                data.payDetailList.forEach((payDetail) => {
+                  if (
+                    payDetail.PaymentMethod === "Cash" &&
+                    payDetail.PayType === "PayOut" &&
+                    payDetail.Currency === "USD"
+                  ) {
+                    totalAmount += Number(payDetail.Amount);
+                  }
+                });
+
+                return totalAmount;
+              });
+              setPayInLBP(() => {
+                let totalAmount = 0;
+
+                data.payDetailList.forEach((payDetail) => {
+                  if (
+                    payDetail.PaymentMethod === "Cash" &&
+                    payDetail.PayType === "PayIn" &&
+                    payDetail.Currency === "LBP"
+                  ) {
+                    totalAmount += Number(payDetail.Amount);
+                  }
+                });
+
+                return totalAmount;
+              });
+              setPayOutLBP(() => {
+                let totalAmount = 0;
+
+                data.payDetailList.forEach((payDetail) => {
+                  if (
+                    payDetail.PaymentMethod === "Cash" &&
+                    payDetail.PayType === "PayOut" &&
+                    payDetail.Currency === "LBP"
+                  ) {
+                    totalAmount += Number(payDetail.Amount);
+                  }
+                });
+
+                return totalAmount;
+              });
+              setPayInUSDVISA(() => {
+                let totalAmount = 0;
+
+                data.payDetailList.forEach((payDetail) => {
+                  if (
+                    payDetail.PaymentMethod !== "Cash" &&
+                    payDetail.PayType === "PayIn" &&
+                    payDetail.Currency === "USD"
+                  ) {
+                    totalAmount += Number(payDetail.Amount);
+                  }
+                });
+
+                return totalAmount;
+              });
+              setPayInLBPVISA(() => {
+                let totalAmount = 0;
+
+                data.payDetailList.forEach((payDetail) => {
+                  if (
+                    payDetail.PaymentMethod !== "Cash" &&
+                    payDetail.PayType === "PayIn" &&
+                    payDetail.Currency === "LBP"
+                  ) {
+                    totalAmount += Number(payDetail.Amount);
+                  }
+                });
+
+                return totalAmount;
+              });
+
               setSelectedAmounts(
                 () =>
                   data.payDetailList
@@ -292,6 +378,109 @@ const PoS = ({
           setRenewInv(true);
           setRecallDate(data.recallDate);
           setRecallTime(data.recallTime);
+          setPayInUSD(() => {
+            let totalAmount = 0;
+
+            data.payDetailList.forEach((payDetail) => {
+              if (
+                payDetail.PaymentMethod === "Cash" &&
+                payDetail.PayType === "PayIn" &&
+                payDetail.Currency === "USD"
+              ) {
+                totalAmount += Number(payDetail.Amount);
+              }
+            });
+
+            return Number(totalAmount);
+          });
+          setPayOutUSD(() => {
+            let totalAmount = 0;
+
+            data.payDetailList.forEach((payDetail) => {
+              if (
+                payDetail.PaymentMethod === "Cash" &&
+                payDetail.PayType === "PayOut" &&
+                payDetail.Currency === "USD"
+              ) {
+                totalAmount += Number(payDetail.Amount);
+              }
+            });
+
+            return totalAmount;
+          });
+          setPayInLBP(() => {
+            let totalAmount = 0;
+
+            data.payDetailList.forEach((payDetail) => {
+              if (
+                payDetail.PaymentMethod === "Cash" &&
+                payDetail.PayType === "PayIn" &&
+                payDetail.Currency === "LBP"
+              ) {
+                totalAmount += Number(payDetail.Amount);
+              }
+            });
+
+            return totalAmount;
+          });
+          setPayOutLBP(() => {
+            let totalAmount = 0;
+
+            data.payDetailList.forEach((payDetail) => {
+              if (
+                payDetail.PaymentMethod === "Cash" &&
+                payDetail.PayType === "PayOut" &&
+                payDetail.Currency === "LBP"
+              ) {
+                totalAmount += Number(payDetail.Amount);
+              }
+            });
+
+            return totalAmount;
+          });
+          setPayInUSDVISA(() => {
+            let totalAmount = 0;
+
+            data.payDetailList.forEach((payDetail) => {
+              if (
+                payDetail.PaymentMethod !== "Cash" &&
+                payDetail.PayType === "PayIn" &&
+                payDetail.Currency === "USD"
+              ) {
+                totalAmount += Number(payDetail.Amount);
+              }
+            });
+
+            return totalAmount;
+          });
+          setPayInLBPVISA(() => {
+            let totalAmount = 0;
+
+            data.payDetailList.forEach((payDetail) => {
+              if (
+                payDetail.PaymentMethod !== "Cash" &&
+                payDetail.PayType === "PayIn" &&
+                payDetail.Currency === "LBP"
+              ) {
+                totalAmount += Number(payDetail.Amount);
+              }
+            });
+
+            return totalAmount;
+          });
+
+          setSelectedAmounts(
+            () =>
+              data.payDetailList
+                .map((payDetail) => ({
+                  payType: payDetail.PayType,
+                  currency: payDetail.Currency,
+                  amount: payDetail.Amount,
+                  paymentMethod: payDetail.PaymentMethod,
+                }))
+                .filter(Boolean) // This filters out any false or undefined values
+          );
+
         } else {
           //setRecallType(invType);
           setAllowDialog(true);
@@ -342,6 +531,13 @@ const PoS = ({
       setMessage("");
       setRecallDate(formattedDate);
       setRecallTime(formattedTime);
+      setSelectedAmounts([]);
+      setPayInLBP(0);
+      setPayOutLBP(0);
+      setPayInUSD(0)
+      setPayOutUSD(0);
+      setPayInUSDVISA(0);
+      setPayInLBPVISA(0);
     } else {
       setIsConfOpenDialog(true);
     }
@@ -565,6 +761,9 @@ const PoS = ({
       setDiscValue(value);
     } else if (numericKeypadType === "Service") {
       setSrv(value);
+    } else if (numericKeypadType === "Amount") {
+      console.log("ana bl amount", value);
+      setAmountValue(Number(value));
     }
   };
 
@@ -931,12 +1130,8 @@ const PoS = ({
             setPayOutLBP(0);
             setPayInUSD(0);
             setPayOutUSD(0);
-            setPayInUSDVISA1(0);
-            setPayInUSDVISA2(0);
-            setPayInUSDVISA3(0);
-            setPayInLBPVISA1(0);
-            setPayInLBPVISA2(0);
-            setPayInLBPVISA3(0);
+            setPayInUSDVISA(0);
+            setPayInLBPVISA(0);   
             setSelectedAmounts([]);
             if (allowPrintKT === "Y") {
               const jsonString = JSON.stringify(responseData, null, 2);
@@ -2051,7 +2246,7 @@ const PoS = ({
                         setPrRemark("You need to place order first");
                       } else {
                         if (infCom.Pay === "Y") {
-                           handlePayCheck();
+                          handlePayCheck();
                         }
                         setCloseTClicked(true);
                       }
@@ -2475,18 +2670,6 @@ const PoS = ({
         setPayInUSD={setPayInUSD}
         payOutUSD={payOutUSD}
         setPayOutUSD={setPayOutUSD}
-        payInUSDVISA1={payInUSDVISA1}
-        setPayInUSDVISA1={setPayInUSDVISA1}
-        payInLBPVISA1={payInLBPVISA1}
-        setPayInLBPVISA1={setPayInLBPVISA1}
-        payInUSDVISA2={payInUSDVISA2}
-        setPayInUSDVISA2={setPayInUSDVISA2}
-        payInLBPVISA2={payInLBPVISA2}
-        setPayInLBPVISA2={setPayInLBPVISA2}
-        payInUSDVISA3={payInUSDVISA3}
-        setPayInUSDVISA3={setPayInUSDVISA3}
-        payInLBPVISA3={payInLBPVISA3}
-        setPayInLBPVISA3={setPayInLBPVISA3}
         currency={currency}
         setCurrency={setCurrency}
         onClick={handlePlace}
@@ -2499,6 +2682,9 @@ const PoS = ({
         url={url}
         selectedAmounts={selectedAmounts}
         setSelectedAmounts={setSelectedAmounts}
+        handleOpenNumericKeypad={handleOpenNumericKeypad}
+        amountValue={amountValue}
+        setAmountValue={setAmountValue}
       ></PaymentDialog>
     </>
   );

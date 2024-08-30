@@ -33,17 +33,6 @@ const PaymentDialog = ({
   payOutUSD,
   setPayOutUSD,
   payInLBPVISA1,
-  setPayInLBPVISA1,
-  payInUSDVISA1,
-  setPayInUSDVISA1,
-  payInLBPVISA2,
-  setPayInLBPVISA2,
-  payInUSDVISA2,
-  setPayInUSDVISA2,
-  payInLBPVISA3,
-  setPayInLBPVISA3,
-  payInUSDVISA3,
-  setPayInUSDVISA3,
   currency,
   setCurrency,
   onClick,
@@ -53,11 +42,14 @@ const PaymentDialog = ({
   setPayInUSDVISA,
   setTClicknyed,
   companyName,
-  url, selectedAmounts, setSelectedAmounts
+  url,
+  selectedAmounts,
+  setSelectedAmounts,
+  handleOpenNumericKeypad, amountValue, setAmountValue
 }) => {
   const [payType, setPayType] = useState("PayIn");
   const [openVisaDialog, setOpenVisaDialog] = useState(false);
-  const [visaType, setVisaType] = useState("");
+  const [currencyLeb, setCurrencyLeb] = useState();
 
   const handleSubmit = () => {
     onClick();
@@ -72,12 +64,6 @@ const PaymentDialog = ({
     setPayOutUSD(0);
     setPayInUSDVISA(0);
     setPayInLBPVISA(0);
-    setPayInUSDVISA1(0);
-    setPayInLBPVISA1(0);
-    setPayInUSDVISA2(0);
-    setPayInLBPVISA2(0);
-    setPayInUSDVISA3(0);
-    setPayInLBPVISA3(0);
     setPayType("PayIn");
     setCurrency("USD");
     setPaymentMethod("Cash");
@@ -90,28 +76,15 @@ const PaymentDialog = ({
       } else if (currency === "USD" && payType === "PayOut") {
         setPayOutUSD((prev) => prev + amount);
       } else if (currency === "LBP" && payType === "PayIn") {
-
         setPayInLBP((prev) => prev + amount);
       } else if (currency === "LBP" && payType === "PayOut") {
         setPayOutLBP((prev) => prev + amount);
       }
     } else {
-      if (
-        currency === "USD" &&
-        payType === "PayIn" &&
-        visaType === "Visa1"
-      ) {
-        setPayInUSDVISA1((prev) => prev + amount);
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa1") {
-        setPayInLBPVISA1((prev) => prev + amount);
-      } else if (currency === "USD" && payType === "PayIn" && visaType === "Visa2") {
-        setPayInUSDVISA2((prev) => prev + amount);
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa2") {
-        setPayInLBPVISA2((prev) => prev + amount);
-      } else if (currency === "USD" && payType === "PayIn" && visaType === "Visa3") {
-        setPayInUSDVISA3((prev) => prev + amount);
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa3") {
-        setPayInLBPVISA3((prev) => prev + amount);
+      if (currency === "LBP" && payType === "PayIn") {
+        setPayInLBPVISA((prev) => prev + amount);
+      } else if (currency === "USD" && payType === "PayIn") {
+        setPayInUSDVISA((prev) => prev + amount);
       }
     }
     // Add the selected amount to the list
@@ -121,64 +94,39 @@ const PaymentDialog = ({
     ]);
   };
 
-  const handleTextFieldChange = (event, index) => {
-    const { value } = event.target;
-    const amount = parseFloat(value) || 0;
+  const handleTextFieldChange = () => {
+    // const { value } = event.target;
+    const amount = parseFloat(amountValue) || 0;
 
-    setSelectedAmounts((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, amount } : item))
-    );
+    setSelectedAmounts((prev) => [
+      ...prev,
+      {
+        currency: currency,
+        payType: payType,
+        paymentMethod: paymentMethod,
+        amount: amount,
+      },
+    ]);
 
-    const { payType, currency, paymentMethod } = selectedAmounts[index];
-    console.log(amount);
-    console.log(selectedAmounts[index].amount);
     if (paymentMethod === "Cash") {
       if (currency === "USD") {
         if (payType === "PayIn") {
-          setPayInUSD(
-            (prev) => prev + (amount - selectedAmounts[index].amount)
-          );
+          setPayInUSD((prev) => prev + amount);
         } else if (payType === "PayOut") {
-          setPayOutUSD(
-            (prev) => prev + (amount - selectedAmounts[index].amount)
-          );
+          setPayOutUSD((prev) => prev + amount);
         }
       } else if (currency === "LBP") {
         if (payType === "PayIn") {
-          setPayInLBP(
-            (prev) => prev + (amount - selectedAmounts[index].amount)
-          );
+          setPayInLBP((prev) => prev + amount);
         } else if (payType === "PayOut") {
-          setPayOutLBP(
-            (prev) => prev + (amount - selectedAmounts[index].amount)
-          );
+          setPayOutLBP((prev) => prev + amount);
         }
       }
-    } else if (paymentMethod.includes("VISA")) {
-      if (currency === "USD" && payType === "PayIn" && visaType === "Visa1") {
-        setPayInUSDVISA1(
-          (prev) => prev + (amount - selectedAmounts[index].amount)
-        );
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa1") {
-        setPayInLBPVISA1(
-          (prev) => prev + (amount - selectedAmounts[index].amount)
-        );
-      } else if (currency === "USD" && payType === "PayIn" && visaType === "Visa2") {
-        setPayInUSDVISA2(
-          (prev) => prev + (amount - selectedAmounts[index].amount)
-        );
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa2") {
-        setPayInLBPVISA2(
-          (prev) => prev + (amount - selectedAmounts[index].amount)
-        );
-      } else if (currency === "USD" && payType === "PayIn" && visaType === "Visa3") {
-        setPayInUSDVISA3(
-          (prev) => prev + (amount - selectedAmounts[index].amount)
-        );
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa3") {
-        setPayInLBPVISA3(
-          (prev) => prev + (amount - selectedAmounts[index].amount)
-        );
+    } else if (paymentMethod.includes("Card")) {
+      if (currency === "USD" && payType === "PayIn") {
+        setPayInUSDVISA((prev) => prev + amount);
+      } else if (currency === "LBP" && payType === "PayIn") {
+        setPayInLBPVISA((prev) => prev + amount);
       }
     }
   };
@@ -210,22 +158,10 @@ const PaymentDialog = ({
         setPayOutLBP((prev) => Math.max(prev - amount, 0));
       }
     } else {
-      if (currency === "USD" && payType === "PayIn" && visaType === "Visa1") {
-        setPayInUSDVISA1((prev) => Math.max(prev - amount, 0));
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa1") {
-        setPayInLBPVISA1((prev) => Math.max(prev - amount, 0));
-      } else if (currency === "USD" && payType === "PayIn" && visaType === "Visa2") {
-        setPayInUSDVISA2((prev) => Math.max(prev - amount, 0));
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa2") {
-        setPayInLBPVISA2((prev) => Math.max(prev - amount, 0));
-      } else if (
-        currency === "USD" &&
-        payType === "PayIn" &&
-        visaType === "Visa3"
-      ) {
-        setPayInUSDVISA3((prev) => Math.max(prev - amount, 0));
-      } else if (currency === "LBP" && payType === "PayIn" && visaType === "Visa3") {
-        setPayInLBPVISA3((prev) => Math.max(prev - amount, 0));
+      if (currency === "USD" && payType === "PayIn") {
+        setPayInUSDVISA((prev) => Math.max(prev - amount, 0));
+      } else if (currency === "LBP" && payType === "PayIn") {
+        setPayInLBPVISA((prev) => Math.max(prev - amount, 0));
       }
     }
   };
@@ -240,21 +176,15 @@ const PaymentDialog = ({
           finalTotal -
           ((payInLBP - payOutLBP) / infCom.Rate +
             (payInUSD - payOutUSD) +
-            payInLBPVISA1 / infCom.Rate +
-            payInUSDVISA1 +
-            payInLBPVISA2 / infCom.Rate +
-            payInUSDVISA2 +
-            payInLBPVISA3 / infCom.Rate +
-            payInUSDVISA3)
+            payInLBPVISA / infCom.Rate +
+            payInUSDVISA)
         ).toLocaleString()
       : (
           finalTotal / infCom.Rate -
           (payInUSD -
             payOutUSD +
             (payInLBP - payOutLBP) / infCom.Rate +
-            (payInLBPVISA1 / infCom.Rate + payInUSDVISA1) +
-            (payInLBPVISA2 / infCom.Rate + payInUSDVISA2) +
-            (payInLBPVISA3 / infCom.Rate + payInUSDVISA3))
+            (payInLBPVISA / infCom.Rate + payInUSDVISA))
         ).toLocaleString(),
     100,
     50,
@@ -269,20 +199,14 @@ const PaymentDialog = ({
           finalTotal * infCom.Rate -
           ((payInUSD - payOutUSD) * infCom.Rate +
             (payInLBP - payOutLBP) +
-            payInLBPVISA1 +
-            payInUSDVISA1 * infCom.Rate +
-            payInLBPVISA2 +
-            payInUSDVISA2 * infCom.Rate +
-            payInLBPVISA3 +
-            payInUSDVISA3 * infCom.Rate)
+            payInLBPVISA +
+            payInUSDVISA * infCom.Rate)
         ).toLocaleString()
       : (
           finalTotal -
           ((payInUSD - payOutUSD) * infCom.Rate +
             (payInLBP - payOutLBP) +
-            (payInUSDVISA1 * infCom.Rate + payInLBPVISA1) +
-            (payInUSDVISA2 * infCom.Rate + payInLBPVISA2) +
-            (payInUSDVISA3 * infCom.Rate + payInLBPVISA3))
+            (payInUSDVISA * infCom.Rate + payInLBPVISA))
         ).toLocaleString(),
     100000,
     50000,
@@ -329,7 +253,7 @@ const PaymentDialog = ({
                   <Grid item xs={6}>
                     <Button
                       variant={
-                        paymentMethod.includes("Visa")
+                        paymentMethod.includes("Card")
                           ? "contained"
                           : "outlined"
                       }
@@ -407,16 +331,8 @@ const PaymentDialog = ({
                 >
                   <FormLabel component="legend">Paid USD:</FormLabel>
                   <Typography style={{ fontWeight: "bold" }} color="secondary">
-                    {(payInUSD ||
-                      payInUSDVISA1 ||
-                      payInUSDVISA2 ||
-                      payInUSDVISA3) &&
-                      (
-                        payInUSD +
-                        payInUSDVISA1 +
-                        payInUSDVISA2 +
-                        payInUSDVISA3
-                      ).toLocaleString() + " $"}
+                    {(payInUSD || payInUSDVISA) &&
+                      (payInUSD + payInUSDVISA).toLocaleString() + " $"}
                   </Typography>
                 </div>
                 <div
@@ -428,16 +344,8 @@ const PaymentDialog = ({
                 >
                   <FormLabel component="legend">Paid LBP:</FormLabel>
                   <Typography style={{ fontWeight: "bold" }} color="secondary">
-                    {(payInLBP ||
-                      payInLBPVISA1 ||
-                      payInLBPVISA2 ||
-                      payInLBPVISA3) &&
-                      (
-                        payInLBP +
-                        payInLBPVISA1 +
-                        payInLBPVISA2 +
-                        payInLBPVISA3
-                      ).toLocaleString() + " LBP"}
+                    {(payInLBP || payInLBPVISA) &&
+                      (payInLBP + payInLBPVISA).toLocaleString() + " LBP"}
                   </Typography>
                 </div>
                 <div
@@ -479,21 +387,15 @@ const PaymentDialog = ({
                           finalTotal -
                           ((payInLBP - payOutLBP) / infCom.Rate +
                             (payInUSD - payOutUSD) +
-                            payInLBPVISA1 / infCom.Rate +
-                            payInUSDVISA1 +
-                            payInLBPVISA2 / infCom.Rate +
-                            payInUSDVISA2 +
-                            payInLBPVISA3 / infCom.Rate +
-                            payInUSDVISA3)
+                            payInLBPVISA / infCom.Rate +
+                            payInUSDVISA)
                         ).toLocaleString() + " $"
                       : (
                           finalTotal / infCom.Rate -
                           (payInUSD -
                             payOutUSD +
                             (payInLBP - payOutLBP) / infCom.Rate +
-                            (payInLBPVISA1 / infCom.Rate + payInUSDVISA1) +
-                            (payInLBPVISA2 / infCom.Rate + payInUSDVISA2) +
-                            (payInLBPVISA3 / infCom.Rate + payInUSDVISA3))
+                            (payInLBPVISA / infCom.Rate + payInUSDVISA))
                         ).toLocaleString() + " $"}
                   </Typography>
                 </div>
@@ -511,20 +413,14 @@ const PaymentDialog = ({
                           finalTotal * infCom.Rate -
                           ((payInUSD - payOutUSD) * infCom.Rate +
                             (payInLBP - payOutLBP) +
-                            payInLBPVISA1 +
-                            payInUSDVISA1 * infCom.Rate +
-                            payInLBPVISA2 +
-                            payInUSDVISA2 * infCom.Rate +
-                            payInLBPVISA3 +
-                            payInUSDVISA3 * infCom.Rate)
+                            payInLBPVISA +
+                            payInUSDVISA * infCom.Rate)
                         ).toLocaleString() + " LBP"
                       : (
                           finalTotal -
                           ((payInUSD - payOutUSD) * infCom.Rate +
                             (payInLBP - payOutLBP) +
-                            (payInUSDVISA1 * infCom.Rate + payInLBPVISA1) +
-                            (payInUSDVISA2 * infCom.Rate + payInLBPVISA2) +
-                            (payInUSDVISA3 * infCom.Rate + payInLBPVISA3))
+                            (payInUSDVISA * infCom.Rate + payInLBPVISA))
                         ).toLocaleString() + " LBP"}
                   </Typography>
                 </div>
@@ -549,7 +445,7 @@ const PaymentDialog = ({
                     >
                       {currency === "USD"
                         ? `$${
-                            payType === "PayOut"  && index == 0
+                            payType === "PayOut" && index == 0
                               ? amount * -1
                               : amount
                           }`
@@ -560,24 +456,51 @@ const PaymentDialog = ({
               )}
             </Grid>
 
+            <Grid container>
+              <Grid item xs={12}>
+                <Grid item xs={6}>
+                  <TextField
+                    onChange={(event) => {
+                      setAmountValue(event.target.value);
+                    }}
+                    label={`${payType} ${paymentMethod} ${currency}`}
+                    value={amountValue}
+                    fullWidth
+                    margin="dense"
+                    onDoubleClick={() => handleOpenNumericKeypad("Amount")}
+                    // InputProps={{
+                    //   readOnly: !(
+                    //     payType === selectedAmounts[index].payType &&
+                    //     paymentMethod === selectedAmounts[index].paymentMethod &&
+                    //     currency === selectedAmounts[index].currency
+                    //   ),
+                    // }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Button
+                    onClick={handleTextFieldChange}
+                    variant="contained"
+                    color="secondary"
+                  >
+                    Add
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <Grid container spacing={2}>
                 {selectedAmounts.map(({ amount }, index) => (
                   <Grid item xs={12} sm={4} key={index}>
                     <TextField
                       onDoubleClick={() => handleDecrement(index)}
-                      onChange={(event) => handleTextFieldChange(event, index)}
+                      //onChange={(event) => handleTextFieldChange(event, index)}
                       label={`${selectedAmounts[index].payType} ${selectedAmounts[index].paymentMethod} (${selectedAmounts[index].currency})`}
                       value={amount}
                       fullWidth
                       margin="dense"
                       InputProps={{
-                        readOnly: !(
-                          payType === selectedAmounts[index].payType &&
-                          paymentMethod ===
-                            selectedAmounts[index].paymentMethod &&
-                          currency === selectedAmounts[index].currency
-                        ),
+                        readOnly: true
                       }}
                     />
                   </Grid>
@@ -608,7 +531,6 @@ const PaymentDialog = ({
           setPayType={setPayType}
           companyName={companyName}
           url={url}
-          setVisaType={setVisaType}
         ></VisaDialog>
       )}
     </>

@@ -9,7 +9,7 @@ const VisaDialog = ({
   payType,
   setPayType,
   companyName,
-  url, setVisaType
+  url
 }) => {
   const [visaList, setVisaList] = useState([]);
 
@@ -35,16 +35,14 @@ const VisaDialog = ({
       <DialogTitle sx={{ fontSize: "1.5rem" }}>Select Card Type</DialogTitle>
       <DialogContent>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {Array.isArray(visaList) &&
+          {
             visaList.map((item, index) => (
               <Button
                 key={index}
-                variant={paymentMethod === `${item}` ? "contained" : "outlined"}
+                variant={paymentMethod === `${item} Card` ? "contained" : "outlined"}
                 color="secondary"
                 onClick={() => {
-                  setVisaType(`Visa${index + 1}`);
-
-                  setPaymentMethod(`${item}`);
+                  setPaymentMethod(`${item} Card`);
                   if (payType === "PayOut") {
                     setPayType("PayIn");
                   }
