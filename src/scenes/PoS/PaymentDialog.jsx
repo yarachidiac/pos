@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -49,7 +49,29 @@ const PaymentDialog = ({
 }) => {
   const [payType, setPayType] = useState("PayIn");
   const [openVisaDialog, setOpenVisaDialog] = useState(false);
-  const [currencyLeb, setCurrencyLeb] = useState();
+  const [currencyAmount, setCurrencyAmount] = useState([]);
+  const [currencyList, setCurrencyList] = useState([]);
+
+  useEffect(() => {
+    const fetchAmounts = async () => {
+      try {
+        const fetchCurrencies = await fetch(
+          `${url}/pos/getAllCurrencies/${companyName}`
+        );
+        const response = await fetchCurrencies.json();
+        setCurrencyList(response);
+        const fetchAmounts = await fetch(
+          `${url}/pos/getAmountsCurrency/${companyName}/${currency}`
+        );
+        const responseAmount = await fetchAmounts.json();
+        setCurrencyAmount(responseAmount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchAmounts(); // Call the function inside the useEffect
+  }, [currency]); // Include companyName as a dependency if it can change
 
   const handleSubmit = () => {
     onClick();
@@ -170,7 +192,7 @@ const PaymentDialog = ({
     setOpenVisaDialog(false);
   };
 
-  const usdAmounts = [
+  const usdAmount = 
     infCom.KD === "*"
       ? (
           finalTotal -
@@ -185,15 +207,10 @@ const PaymentDialog = ({
             payOutUSD +
             (payInLBP - payOutLBP) / infCom.Rate +
             (payInLBPVISA / infCom.Rate + payInUSDVISA))
-        ).toLocaleString(),
-    100,
-    50,
-    20,
-    10,
-    5,
-    1,
-  ];
-  const lbpAmounts = [
+        ).toLocaleString()
+    ;
+  
+  const lbpAmount = 
     infCom.KD === "*"
       ? (
           finalTotal * infCom.Rate -
@@ -207,13 +224,25 @@ const PaymentDialog = ({
           ((payInUSD - payOutUSD) * infCom.Rate +
             (payInLBP - payOutLBP) +
             (payInUSDVISA * infCom.Rate + payInLBPVISA))
-        ).toLocaleString(),
-    100000,
-    50000,
-    20000,
-    10000,
-    5000,
-  ];
+        ).toLocaleString()
+    ;
+  
+  const numericAmount = (() => {
+    if (payType === "PayOut") {
+      if (currency === "USD") {
+        return -1 * Number(usdAmount.toString().replace(/,/g, ""));
+      } else if (currency === "LBP") {
+        return -1 * Number(lbpAmount.toString().replace(/,/g, ""));
+      }
+    } else {
+      if (currency === "USD") {
+        return Number(usdAmount.toString().replace(/,/g, ""));
+      } else if (currency === "LBP") {
+        return Number(lbpAmount.toString().replace(/,/g, ""));
+      }
+    }
+    return 0; // Default value
+  })();
 
   return (
     <>
@@ -240,6 +269,7 @@ const PaymentDialog = ({
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
                     <Button
+                      sx={{ fontSize: "1rem" }}
                       variant={
                         paymentMethod === "Cash" ? "contained" : "outlined"
                       }
@@ -252,6 +282,7 @@ const PaymentDialog = ({
                   </Grid>
                   <Grid item xs={6}>
                     <Button
+                      sx={{ fontSize: "1rem" }}
                       variant={
                         paymentMethod.includes("Card")
                           ? "contained"
@@ -270,6 +301,7 @@ const PaymentDialog = ({
                 <Grid container spacing={2} style={{ marginTop: "16px" }}>
                   <Grid item xs={6}>
                     <Button
+                      sx={{ fontSize: "1rem" }}
                       variant={payType === "PayIn" ? "contained" : "outlined"}
                       color="secondary"
                       onClick={() => setPayType("PayIn")}
@@ -280,6 +312,7 @@ const PaymentDialog = ({
                   </Grid>
                   <Grid item xs={6}>
                     <Button
+                      sx={{ fontSize: "1rem" }}
                       variant={
                         payType === "PayOut" && paymentMethod === "Cash"
                           ? "contained"
@@ -297,27 +330,24 @@ const PaymentDialog = ({
                 </Grid>
 
                 {/* Currency: USD / LBP */}
-                <Grid container spacing={2} style={{ marginTop: "16px" }}>
-                  <Grid item xs={6}>
-                    <Button
-                      variant={currency === "USD" ? "contained" : "outlined"}
-                      color="secondary"
-                      onClick={() => setCurrency("USD")}
-                      fullWidth
-                    >
-                      USD
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      variant={currency === "LBP" ? "contained" : "outlined"}
-                      color="secondary"
-                      onClick={() => setCurrency("LBP")}
-                      fullWidth
-                    >
-                      LBP
-                    </Button>
-                  </Grid>
+                <Grid container spacing={1} style={{ marginTop: "16px" }}>
+                  {currencyList.map((currencyItem) => (
+                    <Grid item key={currencyItem.id} xs>
+                      <Button
+                        sx={{ fontSize: "1rem" }}
+                        variant={
+                          currency === currencyItem.Code
+                            ? "contained"
+                            : "outlined"
+                        }
+                        color="secondary"
+                        onClick={() => setCurrency(currencyItem.Code)}
+                        fullWidth
+                      >
+                        {currencyItem.Code}
+                      </Button>
+                    </Grid>
+                  ))}
                 </Grid>
               </Grid>
 
@@ -329,8 +359,16 @@ const PaymentDialog = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <FormLabel component="legend">Paid USD:</FormLabel>
-                  <Typography style={{ fontWeight: "bold" }} color="secondary">
+                  <FormLabel
+                    component="legend"
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                  >
+                    Paid USD:
+                  </FormLabel>
+                  <Typography
+                    style={{ fontWeight: "bold", fontSize: "1rem" }}
+                    color="secondary"
+                  >
                     {(payInUSD || payInUSDVISA) &&
                       (payInUSD + payInUSDVISA).toLocaleString() + " $"}
                   </Typography>
@@ -342,8 +380,16 @@ const PaymentDialog = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <FormLabel component="legend">Paid LBP:</FormLabel>
-                  <Typography style={{ fontWeight: "bold" }} color="secondary">
+                  <FormLabel
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                    component="legend"
+                  >
+                    Paid LBP:
+                  </FormLabel>
+                  <Typography
+                    style={{ fontWeight: "bold", fontSize: "1rem" }}
+                    color="secondary"
+                  >
                     {(payInLBP || payInLBPVISA) &&
                       (payInLBP + payInLBPVISA).toLocaleString() + " LBP"}
                   </Typography>
@@ -355,8 +401,19 @@ const PaymentDialog = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <FormLabel component="legend">USD Out :</FormLabel>
-                  <Typography style={{ fontWeight: "bold", color: "red" }}>
+                  <FormLabel
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                    component="legend"
+                  >
+                    USD Out :
+                  </FormLabel>
+                  <Typography
+                    style={{
+                      fontWeight: "bold",
+                      color: "red",
+                      fontSize: "1rem",
+                    }}
+                  >
                     {payOutUSD && payOutUSD.toLocaleString() + " $"}
                   </Typography>
                 </div>
@@ -367,8 +424,19 @@ const PaymentDialog = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <FormLabel component="legend">LBP Out :</FormLabel>
-                  <Typography style={{ fontWeight: "bold", color: "red" }}>
+                  <FormLabel
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                    component="legend"
+                  >
+                    LBP Out :
+                  </FormLabel>
+                  <Typography
+                    style={{
+                      fontWeight: "bold",
+                      color: "red",
+                      fontSize: "1rem",
+                    }}
+                  >
                     {payOutLBP && payOutLBP.toLocaleString() + " LBP"}
                   </Typography>
                 </div>
@@ -380,8 +448,19 @@ const PaymentDialog = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <FormLabel component="legend">Balance USD:</FormLabel>
-                  <Typography style={{ fontWeight: "bold", color: "red" }}>
+                  <FormLabel
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                    component="legend"
+                  >
+                    Balance USD:
+                  </FormLabel>
+                  <Typography
+                    style={{
+                      fontWeight: "bold",
+                      color: "red",
+                      fontSize: "1rem",
+                    }}
+                  >
                     {infCom.KD === "*"
                       ? (
                           finalTotal -
@@ -406,8 +485,19 @@ const PaymentDialog = ({
                     justifyContent: "space-between",
                   }}
                 >
-                  <FormLabel component="legend">Balance LBP:</FormLabel>
-                  <Typography style={{ fontWeight: "bold", color: "red" }}>
+                  <FormLabel
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                    component="legend"
+                  >
+                    Balance LBP:
+                  </FormLabel>
+                  <Typography
+                    style={{
+                      fontWeight: "bold",
+                      color: "red",
+                      fontSize: "1rem",
+                    }}
+                  >
                     {infCom.KD === "*"
                       ? (
                           finalTotal * infCom.Rate -
@@ -427,72 +517,83 @@ const PaymentDialog = ({
               </Grid>
             </Grid>
 
-            <Grid container spacing={2} alignItems="stretch">
-              {(currency === "USD" ? usdAmounts : lbpAmounts).map(
-                (amount, index) => (
-                  <Grid item key={index} xs={2}>
-                    <Button
-                      fullWidth
-                      variant="outlined"
-                      onClick={() => {
-                        const numericAmount =
-                          payType === "PayOut" && index == 0
-                            ? -1 * Number(amount.toString().replace(/,/g, ""))
-                            : Number(amount.toString().replace(/,/g, ""));
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <Button
+                  sx={{ fontSize: "1rem" }}
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => {
+                    numericAmount > 0 && handlePresetAmount(numericAmount);
+                  }}
+                >
+                  {numericAmount}
+                </Button>
+              </Grid>
 
-                        numericAmount > 0 && handlePresetAmount(numericAmount);
-                      }}
-                    >
-                      {currency === "USD"
-                        ? `$${
-                            payType === "PayOut" && index == 0
-                              ? amount * -1
-                              : amount
-                          }`
-                        : `${amount.toLocaleString()} LBP`}
-                    </Button>
-                  </Grid>
-                )
-              )}
+              {currencyAmount.map((amount, index) => (
+                <Grid item key={index} xs={2}>
+                  <Button
+                    sx={{ fontSize: "1rem" }}
+                    fullWidth
+                    variant="outlined"
+                    onClick={() => {
+                      const numericAmount = Number(
+                        amount.toString().replace(/,/g, "")
+                      );
+
+                      handlePresetAmount(numericAmount);
+                    }}
+                  >
+                    {amount.toLocaleString()}
+                    {/* {currency === "USD"
+                      ? `$${amount}`
+                      : `${amount.toLocaleString()} LBP`} */}
+                  </Button>
+                </Grid>
+              ))}
             </Grid>
 
-            <Grid container>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
-                <Grid item xs={6}>
-                  <TextField
-                    onChange={(event) => {
-                      setAmountValue(event.target.value);
-                    }}
-                    label={`${payType} ${paymentMethod} ${currency}`}
-                    value={amountValue}
-                    fullWidth
-                    margin="dense"
-                    onDoubleClick={() => handleOpenNumericKeypad("Amount")}
-                    // InputProps={{
-                    //   readOnly: !(
-                    //     payType === selectedAmounts[index].payType &&
-                    //     paymentMethod === selectedAmounts[index].paymentMethod &&
-                    //     currency === selectedAmounts[index].currency
-                    //   ),
-                    // }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Button
-                    onClick={handleTextFieldChange}
-                    variant="contained"
-                    color="secondary"
-                  >
-                    Add
-                  </Button>
+                <Grid container alignItems="center" spacing={2}>
+                  <Grid item xs={6}>
+                    <TextField
+                      sx={{ fontSize: "1rem" }}
+                      onChange={(event) => {
+                        setAmountValue(event.target.value);
+                      }}
+                      label={`${payType} ${paymentMethod} ${currency}`}
+                      value={amountValue}
+                      fullWidth
+                      margin="dense"
+                      onDoubleClick={() => handleOpenNumericKeypad("Amount")}
+                      InputLabelProps={{
+                        sx: { fontSize: "1.2rem" }, // Adjusts the font size of the label
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      sx={{ fontSize: "1rem" }}
+                      onClick={handleTextFieldChange}
+                      variant="contained"
+                      color="secondary"
+                      fullWidth
+                    >
+                      Add
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <Grid container spacing={2}>
                 {selectedAmounts.map(({ amount }, index) => (
                   <Grid item xs={12} sm={4} key={index}>
                     <TextField
+                      sx={{ fontSize: "1rem" }}
                       onDoubleClick={() => handleDecrement(index)}
                       //onChange={(event) => handleTextFieldChange(event, index)}
                       label={`${selectedAmounts[index].payType} ${selectedAmounts[index].paymentMethod} (${selectedAmounts[index].currency})`}
@@ -500,7 +601,10 @@ const PaymentDialog = ({
                       fullWidth
                       margin="dense"
                       InputProps={{
-                        readOnly: true
+                        readOnly: true,
+                      }}
+                      InputLabelProps={{
+                        sx: { fontSize: "1.2rem" }, // Adjusts the font size of the label
                       }}
                     />
                   </Grid>
@@ -510,13 +614,26 @@ const PaymentDialog = ({
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={onClose}>
+          <Button
+            sx={{ fontSize: "1rem" }}
+            variant="outlined"
+            onClick={onClose}
+          >
             Cancel
           </Button>
-          <Button variant="outlined" onClick={ClearFields}>
+          <Button
+            sx={{ fontSize: "1rem" }}
+            variant="outlined"
+            onClick={ClearFields}
+          >
             Clear
           </Button>
-          <Button onClick={handleSubmit} variant="contained" color="secondary">
+          <Button
+            sx={{ fontSize: "1rem" }}
+            onClick={handleSubmit}
+            variant="contained"
+            color="secondary"
+          >
             Submit Payment
           </Button>
         </DialogActions>
